@@ -1,0 +1,50 @@
+﻿@model NextFlicksMVC4.Models.Movie
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Movie</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.short_title)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.short_title)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.year)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.year)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.runtime)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.runtime)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.avg_rating)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.avg_rating)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.tv_rating)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.tv_rating)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

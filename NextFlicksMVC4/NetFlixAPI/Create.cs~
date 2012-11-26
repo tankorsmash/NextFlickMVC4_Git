@@ -1,0 +1,158 @@
+using System;
+using System.Collections.Generic;
+using System.Xml;
+using NextFlicksMVC4.Models;
+
+namespace NextFlicksMVC4.NetFlixAPI
+{
+    //This class will be passed a catalogtitle tag group(sp?) and then pull out
+    //the data and then create a movie instance.
+    // 
+    //I don't actually know the best way to parse it yet though, but who knows
+    public static class Create
+    {
+
+        //will turn a Title into a Movie which can be used for the site.
+        public static Movie CreateMovie(Title title)
+        {
+            //I can actually see this conversion process actually being
+            //difficult to keep up, if the data model changes but for now, it's
+            //all we got.
+           
+            Movie movie = new Movie();
+
+            movie.short_title = title.TitleString;
+            movie.year = title.ReleaseYear;
+            movie.runtime = title.RuntimeInSeconds;
+            movie.avg_rating = title.AvgRating;
+            movie.tv_rating = title.TvRating;
+
+            return movie;
+
+            
+        }
+
+        public static List<Title> ParseXmlForCatalogTitles(string xml_from_request)
+        {
+            //Parse the plain old XML to pass to each method
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.LoadXml(xml_from_request);
+            XmlNodeList titles = xDoc.GetElementsByTagName("catalog_title");
+
+            List<Title> titleList = new List<Title>();
+
+            //For each title in the XML group, send to a file
+            foreach (XmlNode title in titles)
+            {
+                var created_title = CreateTitle(title);
+                titleList.Add(created_title);
+
+            }
+
+            return titleList;
+
+        }
+
+
+        ///a title is what the nextlix api returns, A movie is what the site
+        ///uses as a model
+        public static Title CreateTitle(XmlNode catalog_title)
+        {
+            //create an empty Title class
+            Title createdTitle = new Title();
+
+
+
+            //Add data to the appropriate fields
+            AddPrimaryData(createdTitle, catalog_title);
+            AddSecondaryData(createdTitle, catalog_title);
+            AddRatingData(createdTitle, catalog_title);
+            AddMiscData(createdTitle, catalog_title);
+            AddGroupData(createdTitle, catalog_title);
+            
+
+            return createdTitle;
+
+        }        
+
+
+        /// <summary>
+        /// Adds Title, Art, Year, Runtime, Genres
+        /// </summary>
+        /// <param name="createdTitle"></param>
+        public static void AddPrimaryData(Title createdTitle, XmlNode catalog_title)
+        {
+            //find the title node, use the short title
+            var title_node = catalog_title.SelectNodes("title")[0];
+            var short_title = title_node.Attributes["short"].Value;
+            var regular_title = title_node.Attributes["regular"].Value;
+            createdTitle.TitleString = short_title;
+
+            //TODO: Box Art
+
+            //find the year released
+            var release_node = catalog_title.SelectSingleNode("release_year");
+            var year = release_node.InnerText;
+            createdTitle.ReleaseYear = year;
+
+            //find the runtime
+            var runtime_node = catalog_title.SelectSingleNode("runtime");
+            if (runtime_node != null)
+            {
+                var runtime = runtime_node.InnerText;
+            createdTitle.RuntimeInSeconds = runtime;
+            }
+
+            //TODO Genres, need to figure out best way to sort multiple vals
+
+            Console.WriteLine("added Primary Data to title");
+        }
+
+        /// <summary>
+        /// Adds Synopsis, Link, Cast
+        /// </summary>
+        /// <param name="createdTitle"></param>
+        public static void AddSecondaryData(Title createdTitle, XmlNode catalog_title)
+        {
+            //TODO: Synposis, Link, Cast
+        }
+
+        /// <summary>
+        /// TV rating and AvgNetflix rating
+        /// </summary>
+        /// <param name="createdTitle"></param>
+        public static void AddRatingData(Title createdTitle, XmlNode catalog_title)
+        {
+            // TV or MPAA rating
+            //can either be in category[scheme] ends with "ratings" either way. It's always first
+            var rating_node = catalog_title.SelectSingleNode("category");
+            var rating = rating_node.Attributes["label"].Value;
+            createdTitle.TvRating = rating;
+
+            var average_rating_node =
+                catalog_title.SelectSingleNode("average_rating");
+            var avg_rating = average_rating_node.InnerText;
+            createdTitle.AvgRating = avg_rating;
+        }
+
+        /// <summary>
+        /// Format availabilty, screen_format, language and audio
+        /// </summary>
+        /// <param name="createdTitle"></param>
+        /// <param name="catalog_title"></param>
+        public static void AddMiscData(Title createdTitle, XmlNode catalog_title)
+        {
+
+
+        }
+
+        /// <summary>
+        /// Discs, Episodes, Similar Titles, Link to Overall page?
+        /// </summary>
+        /// <param name="createdTitle"></param>
+        public static void AddGroupData(Title createdTitle, XmlNode catalog_title)
+        {
+
+        }
+    }
+}

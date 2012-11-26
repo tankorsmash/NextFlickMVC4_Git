@@ -1,0 +1,57 @@
+﻿@model IEnumerable<NextFlicksMVC4.Models.Movie>
+
+@{
+    ViewBag.Title = "API";
+}
+
+<h2>API</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.short_title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.year)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.runtime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.avg_rating)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tv_rating)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.short_title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.year)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.runtime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.avg_rating)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tv_rating)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

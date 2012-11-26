@@ -1,0 +1,11 @@
+#gallery {background:yellow;
+    border-color: black;
+    border-style: ridge;
+    text-align: center;
+padding:5px;}
+
+#title {background:red;}
+#year {background:green;}
+#genre {background:white;}
+#rating {background:blue;}
+
