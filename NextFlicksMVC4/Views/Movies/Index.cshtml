@@ -48,7 +48,10 @@
             @Html.DisplayFor(modelItem => item.year)
         </td>
         <td>
+        @if (item.is_movie)
+        {
             @Html.DisplayFor(modelItem => item.runtime)
+        }
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.avg_rating)
