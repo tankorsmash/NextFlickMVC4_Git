@@ -5,7 +5,8 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Index of @Model.ToList().Count Movies</h2>
+
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -32,6 +33,12 @@
          </th>       
          <th>
             @Html.DisplayNameFor(model => model.is_movie)
+        </th>
+         <th>
+            @Html.DisplayNameFor(model => model.genres)
+        </th>
+         <th>
+            @Html.DisplayNameFor(model => model.maturity_rating)
         </th>
         <th></th>
     </tr>
@@ -67,6 +74,12 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.is_movie)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.genres)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.maturity_rating)
         </td>
 @*        <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |

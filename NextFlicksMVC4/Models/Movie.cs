@@ -33,6 +33,12 @@ namespace NextFlicksMVC4.Models
         [DisplayName("Is a Movie")]
         public bool is_movie { get; set; }
 
+        [DisplayName("Genres")]
+        public string genres { get; set; }
+
+        [DisplayName("Maturity Rating")]
+        public string maturity_rating { get; set; }
+
         public  Movie()
         {
         }

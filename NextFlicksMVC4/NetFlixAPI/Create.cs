@@ -39,14 +39,14 @@ namespace NextFlicksMVC4
                               {
                                   short_title = title.TitleString,
                                   year = title.ReleaseYear,
-                                  //runtime = title.RuntimeInSeconds,
-                                  runtime =  DisplayTools.SecondsToTime(title.RuntimeInSeconds),
+                                  runtime =  DisplayTools.SecondsToTimeSpan(title.RuntimeInSeconds),
                                   avg_rating = title.AvgRating,
                                   tv_rating = title.TvRating,
                                   web_page = title.LinkToPage,
                                   current_season = title.WhichSeason,
-
-                                  is_movie = is_a_movie
+                                  is_movie = is_a_movie,
+                                  genres = title.Genres,
+                                  maturity_rating = title.MaturityLevel
 
                                   
                               };
@@ -137,8 +137,36 @@ namespace NextFlicksMVC4
             }
 
             //TODO Genres, need to figure out best way to sort multiple vals
+            //find the genres
+            //since it's so similar I've set the maturity level here instead of in the rating method
+            string path = @"/catalog_title/category[@scheme]";
+            var nodes = catalog_title.SelectNodes(path);
+
+            List<String> genre_list = new List<string>();
+            foreach (XmlNode node in nodes)
+            {
+                string label = node.Attributes["label"].Value;
+                genre_list.Add(label);
+            }
+            //since the last one is always maturity level, use that as mat_level
+            // but make sure it's a number first, otherwise it's a genre and there's no mat level
+            string maturity_level = genre_list[genre_list.Count-1];
+            int mat_level;
+            if (int.TryParse(maturity_level, out mat_level))
+            {
+                //if maturity_level is a number, assign it to Title and remove it
+                //waste mat_level
+                genre_list.Remove(maturity_level);
+                createdTitle.MaturityLevel = maturity_level;
+            }
+
+            //now we join the genre_list with commas and assign it to Title
+            string genres = string.Join(", ", genre_list);
+            createdTitle.Genres = genres;
+
 
             Trace.WriteLine("added Primary Data to title");
+
         }
 
         /// <summary>
@@ -154,7 +182,7 @@ namespace NextFlicksMVC4
         }
 
         /// <summary>
-        /// TV rating and AvgNetflix rating
+        /// TV rating and AvgNetflix rating, maturity rating
         /// </summary>
         /// <param name="createdTitle"></param>
         public static void AddRatingData(Title createdTitle, XmlNode catalog_title)
@@ -176,6 +204,8 @@ namespace NextFlicksMVC4
                 var avg_rating = average_rating_node.InnerText;
                 createdTitle.AvgRating = avg_rating;
             }
+
+            //maturity rating is set in the same place Genres are set
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace NextFlicksMVC4
 {
     public static class DisplayTools
     {
-        public static TimeSpan SecondsToTime(string seconds)
+        public static TimeSpan SecondsToTimeSpan(string seconds)
         {
             if (seconds != "not set")
             {
