@@ -23,6 +23,11 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Index(int start = 0, int count = 10)
         {
             var fullList = db.Movies.ToList();
+            //total movies in DB
+            ViewBag.TotalMovies = fullList.Count;
+            ViewBag.Start = start;
+            ViewBag.Count = count;
+
             return View(fullList.GetRange(start, count));
         }
 
@@ -33,7 +38,7 @@ namespace NextFlicksMVC4.Controllers
 
             string data;
             int count = 0;
-            using (StreamReader reader = new StreamReader(@"C:\streamingAPI2.NFPOX"))
+            using (StreamReader reader = new StreamReader(@"C:\streamingAPI2stunted.NFPOX"))
             {
 
                 Trace.WriteLine("Starting to read");

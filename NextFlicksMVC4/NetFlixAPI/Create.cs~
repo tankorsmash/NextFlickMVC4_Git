@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Xml;
 using NextFlicksMVC4.Models;
+using NextFlicksMVC4.NetFlixAPI;
 
-namespace NextFlicksMVC4.NetFlixAPI
+namespace NextFlicksMVC4
 {
     //This class will be passed a catalogtitle tag group(sp?) and then pull out
     //the data and then create a movie instance.
@@ -12,26 +15,69 @@ namespace NextFlicksMVC4.NetFlixAPI
     public static class Create
     {
 
+        public  static  Regex _regexForBoxArtSize = new Regex(@"(^\d*)pix", RegexOptions.Compiled);
+
         //will turn a Title into a Movie which can be used for the site.
         public static Movie CreateMovie(Title title)
         {
             //I can actually see this conversion process actually being
             //difficult to keep up, if the data model changes but for now, it's
             //all we got.
-           
-            Movie movie = new Movie();
 
-            movie.short_title = title.TitleString;
-            movie.year = title.ReleaseYear;
-            movie.runtime = title.RuntimeInSeconds;
-            movie.avg_rating = title.AvgRating;
-            movie.tv_rating = title.TvRating;
+            bool is_a_movie = true;
+            //test for isMovie
+            if (title.WhichSeason == "0")
+            {
+                is_a_movie = true;
+            }
+            else
+            {
+                is_a_movie = false;
+            }
+
+
+           
+            //create empty instance
+            Movie movie = new Movie
+                              {
+                                  short_title = title.TitleString,
+                                  year = title.ReleaseYear,
+                                  runtime =  DisplayTools.SecondsToTimeSpan(title.RuntimeInSeconds),
+                                  avg_rating = title.AvgRating,
+                                  tv_rating = title.TvRating,
+                                  web_page = title.LinkToPage,
+                                  current_season = title.WhichSeason,
+                                  is_movie = is_a_movie,
+                                  genres = title.Genres,
+                                  maturity_rating = title.MaturityLevel,
+                                  boxart_38 = title.BoxArt38,
+
+                                  boxart_64 = title.BoxArt64
+                                      boxart_110 = title.BoxArt110
+                                      boxart_124 = title.BoxArt124
+                                      boxart_150 = title.BoxArt150
+                                      boxart_166 = title.BoxArt166
+                                      boxart_88 = title.BoxArt88
+                                      boxart_197 = title.BoxArt197
+                                      boxart_176 = title.BoxArt176
+                                      boxart_284 = title.BoxArt284
+                                      boxart_210 = title.BoxArt210
+                                     
+                                  
+                              };
+
+            //create first set of data that is available to us.
 
             return movie;
 
             
         }
 
+        /// <summary>
+        /// Takes raw XML from API and returns a List of Titles
+        /// </summary>
+        /// <param name="xml_from_request"></param>
+        /// <returns>A List of Titles</returns>
         public static List<Title> ParseXmlForCatalogTitles(string xml_from_request)
         {
             //Parse the plain old XML to pass to each method
@@ -67,13 +113,16 @@ namespace NextFlicksMVC4.NetFlixAPI
             AddPrimaryData(createdTitle, catalog_title);
             AddSecondaryData(createdTitle, catalog_title);
             AddRatingData(createdTitle, catalog_title);
-            AddMiscData(createdTitle, catalog_title);
+            AddFormatData(createdTitle, catalog_title);
             AddGroupData(createdTitle, catalog_title);
+            AddImageData(createdTitle, catalog_title);
             
 
             return createdTitle;
 
-        }        
+        }
+
+
 
 
         /// <summary>
@@ -96,16 +145,46 @@ namespace NextFlicksMVC4.NetFlixAPI
             createdTitle.ReleaseYear = year;
 
             //find the runtime
-            var runtime_node = catalog_title.SelectSingleNode("runtime");
+            var runtime_node = catalog_title.SelectSingleNode("link/delivery_formats/availability/runtime");
             if (runtime_node != null)
             {
                 var runtime = runtime_node.InnerText;
-            createdTitle.RuntimeInSeconds = runtime;
+                createdTitle.RuntimeInSeconds = runtime;
+                var msg = String.Format("\tRuntime found {0}", runtime);
+                Trace.WriteLine(msg);
             }
 
             //TODO Genres, need to figure out best way to sort multiple vals
+            //find the genres
+            //since it's so similar I've set the maturity level here instead of in the rating method
+            string path = @"/catalog_title/category[@scheme]";
+            var nodes = catalog_title.SelectNodes(path);
 
-            Console.WriteLine("added Primary Data to title");
+            List<String> genre_list = new List<string>();
+            foreach (XmlNode node in nodes)
+            {
+                string label = node.Attributes["label"].Value;
+                genre_list.Add(label);
+            }
+            //since the last one is always maturity level, use that as mat_level
+            // but make sure it's a number first, otherwise it's a genre and there's no mat level
+            string maturity_level = genre_list[genre_list.Count-1];
+            int mat_level;
+            if (int.TryParse(maturity_level, out mat_level))
+            {
+                //if maturity_level is a number, assign it to Title and remove it
+                //waste mat_level
+                genre_list.Remove(maturity_level);
+                createdTitle.MaturityLevel = maturity_level;
+            }
+
+            //now we join the genre_list with commas and assign it to Title
+            string genres = string.Join(", ", genre_list);
+            createdTitle.Genres = genres;
+
+
+            Trace.WriteLine("added Primary Data to title");
+
         }
 
         /// <summary>
@@ -115,24 +194,36 @@ namespace NextFlicksMVC4.NetFlixAPI
         public static void AddSecondaryData(Title createdTitle, XmlNode catalog_title)
         {
             //TODO: Synposis, Link, Cast
+            var node = catalog_title.SelectSingleNode("link[@title='web page']");
+            string link = node.Attributes["href"].Value;
+            createdTitle.LinkToPage = link;
         }
 
         /// <summary>
-        /// TV rating and AvgNetflix rating
+        /// TV rating and AvgNetflix rating, maturity rating
         /// </summary>
         /// <param name="createdTitle"></param>
         public static void AddRatingData(Title createdTitle, XmlNode catalog_title)
         {
             // TV or MPAA rating
             //can either be in category[scheme] ends with "ratings" either way. It's always first
-            var rating_node = catalog_title.SelectSingleNode("category");
-            var rating = rating_node.Attributes["label"].Value;
-            createdTitle.TvRating = rating;
+            string path = "link/delivery_formats/availability/category/category";
+            var rating_node = catalog_title.SelectSingleNode(path);
+            if (rating_node != null)
+            {
+                var rating = rating_node.Attributes["term"].Value;
+                createdTitle.TvRating = rating;
+            }
 
             var average_rating_node =
                 catalog_title.SelectSingleNode("average_rating");
-            var avg_rating = average_rating_node.InnerText;
-            createdTitle.AvgRating = avg_rating;
+            if (average_rating_node != null)
+            {
+                var avg_rating = average_rating_node.InnerText;
+                createdTitle.AvgRating = avg_rating;
+            }
+
+            //maturity rating is set in the same place Genres are set
         }
 
         /// <summary>
@@ -140,9 +231,22 @@ namespace NextFlicksMVC4.NetFlixAPI
         /// </summary>
         /// <param name="createdTitle"></param>
         /// <param name="catalog_title"></param>
-        public static void AddMiscData(Title createdTitle, XmlNode catalog_title)
+        public static void AddFormatData(Title createdTitle, XmlNode catalog_title)
         {
+            //detect whether or not it's a TV show or a Movie.
+            // if WhichSeason is 0, it's not a series
+            string path = "season_label";
+            var season_label_node = catalog_title.SelectSingleNode(path);
+            if (season_label_node != null)
+            {
+                var season_count = season_label_node.InnerText;
+                createdTitle.WhichSeason = season_count;
 
+            }
+            else
+            {
+                createdTitle.WhichSeason = "0";
+            }
 
         }
 
@@ -153,6 +257,61 @@ namespace NextFlicksMVC4.NetFlixAPI
         public static void AddGroupData(Title createdTitle, XmlNode catalog_title)
         {
 
+        }
+        public static void AddImageData(Title createdTitle, XmlNode catalog_title)
+        {
+            string query = @"/catalog_title/link/box_art/link";
+            XmlNodeList nodes = catalog_title.SelectNodes(query);
+            if (nodes != null)
+                foreach (XmlNode node in nodes)
+                {
+                    string href = node.Attributes["href"].Value;
+                    string title = node.Attributes["title"].Value;
+
+                    //find the first bit of the title
+                    Match match = _regexForBoxArtSize.Match(title);
+
+                    string size = match.Groups[1].Value;
+
+                    switch (size)
+                    {
+                        case "38":
+                                createdTitle.BoxArt38 = href;
+                                break;
+                        case "64":
+                                createdTitle.BoxArt64 = href;
+                                break;
+                        case "110":
+                                createdTitle.BoxArt110 = href;
+                                break;
+                        case "124":
+                                createdTitle.BoxArt124 = href;
+                                break;
+                        case "150":
+                                createdTitle.BoxArt150 = href;
+                                break;
+                        case "166":
+                                createdTitle.BoxArt166 = href;
+                                break;
+                        case "88":
+                                createdTitle.BoxArt88 = href;
+                                break;
+                        case "197":
+                                createdTitle.BoxArt197 = href;
+                                break;
+                        case "176":
+                                createdTitle.BoxArt176 = href;
+                                break;
+                        case "284":
+                                createdTitle.BoxArt284 = href;
+                                break;
+                        case "210":
+                                createdTitle.BoxArt210 = href;
+                                break;
+
+
+                    }
+                }
         }
     }
 }

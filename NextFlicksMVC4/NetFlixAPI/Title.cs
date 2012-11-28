@@ -1,10 +1,11 @@
+using System.Collections.Generic;
+
 namespace NextFlicksMVC4.NetFlixAPI
 {
     public class Title{
 
         //Primary Data
         public string TitleString = "not set";
-        public string BoxArt = "not set";
         public string ReleaseYear = "not set";
         public string RuntimeInSeconds = "not set";
         public string Genres = "not set";
@@ -36,6 +37,23 @@ namespace NextFlicksMVC4.NetFlixAPI
         public string Episodes = "not set";
         public string SimilarTitles = "not set";
         public string LinkToPage = "not set";
+
+
+        //Box Art Links
+        public string BoxArt38;
+        public string BoxArt64;
+        public string BoxArt110;
+        public string BoxArt124;
+        public string BoxArt150;
+        public string BoxArt166;
+        public string BoxArt88;
+        public string BoxArt197;
+        public string BoxArt176;
+        public string BoxArt284;
+        public string BoxArt210;
+
+
+
 
         public Title()
         {

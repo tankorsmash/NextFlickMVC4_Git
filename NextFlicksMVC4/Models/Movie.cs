@@ -39,6 +39,29 @@ namespace NextFlicksMVC4.Models
         [DisplayName("Maturity Rating")]
         public string maturity_rating { get; set; }
 
+        [DisplayName("Box Art Size 38")]
+        public string boxart_38 { get; set; }
+        [DisplayName("Box Art Size 64")]
+        public string boxart_64 { get; set; }
+        [DisplayName("Box Art Size 110")]
+        public string boxart_110 { get; set; }
+        [DisplayName("Box Art Size 124")]
+        public string boxart_124 { get; set; }
+        [DisplayName("Box Art Size 150")]
+        public string boxart_150 { get; set; }
+        [DisplayName("Box Art Size 166")]
+        public string boxart_166 { get; set; }
+        [DisplayName("Box Art Size 88")]
+        public string boxart_88 { get; set; }
+        [DisplayName("Box Art Size 197")]
+        public string boxart_197 { get; set; }
+        [DisplayName("Box Art Size 176")]
+        public string boxart_176 { get; set; }
+        [DisplayName("Box Art Size 284")]
+        public string boxart_284 { get; set; }
+        [DisplayName("Box Art Size 210")]
+        public string boxart_210 { get; set; }
+
         public  Movie()
         {
         }

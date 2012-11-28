@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Xml;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
@@ -13,6 +14,8 @@ namespace NextFlicksMVC4
     //I don't actually know the best way to parse it yet though, but who knows
     public static class Create
     {
+
+        public  static  Regex _regexForBoxArtSize = new Regex(@"(^\d*)pix", RegexOptions.Compiled);
 
         //will turn a Title into a Movie which can be used for the site.
         public static Movie CreateMovie(Title title)
@@ -46,8 +49,20 @@ namespace NextFlicksMVC4
                                   current_season = title.WhichSeason,
                                   is_movie = is_a_movie,
                                   genres = title.Genres,
-                                  maturity_rating = title.MaturityLevel
+                                  maturity_rating = title.MaturityLevel,
+                                  boxart_38 = title.BoxArt38,
 
+                                  boxart_64 = title.BoxArt64  ,
+                                  boxart_110 = title.BoxArt110,
+                                  boxart_124 = title.BoxArt124,
+                                  boxart_150 = title.BoxArt150,
+                                  boxart_166 = title.BoxArt166,
+                                  boxart_88 = title.BoxArt88  ,
+                                  boxart_197 = title.BoxArt197,
+                                  boxart_176 = title.BoxArt176,
+                                  boxart_284 = title.BoxArt284,
+                                  boxart_210 = title.BoxArt210
+                                     
                                   
                               };
 
@@ -100,11 +115,14 @@ namespace NextFlicksMVC4
             AddRatingData(createdTitle, catalog_title);
             AddFormatData(createdTitle, catalog_title);
             AddGroupData(createdTitle, catalog_title);
+            AddImageData(createdTitle, catalog_title);
             
 
             return createdTitle;
 
-        }        
+        }
+
+
 
 
         /// <summary>
@@ -239,6 +257,61 @@ namespace NextFlicksMVC4
         public static void AddGroupData(Title createdTitle, XmlNode catalog_title)
         {
 
+        }
+        public static void AddImageData(Title createdTitle, XmlNode catalog_title)
+        {
+            string query = @"/catalog_title/link/box_art/link";
+            XmlNodeList nodes = catalog_title.SelectNodes(query);
+            if (nodes != null)
+                foreach (XmlNode node in nodes)
+                {
+                    string href = node.Attributes["href"].Value;
+                    string title = node.Attributes["title"].Value;
+
+                    //find the first bit of the title
+                    Match match = _regexForBoxArtSize.Match(title);
+
+                    string size = match.Groups[1].Value;
+
+                    switch (size)
+                    {
+                        case "38":
+                                createdTitle.BoxArt38 = href;
+                                break;
+                        case "64":
+                                createdTitle.BoxArt64 = href;
+                                break;
+                        case "110":
+                                createdTitle.BoxArt110 = href;
+                                break;
+                        case "124":
+                                createdTitle.BoxArt124 = href;
+                                break;
+                        case "150":
+                                createdTitle.BoxArt150 = href;
+                                break;
+                        case "166":
+                                createdTitle.BoxArt166 = href;
+                                break;
+                        case "88":
+                                createdTitle.BoxArt88 = href;
+                                break;
+                        case "197":
+                                createdTitle.BoxArt197 = href;
+                                break;
+                        case "176":
+                                createdTitle.BoxArt176 = href;
+                                break;
+                        case "284":
+                                createdTitle.BoxArt284 = href;
+                                break;
+                        case "210":
+                                createdTitle.BoxArt210 = href;
+                                break;
+
+
+                    }
+                }
         }
     }
 }
