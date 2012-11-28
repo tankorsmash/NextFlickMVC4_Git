@@ -1,0 +1,95 @@
+﻿@using System.Web.Mvc.Html
+@using NextFlicksMVC4
+@model IEnumerable<NextFlicksMVC4.Models.Movie>
+@{
+    ViewBag.Title = "Year";
+}
+
+@*@Html.Partial("_Title", Model.ToList()[0])*@
+
+<h2>
+    Index of @Model.ToList().Count Titles out of @ViewBag.TotalMovies</h2>
+<h3>
+A ton of shit
+</h3>
+
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.short_title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.year)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.runtime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.avg_rating)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tv_rating)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.current_season)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.is_movie)
+        </th>
+        <th  >
+            @Html.DisplayNameFor(model => model.genres)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.maturity_rating)
+        </th>
+        <th>
+        </th>
+    </tr>
+    @*                  @Console.WriteLine("lolololol {0}",Model.ToString())
+*@
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="white-space : nowrap; ">
+                <a href="@Html.DisplayFor(asd => item.web_page)">
+                    <img src=" @Html.DisplayFor(modelItem => item.boxart_38) " style="vertical-align: middle; height: 60px"/>
+                    <span style="line-height: 60px">@Html.DisplayFor(modelItem => item.short_title)</span></a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.year)
+            </td>
+            <td>
+                @if (item.is_movie)
+                {
+                    @Html.DisplayFor(modelItem => item.runtime)
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.avg_rating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tv_rating)
+            </td>
+            <td>
+                @if (!(item.is_movie))
+                { 
+                    @Html.DisplayFor(modelItem => item.current_season);
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.is_movie)
+            </td>
+            <td >
+                @Html.DisplayFor(modelItem => item.genres)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.maturity_rating)
+            </td>
+            @*        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>*@
+        </tr>
+    }
+</table>

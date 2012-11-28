@@ -150,8 +150,8 @@ namespace NextFlicksMVC4
             {
                 var runtime = runtime_node.InnerText;
                 createdTitle.RuntimeInSeconds = runtime;
-                var msg = String.Format("\tRuntime found {0}", runtime);
-                Trace.WriteLine(msg);
+                //var msg = String.Format("\tRuntime found {0}", runtime);
+                //Trace.WriteLine(msg);
             }
 
             //TODO Genres, need to figure out best way to sort multiple vals
@@ -183,7 +183,7 @@ namespace NextFlicksMVC4
             createdTitle.Genres = genres;
 
 
-            Trace.WriteLine("added Primary Data to title");
+            //Trace.WriteLine("added Primary Data to title");
 
         }
 

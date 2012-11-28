@@ -19,6 +19,19 @@ namespace NextFlicksMVC4.Controllers
 
         //
         // GET: /Movies/
+        
+        public ActionResult Year(int start = 2001, int end = 2002)
+        {
+            //returns all titles from year
+            string qry = "select * from Movies where (year between {0} and {1}) AND (is_movie = 0) order by year";
+            var res = db.Movies.SqlQuery(qry, start, end);
+
+            ViewBag.TotalMovies = end;
+            ViewBag.Start = start;
+            ViewBag.Count = 12345;
+
+            return View("Year", res.ToList());
+        }
 
         public ActionResult Index(int start = 0, int count = 10)
         {
@@ -38,7 +51,7 @@ namespace NextFlicksMVC4.Controllers
 
             string data;
             int count = 0;
-            using (StreamReader reader = new StreamReader(@"C:\streamingAPI2stunted.NFPOX"))
+            using (StreamReader reader = new StreamReader(@"C:\fixedAPI.NFPOX"))
             {
 
                 Trace.WriteLine("Starting to read");
@@ -76,11 +89,30 @@ namespace NextFlicksMVC4.Controllers
                 }
 
                 Trace.WriteLine("Beginning Add to DB");
+
+                int modulo =0;
+                List<int> checkpoints = new List<int>();
+                int total = listOfMovies.Count;
+                int start = total/25;
+                while (modulo <= listOfMovies.Count)
+                {
+                   checkpoints.Add(modulo);
+                    modulo += start;
+                }
+                int counter = 0;
                 if (listOfMovies.Count > 0)
                 {
                     foreach (Movie movie in listOfMovies)
                     {
                         db.Movies.Add(movie);
+                        counter += 1;
+                        if (checkpoints.Contains(counter))
+                        {
+                            string msg =
+                                String.Format(
+                                    "Done adding at least {0} movies", counter);
+                            Trace.WriteLine(msg);
+                        }
                     }
 
                     Trace.WriteLine("Saving Changes");
