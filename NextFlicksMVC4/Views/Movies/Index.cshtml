@@ -52,8 +52,10 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.short_title)
+            <td style="white-space: nowrap">
+                <a href="@Html.DisplayFor(asd => item.web_page)">
+                    <img src=" @Html.DisplayFor(modelItem => item.boxart_38) " style="vertical-align: middle; height: 60px"/>
+                    <span style="line-height: 60px">@Html.DisplayFor(modelItem => item.short_title)</span></a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.year)

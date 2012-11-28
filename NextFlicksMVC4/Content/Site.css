@@ -534,7 +534,8 @@ table {
     border: 0 none;
 }
 
-tr > td:first-child { text-align: left;}
+tr > td:first-child { text-align: left;
+    vertical-align: middle;}
 
 th {
     font-size: 1.2em;
