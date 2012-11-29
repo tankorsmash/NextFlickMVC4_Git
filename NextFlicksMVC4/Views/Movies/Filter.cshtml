@@ -1,0 +1,19 @@
+﻿@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <div class="editor-label">
+            @Html.Label("Start")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("year_start",(SelectList)ViewBag.years)
+        </div>
+        <div class="editor-label">
+            @Html.Label("End")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("year_start", (SelectList)ViewBag.years)
+        </div>
+    </fieldset>
+    <input type="submit" value="Filter" />}

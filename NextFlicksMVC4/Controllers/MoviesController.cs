@@ -19,7 +19,42 @@ namespace NextFlicksMVC4.Controllers
 
         //
         // GET: /Movies/
-        
+
+        [HttpGet]
+        public ActionResult Filter()
+        {//Create a list of SelectListItems   List<SelectListItem> years = new List<SelectListItem> { 
+        new SelectListItem { Text = "1999", Value = "1999" },
+        new SelectListItem { Text = "2000", Value = "2000" } 
+   };
+
+            //Create a selectList, but since it's looking for an IEnumerable,
+            // tell it what is the value and text parts
+            SelectList slist = new SelectList(years, "Value", "Text" );
+            
+            //give the Viewbag a property for the SelectList
+            ViewBag.years = slist;
+
+
+            return View();
+        }
+
+        //[HttpPost]
+        //public ActionResult Filter(string name)
+        //{
+         
+
+        //    return View("FilterHandler");
+        //}
+
+
+        public ActionResult FilterHandler(string name)
+        {
+            ViewData["name"] = name;
+            Trace.WriteLine(ViewData["pet"]);
+
+            return View("FilterHandler");
+        }
+
         public ActionResult Year(int start = 2001, int end = 2002)
         {
             //returns all titles from year

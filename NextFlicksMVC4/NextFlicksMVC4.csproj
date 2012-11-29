@@ -374,6 +374,12 @@
   <ItemGroup>
     <Content Include="Views\Movies\Year.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Movies\Filter.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Movies\FilterHandler.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
