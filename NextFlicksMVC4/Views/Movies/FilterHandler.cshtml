@@ -6,3 +6,9 @@
     FormResults</h2>
 
     @Html.Encode(ViewData["name"])
+    
+    
+    @foreach (var item in ViewData)
+    {
+        @Html.Encode(item)
+    }

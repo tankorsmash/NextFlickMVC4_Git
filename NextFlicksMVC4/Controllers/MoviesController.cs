@@ -22,10 +22,26 @@ namespace NextFlicksMVC4.Controllers
 
         [HttpGet]
         public ActionResult Filter()
-        {//Create a list of SelectListItems   List<SelectListItem> years = new List<SelectListItem> { 
-        new SelectListItem { Text = "1999", Value = "1999" },
-        new SelectListItem { Text = "2000", Value = "2000" } 
-   };
+        {
+
+            //grab the lowest year in Catalog
+            var min_qry = "select  top(1) * from Movies where year != \'\' order by year ASC";
+            var min_res = db.Movies.SqlQuery(min_qry);
+            var min_list = min_res.ToList();
+            string min_year = min_list[0].year;
+            ViewBag.min_year = min_year;
+            //grab the highest year in catalog
+            var max_qry = "select  top(1) * from Movies order by year DESC ";
+            var max_res = db.Movies.SqlQuery(max_qry);
+            var max_list = max_res.ToList();
+            string max_year = max_list[0].year;
+            ViewBag.max_year = max_year;
+
+            //Create a list of SelectListItems            List<SelectListItem> years = new List<SelectListItem>();
+            for (int i = Int32.Parse(min_year); i <= Int32.Parse(max_year); i++)
+            {
+                years.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+            }
 
             //Create a selectList, but since it's looking for an IEnumerable,
             // tell it what is the value and text parts
@@ -47,23 +63,24 @@ namespace NextFlicksMVC4.Controllers
         //}
 
 
-        public ActionResult FilterHandler(string name)
+        public ActionResult FilterHandler(string year_start, string year_end)
         {
-            ViewData["name"] = name;
+            ViewData["year_start"] = year_start;
+            ViewData["year_end"] = year_end;
             Trace.WriteLine(ViewData["pet"]);
 
             return View("FilterHandler");
         }
 
-        public ActionResult Year(int start = 2001, int end = 2002)
+        public ActionResult Year(int year_start = 2001, int year_end = 2002)
         {
             //returns all titles from year
-            string qry = "select * from Movies where (year between {0} and {1}) AND (is_movie = 0) order by year";
-            var res = db.Movies.SqlQuery(qry, start, end);
+            string qry = "select * from Movies where (year between {0} and {1}) order by year";
+            var res = db.Movies.SqlQuery(qry, year_start, year_end);
 
-            ViewBag.TotalMovies = end;
-            ViewBag.Start = start;
-            ViewBag.Count = 12345;
+            ViewBag.TotalMovies = res.ToList().Count;
+            ViewBag.Start = year_start;
+            ViewBag.End = year_end;
 
             return View("Year", res.ToList());
         }

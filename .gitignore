@@ -65,3 +65,6 @@ packages/
 
 #vim undos
 #actually, fuck it, leave em in
+*.swp
+*.un~
+*.*~

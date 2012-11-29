@@ -1,19 +1,19 @@
-﻿@using (Html.BeginForm())
+﻿@using (Html.BeginForm("Year", "Movies"))
 {
     @Html.ValidationSummary(true)
 
     <fieldset>
         <div class="editor-label">
-            @Html.Label("Start")
+            @Html.Label("Starting Year")
         </div>
         <div class="editor-field">
             @Html.DropDownList("year_start",(SelectList)ViewBag.years)
         </div>
         <div class="editor-label">
-            @Html.Label("End")
+            @Html.Label("Ending Year")
         </div>
         <div class="editor-field">
-            @Html.DropDownList("year_start", (SelectList)ViewBag.years)
+            @Html.DropDownList("year_end", (SelectList)ViewBag.years)
         </div>
     </fieldset>
     <input type="submit" value="Filter" />}
