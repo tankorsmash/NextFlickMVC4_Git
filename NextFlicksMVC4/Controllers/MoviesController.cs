@@ -37,7 +37,8 @@ namespace NextFlicksMVC4.Controllers
             string max_year = max_list[0].year;
             ViewBag.max_year = max_year;
 
-            //Create a list of SelectListItems            List<SelectListItem> years = new List<SelectListItem>();
+            //Create a list of SelectListItems
+            List<SelectListItem> years = new List<SelectListItem>();
             for (int i = Int32.Parse(min_year); i <= Int32.Parse(max_year); i++)
             {
                 years.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
@@ -80,13 +81,18 @@ namespace NextFlicksMVC4.Controllers
 
             List<Movie> movie_list = res.ToList();
 
-            ViewBag.TotalMovies = movie_list.Count;
+            ViewBag.TotalMovies = movie_list.Count -1;
             ViewBag.year_start = year_start;
             ViewBag.year_end = year_end;
             ViewBag.start = start;
             ViewBag.count = count;
 
-            return View("Year", movie_list.GetRange(start, start+count));
+            if (count > movie_list.Count)
+            {
+                count = movie_list.Count - 1;
+            }
+            var results = movie_list.GetRange(start, start + count);
+            return View("Year", results);
         }
 
         public ActionResult Index(int start = 0, int count = 10)
