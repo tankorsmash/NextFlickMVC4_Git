@@ -7,7 +7,7 @@
             @Html.Label("Starting Year")
         </div>
         <div class="editor-field">
-            @Html.DropDownList("year_start",(SelectList)ViewBag.years)
+            @Html.DropDownList("year_start", (SelectList)ViewBag.years)
         </div>
         <div class="editor-label">
             @Html.Label("Ending Year")
@@ -19,7 +19,7 @@
             @Html.Label("Start index")
         </div>
         <div class="editor-field">
-            @Html.TextBox("start", "0" )
+            @Html.TextBox("start", "0")
         </div>
         <div class="editor-label">
             @Html.Label("Limit per page")
@@ -27,6 +27,11 @@
         <div class="editor-field">
             @Html.TextBox("count", "25")
         </div>
-
+        <div class="editor-label">
+            @Html.Label("Is a Movie or not?")
+        </div>
+        <div class="editor-field">
+            @Html.CheckBox("is_movie")
+        </div>
     </fieldset>
     <input type="submit" value="Filter" />}
