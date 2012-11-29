@@ -15,5 +15,18 @@
         <div class="editor-field">
             @Html.DropDownList("year_end", (SelectList)ViewBag.years)
         </div>
+        <div class="editor-label">
+            @Html.Label("Start index")
+        </div>
+        <div class="editor-field">
+            @Html.TextBox("start", "0" )
+        </div>
+        <div class="editor-label">
+            @Html.Label("Limit per page")
+        </div>
+        <div class="editor-field">
+            @Html.TextBox("count", "25")
+        </div>
+
     </fieldset>
     <input type="submit" value="Filter" />}

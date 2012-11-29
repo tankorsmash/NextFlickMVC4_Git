@@ -72,17 +72,21 @@ namespace NextFlicksMVC4.Controllers
             return View("FilterHandler");
         }
 
-        public ActionResult Year(int year_start = 2001, int year_end = 2002)
+        public ActionResult Year(int year_start = 2001, int year_end = 2002, int start = 0, int count = 25)
         {
             //returns all titles from year
             string qry = "select * from Movies where (year between {0} and {1}) order by year";
             var res = db.Movies.SqlQuery(qry, year_start, year_end);
 
-            ViewBag.TotalMovies = res.ToList().Count;
-            ViewBag.Start = year_start;
-            ViewBag.End = year_end;
+            List<Movie> movie_list = res.ToList();
 
-            return View("Year", res.ToList());
+            ViewBag.TotalMovies = movie_list.Count;
+            ViewBag.year_start = year_start;
+            ViewBag.year_end = year_end;
+            ViewBag.start = start;
+            ViewBag.count = count;
+
+            return View("Year", movie_list.GetRange(start, start+count));
         }
 
         public ActionResult Index(int start = 0, int count = 10)
