@@ -1,19 +1,20 @@
 ﻿@model NextFlicksMVC4.Models.Movie
-
 @*<div>Name: @Html.DisplayFor(model => model.short_title)</div>
 <div>Year: @Html.DisplayFor(model => model.year)</div>
 <div>Runtime: @Html.DisplayFor(model => model.runtime)</div>
 <div style="text-align: right">Genres: @Html.DisplayFor(model => model.genres)</div>*@
-
-@{
-    foreach (var property in ViewData.ModelMetadata.Properties)
-    {
-        <div><span style="text-align: left; ">@Html.DisplayName(property.PropertyName)</span> - 
-        <span style="text-align: right;">@Html.DisplayText(property.PropertyName)</span>  </div>
+<div style="background-color: lightblue">
+    @{
+        foreach (var property in ViewData.ModelMetadata.Properties)
+        {
+        <div>
+            <span style="text-align: left;">@Html.DisplayName(property.PropertyName)</span>
+            - <span style="text-align: right;">@Html.DisplayText(property.PropertyName)</span>
+        </div>
         
+        }   <img src=" @Html.DisplayFor(model => model.boxart_38) "/>
     }
-}           
-
+</div>
 @{
-    <img src=" @Html.DisplayFor(model => model.boxart_38) "/>
+    
 }

@@ -73,6 +73,25 @@ namespace NextFlicksMVC4.Controllers
             return View("FilterHandler");
         }
 
+        /// <summary>
+        /// Sloppy return random set of movies. redirects to Index with a random start and count of 10
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Random()
+        {
+            int rand_title_int = new Random().Next(1, db.Movies.ToList().Count);
+            return RedirectToAction("Index", new {count = 1, start = rand_title_int});
+        }
+
+
+        public ActionResult Test()
+        {
+            return View(@"~/Views/Home/About.cshtml");
+        }
+
+
+
+
         public ActionResult Year(int year_start = 2001, int year_end = 2002, int start = 0, int count = 25, bool is_movie = true)
         {
             //returns all titles from year
