@@ -196,6 +196,14 @@ namespace NextFlicksMVC4
             //TODO: Synposis, Link, Cast
             var node = catalog_title.SelectSingleNode("link[@title='web page']");
             string link = node.Attributes["href"].Value;
+
+            //saving space, strip "http://www.netflix.com/" from web page
+            const string link_template = @"http://www.netflix.com/";
+            if (link.StartsWith(link_template))
+            {
+                link = link.Remove(0, link_template.Length);
+            }
+
             createdTitle.LinkToPage = link;
         }
 
@@ -207,7 +215,7 @@ namespace NextFlicksMVC4
         {
             // TV or MPAA rating
             //can either be in category[scheme] ends with "ratings" either way. It's always first
-            string path = "link/delivery_formats/availability/category/category";
+            const string path = "link/delivery_formats/availability/category/category";
             var rating_node = catalog_title.SelectSingleNode(path);
             if (rating_node != null)
             {
@@ -235,7 +243,7 @@ namespace NextFlicksMVC4
         {
             //detect whether or not it's a TV show or a Movie.
             // if WhichSeason is 0, it's not a series
-            string path = "season_label";
+            const string path = "season_label";
             var season_label_node = catalog_title.SelectSingleNode(path);
             if (season_label_node != null)
             {
@@ -258,9 +266,10 @@ namespace NextFlicksMVC4
         {
 
         }
+
         public static void AddImageData(Title createdTitle, XmlNode catalog_title)
         {
-            string query = @"/catalog_title/link/box_art/link";
+            const string query = @"/catalog_title/link/box_art/link";
             XmlNodeList nodes = catalog_title.SelectNodes(query);
             if (nodes != null)
                 foreach (XmlNode node in nodes)
@@ -271,7 +280,20 @@ namespace NextFlicksMVC4
                     //find the first bit of the title
                     Match match = _regexForBoxArtSize.Match(title);
 
+                    //this is the size of the jpg boxart. We just have to assign the proper link to the proper size
                     string size = match.Groups[1].Value;
+
+                    //in the interest of saving time and space, I'm going to strip off most of the url data of the jpg locations, as I think it'll save us 20 out of the 90 megs of data
+                    // after this, I might go after the genres, or move the synopses to another table.
+                    const string url_template = @"http://cdn-0.nflximg.com/images/";
+                    if (href.StartsWith(url_template))
+                    {
+                        //remove the beginning
+                        href = href.Remove(0, url_template.Length);
+                        //remove the .jpg because they're all jpgs
+                        href = href.Replace(".jpg", "");
+
+                    }
 
                     switch (size)
                     {

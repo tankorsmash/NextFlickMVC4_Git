@@ -116,13 +116,18 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Index(int start = 0, int count = 10)
         {
+            Trace.WriteLine("To List");
             var fullList = db.Movies.ToList();
             //total movies in DB
             ViewBag.TotalMovies = fullList.Count;
             ViewBag.Start = start;
             ViewBag.Count = count;
 
-            return View(fullList.GetRange(start, count));
+            Trace.WriteLine("Get ranging");
+            var full_range = fullList.GetRange(start, count);
+
+            Trace.WriteLine("Returning View");
+            return View(full_range);
         }
 
         public ActionResult Full()
