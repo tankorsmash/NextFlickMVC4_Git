@@ -285,11 +285,21 @@ namespace NextFlicksMVC4
 
                     //in the interest of saving time and space, I'm going to strip off most of the url data of the jpg locations, as I think it'll save us 20 out of the 90 megs of data
                     // after this, I might go after the genres, or move the synopses to another table.
-                    const string url_template = @"http://cdn-0.nflximg.com/images/";
-                    if (href.StartsWith(url_template))
+                    //TODO: Use regex instead of StartsWith
+                    const string url_template0 = @"http://cdn-0.nflximg.com/images/";
+                    const string url_template1 = @"http://cdn-1.nflximg.com/images/";
+                    if (href.StartsWith(url_template0))
                     {
                         //remove the beginning
-                        href = href.Remove(0, url_template.Length);
+                        href = href.Remove(0, url_template0.Length);
+                        //remove the .jpg because they're all jpgs
+                        href = href.Replace(".jpg", "");
+
+                    }
+                    else if (href.StartsWith(url_template1))
+                    {
+                        //remove the beginning
+                        href = href.Remove(0, url_template1.Length);
                         //remove the .jpg because they're all jpgs
                         href = href.Replace(".jpg", "");
 

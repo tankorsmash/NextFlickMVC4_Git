@@ -15,7 +15,7 @@ namespace NextFlicksMVC4.Controllers
 {
     public class MoviesController : Controller
     {
-        private MovieDBContext db = new MovieDBContext();
+        private MovieDbContext db = new MovieDbContext();
 
         //
         // GET: /Movies/
@@ -116,18 +116,55 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Index(int start = 0, int count = 10)
         {
-            Trace.WriteLine("To List");
-            var fullList = db.Movies.ToList();
+            Trace.WriteLine("To QRY");
+            //var fullList = db.Movies.ToList();
+            string qry = "select * from" +
+                         " ( select " +
+                         "  ROW_NUMBER() over (order by id) as rownum," +
+                         " *" +
+                         " from Movies) foo" +
+                         " where rownum  between {0} and {1}";
+            var res = db.Movies.SqlQuery(qry, start, start+count);
+            Trace.WriteLine("To list");
+            var fullList = res.ToList();
+            
             //total movies in DB
             ViewBag.TotalMovies = fullList.Count;
             ViewBag.Start = start;
             ViewBag.Count = count;
 
             Trace.WriteLine("Get ranging");
-            var full_range = fullList.GetRange(start, count);
+            var full_range = fullList.GetRange(0, count);
 
             Trace.WriteLine("Returning View");
             return View(full_range);
+        }
+
+        public ActionResult Table(int start = 0, int count = 10)
+        {
+            Trace.WriteLine("To QRY");
+            //var fullList = db.Movies.ToList();
+            string qry = "select * from" +
+                         " ( select " +
+                         "  ROW_NUMBER() over (order by id) as rownum," +
+                         " *" +
+                         " from Movies) foo" +
+                         " where rownum  between {0} and {1}";
+            var res = db.Movies.SqlQuery(qry, start, start + count);
+            Trace.WriteLine("To list");
+            var fullList = res.ToList();
+
+            //total movies in DB
+            ViewBag.TotalMovies = fullList.Count;
+            ViewBag.Start = start;
+            ViewBag.Count = count;
+
+            Trace.WriteLine("Get ranging");
+            var full_range = fullList.GetRange(0, count);
+
+            Trace.WriteLine("Returning View");
+            return View(full_range);
+            
         }
 
         public ActionResult Full()

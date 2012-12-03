@@ -69,7 +69,7 @@ namespace NextFlicksMVC4.Models
 
     
 
-    public class MovieDBContext : DbContext
+    public class MovieDbContext : DbContext
     {
         public DbSet<Movie> Movies { get; set; }
     }
