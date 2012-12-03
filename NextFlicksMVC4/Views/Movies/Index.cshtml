@@ -5,7 +5,7 @@
     ViewBag.Title = "Index";
 }
 
-@Html.Partial("_Title", Model.ToList()[0])
+@*@Html.Partial("_Title", Model.ToList()[0])*@
 
 <h2>
     Index of @Model.ToList().Count Titles out of @ViewBag.TotalMovies</h2>
@@ -56,6 +56,7 @@
                 <a href="@Html.DisplayFor(asd => item.web_page)">
                     <img src=" @Html.DisplayFor(modelItem => item.boxart_38) " alt="BoxArt" style="vertical-align: middle; height: 60px"/>
                     <span style="line-height: 60px">@Html.DisplayFor(modelItem => item.short_title)</span></a>
+                    <span>@Html.ActionLink("details", "Details", new { id = item.ID })</span>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.year)

@@ -111,7 +111,7 @@ namespace NextFlicksMVC4.Controllers
                 count = movie_list.Count - 1;
             }
             var results = movie_list.GetRange(start, start + count);
-            return View("Year", results);
+            return View("Index", results);
         }
 
         public ActionResult Index(int start = 0, int count = 10)

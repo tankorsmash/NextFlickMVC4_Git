@@ -65,7 +65,15 @@ namespace NextFlicksMVC4.Models
         public  Movie()
         {
         }
+
     }
+
+    //public class Genres
+    //{
+    //    public int ID
+    //}
+
+
 
     
 
