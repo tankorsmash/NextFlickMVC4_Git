@@ -8,7 +8,7 @@ namespace NextFlicksMVC4.Models
 {
     public class Movie
     {
-        public int ID { get; set; }
+        public int movie_ID { get; set; }
 
         [DisplayName("Title")]
         public string short_title { get; set; }
@@ -33,11 +33,38 @@ namespace NextFlicksMVC4.Models
         [DisplayName("Is a Movie")]
         public bool is_movie { get; set; }
 
-        [DisplayName("Genres")]
-        public string genres { get; set; }
 
         [DisplayName("Maturity Rating")]
         public string maturity_rating { get; set; }
+
+        [DisplayName("Genres")]
+        public virtual int genre_id { get; set; }
+
+        [DisplayName("Boxart")]
+        public virtual int boxart_id { get; set; }
+
+    }
+
+    public class Genre
+    {
+        [DisplayName("Genre ID")]
+        public int genre_ID { get; set; }
+
+        [DisplayName("Genre")]
+        public string genre_string { get; set; }
+    }
+
+    public class MovieToGenre
+    {
+        public virtual int movie_ID { get; set; }
+        public virtual int genre_ID { get; set; }
+    }
+
+    public  class BoxArt
+    {
+        public int boxart_id { get; set; }
+
+        public virtual int movie_ID { get; set; }
 
         [DisplayName("Box Art Size 38")]
         public string boxart_38 { get; set; }
@@ -61,18 +88,7 @@ namespace NextFlicksMVC4.Models
         public string boxart_284 { get; set; }
         [DisplayName("Box Art Size 210")]
         public string boxart_210 { get; set; }
-
-        public  Movie()
-        {
-        }
-
     }
-
-    //public class Genres
-    //{
-    //    public int ID
-    //}
-
 
 
     
@@ -80,6 +96,9 @@ namespace NextFlicksMVC4.Models
     public class MovieDbContext : DbContext
     {
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<BoxArt> BoxArts { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<MovieToGenre> MovieToGenres { get; set; }
     }
 
 

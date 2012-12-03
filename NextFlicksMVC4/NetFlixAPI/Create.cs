@@ -35,9 +35,7 @@ namespace NextFlicksMVC4
                 is_a_movie = false;
             }
 
-
-           
-            //create empty instance
+            //create movie instance
             Movie movie = new Movie
                               {
                                   short_title = title.TitleString,
@@ -48,29 +46,60 @@ namespace NextFlicksMVC4
                                   web_page = title.LinkToPage,
                                   current_season = title.WhichSeason,
                                   is_movie = is_a_movie,
-                                  genres = title.Genres,
                                   maturity_rating = title.MaturityLevel,
-                                  boxart_38 = title.BoxArt38,
 
-                                  boxart_64 = title.BoxArt64  ,
-                                  boxart_110 = title.BoxArt110,
-                                  boxart_124 = title.BoxArt124,
-                                  boxart_150 = title.BoxArt150,
-                                  boxart_166 = title.BoxArt166,
-                                  boxart_88 = title.BoxArt88  ,
-                                  boxart_197 = title.BoxArt197,
-                                  boxart_176 = title.BoxArt176,
-                                  boxart_284 = title.BoxArt284,
-                                  boxart_210 = title.BoxArt210
-                                     
-                                  
                               };
-
-            //create first set of data that is available to us.
+            //CreateMovieBoxart(movie, title);
 
             return movie;
 
             
+        }
+
+        //creates a row of box art data and assigns to to the movie id its title was from
+        public static BoxArt CreateMovieBoxart(Movie movie, Title title)
+        {
+            BoxArt boxArt = new BoxArt
+                                {
+
+                                    movie_ID = movie.movie_ID,
+                                    boxart_38 = title.BoxArt38,
+                                    boxart_64 = title.BoxArt64,
+                                    boxart_110 = title.BoxArt110,
+                                    boxart_124 = title.BoxArt124,
+                                    boxart_150 = title.BoxArt150,
+                                    boxart_166 = title.BoxArt166,
+                                    boxart_88 = title.BoxArt88,
+                                    boxart_197 = title.BoxArt197,
+                                    boxart_176 = title.BoxArt176,
+                                    boxart_284 = title.BoxArt284,
+                                    boxart_210 = title.BoxArt210
+
+                                };
+
+            return boxArt;
+
+        }
+
+        /// <summary>
+        /// iterate over all the genres in Title and add them to the movie ID
+        /// </summary>
+        /// <param name="movie"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public static MovieToGenre CreateMovieMovieToGenre(Movie movie, Genre genre)
+        {
+
+            //find the Genre equivalent of genre
+
+
+
+            MovieToGenre movieToGenre = new MovieToGenre
+                                            {
+                                                genre_ID = genre.genre_ID,
+                                                movie_ID = movie.movie_ID
+                                            };
+            return movieToGenre;
         }
 
         /// <summary>
@@ -304,6 +333,9 @@ namespace NextFlicksMVC4
                         href = href.Replace(".jpg", "");
 
                     }
+
+                    //add the string to the list<string>
+                    createdTitle.BoxArtList.Add(href);
 
                     switch (size)
                     {

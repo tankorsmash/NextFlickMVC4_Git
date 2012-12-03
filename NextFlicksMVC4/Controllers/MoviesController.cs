@@ -258,9 +258,21 @@ namespace NextFlicksMVC4.Controllers
 
             foreach (Title title in titles)
             {
-            Movie movie = NextFlicksMVC4.Create.CreateMovie(title);
+                Movie movie = NextFlicksMVC4.Create.CreateMovie(title);
                 movies.Add(movie);
                 db.Movies.Add(movie);
+
+                BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxart(movie,
+                                                                        title);
+                db.BoxArts.Add(boxArt);
+                foreach (Genre genre in title.ListGenres)
+                {
+                    MovieToGenre movieToGenre =
+                        NextFlicksMVC4.Create.CreateMovieMovieToGenre(movie,
+                                                                      genre);
+                    db.MovieToGenres.Add(movieToGenre);
+
+                }
             }
 
             db.SaveChanges();

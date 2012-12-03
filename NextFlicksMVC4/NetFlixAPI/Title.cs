@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NextFlicksMVC4.Models;
 
 namespace NextFlicksMVC4.NetFlixAPI
 {
@@ -8,7 +9,9 @@ namespace NextFlicksMVC4.NetFlixAPI
         public string TitleString = "not set";
         public string ReleaseYear = "not set";
         public string RuntimeInSeconds = "not set";
+        public List<Genre> ListGenres ;
         public string Genres = "not set";
+
         //Secondary Data
         public string Synopsis = "not set";
         public string ShortSynopsis = "not set";
@@ -40,6 +43,7 @@ namespace NextFlicksMVC4.NetFlixAPI
 
 
         //Box Art Links
+        public List<string> BoxArtList;
         public string BoxArt38;
         public string BoxArt64;
         public string BoxArt110;
