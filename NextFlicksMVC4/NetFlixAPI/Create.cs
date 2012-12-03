@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using NextFlicksMVC4.Models;
@@ -195,6 +196,7 @@ namespace NextFlicksMVC4
                 string label = node.Attributes["label"].Value;
                 genre_list.Add(label);
             }
+
             //since the last one is always maturity level, use that as mat_level
             // but make sure it's a number first, otherwise it's a genre and there's no mat level
             string maturity_level = genre_list[genre_list.Count-1];
@@ -210,6 +212,19 @@ namespace NextFlicksMVC4
             //now we join the genre_list with commas and assign it to Title
             string genres = string.Join(", ", genre_list);
             createdTitle.Genres = genres;
+
+
+            //create all the Genres found too
+             var db = new MovieDbContext();
+            foreach (string genre_string in genre_list)
+            {
+                //look in Genres Table for genre_String that matches and pull that out and add it to ListGenres
+                string qry = "select * from Genres where genre_string = {0}";
+                var res =db.Genres.SqlQuery(qry, genre_string);
+                createdTitle.ListGenres.Add(res.ToList()[0]);
+
+            }
+            db.Dispose();
 
 
             //Trace.WriteLine("added Primary Data to title");

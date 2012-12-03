@@ -37,8 +37,9 @@ namespace NextFlicksMVC4.Models
         [DisplayName("Maturity Rating")]
         public string maturity_rating { get; set; }
 
-        [DisplayName("Genres")]
-        public virtual int genre_id { get; set; }
+        ///commented this out because I have to make a separate look up for genres now
+        //[DisplayName("Genres")]
+        //public virtual int genre_id { get; set; }
 
         [DisplayName("Boxart")]
         public virtual int boxart_id { get; set; }
