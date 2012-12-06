@@ -215,13 +215,15 @@ namespace NextFlicksMVC4
 
 
             //create all the Genres found too
-             var db = new MovieDbContext();
+            //var db = NextFlicksMVC4.Controllers.MoviesController.db;
+            var db = new MovieDbContext();
             foreach (string genre_string in genre_list)
             {
                 //look in Genres Table for genre_String that matches and pull that out and add it to ListGenres
                 string qry = "select * from Genres where genre_string = {0}";
                 var res =db.Genres.SqlQuery(qry, genre_string);
-                createdTitle.ListGenres.Add(res.ToList()[0]);
+                var selected_genre = res.ToList()[0];
+                createdTitle.ListGenres.Add(selected_genre);
 
             }
             db.Dispose();

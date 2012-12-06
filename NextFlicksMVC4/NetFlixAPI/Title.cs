@@ -9,7 +9,7 @@ namespace NextFlicksMVC4.NetFlixAPI
         public string TitleString = "not set";
         public string ReleaseYear = "not set";
         public string RuntimeInSeconds = "not set";
-        public List<Genre> ListGenres ;
+        public List<Genre> ListGenres = new List<Genre>();
         public string Genres = "not set";
 
         //Secondary Data
@@ -43,7 +43,7 @@ namespace NextFlicksMVC4.NetFlixAPI
 
 
         //Box Art Links
-        public List<string> BoxArtList;
+        public List<string> BoxArtList = new List<string>();
         public string BoxArt38;
         public string BoxArt64;
         public string BoxArt110;

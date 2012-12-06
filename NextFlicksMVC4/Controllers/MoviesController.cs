@@ -15,7 +15,7 @@ namespace NextFlicksMVC4.Controllers
 {
     public class MoviesController : Controller
     {
-        private MovieDbContext db = new MovieDbContext();
+        public static MovieDbContext db = new MovieDbContext();
 
         //
         // GET: /Movies/
@@ -120,7 +120,7 @@ namespace NextFlicksMVC4.Controllers
             //var fullList = db.Movies.ToList();
             string qry = "select * from" +
                          " ( select " +
-                         "  ROW_NUMBER() over (order by id) as rownum," +
+                         "  ROW_NUMBER() over (order by movie_id) as rownum," +
                          " *" +
                          " from Movies) foo" +
                          " where rownum  between {0} and {1}";
@@ -169,6 +169,13 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Full()
         {
+
+            //------------------------------------------------------
+
+  
+
+            //------------------------------------------------------
+
             // Go line by line, and parse it for Movie files
             List<Movie> listOfMovies = new List<Movie>();
 

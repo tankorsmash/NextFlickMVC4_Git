@@ -3,11 +3,14 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using DotNetOpenAuth;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NextFlicksMVC4.Models
 {
     public class Movie
     {
+
+        [Key]
         public int movie_ID { get; set; }
 
         [DisplayName("Title")]
@@ -39,16 +42,18 @@ namespace NextFlicksMVC4.Models
 
         ///commented this out because I have to make a separate look up for genres now
         //[DisplayName("Genres")]
-        //public virtual int genre_id { get; set; }
+        //public virtual int genre_ID { get; set; }
 
         [DisplayName("Boxart")]
-        public virtual int boxart_id { get; set; }
+        public virtual int boxart_ID { get; set; }
 
     }
 
     public class Genre
     {
         [DisplayName("Genre ID")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int genre_ID { get; set; }
 
         [DisplayName("Genre")]
@@ -57,13 +62,19 @@ namespace NextFlicksMVC4.Models
 
     public class MovieToGenre
     {
+        [Key]
+        [Column(Order = 0)]
         public virtual int movie_ID { get; set; }
+
+        [Key]
+        [Column(Order = 1)]
         public virtual int genre_ID { get; set; }
     }
 
     public  class BoxArt
     {
-        public int boxart_id { get; set; }
+        [Key]
+        public int boxart_ID { get; set; }
 
         public virtual int movie_ID { get; set; }
 
