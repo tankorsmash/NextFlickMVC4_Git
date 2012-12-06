@@ -44,8 +44,8 @@ namespace NextFlicksMVC4.Models
         //[DisplayName("Genres")]
         //public virtual int genre_ID { get; set; }
 
-        [DisplayName("Boxart")]
-        public virtual int boxart_ID { get; set; }
+        //[DisplayName("Boxart")]
+        //public virtual int boxart_ID { get; set; }
 
     }
 
@@ -63,7 +63,8 @@ namespace NextFlicksMVC4.Models
     public class MovieToGenre
     {
 
-    [Key]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int movie_to_genre_ID { get; set; }
 
         public virtual int movie_ID { get; set; }

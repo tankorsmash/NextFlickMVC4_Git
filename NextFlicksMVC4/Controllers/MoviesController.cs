@@ -204,6 +204,7 @@ namespace NextFlicksMVC4.Controllers
                                 NextFlicksMVC4.Create.CreateMovie(titles[0]);
                             listOfMovies.Add(movie);
                             db.Movies.Add(movie);
+                            db.SaveChanges();
                             
 
                             //add boxart and genre data to db before saving the movie 
@@ -216,8 +217,16 @@ namespace NextFlicksMVC4.Controllers
                                     NextFlicksMVC4.Create.CreateMovieMovieToGenre(movie,
                                                                                   genre);
                                 db.MovieToGenres.Add(movieToGenre);
-
+                                db.SaveChanges();
+                                var save_msg =
+                                    String.Format(
+                                        "done saving MtG mtg_id = {0}\n movie_id = {1}",
+                                        movieToGenre.movie_to_genre_ID,
+                                        movieToGenre.movie_ID);
+                                        
+                            Trace.WriteLine(save_msg);
                             }
+
 
                             //log adding data
                             string msg = String.Format("Added item {0}", count.ToString());
@@ -235,47 +244,47 @@ namespace NextFlicksMVC4.Controllers
                     Trace.WriteLine(ex.Message);
                 }
 
-                Trace.WriteLine("Beginning Add to DB");
+                //Trace.WriteLine("Beginning Add to DB");
 
                 //set up checkpoints for progress updates
-                int modulo =0;
-                List<int> checkpoints = new List<int>();
-                int total = listOfMovies.Count;
-                int start = total/25;
-                if (start == 0)
-                {
-                    start = 1;
-                }
-                while (modulo <= listOfMovies.Count)
-                {
-                   checkpoints.Add(modulo);
-                    modulo += start;
-                }
+                //int modulo =0;
+                //List<int> checkpoints = new List<int>();
+                //int total = listOfMovies.Count;
+                //int start = total/25;
+                //if (start == 0)
+                //{
+                //    start = 1;
+                //}
+                //while (modulo <= listOfMovies.Count)
+                //{
+                //   checkpoints.Add(modulo);
+                //    modulo += start;
+                //}
 
                 //go through list of movies and add to database
-                int counter = 0;
-                if (listOfMovies.Count > 0)
-                {
-                    foreach (Movie movie in listOfMovies)
-                    {
-                        //db.Movies.Add(movie);
+                //int counter = 0;
+                //if (listOfMovies.Count > 0)
+                //{
+                //    foreach (Movie movie in listOfMovies)
+                //    {
+                //        //db.Movies.Add(movie);
                         
 
-                        //counting stuff, not logic essential
-                        counter += 1;
-                        if (checkpoints.Contains(counter))
-                        {
-                            string msg =
-                                String.Format(
-                                    "Done adding at least {0} movies", counter);
-                            Trace.WriteLine(msg);
-                        }
-                    }
+                //        //counting stuff, not logic essential
+                //        counter += 1;
+                //        if (checkpoints.Contains(counter))
+                //        {
+                //            string msg =
+                //                String.Format(
+                //                    "Done adding at least {0} movies", counter);
+                //            Trace.WriteLine(msg);
+                //        }
+                //    }
 
                     Trace.WriteLine("Saving Changes");
                     db.SaveChanges();
                     Trace.WriteLine("Done Saving!");
-                }
+                //}
             }
 
             return View();
