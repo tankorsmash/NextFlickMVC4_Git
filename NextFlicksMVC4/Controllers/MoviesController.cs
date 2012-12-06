@@ -181,7 +181,7 @@ namespace NextFlicksMVC4.Controllers
 
             string data;
             int count = 0;
-            using (StreamReader reader = new StreamReader(@"C:\fixedAPI.NFPOX"))
+            using (StreamReader reader = new StreamReader(@"C:\fixedAPI2.NFPOX"))
             {
 
                 Trace.WriteLine("Starting to read");
@@ -203,6 +203,22 @@ namespace NextFlicksMVC4.Controllers
                             Movie movie =
                                 NextFlicksMVC4.Create.CreateMovie(titles[0]);
                             listOfMovies.Add(movie);
+                            db.Movies.Add(movie);
+
+                            //add boxart and genre data to db before saving the movie 
+                            BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxart(movie,
+                                                        titles[0]);
+                            db.BoxArts.Add(boxArt);
+                            foreach (Genre genre in titles[0].ListGenres)
+                            {
+                                MovieToGenre movieToGenre =
+                                    NextFlicksMVC4.Create.CreateMovieMovieToGenre(movie,
+                                                                                  genre);
+                                db.MovieToGenres.Add(movieToGenre);
+
+                            }
+
+                            //log adding data
                             string msg = String.Format("Added item {0}", count.ToString());
                             Trace.WriteLine(msg);
                             count += 1;
@@ -225,6 +241,10 @@ namespace NextFlicksMVC4.Controllers
                 List<int> checkpoints = new List<int>();
                 int total = listOfMovies.Count;
                 int start = total/25;
+                if (start == 0)
+                {
+                    start = 1;
+                }
                 while (modulo <= listOfMovies.Count)
                 {
                    checkpoints.Add(modulo);
@@ -237,7 +257,7 @@ namespace NextFlicksMVC4.Controllers
                 {
                     foreach (Movie movie in listOfMovies)
                     {
-                        db.Movies.Add(movie);
+                        //db.Movies.Add(movie);
                         
 
                         //counting stuff, not logic essential
