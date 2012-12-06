@@ -62,12 +62,12 @@ namespace NextFlicksMVC4.Models
 
     public class MovieToGenre
     {
-        [Key]
-        [Column(Order = 0)]
+
+    [Key]
+        public int movie_to_genre_ID { get; set; }
+
         public virtual int movie_ID { get; set; }
 
-        [Key]
-        [Column(Order = 1)]
         public virtual int genre_ID { get; set; }
     }
 
