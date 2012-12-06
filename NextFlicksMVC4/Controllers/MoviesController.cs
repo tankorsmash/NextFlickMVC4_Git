@@ -220,6 +220,7 @@ namespace NextFlicksMVC4.Controllers
 
                 Trace.WriteLine("Beginning Add to DB");
 
+                //set up checkpoints for progress updates
                 int modulo =0;
                 List<int> checkpoints = new List<int>();
                 int total = listOfMovies.Count;
@@ -229,12 +230,17 @@ namespace NextFlicksMVC4.Controllers
                    checkpoints.Add(modulo);
                     modulo += start;
                 }
+
+                //go through list of movies and add to database
                 int counter = 0;
                 if (listOfMovies.Count > 0)
                 {
                     foreach (Movie movie in listOfMovies)
                     {
                         db.Movies.Add(movie);
+                        
+
+                        //counting stuff, not logic essential
                         counter += 1;
                         if (checkpoints.Contains(counter))
                         {
