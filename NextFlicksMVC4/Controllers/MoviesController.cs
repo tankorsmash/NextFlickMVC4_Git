@@ -204,6 +204,7 @@ namespace NextFlicksMVC4.Controllers
                                 NextFlicksMVC4.Create.CreateMovie(titles[0]);
                             listOfMovies.Add(movie);
                             db.Movies.Add(movie);
+                            
 
                             //add boxart and genre data to db before saving the movie 
                             BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxart(movie,
