@@ -65,12 +65,12 @@
         @Html.DisplayFor(model => model.is_movie)
     </div>
 
-    <div class="display-label">
+@*    <div class="display-label">
          @Html.DisplayNameFor(model => model.genres)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.genres)
-    </div>
+    </div>*@
 
     <div class="display-label">
          @Html.DisplayNameFor(model => model.maturity_rating)
@@ -79,7 +79,7 @@
         @Html.DisplayFor(model => model.maturity_rating)
     </div>
 
-    <div class="display-label">
+ @*   <div class="display-label">
          @Html.DisplayNameFor(model => model.boxart_38)
     </div>
     <div class="display-field">
@@ -154,9 +154,9 @@
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.boxart_210)
-    </div>
+    </div>*@
 </fieldset>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Edit", "Edit", new { id=Model.movie_ID }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

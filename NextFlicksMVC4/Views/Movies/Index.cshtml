@@ -38,9 +38,9 @@
         <th>
             @Html.DisplayNameFor(model => model.is_movie)
         </th>
-        <th>
+@*        <th>
             @Html.DisplayNameFor(model => model.genres)
-        </th>
+        </th>*@
         <th>
             @Html.DisplayNameFor(model => model.maturity_rating)
         </th>
@@ -54,9 +54,9 @@
         <tr>
             <td style="white-space: nowrap">
                 <a href="@Html.DisplayFor(asd => item.web_page)">
-                    <img src=" @Html.DisplayFor(modelItem => item.boxart_38) " alt="BoxArt" style="vertical-align: middle; height: 60px"/>
+                    @*<img src=" @Html.DisplayFor(modelItem => item.boxart_38) " alt="BoxArt" style="vertical-align: middle; height: 60px"/> *@
                     <span style="line-height: 60px">@Html.DisplayFor(modelItem => item.short_title)</span></a>
-                    <span>@Html.ActionLink("details", "Details", new { id = item.ID })</span>
+                    <span>@Html.ActionLink("details", "Details", new { movie_ID = item.movie_ID })</span>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.year)
@@ -82,9 +82,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.is_movie)
             </td>
-            <td>
+@*            <td>
                 @Html.DisplayFor(modelItem => item.genres)
-            </td>
+            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.maturity_rating)
             </td>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Text.RegularExpressions;
 using NextFlicksMVC4.Models;
+using System.Diagnostics;
 
 namespace NextFlicksMVC4.NetFlixAPI
 {
@@ -58,6 +59,47 @@ namespace NextFlicksMVC4.NetFlixAPI
                               };
 
             return genre;
+        }
+
+        public static void PopulateGenresTable()
+        {
+            var db = new MovieDbContext();
+
+            //if genre table is not empty, its probably full and don't do anything
+
+            //var db = NextFlicksMVC4.Controllers.MoviesController.db;
+            if (db.Genres.Count() != 0)
+            {
+                Trace.WriteLine("Genre table already is not empty, assuming it's full, so no action was taken");
+                return;
+            }
+
+            //returns a dict of id to genres
+            Dictionary<string, string> dict = NetFlixAPI.PopulateGenres.CreateDictofGenres(@"c:\genres.NFPOx");
+            //create all the genre models
+            List<Genre> genres = new List<Genre>();
+            foreach (KeyValuePair<string, string> keyValuePair in dict)
+            {
+                //create genres
+                var id = keyValuePair.Key;
+                var genre_string = keyValuePair.Value;
+                Genre genre = NetFlixAPI.PopulateGenres.CreateGenreModel(id,
+                                                                         genre_string);
+                //add to list
+                genres.Add(genre);
+
+            }
+
+            //add to and save table
+            Trace.WriteLine("starting to add genres");
+            foreach (Genre genre in genres)
+            {
+                db.Genres.Add(genre);
+            }
+
+
+            Trace.WriteLine("starting to save genre table");
+            db.SaveChanges();
         }
     }
 }

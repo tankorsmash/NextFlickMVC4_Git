@@ -116,6 +116,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Index(int start = 0, int count = 10)
         {
+            var db = new MovieDbContext();
             Trace.WriteLine("To QRY");
             //var fullList = db.Movies.ToList();
             string qry = "select * from" +
@@ -133,6 +134,13 @@ namespace NextFlicksMVC4.Controllers
             ViewBag.Start = start;
             ViewBag.Count = count;
 
+            //make sure there's not a outofbounds
+            if (count > fullList.Count)
+            {
+                count = fullList.Count;
+                Trace.WriteLine("had to shorten the returned results");
+            }
+
             Trace.WriteLine("Get ranging");
             var full_range = fullList.GetRange(0, count);
 
@@ -146,7 +154,7 @@ namespace NextFlicksMVC4.Controllers
             //var fullList = db.Movies.ToList();
             string qry = "select * from" +
                          " ( select " +
-                         "  ROW_NUMBER() over (order by id) as rownum," +
+                         "  ROW_NUMBER() over (order by movie_ID) as rownum," +
                          " *" +
                          " from Movies) foo" +
                          " where rownum  between {0} and {1}";
@@ -169,10 +177,18 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Full()
         {
-
+            var db = new MovieDbContext();
             //------------------------------------------------------
 
-  
+            //need to have a Genre table first, so make sure that's there
+            //int genre_count = db.Genres.Count();
+            //if (genre_count == 0)
+            //{
+                
+            //}
+
+            PopulateGenres.PopulateGenresTable();
+
 
             //------------------------------------------------------
 
@@ -229,7 +245,7 @@ namespace NextFlicksMVC4.Controllers
 
 
                             //log adding data
-                            string msg = String.Format("Added item {0}", count.ToString());
+                            string msg = String.Format("Added item {0} to database, moving to next one", count.ToString());
                             Trace.WriteLine(msg);
                             count += 1;
 
@@ -240,7 +256,7 @@ namespace NextFlicksMVC4.Controllers
 
                 catch (System.Xml.XmlException ex)
                 {
-                    Trace.WriteLine("XML ERROR OH GOD:");
+                    Trace.WriteLine("Done parsing the XML because of something happened. Probably the end of file:");
                     Trace.WriteLine(ex.Message);
                 }
 
@@ -281,9 +297,10 @@ namespace NextFlicksMVC4.Controllers
                 //        }
                 //    }
 
-                    Trace.WriteLine("Saving Changes");
+                    Trace.WriteLine("Saving Changes any untracked ones, anyways");
                     db.SaveChanges();
-                    Trace.WriteLine("Done Saving!");
+                    Trace.WriteLine("Done Saving! Check out Movies/index for a table of the stuff");
+
                 //}
             }
 
@@ -326,9 +343,11 @@ namespace NextFlicksMVC4.Controllers
         //
         // GET: /Movies/Details/5
 
-        public ActionResult Details(int id = 0)
+        public ActionResult Details(int movie_ID = 0)
         {
-            Movie movie = db.Movies.Find(id);
+            var db = new MovieDbContext();
+
+            Movie movie = db.Movies.Find(movie_ID);
             if (movie == null)
             {
                 return HttpNotFound();
