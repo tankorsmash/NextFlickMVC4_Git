@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using NextFlicksMVC4;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
+using System.Timers;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -50,7 +51,6 @@ namespace NextFlicksMVC4.Controllers
             
             //give the Viewbag a property for the SelectList
             ViewBag.years = slist;
-
 
             return View();
         }
@@ -177,6 +177,11 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Full()
         {
+
+            Trace.WriteLine("starting Full Action");
+            string msg = DateTime.Now.ToShortTimeString();
+            var start_time = DateTime.Now;
+            Trace.WriteLine(msg);
             var db = new MovieDbContext();
             //------------------------------------------------------
 
@@ -192,12 +197,17 @@ namespace NextFlicksMVC4.Controllers
 
             //------------------------------------------------------
 
+
+
+            Trace.WriteLine("starting data read");
+             msg = DateTime.Now.ToShortTimeString();
+            Trace.WriteLine(msg);
+
             // Go line by line, and parse it for Movie files
             List<Movie> listOfMovies = new List<Movie>();
-
             string data;
             int count = 0;
-            using (StreamReader reader = new StreamReader(@"C:\fixedAPI2.NFPOX"))
+            using (StreamReader reader = new StreamReader(@"C:\fixedAPI.NFPOX"))
             {
 
                 Trace.WriteLine("Starting to read");
@@ -224,9 +234,11 @@ namespace NextFlicksMVC4.Controllers
                             
 
                             //add boxart and genre data to db before saving the movie 
-                            BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxart(movie,
+                            BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxartFromTitle(movie,
                                                         titles[0]);
                             db.BoxArts.Add(boxArt);
+
+                            //genres to database
                             foreach (Genre genre in titles[0].ListGenres)
                             {
                                 MovieToGenre movieToGenre =
@@ -245,7 +257,7 @@ namespace NextFlicksMVC4.Controllers
 
 
                             //log adding data
-                            string msg = String.Format("Added item {0} to database, moving to next one", count.ToString());
+                             msg = String.Format("Added item {0} to database, moving to next one", count.ToString());
                             Trace.WriteLine(msg);
                             count += 1;
 
@@ -304,6 +316,16 @@ namespace NextFlicksMVC4.Controllers
                 //}
             }
 
+
+            Trace.WriteLine("Done everything");
+             msg = DateTime.Now.ToShortTimeString();
+            Trace.WriteLine(msg);
+            var end_time = DateTime.Now;
+
+            TimeSpan span = end_time - start_time;
+            Trace.WriteLine("It took this long:");
+            Trace.WriteLine(span);
+
             return View();
         }
 
@@ -322,7 +344,7 @@ namespace NextFlicksMVC4.Controllers
                 movies.Add(movie);
                 db.Movies.Add(movie);
 
-                BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxart(movie,
+                BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxartFromTitle(movie,
                                                                         title);
                 db.BoxArts.Add(boxArt);
                 foreach (Genre genre in title.ListGenres)

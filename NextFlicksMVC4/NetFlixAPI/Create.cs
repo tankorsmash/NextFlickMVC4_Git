@@ -50,15 +50,17 @@ namespace NextFlicksMVC4
                                   maturity_rating = title.MaturityLevel,
 
                               };
-            //CreateMovieBoxart(movie, title);
+            //CreateMovieBoxartFromTitle(movie, title);
 
             return movie;
 
             
         }
 
+        
+
         //creates a row of box art data and assigns to to the movie id its title was from
-        public static BoxArt CreateMovieBoxart(Movie movie, Title title)
+        public static BoxArt CreateMovieBoxartFromTitle(Movie movie, Title title)
         {
             BoxArt boxArt = new BoxArt
                                 {

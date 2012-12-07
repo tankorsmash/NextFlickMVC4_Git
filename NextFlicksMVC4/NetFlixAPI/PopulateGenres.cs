@@ -68,11 +68,11 @@ namespace NextFlicksMVC4.NetFlixAPI
             //if genre table is not empty, its probably full and don't do anything
 
             //var db = NextFlicksMVC4.Controllers.MoviesController.db;
-            if (db.Genres.Count() != 0)
-            {
-                Trace.WriteLine("Genre table already is not empty, assuming it's full, so no action was taken");
-                return;
-            }
+            //if (db.Genres.Count() != 0)
+            //{
+            //    Trace.WriteLine("Genre table already is not empty, assuming it's full, so no action was taken");
+            //    return;
+            //}
 
             //returns a dict of id to genres
             Dictionary<string, string> dict = NetFlixAPI.PopulateGenres.CreateDictofGenres(@"c:\genres.NFPOx");
