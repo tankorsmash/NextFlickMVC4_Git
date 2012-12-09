@@ -11,6 +11,7 @@ using NextFlicksMVC4;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 using System.Timers;
+using NextFlicksMVC4.Helpers;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -47,8 +48,8 @@ namespace NextFlicksMVC4.Controllers
 
             //Create a selectList, but since it's looking for an IEnumerable,
             // tell it what is the value and text parts
-            SelectList slist = new SelectList(years, "Value", "Text" );
-            
+            SelectList slist = new SelectList(years, "Value", "Text");
+
             //give the Viewbag a property for the SelectList
             ViewBag.years = slist;
 
@@ -58,7 +59,7 @@ namespace NextFlicksMVC4.Controllers
         //[HttpPost]
         //public ActionResult Filter(string name)
         //{
-         
+
 
         //    return View("FilterHandler");
         //}
@@ -80,7 +81,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Random()
         {
             int rand_title_int = new Random().Next(1, db.Movies.ToList().Count);
-            return RedirectToAction("Index", new {count = 1, start = rand_title_int});
+            return RedirectToAction("Index", new { count = 1, start = rand_title_int });
         }
 
 
@@ -100,7 +101,7 @@ namespace NextFlicksMVC4.Controllers
 
             List<Movie> movie_list = res.ToList();
 
-            ViewBag.TotalMovies = movie_list.Count -1;
+            ViewBag.TotalMovies = movie_list.Count - 1;
             ViewBag.year_start = year_start;
             ViewBag.year_end = year_end;
             ViewBag.start = start;
@@ -117,7 +118,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Index(int start = 0, int count = 10)
         {
             var db = new MovieDbContext();
-            Trace.WriteLine("To QRY");
+            Trace.WriteLine("Creating a query string");
             //var fullList = db.Movies.ToList();
             string qry = "select * from" +
                          " ( select " +
@@ -125,10 +126,10 @@ namespace NextFlicksMVC4.Controllers
                          " *" +
                          " from Movies) foo" +
                          " where rownum  between {0} and {1}";
-            var res = db.Movies.SqlQuery(qry, start, start+count);
-            Trace.WriteLine("To list");
+            var res = db.Movies.SqlQuery(qry, start, start + count);
+            Trace.WriteLine("creating a list from the query");
             var fullList = res.ToList();
-            
+
             //total movies in DB
             ViewBag.TotalMovies = fullList.Count;
             ViewBag.Start = start;
@@ -172,11 +173,13 @@ namespace NextFlicksMVC4.Controllers
 
             Trace.WriteLine("Returning View");
             return View(full_range);
-            
+
         }
 
-        public ActionResult Full()
+        public ActionResult MtG()
         {
+            //need to find movie_id, its genres and its boxarts
+            //could recreate all titles, find its matching webpage in the db, then the movie_id and then use that
 
             Trace.WriteLine("starting Full Action");
             string msg = DateTime.Now.ToShortTimeString();
@@ -189,10 +192,10 @@ namespace NextFlicksMVC4.Controllers
             //int genre_count = db.Genres.Count();
             //if (genre_count == 0)
             //{
-                
+
             //}
 
-            PopulateGenres.PopulateGenresTable();
+            //PopulateGenres.PopulateGenresTable();
 
 
             //------------------------------------------------------
@@ -200,18 +203,22 @@ namespace NextFlicksMVC4.Controllers
 
 
             Trace.WriteLine("starting data read");
-             msg = DateTime.Now.ToShortTimeString();
+            msg = DateTime.Now.ToShortTimeString();
             Trace.WriteLine(msg);
 
+            //get list of movies in db
+            var movieDbList = db.Movies.ToList();
+
             // Go line by line, and parse it for Movie files
-            List<Movie> listOfMovies = new List<Movie>();
+            //List<Movie> listOfMovies = new List<Movie>();
+            Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
             string data;
             int count = 0;
             using (StreamReader reader = new StreamReader(@"C:\fixedAPI.NFPOX"))
             {
 
                 Trace.WriteLine("Starting to read");
-                
+
                 data = reader.ReadLine();
                 try
                 {
@@ -219,51 +226,50 @@ namespace NextFlicksMVC4.Controllers
                     {
                         if (!data.StartsWith("<catalog_title>"))
                         {
-                            Trace.WriteLine("Invalid line");
+                            Trace.WriteLine("Invalid line of XML, probably CDATA or something");
                         }
                         else
                         {
                             //parse line for a title, which is what NF returns
                             List<Title> titles =
                                 NextFlicksMVC4.Create.ParseXmlForCatalogTitles(data);
-                            Movie movie =
-                                NextFlicksMVC4.Create.CreateMovie(titles[0]);
-                            listOfMovies.Add(movie);
-                            db.Movies.Add(movie);
-                            db.SaveChanges();
-                            
 
-                            //add boxart and genre data to db before saving the movie 
-                            BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxartFromTitle(movie,
-                                                        titles[0]);
-                            db.BoxArts.Add(boxArt);
-
-                            //genres to database
-                            foreach (Genre genre in titles[0].ListGenres)
+                            //find movie with same webpage as the title
+                            Movie movie;
+                            foreach (Movie movie_model in movieDbList)
                             {
-                                MovieToGenre movieToGenre =
-                                    NextFlicksMVC4.Create.CreateMovieMovieToGenre(movie,
-                                                                                  genre);
-                                db.MovieToGenres.Add(movieToGenre);
-                                db.SaveChanges();
-                                var save_msg =
-                                    String.Format(
-                                        "done saving MtG mtg_id = {0}\n movie_id = {1}",
-                                        movieToGenre.movie_to_genre_ID,
-                                        movieToGenre.movie_ID);
-                                        
-                            Trace.WriteLine(save_msg);
+
+                                if (movie_model.web_page == titles[0].LinkToPage)
+                                {
+                                    movie = movie_model;
+                                    movieDbList.Remove(movie_model);
+                                    dictOfMoviesTitles[movie] = titles[0];
+                                    break;
+                                }
+
                             }
+                            //Movie movie =
+                            //    NextFlicksMVC4.Create.CreateMovie(titles[0]);
+
+                            //add to DB and dict
+                            //listOfMovies.Add(movie);
+
+                            //db.Movies.Add(movie);
 
 
                             //log adding data
-                             msg = String.Format("Added item {0} to database, moving to next one", count.ToString());
+                            msg = String.Format("Added item {0} to dict, moving to next one", count.ToString());
                             Trace.WriteLine(msg);
                             count += 1;
 
                         }
                         data = reader.ReadLine();
                     }
+
+                    //save the movies added to db
+                    Trace.WriteLine("done making dict");
+                    //db.SaveChanges();
+
                 }
 
                 catch (System.Xml.XmlException ex)
@@ -271,6 +277,11 @@ namespace NextFlicksMVC4.Controllers
                     Trace.WriteLine("Done parsing the XML because of something happened. Probably the end of file:");
                     Trace.WriteLine(ex.Message);
                 }
+
+
+                Trace.WriteLine("Adding Boxart and Genre");
+                //add boxart and genre data to db before saving the movie 
+                AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
 
                 //Trace.WriteLine("Beginning Add to DB");
 
@@ -296,7 +307,7 @@ namespace NextFlicksMVC4.Controllers
                 //    foreach (Movie movie in listOfMovies)
                 //    {
                 //        //db.Movies.Add(movie);
-                        
+
 
                 //        //counting stuff, not logic essential
                 //        counter += 1;
@@ -309,16 +320,16 @@ namespace NextFlicksMVC4.Controllers
                 //        }
                 //    }
 
-                    Trace.WriteLine("Saving Changes any untracked ones, anyways");
-                    db.SaveChanges();
-                    Trace.WriteLine("Done Saving! Check out Movies/index for a table of the stuff");
+                Trace.WriteLine("Saving Changes any untracked ones, anyways");
+                db.SaveChanges();
+                Trace.WriteLine("Done Saving! Check out Movies/index for a table of the stuff");
 
                 //}
             }
 
 
             Trace.WriteLine("Done everything");
-             msg = DateTime.Now.ToShortTimeString();
+            msg = DateTime.Now.ToShortTimeString();
             Trace.WriteLine(msg);
             var end_time = DateTime.Now;
 
@@ -329,10 +340,213 @@ namespace NextFlicksMVC4.Controllers
             return View();
         }
 
-        public  ActionResult API(string term="Jim Carrey")
+        public ActionResult Full()
+        {
+
+            Trace.WriteLine("starting Full Action");
+            string msg = DateTime.Now.ToShortTimeString();
+            var start_time = DateTime.Now;
+            Trace.WriteLine(msg);
+            var db = new MovieDbContext();
+            db.Configuration.AutoDetectChangesEnabled = false;
+            //------------------------------------------------------
+
+            //need to have a Genre table first, so make sure that's there
+            //int genre_count = db.Genres.Count();
+            //if (genre_count == 0)
+            //{
+
+            //}
+
+            PopulateGenres.PopulateGenresTable();
+
+
+            //------------------------------------------------------
+
+
+
+            Trace.WriteLine("starting data read");
+            msg = DateTime.Now.ToShortTimeString();
+            Trace.WriteLine(msg);
+
+            // Go line by line, and parse it for Movie files
+            //List<Movie> listOfMovies = new List<Movie>();
+            Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
+            string data;
+            int count = 0;
+            using (StreamReader reader = new StreamReader(@"C:\fixedAPI.NFPOX"))
+            {
+
+                Trace.WriteLine("Starting to read");
+
+                data = reader.ReadLine();
+                try
+                {
+                    while (data != null)
+                    {
+                        if (!data.StartsWith("<catalog_title>"))
+                        {
+                            Trace.WriteLine("Invalid line of XML, probably CDATA or something");
+                        }
+                        else
+                        {
+                            //parse line for a title, which is what NF returns
+                            List<Title> titles =
+                                NextFlicksMVC4.Create.ParseXmlForCatalogTitles(data);
+                            Movie movie =
+                                NextFlicksMVC4.Create.CreateMovie(titles[0]);
+
+                            //add to DB and dict
+                            //listOfMovies.Add(movie);
+                            dictOfMoviesTitles[movie] = titles[0];
+                            db.Movies.Add(movie);
+
+
+                            //log adding data
+                            msg = String.Format("Added item {0} to database, moving to next one", count.ToString());
+                            Trace.WriteLine(msg);
+                            count += 1;
+
+                        }
+                        data = reader.ReadLine();
+                    }
+
+                    //save the movies added to db
+                    Trace.WriteLine("Saving Movies");
+                    db.SaveChanges();
+                    db.Configuration.AutoDetectChangesEnabled = true;
+
+                }
+
+                catch (System.Xml.XmlException ex)
+                {
+                    Trace.WriteLine("Done parsing the XML because of something happened. Probably the end of file:");
+                    Trace.WriteLine(ex.Message);
+                }
+
+
+                Trace.WriteLine("Adding Boxart and Genre");
+                //add boxart and genre data to db before saving the movie 
+                AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
+
+                //Trace.WriteLine("Beginning Add to DB");
+
+                //set up checkpoints for progress updates
+                //int modulo =0;
+                //List<int> checkpoints = new List<int>();
+                //int total = listOfMovies.Count;
+                //int start = total/25;
+                //if (start == 0)
+                //{
+                //    start = 1;
+                //}
+                //while (modulo <= listOfMovies.Count)
+                //{
+                //   checkpoints.Add(modulo);
+                //    modulo += start;
+                //}
+
+                //go through list of movies and add to database
+                //int counter = 0;
+                //if (listOfMovies.Count > 0)
+                //{
+                //    foreach (Movie movie in listOfMovies)
+                //    {
+                //        //db.Movies.Add(movie);
+
+
+                //        //counting stuff, not logic essential
+                //        counter += 1;
+                //        if (checkpoints.Contains(counter))
+                //        {
+                //            string msg =
+                //                String.Format(
+                //                    "Done adding at least {0} movies", counter);
+                //            Trace.WriteLine(msg);
+                //        }
+                //    }
+
+                Trace.WriteLine("Saving Changes any untracked ones, anyways");
+                db.SaveChanges();
+                Trace.WriteLine("Done Saving! Check out Movies/index for a table of the stuff");
+
+                //}
+            }
+
+
+            Trace.WriteLine("Done everything");
+            msg = DateTime.Now.ToShortTimeString();
+            Trace.WriteLine(msg);
+            var end_time = DateTime.Now;
+
+            TimeSpan span = end_time - start_time;
+            Trace.WriteLine("It took this long:");
+            Trace.WriteLine(span);
+
+            return View();
+        }
+
+        public static void AddBoxartsAndMovieToGenreData(Dictionary<Movie, Title> dictOfMoviesTitles, MovieDbContext db)
+        {
+            //get a list of ints that we can test against to save progress of adding to db
+            List<int> checkpoints = ProgressList.CreateListOfCheckpointInts(dictOfMoviesTitles.Count, 55);
+            
+            //MovieDbContext db = new MovieDbContext();
+            db.Configuration.AutoDetectChangesEnabled = false;
+
+            //loop over dict and make Boxart and Genre
+            int index = 0;
+            foreach (KeyValuePair<Movie, Title> keyValuePair in dictOfMoviesTitles) {
+                Movie movie = keyValuePair.Key;
+                Title title = keyValuePair.Value;
+                BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxartFromTitle(movie,
+                                                                                 title);
+                db.BoxArts.Add(boxArt);
+
+
+                //genres to database
+                foreach (Genre genre in title.ListGenres)
+                {
+                    MovieToGenre movieToGenre =
+                        NextFlicksMVC4.Create.CreateMovieMovieToGenre(movie,
+                                                                      genre);
+                    db.MovieToGenres.Add(movieToGenre);
+                    //db.SaveChanges();
+
+                    var save_msg =
+                        String.Format(
+                            "done saving MtG mtg_id = {0}\n movie_id = {1}\n genre_id = {2}",
+                            movieToGenre.movie_to_genre_ID,
+                            movieToGenre.movie_ID,
+                            movieToGenre.genre_ID);
+
+                    Trace.WriteLine(save_msg);
+                }
+
+                //if at a certain amount of adds, save changes, to avoid memory error hopefully
+                if (checkpoints.Contains(index)) {
+                    db.SaveChanges();
+
+                    string msg =
+                        String.Format("Just saved changes at checkpoint {0}",
+                                      index);
+                    Trace.WriteLine(msg);
+                }
+
+                //incrememt index
+                    index ++;
+
+            }
+            Trace.WriteLine("saving final boxarts and genres");
+            db.SaveChanges();
+            Trace.WriteLine("\t\tdone saving boxarts and genres");
+            db.Configuration.AutoDetectChangesEnabled = true;
+        }
+
+        public ActionResult API(string term = "Jim Carrey")
         {
             //grab new movies, turn one into a Movie and view it
-            var data = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", term, max_results:"100", outputPath:@"C:/streamingAPI2.NFPOX");
+            var data = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", term, max_results: "100", outputPath: @"C:/streamingAPI2.NFPOX");
             var titles =
                 NextFlicksMVC4.Create.ParseXmlForCatalogTitles(data);
 
