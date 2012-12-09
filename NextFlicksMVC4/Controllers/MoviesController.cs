@@ -17,12 +17,13 @@ namespace NextFlicksMVC4.Controllers
 {
     public class MoviesController : Controller
     {
-        public static MovieDbContext db = new MovieDbContext();
+        //public static MovieDbContext db = new MovieDbContext();
 
 
         [HttpGet]
         public ActionResult Filter()
         {
+            MovieDbContext db = new MovieDbContext();
 
             //grab the lowest year in Catalog
             var min_qry = "select  top(1) * from Movies where year != \'\' order by year ASC";
@@ -71,6 +72,8 @@ namespace NextFlicksMVC4.Controllers
         /// <returns></returns>
         public ActionResult Random()
         {
+            MovieDbContext db = new MovieDbContext();
+
             int rand_title_int = new Random().Next(1, db.Movies.ToList().Count);
             return RedirectToAction("Index", new { count = 1, start = rand_title_int });
         }
@@ -97,6 +100,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Year(int year_start = 2001, int year_end = 2002, int start = 0, int count = 25, bool is_movie = true)
         {
+            MovieDbContext db = new MovieDbContext();
             //returns all titles from year
             string qry = "select * from Movies where (year between {0} and {1}) and (is_movie = {2}) order by year";
             var res = db.Movies.SqlQuery(qry, year_start, year_end, is_movie);
@@ -119,7 +123,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Index(int start = 0, int count = 10)
         {
-            var db = new MovieDbContext();
+            MovieDbContext db = new MovieDbContext();
 
             //create a query string to full the proper count of movies from db
             Trace.WriteLine("Creating a query string");
@@ -159,6 +163,9 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Table(int start = 0, int count = 10)
         {
+
+            MovieDbContext db = new MovieDbContext();
+
             Trace.WriteLine("To QRY");
             //var fullList = db.Movies.ToList();
             string qry = "select * from" +
@@ -193,7 +200,7 @@ namespace NextFlicksMVC4.Controllers
             string msg = DateTime.Now.ToShortTimeString();
             var start_time = DateTime.Now;
             Trace.WriteLine(msg);
-            var db = new MovieDbContext();
+            MovieDbContext db = new MovieDbContext();
             //------------------------------------------------------
 
             //need to have a Genre table first, so make sure that's there
@@ -355,7 +362,7 @@ namespace NextFlicksMVC4.Controllers
             string msg = DateTime.Now.ToShortTimeString();
             var start_time = DateTime.Now;
             Trace.WriteLine(msg);
-            var db = new MovieDbContext();
+            MovieDbContext db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = false;
             //------------------------------------------------------
 
@@ -553,6 +560,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult API(string term = "Jim Carrey")
         {
+            MovieDbContext db = new MovieDbContext();
             //grab new movies, turn one into a Movie and view it
             var data = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", term, max_results: "100", outputPath: @"C:/streamingAPI2.NFPOX");
             var titles =
@@ -589,7 +597,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Details(int movie_ID = 0)
         {
-            var db = new MovieDbContext();
+            MovieDbContext db = new MovieDbContext();
 
             Movie movie = db.Movies.Find(movie_ID);
             if (movie == null)
@@ -613,6 +621,7 @@ namespace NextFlicksMVC4.Controllers
         [HttpPost]
         public ActionResult Create(Movie movie)
         {
+            MovieDbContext db = new MovieDbContext();
             if (ModelState.IsValid)
             {
                 db.Movies.Add(movie);
@@ -628,6 +637,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Edit(int id = 0)
         {
+            MovieDbContext db = new MovieDbContext();
             Movie movie = db.Movies.Find(id);
             if (movie == null)
             {
@@ -642,6 +652,7 @@ namespace NextFlicksMVC4.Controllers
         [HttpPost]
         public ActionResult Edit(Movie movie)
         {
+            MovieDbContext db = new MovieDbContext();
             if (ModelState.IsValid)
             {
                 db.Entry(movie).State = EntityState.Modified;
@@ -656,6 +667,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Delete(int id = 0)
         {
+            MovieDbContext db = new MovieDbContext();
             Movie movie = db.Movies.Find(id);
             if (movie == null)
             {
@@ -670,6 +682,7 @@ namespace NextFlicksMVC4.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
+            MovieDbContext db = new MovieDbContext();
             Movie movie = db.Movies.Find(id);
             db.Movies.Remove(movie);
             db.SaveChanges();
@@ -678,6 +691,7 @@ namespace NextFlicksMVC4.Controllers
 
         protected override void Dispose(bool disposing)
         {
+            MovieDbContext db = new MovieDbContext();
             db.Dispose();
             base.Dispose(disposing);
         }
