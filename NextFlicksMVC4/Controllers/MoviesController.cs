@@ -19,8 +19,6 @@ namespace NextFlicksMVC4.Controllers
     {
         public static MovieDbContext db = new MovieDbContext();
 
-        //
-        // GET: /Movies/
 
         [HttpGet]
         public ActionResult Filter()
@@ -56,13 +54,6 @@ namespace NextFlicksMVC4.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public ActionResult Filter(string name)
-        //{
-
-
-        //    return View("FilterHandler");
-        //}
 
 
         public ActionResult FilterHandler(string year_start, string year_end)
@@ -88,6 +79,17 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Test()
         {
             return View(@"~/Views/Home/About.cshtml");
+        }
+
+        public ActionResult Title()
+        {
+            Title title = new Title
+                              {
+                                  TitleString = "Terminator",
+                                  ReleaseYear = "1995",
+                              };
+
+            return View(title);
         }
 
 
@@ -118,8 +120,9 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Index(int start = 0, int count = 10)
         {
             var db = new MovieDbContext();
+
+            //create a query string to full the proper count of movies from db
             Trace.WriteLine("Creating a query string");
-            //var fullList = db.Movies.ToList();
             string qry = "select * from" +
                          " ( select " +
                          "  ROW_NUMBER() over (order by movie_id) as rownum," +
@@ -131,7 +134,12 @@ namespace NextFlicksMVC4.Controllers
             var fullList = res.ToList();
 
             //total movies in DB
-            ViewBag.TotalMovies = fullList.Count;
+            string count_qry = "select count(movie_id) from Movies";
+            var count_res = db.Database.SqlQuery<int>(count_qry);
+            int count_count = count_res.ElementAt(0);
+            ViewBag.TotalMovies = count_count;
+
+            //misc numbers
             ViewBag.Start = start;
             ViewBag.Count = count;
 
