@@ -12,6 +12,7 @@ using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 using System.Timers;
 using NextFlicksMVC4.Helpers;
+using System.Data.SqlClient;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -119,6 +120,82 @@ namespace NextFlicksMVC4.Controllers
             }
             var results = movie_list.GetRange(start, start + count);
             return View("Index", results);
+        }
+
+
+
+        /// <summary>
+        /// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Genres(string genre_params = "action")
+        {
+            MovieDbContext db = new MovieDbContext();
+
+            ////find the genre_id of genre
+            //string gen_qry = "select genre_id from Genres where genre_string = {0}";
+            //var gen_res = db.Database.SqlQuery<int>(gen_qry, genre);
+            //var genre_id =  gen_res.ElementAt(0);
+
+            ////select all movie_id that have a match for genre_id
+            //string match_qry = "select movie_id from MovieToGenres where genre_id = {0}";
+            //var match_res = db.Database.SqlQuery<List<int>>(match_qry, genre_id);
+            //var match_list = match_res.ToList();
+
+            ////select all movies from Movies where the movie_ids are found 
+
+
+            ////select all movies that have the genre_id in them
+
+
+            //select movies that match a genre_string
+//            string qry = "" +
+//"SELECT        Movies.* " +
+//"FROM            Movies INNER JOIN " +
+//"MovieToGenres ON Movies.movie_ID = MovieToGenres.movie_ID INNER JOIN " +
+//"Genres ON MovieToGenres.genre_ID = Genres.genre_ID " +
+//"WHERE        (Genres.genre_string LIKE N'{0}%')";
+
+            //string qry =
+            //    "SELECT Movies.* FROM  Movies INNER JOIN MovieToGenres ON Movies.movie_ID = MovieToGenres.movie_ID INNER JOIN Genres ON MovieToGenres.genre_ID = Genres.genre_ID WHERE (Genres.genre_string LIKE N'adventure') ";
+            string qry;
+            qry = "SELECT distinct short_title, Movies.*  FROM Movies INNER JOIN MovieToGenres ON Movies.movie_ID = MovieToGenres.movie_ID INNER JOIN Genres ON MovieToGenres.genre_ID = Genres.genre_ID WHERE Genres.genre_string LIKE {0}+'%' ";
+            var res = db.Database.SqlQuery<List<Tuple<string, Movie>>>(qry, genre_params);
+            //var res = db.Movies.SqlQuery(qry, genre_params);
+                //new SqlParameter("@genre_params", genre_params));
+
+            //Trace.WriteLine(res.to);
+
+            string genres_qry;
+            genres_qry =
+                @"SELECT        MovieToGenres.movie_ID, MovieToGenres.genre_ID, Genres.genre_string
+FROM            Genres INNER JOIN
+                         MovieToGenres ON Genres.genre_ID = MovieToGenres.genre_ID";
+            var genres_res =
+                db.Database.SqlQuery<MovieGenreViewModel>(genres_qry);
+
+            var genres_list = genres_res.ToList();
+
+            ViewBag.Params = genre_params;
+
+            ViewBag.Count = 0;
+            ViewBag.Start = 0;
+            ViewBag.TotalMovies = 0;
+
+            var movie_list = res.ToList();
+            
+
+            return View(movie_list);
+
+        }
+
+
+        public class MovieGenreViewModel
+        {
+            public int movie_id { get; set; }
+            public int genre_id { get; set; }
+            public string genre_string { get; set; }
+
         }
 
         public ActionResult Index(int start = 0, int count = 10)

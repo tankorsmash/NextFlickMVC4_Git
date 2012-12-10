@@ -15,6 +15,10 @@
     @ViewBag.section.
 </h3>
 
+@if (ViewBag.Params != null) {
+    <h4>You searched for "@ViewBag.Params"</h4>
+}
+
 <table>
     <tr>
         <th>
