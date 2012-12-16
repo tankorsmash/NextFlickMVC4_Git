@@ -1,0 +1,18 @@
+﻿@model NextFlicksMVC4.NetFlixAPI.Title
+
+@{
+    ViewBag.Title = "Title";
+}
+
+<h2>Title</h2>
+
+<fieldset>
+    <legend>Title</legend>
+    @Html.DisplayNameFor(model => model.TitleString)
+    @Html.DisplayFor(model => model.TitleString)
+
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
