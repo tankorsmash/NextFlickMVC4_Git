@@ -1,4 +1,21 @@
-﻿html {
+﻿.ui-draggable .ui-dialog-titlebar {
+cursor: move;
+}
+
+.ui-widget-header {
+border: 1px solid rgb(170, 170, 170)/*{borderColorHeader}*/;
+background: rgb(204, 204, 204);
+color: rgb(34, 34, 34)/*{fcHeader}*/;
+font-weight: bold;
+}
+
+.ui-dialog#action_params {
+    position: absolute;
+    
+}
+
+
+html {
     background-color: #e2e2e2;
     margin: 0;
     padding: 0;
@@ -6,7 +23,7 @@
 
 body {
     background-color: #fff;
-    border-top: solid 10px #000;
+    border-top: solid 10px #ff0000;
     color: #333;
     font-size: .85em;
     font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
@@ -111,7 +128,7 @@ h5, h6 {
 }
 
     .main-content {
-        background: url("../Images/accent.png") no-repeat;
+        /* background: url("../Images/accent.png") no-repeat; */
         padding-left: 10px;
         padding-top: 30px;
     }
