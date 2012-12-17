@@ -1,11 +1,131 @@
-﻿@model IEnumerable<NextFlicksMVC4.Controllers.MoviesController.MovieWithGenreViewModel>
+﻿@using System.Web.Mvc.Html
+@model IEnumerable<NextFlicksMVC4.Controllers.MoviesController.MovieWithGenreViewModel>
 
 @{
-    ViewBag.Title = "Genres";
+    ViewBag.Title = "/Genres ripoff of index";
+}
+<script>    $(document).ready(function () {
+        $("div#action_params").ready(function () {
+            $("div#action_params").dialog(
+            {
+                position:
+                    { my: "center", at: "top" }
+            });
+        });
+    }); </script>
+
+<h2>
+    Index of @Model.ToList().Count Titles out of @ViewBag.TotalMovies</h2>
+<h3>
+    Items @ViewBag.Start through
+    @{ ViewBag.section = ViewBag.Start + ViewBag.Count;}
+    @ViewBag.section
+</h3>
+@if (ViewBag.SearchTerm != null )
+{
+    <h4>
+        You searched for "@ViewBag.SearchTerm"</h4>
 }
 
-<h2>Genres</h2>
+<div id="action_params" style="background-color: lightblue" title="This Action's Params">
+@if (ViewBag.Params != null) {
+    <p>Here are the possible params to the controller:</p>
+    foreach (string param in ViewBag.Params) {
+        <p>@param</p>
+    }
+}
 
-@Html.DisplayNameFor(Model => Model.movie.short_title)
+</div>
+
+@{ int show_table = 1; }
+@if (show_table == 1) {
+    <table>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.movie.short_title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.movie.year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.movie.runtime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.movie.avg_rating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.movie.tv_rating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.movie.current_season)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.movie.is_movie)
+            </th>
+            @*        <th>
+            @Html.DisplayNameFor(model => model.movie.genres)
+        </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.movie.maturity_rating)
+            </th>
+            <th>
+            @Html.DisplayNameFor(model => model.genre_strings)
+            </th>
+        </tr>
+
+        @foreach (var item in Model) {
+            <tr>
+                <td style="white-space: nowrap">
+                    @*<a href="@Html.DisplayFor(asd => item.web_page)">*@   @*<img src=" @Html.DisplayFor(modelItem => item.boxart_38) " alt="BoxArt" style="vertical-align: middle; height: 60px"/> *@
+                    <span style="line-height: 60px">@Html.DisplayFor(modelItem => item.movie.short_title)</span> @*</a>*@
+                    <span>@Html.ActionLink("details", "Details", new {movie_ID = item.movie.movie_ID})</span>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.movie.year)
+                </td>
+                <td>
+                    @if (item.movie.is_movie) {
+                        @Html.DisplayFor(modelItem => item.movie.runtime)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.movie.avg_rating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.movie.tv_rating)
+                </td>
+                <td>
+                    @if (!(item.movie.is_movie)) {
+                        @Html.DisplayFor(modelItem => item.movie.current_season)
+                        ;
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.movie.is_movie)
+                </td>
+                @*            <td>
+                @Html.DisplayFor(modelItem => item.movie.genres)
+            </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.movie.maturity_rating)
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.genre_strings)</td>
+                @*        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>*@
+            </tr>
+        }
+    </table>
+}
+
+else {
+    <p style="color: blue">table is hidden, showing partial _Titles instead</p>
 
 
+
+foreach (var item in Model) {
+    @Html.Partial("_Title", item)
+    
+}}

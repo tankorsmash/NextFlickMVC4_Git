@@ -13,6 +13,7 @@ using NextFlicksMVC4.NetFlixAPI;
 using System.Timers;
 using NextFlicksMVC4.Helpers;
 using System.Data.SqlClient;
+using System.ComponentModel;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -164,7 +165,8 @@ namespace NextFlicksMVC4.Controllers
 // MovieToGenres ON Movies.movie_ID = MovieToGenres.movie_ID INNER JOIN Genres ON MovieToGenres.genre_ID = Genres.genre_ID 
 // WHERE Genres.genre_string LIKE {0}+'%' ";
             //var res = db.Movies.SqlQuery(qry, genre_params);
-            //var movie_list = res.ToList();
+            //var movie_list = res.ToList();
+
             //loop over Movies and create a MovieWithGenreViewModel for each
             //var MwG_list = new List<MovieWithGenreViewModel>();
             //foreach (Movie movie in movie_list) {
@@ -177,11 +179,11 @@ SELECT        MovieToGenres.genre_ID, MovieToGenres.movie_ID, Genres.genre_strin
 FROM            MovieToGenres INNER JOIN
                          Genres ON MovieToGenres.genre_ID = Genres.genre_ID
 WHERE        (MovieToGenres.movie_ID IN
-                             (SELECT DISTINCT Movies.movie_ID AS movieid
-                               FROM            Movies INNER JOIN
-                                   MovieToGenres AS MovieToGenres_1 ON Movies.movie_ID = MovieToGenres_1.movie_ID INNER JOIN
-                                   Genres AS Genres_1 ON MovieToGenres_1.genre_ID = Genres_1.genre_ID
-                               WHERE        (Genres_1.genre_string LIKE {0}+'%'))) ";
+                     (SELECT DISTINCT Movies.movie_ID AS movieid
+                       FROM            Movies INNER JOIN
+                           MovieToGenres AS MovieToGenres_1 ON Movies.movie_ID = MovieToGenres_1.movie_ID INNER JOIN
+                           Genres AS Genres_1 ON MovieToGenres_1.genre_ID = Genres_1.genre_ID
+                       WHERE        (Genres_1.genre_string LIKE {0}+'%'))) ";
 
             var res = db.Database.SqlQuery<MovieToGenreViewModel>(qry,
                                                                   genre_params);
@@ -200,30 +202,24 @@ WHERE        (MovieToGenres.movie_ID IN
                 
             }
 
+            //a list of all movies that are in the dict of movie_id[genre_str]
+            var matched_movies = db.Movies.Where(movie => dict_movId_genStr.Keys.Contains(movie.movie_ID)).ToList();
 
 
             var MwG_list = new List<MovieWithGenreViewModel>();
-            //foreach (var movie in movie_list) {
-            //    MwG_list.Add(new MovieWithGenreViewModel {movie = movie,
-            //    genre_strings = new List<string>()});
-            //}
+            foreach (var movie in matched_movies)
+            {
+                MwG_list.Add(new MovieWithGenreViewModel
+                {
+                    movie = movie,
+                    genre_strings = dict_movId_genStr[movie.movie_ID]
+                });
+            }
 
-            ///Grab all the genres and movie_id
-            string genres_qry;
-            genres_qry = @"
- SELECT MovieToGenres.movie_ID, MovieToGenres.genre_ID, Genres.genre_string
- FROM Genres 
- INNER JOIN MovieToGenres ON Genres.genre_ID = MovieToGenres.genre_ID
- WHERE MovieToGenres.movie_ID in ({0}) ";
-// WHERE Genres.genre_string LIKE {0}+'%' ";
-            //List<int> movie_id_list = MwG_list.FindAll(item => item.movie.movie_ID)
-            //List<int> movie_id_list = movie_list.Select(movie => movie.movie_ID).ToList();
-            //string movie_id_list_string = String.Join(", ", movie_id_list.GetRange(0,10));
-            //var genres_res =
-            //    db.Database.SqlQuery<MovieToGenreViewModel>(genres_qry);
-            //var genres_list = genres_res.ToList();
+
 
             ViewBag.SearchTerms = genre_params;
+            ViewBag.Params = GetAllParamNames("Genres");
 
             ViewBag.Count = 0;
             ViewBag.Start = 0;
@@ -231,18 +227,6 @@ WHERE        (MovieToGenres.movie_ID IN
 
 
 
-
-            ////go through each genre and add it to the proper movie
-            //foreach (MovieToGenreViewModel movieToGenreViewModel in genres_list) {
-            //    //LINQ FIND the movieWithgenre's movieid that matched the current mTOgenre movie_id and then
-            //    // add the string to the found mWg instance
-            //    MovieWithGenreViewModel movieWithGenreViewModel = MwG_list.Find(
-            //        item =>
-            //        item.movie.movie_ID == movieToGenreViewModel.movie_id);
-            //    //add the genre_string to the movieWithGenre
-            //    movieWithGenreViewModel.genre_strings.Add(movieToGenreViewModel.genre_string);
-            //}
-            
 
             return View(MwG_list);
 
@@ -259,6 +243,8 @@ WHERE        (MovieToGenres.movie_ID IN
         public  class MovieWithGenreViewModel
         {
             public Movie movie { get; set; }
+
+            [DisplayName("List of Genres")]
             public List<string> genre_strings { get; set; } 
         }
 
