@@ -133,47 +133,8 @@ namespace NextFlicksMVC4.Controllers
         {
             MovieDbContext db = new MovieDbContext();
 
-            ////find the genre_id of genre
-            //string gen_qry = "select genre_id from Genres where genre_string = {0}";
-            //var gen_res = db.Database.SqlQuery<int>(gen_qry, genre);
-            //var genre_id =  gen_res.ElementAt(0);
-
-            ////select all movie_id that have a match for genre_id
-            //string match_qry = "select movie_id from MovieToGenres where genre_id = {0}";
-            //var match_res = db.Database.SqlQuery<List<int>>(match_qry, genre_id);
-            //var match_list = match_res.ToList();
-
-            ////select all movies from Movies where the movie_ids are found 
-
-
-            ////select all movies that have the genre_id in them
-
-
-            //select movies that match a genre_string
-//            string qry = "" +
-//"SELECT        Movies.* " +
-//"FROM            Movies INNER JOIN " +
-//"MovieToGenres ON Movies.movie_ID = MovieToGenres.movie_ID INNER JOIN " +
-//"Genres ON MovieToGenres.genre_ID = Genres.genre_ID " +
-//"WHERE        (Genres.genre_string LIKE N'{0}%')";
-
-            ///Grab all the movies from the db that match the genre_String
+   
             string qry;
-//            qry = @"
-// SELECT distinct short_title, Movies.*
-// FROM Movies INNER JOIN
-// MovieToGenres ON Movies.movie_ID = MovieToGenres.movie_ID INNER JOIN Genres ON MovieToGenres.genre_ID = Genres.genre_ID 
-// WHERE Genres.genre_string LIKE {0}+'%' ";
-            //var res = db.Movies.SqlQuery(qry, genre_params);
-            //var movie_list = res.ToList();
-
-            //loop over Movies and create a MovieWithGenreViewModel for each
-            //var MwG_list = new List<MovieWithGenreViewModel>();
-            //foreach (Movie movie in movie_list) {
-            //    MwG_list.Add(new MovieWithGenreViewModel {movie = movie,
-            //    genre_strings = new List<string>()});
-            //}
-
             qry = @"
 SELECT        MovieToGenres.genre_ID, MovieToGenres.movie_ID, Genres.genre_string
 FROM            MovieToGenres INNER JOIN
@@ -199,7 +160,6 @@ WHERE        (MovieToGenres.movie_ID IN
                 }
 
                 dict_movId_genStr[movieToGenreViewModel.movie_id].Add(movieToGenreViewModel.genre_string);
-                
             }
 
             //a list of all movies that are in the dict of movie_id[genre_str]
@@ -216,9 +176,9 @@ WHERE        (MovieToGenres.movie_ID IN
                 });
             }
 
-
-
+            //to show a given view what the user searched for
             ViewBag.SearchTerms = genre_params;
+            //relectively get the list of parameters for this method and pass them to the view
             ViewBag.Params = GetAllParamNames("Genres");
 
             ViewBag.Count = 0;
