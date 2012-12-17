@@ -1,18 +1,14 @@
 ﻿@model NextFlicksMVC4.Models.Movie
-
 @* This is a page for showing each individual title/Movie
 
 Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  *@
-
 <div>
-@Html.DisplayFor(model => model.short_title)
-<br/>
-@Html.DisplayFor(model => model.year)
-@Html.DisplayFor(model => model.runtime)
-    @Html.DisplayFor(model => model.maturity_rating)  
-    
-    <br/>
-    @{ var webpage = String.Format("http://www.netflix.com/{0}", Html.DisplayFor(model => model.web_page));}
-    <a href=@webpage>Movie Page</a>
+    @Html.DisplayFor(model => model.short_title)
+    <br />
+    @Html.DisplayFor(model => model.year)
+    @Html.DisplayFor(model => model.runtime)
+    @Html.DisplayFor(model => model.maturity_rating)
+    <br />
+    <a href=@Html.DisplayFor(model => model.web_page) >Movie Page</a>
 </div>
-<br/>
+<br />

@@ -168,9 +168,18 @@ WHERE    (MovieToGenres.movie_ID IN
             }
 
             //a list of all movies that are in the dict of movie_id[genre_str]
-            var matched_movies = db.Movies.Where(movie => dict_movId_genStr.Keys.Contains(movie.movie_ID)).ToList();
+            var matched_movies =
+                db.Movies.Where(
+                    movie => dict_movId_genStr.Keys.Contains(movie.movie_ID))
+                  .ToList();
+            var matched_boxarts =
+                db.BoxArts.Where(
+                    boxart => dict_movId_genStr.Keys.Contains(boxart.movie_ID))
+                  .ToList();
 
 
+            //add the genres and Movie to the ViewModel
+            Trace.WriteLine("Creating ViewModel with Genres and Movies");
             var MwG_list = new List<MovieWithGenreViewModel>();
             foreach (var movie in matched_movies)
             {
@@ -180,6 +189,15 @@ WHERE    (MovieToGenres.movie_ID IN
                     genre_strings = dict_movId_genStr[movie.movie_ID]
                 });
             }
+            //add the BoxArts to the viewmodel
+            Trace.WriteLine("Adding the boxArts");
+            foreach (BoxArt matchedBoxart in matched_boxarts) {
+                var viewModel =
+                    MwG_list.First(
+                        movie => movie.movie.movie_ID == matchedBoxart.movie_ID);
+                viewModel.boxart = matchedBoxart;
+            }
+            Trace.WriteLine("Done adding boxarts in Genres");
 
             //to show a given view what the user searched for
             ViewBag.SearchTerms = genre_params;
@@ -211,7 +229,9 @@ WHERE    (MovieToGenres.movie_ID IN
 
             [DisplayName("List of Genres")]
             [DataType("CommaList")]
-            public List<string> genre_strings { get; set; } 
+            public List<string> genre_strings { get; set; }
+
+            public BoxArt boxart { get; set; }
         }
 
         public ActionResult Index(int start = 0, int count = 10)
