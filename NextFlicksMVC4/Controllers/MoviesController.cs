@@ -14,6 +14,7 @@ using System.Timers;
 using NextFlicksMVC4.Helpers;
 using System.Data.SqlClient;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -133,18 +134,22 @@ namespace NextFlicksMVC4.Controllers
         {
             MovieDbContext db = new MovieDbContext();
 
-   
-            string qry;
+            //make sure params are set
+            if (genre_params == "")
+            {
+                genre_params = "nothing";
+            }
+
+        string qry;
             qry = @"
-SELECT        MovieToGenres.genre_ID, MovieToGenres.movie_ID, Genres.genre_string
-FROM            MovieToGenres INNER JOIN
-                         Genres ON MovieToGenres.genre_ID = Genres.genre_ID
-WHERE        (MovieToGenres.movie_ID IN
-                     (SELECT DISTINCT Movies.movie_ID AS movieid
-                       FROM            Movies INNER JOIN
-                           MovieToGenres AS MovieToGenres_1 ON Movies.movie_ID = MovieToGenres_1.movie_ID INNER JOIN
-                           Genres AS Genres_1 ON MovieToGenres_1.genre_ID = Genres_1.genre_ID
-                       WHERE        (Genres_1.genre_string LIKE {0}+'%'))) ";
+SELECT    MovieToGenres.genre_ID, MovieToGenres.movie_ID, Genres.genre_string
+FROM        MovieToGenres INNER JOIN
+                     Genres ON MovieToGenres.genre_ID = Genres.genre_ID
+WHERE    (MovieToGenres.movie_ID IN
+        (SELECT DISTINCT Movies.movie_ID AS movieid FROM Movies INNER JOIN
+  MovieToGenres AS MovieToGenres_1 ON Movies.movie_ID = MovieToGenres_1.movie_ID INNER JOIN
+  Genres AS Genres_1 ON MovieToGenres_1.genre_ID = Genres_1.genre_ID
+          WHERE        (Genres_1.genre_string LIKE {0}+'%'))) ";
 
             var res = db.Database.SqlQuery<MovieToGenreViewModel>(qry,
                                                                   genre_params);
@@ -205,6 +210,7 @@ WHERE        (MovieToGenres.movie_ID IN
             public Movie movie { get; set; }
 
             [DisplayName("List of Genres")]
+            [DataType("CommaList")]
             public List<string> genre_strings { get; set; } 
         }
 

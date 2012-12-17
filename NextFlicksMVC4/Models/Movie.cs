@@ -28,9 +28,11 @@ namespace NextFlicksMVC4.Models
         [DisplayName("MPAA Rating")]
         public string tv_rating { get; set; }
 
+        [DataType("NetflixWebPage")]
         public string web_page { get; set; }
 
         [DisplayName("Ssn")]
+        
         public string current_season { get; set; }
 
         [DisplayName("Is a Movie")]
@@ -80,27 +82,49 @@ namespace NextFlicksMVC4.Models
         public virtual int movie_ID { get; set; }
 
         [DisplayName("Box Art Size 38")]
+        [DataType("BoxArtUrl")]
         public string boxart_38 { get; set; }
+
         [DisplayName("Box Art Size 64")]
+        [DataType("BoxArtUrl")]
         public string boxart_64 { get; set; }
+
         [DisplayName("Box Art Size 110")]
+        [DataType("BoxArtUrl")]
         public string boxart_110 { get; set; }
+
         [DisplayName("Box Art Size 124")]
+        [DataType("BoxArtUrl")]
         public string boxart_124 { get; set; }
+
         [DisplayName("Box Art Size 150")]
+        [DataType("BoxArtUrl")]
         public string boxart_150 { get; set; }
+
         [DisplayName("Box Art Size 166")]
+        [DataType("BoxArtUrl")]
         public string boxart_166 { get; set; }
+
         [DisplayName("Box Art Size 88")]
+        [DataType("BoxArtUrl")]
         public string boxart_88 { get; set; }
+
         [DisplayName("Box Art Size 197")]
+        [DataType("BoxArtUrl")]
         public string boxart_197 { get; set; }
+
         [DisplayName("Box Art Size 176")]
+        [DataType("BoxArtUrl")]
         public string boxart_176 { get; set; }
+
         [DisplayName("Box Art Size 284")]
+        [DataType("BoxArtUrl")]
         public string boxart_284 { get; set; }
+
         [DisplayName("Box Art Size 210")]
+        [DataType("BoxArtUrl")]
         public string boxart_210 { get; set; }
+
     }
 
 
