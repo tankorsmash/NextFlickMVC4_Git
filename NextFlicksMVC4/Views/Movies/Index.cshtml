@@ -14,6 +14,8 @@
         });
     }); </script>
 
+
+
 <h2>
     Index of @Model.ToList().Count Titles out of @ViewBag.TotalMovies</h2>
 <h3>
@@ -125,5 +127,4 @@ else {
 
 foreach (var item in Model) {
     @Html.Partial("_Title", item)
-    
 }}

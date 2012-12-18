@@ -140,16 +140,24 @@ namespace NextFlicksMVC4.Controllers
                 genre_params = "nothing";
             }
 
-        string qry;
-            qry = @"
-SELECT    MovieToGenres.genre_ID, MovieToGenres.movie_ID, Genres.genre_string
-FROM        MovieToGenres INNER JOIN
-                     Genres ON MovieToGenres.genre_ID = Genres.genre_ID
-WHERE    (MovieToGenres.movie_ID IN
-        (SELECT DISTINCT Movies.movie_ID AS movieid FROM Movies INNER JOIN
-  MovieToGenres AS MovieToGenres_1 ON Movies.movie_ID = MovieToGenres_1.movie_ID INNER JOIN
-  Genres AS Genres_1 ON MovieToGenres_1.genre_ID = Genres_1.genre_ID
-          WHERE        (Genres_1.genre_string LIKE {0}+'%'))) ";
+            string qry = @"
+SELECT movietogenres.genre_id, 
+       movietogenres.movie_id, 
+       genres.genre_string 
+FROM   movietogenres 
+       INNER JOIN genres 
+               ON movietogenres.genre_id = genres.genre_id 
+WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid 
+                                    FROM   movies 
+                                           INNER JOIN movietogenres AS 
+                                                      MovieToGenres_1 
+                                                   ON movies.movie_id = 
+                                                      MovieToGenres_1.movie_id 
+                                           INNER JOIN genres AS Genres_1 
+                                                   ON MovieToGenres_1.genre_id = 
+                                                      Genres_1.genre_id 
+                                    WHERE  ( Genres_1.genre_string LIKE {0} + 
+                                             '%' )) ) ";
 
             var res = db.Database.SqlQuery<MovieToGenreViewModel>(qry,
                                                                   genre_params);
@@ -207,9 +215,6 @@ WHERE    (MovieToGenres.movie_ID IN
             ViewBag.Count = 0;
             ViewBag.Start = 0;
             ViewBag.TotalMovies = 0;
-
-
-
 
             return View(MwG_list);
 
