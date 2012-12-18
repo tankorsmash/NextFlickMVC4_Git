@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using NextFlicksMVC4;
+using NextFlicksMVC4.DatabaseClasses;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 using System.Timers;
@@ -141,76 +142,10 @@ namespace NextFlicksMVC4.Controllers
                 genre_params = "nothing";
             }
 
-            //if (count % 3)
-
-            string qry = @"
-SELECT movietogenres.genre_id, 
-       movietogenres.movie_id, 
-       genres.genre_string 
-FROM   movietogenres 
-       INNER JOIN genres 
-               ON movietogenres.genre_id = genres.genre_id 
-WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid 
-                                    FROM   movies 
-                                           INNER JOIN movietogenres AS 
-                                                      MovieToGenres_1 
-                                                   ON movies.movie_id = 
-                                                      MovieToGenres_1.movie_id 
-                                           INNER JOIN genres AS Genres_1 
-                                                   ON MovieToGenres_1.genre_id = 
-                                                      Genres_1.genre_id 
-                                    WHERE  ( Genres_1.genre_string LIKE {0} + 
-                                             '%' )) ) ";
-
-            
-
-            var res = db.Database.SqlQuery<MovieToGenreViewModel>(qry,
-                                                                  genre_params);
-            List<MovieToGenreViewModel> movie_list = res.ToList();
-            //loop over MtG and fill a dict with the associated strings per movie
-            Dictionary<int, List<string>> dict_movId_genStr = new Dictionary<int, List<string>>();
-            //fo each model, add its genre string to a key of movie id, so there's one movie ID to several genre strings
-            foreach (MovieToGenreViewModel movieToGenreViewModel in movie_list) {
-                //if dict does not contain an entry for the key, make one, and inst
-                // a list for it too
-                if (!dict_movId_genStr.ContainsKey(movieToGenreViewModel.movie_id)) {
-                    dict_movId_genStr[movieToGenreViewModel.movie_id] = new List<string>();
-                }
-
-                dict_movId_genStr[movieToGenreViewModel.movie_id].Add(movieToGenreViewModel.genre_string);
-            }
-
-            //a list of all movies that are in the dict of movie_id[genre_str]
-            var matched_movies =
-                db.Movies.Where(
-                    movie => dict_movId_genStr.Keys.Contains(movie.movie_ID))
-                  .ToList();
-            var matched_boxarts =
-                db.BoxArts.Where(
-                    boxart => dict_movId_genStr.Keys.Contains(boxart.movie_ID))
-                  .ToList();
 
 
-            //add the genres and Movie to the ViewModel
-            Trace.WriteLine("Creating ViewModel with Genres and Movies");
-            var MwG_list = new List<MovieWithGenreViewModel>();
-            foreach (var movie in matched_movies)
-            {
-                MwG_list.Add(new MovieWithGenreViewModel
-                {
-                    movie = movie,
-                    genre_strings = dict_movId_genStr[movie.movie_ID]
-                });
-            }
-            //add the BoxArts to the viewmodel
-            Trace.WriteLine("Adding the boxArts");
-            foreach (BoxArt matchedBoxart in matched_boxarts) {
-                var viewModel =
-                    MwG_list.First(
-                        movie => movie.movie.movie_ID == matchedBoxart.movie_ID);
-                viewModel.boxart = matchedBoxart;
-            }
-            Trace.WriteLine("Done adding boxarts in Genres");
+            //returns a list of MoviesWithGenresVM that contain genre_params
+            var MwG_list = ModelBuilder.CreateMovieWithGenreViewModelList(db, genre_params);
 
             //to show a given view what the user searched for
             ViewBag.SearchTerms = genre_params;
@@ -228,7 +163,8 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
 
         }
 
-        
+      
+
 
         public class MovieToGenreViewModel
         {
