@@ -2,8 +2,8 @@
 @*@model NextFlicksMVC4.Models.Movie*@ @* This is a page for showing each individual title/Movie
 
 Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  *@
-<div id=@Html.DisplayFor(model => model.movie.movie_ID) class="title_entry">
-    <div class="column_title">
+<div class="column_title">
+    <div id=@Html.DisplayFor(model => model.movie.movie_ID) class="title_entry">
         <div class="title_boxart">
             <img src=@Html.DisplayFor(model => model.boxart.boxart_38) />
         </div>
@@ -24,4 +24,3 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
         </div>
     </div>
 </div>
-<br />

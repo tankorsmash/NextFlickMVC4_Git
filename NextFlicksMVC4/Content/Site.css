@@ -28,6 +28,7 @@ div.title_entry {
 
 .column_title {
     float: left;
+    padding: 5px;
 }
 
 .title_entry .title_boxart {

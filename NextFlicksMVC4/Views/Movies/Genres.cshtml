@@ -132,26 +132,17 @@ else {
 
 
 @foreach (var item in Model) {
-    <div class="column_title">
         @Html.Partial("_Title", item)
-    </div>
 }
 
 
-@*@{List<MoviesController.MovieWithGenreViewModel> title_list = Model.ToList();}
-
+@*@{List<MoviesController.MovieWithGenreViewModel> title_list = Model.ToList();} 
     @{
         for (int i = 0; i < title_list.Count; i += 3) {
             <div class="row_title" >
-                <div id=@i class="column_title">
                     @{ Html.RenderPartial("_Title", title_list[i]); }
-                </div>
-                <div id=@i+1 class="column_title">
                     @{ Html.RenderPartial("_Title", title_list[i+1]); }
-                </div>
-                <div id=@i+2 class="column_title">
                     @{ Html.RenderPartial("_Title", title_list[i+2]); }
-                </div>
             </div>
 
         }

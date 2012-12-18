@@ -161,6 +161,8 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
                                     WHERE  ( Genres_1.genre_string LIKE {0} + 
                                              '%' )) ) ";
 
+            
+
             var res = db.Database.SqlQuery<MovieToGenreViewModel>(qry,
                                                                   genre_params);
             List<MovieToGenreViewModel> movie_list = res.ToList();
@@ -225,6 +227,7 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
 
         }
 
+        
 
         public class MovieToGenreViewModel
         {
