@@ -89,16 +89,16 @@ namespace NextFlicksMVC4.Controllers
             return View(@"~/Views/Home/About.cshtml");
         }
 
-        public ActionResult Title()
-        {
-            Title title = new Title
-                              {
-                                  TitleString = "Terminator",
-                                  ReleaseYear = "1995",
-                              };
+        //public ActionResult Title()
+        //{
+        //    Title title = new Title
+        //                      {
+        //                          TitleString = "Terminator",
+        //                          ReleaseYear = "1995",
+        //                      };
 
-            return View(title);
-        }
+        //    return View(title);
+        //}
 
 
 
@@ -132,7 +132,7 @@ namespace NextFlicksMVC4.Controllers
         /// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
         /// </summary>
         /// <returns></returns>
-        public ActionResult Genres(string genre_params = "action", int count= 25)
+        public ActionResult Genres(string genre_params = "action", int count= 25, int start = 0)
         {
             MovieDbContext db = new MovieDbContext();
 
@@ -152,14 +152,16 @@ namespace NextFlicksMVC4.Controllers
             //relectively get the list of parameters for this method and pass them to the view
             ViewBag.Params = GetAllParamNames("Genres");
 
-            ViewBag.Count = 0;
-            ViewBag.Start = 0;
-            ViewBag.TotalMovies = 0;
+
 
             if (count > MwG_list.Count)
                 count = MwG_list.Count;
 
-            return View(MwG_list.GetRange(0,count));
+            ViewBag.Count = count;
+            ViewBag.Start = start;
+            ViewBag.TotalMovies = MwG_list.Count;
+
+            return View(MwG_list.GetRange(start,count));
 
         }
 
@@ -190,15 +192,18 @@ namespace NextFlicksMVC4.Controllers
 
             //create a query string to full the proper count of movies from db
             Trace.WriteLine("Creating a query string");
-            string qry = "select * from" +
-                         " ( select " +
-                         "  ROW_NUMBER() over (order by movie_id) as rownum," +
-                         " *" +
-                         " from Movies) foo" +
-                         " where rownum  between {0} and {1}";
-            var res = db.Movies.SqlQuery(qry, start, start + count);
-            Trace.WriteLine("creating a list from the query");
-            var fullList = res.ToList();
+            //string qry = "select * from" +
+            //             " ( select " +
+            //             "  ROW_NUMBER() over (order by movie_id) as rownum," +
+            //             " *" +
+            //             " from Movies) foo" +
+            //             " where rownum  between {0} and {1}";
+            //var res = db.Movies.SqlQuery(qry, start, start + count);
+            //Trace.WriteLine("creating a list from the query");
+            //var fullList = res.ToList();
+
+            //select a range of items, with linq rather than with query
+            var fullList = db.Movies.OrderBy(item => item.movie_ID).Skip(start).Take(count).ToList();
 
             //count the total movies in DB
             string count_qry = "select count(movie_id) from Movies";
@@ -289,8 +294,6 @@ namespace NextFlicksMVC4.Controllers
 
 
             //------------------------------------------------------
-
-
 
             Trace.WriteLine("starting data read");
             msg = DateTime.Now.ToShortTimeString();
