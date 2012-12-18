@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -263,7 +264,7 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             Trace.WriteLine("creating a list from the query");
             var fullList = res.ToList();
 
-            //total movies in DB
+            //count the total movies in DB
             string count_qry = "select count(movie_id) from Movies";
             var count_res = db.Database.SqlQuery<int>(count_qry);
             int count_count = count_res.ElementAt(0);
@@ -274,7 +275,6 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             ViewBag.Count = count;
 
             //Param names
-            //ViewBag.Params = GetParamName(typeof(MoviesController).GetMethod("Index"), 0);
             ViewBag.Params = GetAllParamNames("Index");
 
             //make sure there's not a outofbounds
@@ -287,8 +287,17 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             Trace.WriteLine("Get ranging");
             var full_range = fullList.GetRange(0, count);
 
+
+            //turn all the movies into MovieWithGenresViewModel
+            var MwG_list = new List<MovieWithGenreViewModel>();
+            foreach (Movie movie in full_range) {
+                var MwG = new MovieWithGenreViewModel {movie = movie};
+                MwG_list.Add(MwG);
+            }
+            IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
+
             Trace.WriteLine("Returning View");
-            return View(full_range);
+            return View("Genres",MwG_ienum);
         }
 
         public ActionResult Table(int start = 0, int count = 10)
