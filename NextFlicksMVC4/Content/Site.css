@@ -39,6 +39,11 @@ div.title_entry {
 .title_entry .title_title {
     position: absolute;
     left: 55px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 65%;
+                 
 }
 
 .title_entry .title_year {
