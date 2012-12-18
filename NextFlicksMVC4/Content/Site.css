@@ -19,16 +19,25 @@ font-weight: bold;
 div.title_entry {
     position: relative;
     display: block;
-    width: 600px;
+    width: 300px;
     height: 3pc;
 }
 /* .title_entry > * {
     position: relative;
 } */
 
+.column_title {
+    float: left;
+}
+
+.title_entry .title_boxart {
+    position: absolute;
+    left: 0;
+}
+
 .title_entry .title_title {
     position: absolute;
-    left: 15px;
+    left: 55px;
 }
 
 .title_entry .title_year {
@@ -37,7 +46,7 @@ div.title_entry {
 }
        .title_entry .title_runtime {
     position: absolute;
-    left: 15px;
+    left: 55px;
            top: 15px;
 }
 
@@ -49,7 +58,7 @@ div.title_entry {
 
 .title_entry .title_webpage {
     position: absolute;
-    left: 15px;
+    left: 53px;
     top: 30px;
 }
 /* non-customized stuff layout, I think

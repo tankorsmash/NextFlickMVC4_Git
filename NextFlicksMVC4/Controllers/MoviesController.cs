@@ -130,7 +130,7 @@ namespace NextFlicksMVC4.Controllers
         /// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
         /// </summary>
         /// <returns></returns>
-        public ActionResult Genres(string genre_params = "action")
+        public ActionResult Genres(string genre_params = "action", int count= 25)
         {
             MovieDbContext db = new MovieDbContext();
 
@@ -139,6 +139,8 @@ namespace NextFlicksMVC4.Controllers
             {
                 genre_params = "nothing";
             }
+
+            //if (count % 3)
 
             string qry = @"
 SELECT movietogenres.genre_id, 
@@ -216,7 +218,10 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             ViewBag.Start = 0;
             ViewBag.TotalMovies = 0;
 
-            return View(MwG_list);
+            if (count > MwG_list.Count)
+                count = MwG_list.Count;
+
+            return View(MwG_list.GetRange(0,count));
 
         }
 

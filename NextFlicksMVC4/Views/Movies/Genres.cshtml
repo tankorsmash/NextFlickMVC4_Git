@@ -1,4 +1,5 @@
 ﻿@using System.Web.Mvc.Html
+@using NextFlicksMVC4.Controllers
 @model IEnumerable<NextFlicksMVC4.Controllers.MoviesController.MovieWithGenreViewModel>
 
 @{
@@ -40,7 +41,8 @@
 </div>
 
 @{ int show_table = 1; }
-@if (show_table == 1) {
+
+@if (show_table == 0) {
     <table>
         <tr>
             <th>
@@ -71,12 +73,11 @@
                 @Html.DisplayNameFor(model => model.movie.maturity_rating)
             </th>
             <th>
-            @Html.DisplayNameFor(model => model.genre_strings)
+                @Html.DisplayNameFor(model => model.genre_strings)
             </th>
         </tr>
 
-        @foreach (var item in Model)
-        {
+        @foreach (var item in Model) {
             <tr>
                 <td style="white-space: nowrap">
                     @*<a href="@Html.DisplayFor(asd => item.web_page)">*@
@@ -127,10 +128,31 @@
 
 else {
     <p style="color: blue">table is hidden, showing partial _Titles instead</p>
+}
 
 
+@foreach (var item in Model) {
+    <div class="column_title">
+        @Html.Partial("_Title", item)
+    </div>
+}
 
-foreach (var item in Model) {
-    @Html.Partial("_Title", item)
-    
-}}
+
+@*@{List<MoviesController.MovieWithGenreViewModel> title_list = Model.ToList();}
+
+    @{
+        for (int i = 0; i < title_list.Count; i += 3) {
+            <div class="row_title" >
+                <div id=@i class="column_title">
+                    @{ Html.RenderPartial("_Title", title_list[i]); }
+                </div>
+                <div id=@i+1 class="column_title">
+                    @{ Html.RenderPartial("_Title", title_list[i+1]); }
+                </div>
+                <div id=@i+2 class="column_title">
+                    @{ Html.RenderPartial("_Title", title_list[i+2]); }
+                </div>
+            </div>
+
+        }
+    }*@

@@ -1,22 +1,27 @@
-﻿@model NextFlicksMVC4.Models.Movie
-@* This is a page for showing each individual title/Movie
+﻿@model NextFlicksMVC4.Controllers.MoviesController.MovieWithGenreViewModel
+@*@model NextFlicksMVC4.Models.Movie*@ @* This is a page for showing each individual title/Movie
 
 Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  *@
-<div id=@Html.DisplayFor(model => model.movie_ID) class="title_entry">
-    <div class="title_title">
-        @Html.DisplayFor(model => model.short_title)
-    </div>
-    <div class="title_year">
-        @Html.DisplayFor(model => model.year)
-    </div>
-    <div class="title_runtime">
-        @Html.DisplayFor(model => model.runtime)
-    </div>
-    <div class="title_maturity">
-        @Html.DisplayFor(model => model.maturity_rating)
-    </div>
-    <div class="title_webpage">
-        <a href=@Html.DisplayFor(model => model.web_page) >Movie Page</a>
+<div id=@Html.DisplayFor(model => model.movie.movie_ID) class="title_entry">
+    <div class="column_title">
+        <div class="title_boxart">
+            <img src=@Html.DisplayFor(model => model.boxart.boxart_38) />
+        </div>
+        <div class="title_title">
+            @Html.DisplayFor(model => model.movie.short_title)
+        </div>
+        <div class="title_year">
+            @Html.DisplayFor(model => model.movie.year)
+        </div>
+        <div class="title_runtime">
+            @Html.DisplayFor(model => model.movie.runtime)
+        </div>
+        <div class="title_maturity">
+            @Html.DisplayFor(model => model.movie.maturity_rating)
+        </div>
+        <div class="title_webpage">
+            <a href=@Html.DisplayFor(model => model.movie.web_page) >Movie Page</a>
+        </div>
     </div>
 </div>
 <br />
