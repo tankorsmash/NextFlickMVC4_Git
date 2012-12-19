@@ -124,7 +124,8 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
         /// </summary>
         /// <param name="movie_list"></param>
         /// <returns>a list of MovieWithGenreViewModels </returns>
-        public static List<MoviesController.MovieWithGenreViewModel> CreateListOfMtGVM(MovieDbContext db,
+        public static List<MoviesController.MovieWithGenreViewModel>
+            CreateListOfMtGVM(MovieDbContext db,
             List<Movie> movie_list)
         {
             //find all MtGs with movie_id matching movie_list
@@ -132,39 +133,22 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             //find all genre strings from a list of MtGs
             var movie_to_genre_string_dict = GetDictOfMovieIdsToGenreStrings(db, MtG_list);
             
-            List<BoxArt>  boxart_list = new List<BoxArt>();
-            List<int> movie_id_list= new List<int>();
-            movie_id_list = movie_list.Select(item2 => item2.movie_ID).ToList();
-            boxart_list = db.BoxArts.Where(
-                item => movie_id_list.Contains(item.movie_ID)).ToList();
-
-            ////TODO: more harcoding that needs to be solved
-            //boxart_list.Add(new BoxArt
-            //                    {
-            //                        movie_ID = 1,
-
-            //                        boxart_38 = "6597/166597",
-            //                        boxart_64 = "5818/275818",
-            //                        boxart_110 = "4232/494232",
-            //                        boxart_124 = "6242/626242",
-            //                        boxart_150 = "9783/729783",
-            //                        boxart_166 = "8873/828873",
-            //                        boxart_88 = "5054/385054",
-            //                        boxart_197 = "8251/938251",
-            //                        boxart_176 = "3400/1373400",
-            //                        boxart_284 = "0277/1060277",
-            //                        boxart_210 = "4412/1004412" 
-            //                    });
+            //select all boxarts that match a movie_id from the list
+            var boxart_list = GetListOfBoxarts(db, movie_list);
 
             //add all the genre definitions and boxarts to the appropriate movie and return that
+
+            //fill a list with new MwGVMs based on the movie, genre_strings and boxarts
             var MwG_list =
                 movie_list.Select(
                     movie => new MoviesController.MovieWithGenreViewModel
                                  {
+                                     //movie
                                      movie = movie,
                                      genre_strings =
                                          movie_to_genre_string_dict[
                                              movie.movie_ID],
+                                     //boxart
                                      boxart =
                                          boxart_list.First(
                                              item =>
@@ -172,10 +156,20 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
                                  }).ToList();
 
 
-            Trace.WriteLine(MtG_list.Count.ToString());
+            //Trace.WriteLine(MtG_list.Count.ToString());
 
 
             return MwG_list;
+        }
+
+        public static List<BoxArt> GetListOfBoxarts(MovieDbContext db, List<Movie> movie_list)
+        {
+            List<BoxArt> boxart_list = new List<BoxArt>();
+            List<int> movie_id_list = new List<int>();
+            movie_id_list = movie_list.Select(item2 => item2.movie_ID).ToList();
+            boxart_list = db.BoxArts.Where(
+                item => movie_id_list.Contains(item.movie_ID)).ToList();
+            return boxart_list;
         }
 
         public static Dictionary<int, List<string>> GetDictOfMovieIdsToGenreStrings(MovieDbContext db,
@@ -211,9 +205,7 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
                     genre_definitions[movieToGenre.genre_ID]);
             }
 
-            ////todo: fix TERRIBLE solution to missing values
-            ////hard code the missing value
-            //movie_to_genre_string_dict[1] = new List<string> { "Cult Movies", "Horror Movies", "Cult Horror Movies", "Satanic Stories", "Supernatural Horror Movies" };
+
 
             return movie_to_genre_string_dict;
         }

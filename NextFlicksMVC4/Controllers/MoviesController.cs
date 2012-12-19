@@ -238,11 +238,8 @@ namespace NextFlicksMVC4.Controllers
 
 
             //turn all the movies into MovieWithGenresViewModel
-            var MwG_list = new List<MovieWithGenreViewModel>();
-            foreach (Movie movie in full_range) {
-                var MwG = new MovieWithGenreViewModel {movie = movie};
-                MwG_list.Add(MwG);
-            }
+            var MwG_list = ModelBuilder.CreateListOfMtGVM(db,full_range);
+
             IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
 
             Trace.WriteLine("Returning View");
