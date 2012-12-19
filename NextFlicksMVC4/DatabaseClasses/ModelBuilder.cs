@@ -138,23 +138,23 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             boxart_list = db.BoxArts.Where(
                 item => movie_id_list.Contains(item.movie_ID)).ToList();
 
-            //TODO: more harcoding that needs to be solved
-            boxart_list.Add(new BoxArt
-                                {
-                                    movie_ID = 1,
+            ////TODO: more harcoding that needs to be solved
+            //boxart_list.Add(new BoxArt
+            //                    {
+            //                        movie_ID = 1,
 
-                                    boxart_38 = "6597/166597",
-                                    boxart_64 = "5818/275818",
-                                    boxart_110 = "4232/494232",
-                                    boxart_124 = "6242/626242",
-                                    boxart_150 = "9783/729783",
-                                    boxart_166 = "8873/828873",
-                                    boxart_88 = "5054/385054",
-                                    boxart_197 = "8251/938251",
-                                    boxart_176 = "3400/1373400",
-                                    boxart_284 = "0277/1060277",
-                                    boxart_210 = "4412/1004412" 
-                                });
+            //                        boxart_38 = "6597/166597",
+            //                        boxart_64 = "5818/275818",
+            //                        boxart_110 = "4232/494232",
+            //                        boxart_124 = "6242/626242",
+            //                        boxart_150 = "9783/729783",
+            //                        boxart_166 = "8873/828873",
+            //                        boxart_88 = "5054/385054",
+            //                        boxart_197 = "8251/938251",
+            //                        boxart_176 = "3400/1373400",
+            //                        boxart_284 = "0277/1060277",
+            //                        boxart_210 = "4412/1004412" 
+            //                    });
 
             //add all the genre definitions and boxarts to the appropriate movie and return that
             var MwG_list =
@@ -181,7 +181,7 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
         public static Dictionary<int, List<string>> GetDictOfMovieIdsToGenreStrings(MovieDbContext db,
                                                                  List<MovieToGenre> MtG_list)
         {
-//find all the genre strings for the MtGs from the list
+            //find all the genre strings for the MtGs from the list
             var genreid_list = MtG_list.Select(item => item.genre_ID).ToList();
             Dictionary<int, string> genre_definitions = new Dictionary<int, string>();
 
@@ -211,9 +211,9 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
                     genre_definitions[movieToGenre.genre_ID]);
             }
 
-            //todo: fix TERRIBLE solution to missing values
-            //hard code the missing value
-            movie_to_genre_string_dict[1] = new List<string> { "Cult Movies", "Horror Movies", "Cult Horror Movies", "Satanic Stories", "Supernatural Horror Movies" };
+            ////todo: fix TERRIBLE solution to missing values
+            ////hard code the missing value
+            //movie_to_genre_string_dict[1] = new List<string> { "Cult Movies", "Horror Movies", "Cult Horror Movies", "Satanic Stories", "Supernatural Horror Movies" };
 
             return movie_to_genre_string_dict;
         }

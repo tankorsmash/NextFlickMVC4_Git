@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Diagnostics;
 
 namespace NextFlicksMVC4.Helpers
 {
@@ -19,9 +20,13 @@ namespace NextFlicksMVC4.Helpers
             //list
             for (int i = 0; i <= totalNumber; i++)
             {
-                if (i % divisor == 0)
-                {
-                    checkpoints.Add(i);
+                try {
+                    if (i%divisor == 0) {
+                        checkpoints.Add(i);
+                    }
+                }
+                catch (DivideByZeroException ex) {
+                    Trace.WriteLine("div by 0 exception");
                 }
             }
 

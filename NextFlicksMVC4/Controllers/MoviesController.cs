@@ -525,7 +525,7 @@ namespace NextFlicksMVC4.Controllers
                     Trace.WriteLine(ex.Message);
                 }
 
-
+                db.SaveChanges();
                 Trace.WriteLine("Adding Boxart and Genre");
                 //add boxart and genre data to db before saving the movie 
                 AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
@@ -587,13 +587,18 @@ namespace NextFlicksMVC4.Controllers
             return View();
         }
 
+        /// <summary>
+        /// adds the boxart and Genres to the database, based on the dict of Movies-Titles passed into it. MAKUE SURE TO SaveChanges() before, for some reason.
+        /// </summary>
+        /// <param name="dictOfMoviesTitles"></param>
+        /// <param name="db"></param>
         public static void AddBoxartsAndMovieToGenreData(Dictionary<Movie, Title> dictOfMoviesTitles, MovieDbContext db)
         {
             //get a list of ints that we can test against to save progress of adding to db
             List<int> checkpoints = ProgressList.CreateListOfCheckpointInts(dictOfMoviesTitles.Count, 55);
             
             //MovieDbContext db = new MovieDbContext();
-            db.Configuration.AutoDetectChangesEnabled = false;
+            //db.Configuration.AutoDetectChangesEnabled = false;
 
             //loop over dict and make Boxart and Genre
             int index = 0;
@@ -616,7 +621,7 @@ namespace NextFlicksMVC4.Controllers
 
                     var save_msg =
                         String.Format(
-                            "done saving MtG mtg_id = {0}\n movie_id = {1}\n genre_id = {2}",
+                            "done adding MtG mtg_id = {0}\n movie_id = {1}\n genre_id = {2}",
                             movieToGenre.movie_to_genre_ID,
                             movieToGenre.movie_ID,
                             movieToGenre.genre_ID);
@@ -624,13 +629,15 @@ namespace NextFlicksMVC4.Controllers
                     Trace.WriteLine(save_msg);
                 }
 
+                
+
                 //if at a certain amount of adds, save changes, to avoid memory error hopefully
-                if (checkpoints.Contains(index)) {
+                if (checkpoints.Contains(index))
+                {
                     db.SaveChanges();
 
                     string msg =
-                        String.Format("Just saved changes at checkpoint {0}",
-                                      index);
+                        String.Format("Just saved changes at checkpoint {0}", index);
                     Trace.WriteLine(msg);
                 }
 
