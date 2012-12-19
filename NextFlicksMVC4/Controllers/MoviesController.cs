@@ -86,27 +86,17 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Test()
         {
+            ViewBag.Params = GetAllParamNames("Test");
+
 
             MovieDbContext db = new MovieDbContext();
 
             var movie_list = db.Movies.Take(10).ToList();
-            ModelBuilder.CreateListOfMtGVM(db, movie_list);
+            List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
+            IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
 
-            return View(@"~/Views/Home/About.cshtml");
+            return View("Genres", MwG_ienum);
         }
-
-        //public ActionResult Title()
-        //{
-        //    Title title = new Title
-        //                      {
-        //                          TitleString = "Terminator",
-        //                          ReleaseYear = "1995",
-        //                      };
-
-        //    return View(title);
-        //}
-
-
 
 
         public ActionResult Year(int year_start = 2001, int year_end = 2002, int start = 0, int count = 25, bool is_movie = true)
