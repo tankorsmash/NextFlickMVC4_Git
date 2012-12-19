@@ -86,6 +86,12 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Test()
         {
+
+            MovieDbContext db = new MovieDbContext();
+
+            var movie_list = db.Movies.Take(10).ToList();
+            ModelBuilder.CreateListOfMtGVM(db, movie_list);
+
             return View(@"~/Views/Home/About.cshtml");
         }
 
@@ -206,6 +212,7 @@ namespace NextFlicksMVC4.Controllers
             var fullList = db.Movies.OrderBy(item => item.movie_ID).Skip(start).Take(count).ToList();
 
             //count the total movies in DB
+            Trace.WriteLine("Counting movies");
             string count_qry = "select count(movie_id) from Movies";
             var count_res = db.Database.SqlQuery<int>(count_qry);
             int count_count = count_res.ElementAt(0);
@@ -216,6 +223,7 @@ namespace NextFlicksMVC4.Controllers
             ViewBag.Count = count;
 
             //Param names
+            Trace.WriteLine("getting param names");
             ViewBag.Params = GetAllParamNames("Index");
 
             //make sure there's not a outofbounds
