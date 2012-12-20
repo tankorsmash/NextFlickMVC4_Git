@@ -92,12 +92,84 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
             //var movie_list = db.Movies.Take(100).Take(10).ToList();
-            var movie_list = db.Movies.Where(item => item.year == year).ToList();
-            List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
+            //var movie_list = db.Movies.Where(item => item.year == year).ToList();
+            //List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
+            //MwG_list = MwG_list.Where(item => item.movie.runtime.TotalSeconds == 5767).ToList();
+
+            var movie_list = db.Movies.Take(50000).ToList();
+
+           var  MwG_list = FilterMovies(db, movie_list, 2000, 2002, runtime_end: 3000);
+
+
+            
+
             IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
 
-
+            Trace.WriteLine("Returning View");
             return View("Genres", MwG_ienum);
+        }
+
+
+        public List<MovieWithGenreViewModel> FilterMovies(MovieDbContext db,
+                                                          List<Movie> movie_list,
+            int year_start = 1914, int year_end = 2012,
+            int mpaa_start = 0, int mpaa_end = 200,
+            string title = "",
+            int runtime_start = 0, int runtime_end = 9999999,
+            string genre = "")
+        {
+            Trace.WriteLine("Starting to filter...");
+
+            ///gotta figure a way to filter all stuff down
+            //year
+            Trace.WriteLine("\tYear Start");
+            movie_list = movie_list.Where(item => GetYearOr0(item) > year_start).ToList();
+            Trace.WriteLine("\tYear End");
+            movie_list = movie_list.Where(item => GetYearOr0(item) < year_end).ToList();
+            ///title
+            //specific
+            if (title != "") {
+            Trace.WriteLine("\tTitle");
+                movie_list =
+                    movie_list.Where(item => item.short_title == title).ToList();
+            }
+            //alphabetical
+            //rating
+            //runtime
+            if (runtime_start != 0 || runtime_end != 9999999) {
+                Trace.WriteLine("\tRuntime Start");
+                movie_list =
+                    movie_list.Where(
+                        item => item.runtime.TotalSeconds > runtime_start)
+                              .ToList();
+                Trace.WriteLine("\tRuntime End");
+                movie_list =
+                    movie_list.Where(
+                        item => item.runtime.TotalSeconds < runtime_end)
+                              .ToList();
+            }
+            //mpaa
+
+            Trace.WriteLine("\tCreating MtGVM");
+
+            var MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
+            //genre
+
+
+            //suppose we could use the netflix api to do searches like director, actor etc
+
+
+            return MwG_list;
+
+        }
+
+        public int GetYearOr0(Movie movie)
+        {
+            if (movie.year != "") {
+                return Convert.ToInt32(movie.year);
+            }
+            else
+                return 0;
         }
 
 
