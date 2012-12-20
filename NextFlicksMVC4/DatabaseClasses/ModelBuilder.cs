@@ -31,6 +31,18 @@ namespace NextFlicksMVC4.DatabaseClasses
         /// <returns></returns>
         public static List<MoviesController.MovieWithGenreViewModel> CreateMovieWithGenreViewModelList(MovieDbContext db, string genre_params)
         {
+
+            // linq to sql example
+            //var query = from movie in db.Movies
+            //            where movie.movie_ID == 1
+            //            select movie;
+
+            //var genre_ids = db.Genres.Where(
+            //    item => item.genre_string.ToLower().StartsWith("action"))
+            //  .Select(item => item.genre_ID);
+            //var movies_ids_matching_the_genre = db.MovieToGenres.Where(item => genre_ids.Contains(item.genre_ID)).Select(item => item.movie_ID);
+
+
             //select moviewithgenresviewmodel that match the genre string
             string qry = @"
     SELECT movietogenres.genre_id, 
@@ -50,6 +62,9 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
                                                       Genres_1.genre_id 
                                     WHERE  ( Genres_1.genre_string LIKE {0} + 
                                              '%' )) ) ";
+
+
+            
 
 
             //var qwe = from m in db.Movies

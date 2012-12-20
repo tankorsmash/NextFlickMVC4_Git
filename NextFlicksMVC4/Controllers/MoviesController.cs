@@ -215,7 +215,22 @@ namespace NextFlicksMVC4.Controllers
 
 
             //returns a list of MoviesWithGenresVM that contain genre_params
-            var MwG_list = ModelBuilder.CreateMovieWithGenreViewModelList(db, genre_params);
+            //var MwG_list = ModelBuilder.CreateMovieWithGenreViewModelList(db, genre_params);
+
+            var genre_ids = db.Genres.Where(
+                item => item.genre_string.ToLower().StartsWith(genre_params))
+                              .Select(item => item.genre_ID);
+            var movies_ids_matching_the_genre =
+                db.MovieToGenres.Where(item => genre_ids.Contains(item.genre_ID))
+                  .Select(item => item.movie_ID);
+
+            List<Movie> movie_list =
+                db.Movies.Where(
+                    item =>
+                    movies_ids_matching_the_genre.Contains(item.movie_ID))
+                  .ToList();
+
+            var MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
 
             //to show a given view what the user searched for
             ViewBag.SearchTerms = genre_params;
