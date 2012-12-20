@@ -84,16 +84,18 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        public ActionResult Test()
+        public ActionResult Test(string year= "2000")
         {
             ViewBag.Params = GetAllParamNames("Test");
 
 
             MovieDbContext db = new MovieDbContext();
 
-            var movie_list = db.Movies.Take(10).ToList();
+            //var movie_list = db.Movies.Take(100).Take(10).ToList();
+            var movie_list = db.Movies.Where(item => item.year == year).ToList();
             List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
             IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
+
 
             return View("Genres", MwG_ienum);
         }

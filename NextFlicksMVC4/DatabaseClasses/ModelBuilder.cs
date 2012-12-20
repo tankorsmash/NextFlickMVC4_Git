@@ -138,16 +138,16 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
 
             //add all the genre definitions and boxarts to the appropriate movie and return that
 
-            //fill a list with new MwGVMs based on the movie, genre_strings and boxarts
+            ///fill a list with new MwGVMs based on the movie, genre_strings and boxarts
             var MwG_list =
                 movie_list.Select(
                     movie => new MoviesController.MovieWithGenreViewModel
                                  {
                                      //movie
                                      movie = movie,
-                                     genre_strings =
-                                         movie_to_genre_string_dict[
-                                             movie.movie_ID],
+                                     genre_strings = getDictValueOrDefault(
+                                         movie_to_genre_string_dict,
+                                             movie.movie_ID),
                                      //boxart
                                      boxart =
                                          boxart_list.First(
@@ -161,6 +161,21 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
 
             return MwG_list;
         }
+
+        //returns either the value in the dict, or the preset default value if the key isn't found
+        public static List<String> getDictValueOrDefault(
+            Dictionary<int, List<string>> movie_to_genre_string_dict,
+            int movie_id, string defaultString = "Not_Found")
+        {
+            try
+            {
+                return movie_to_genre_string_dict[movie_id];
+            }
+
+            catch (KeyNotFoundException exception) {
+                return new List<string> {defaultString};
+            }
+        } 
 
         public static List<BoxArt> GetListOfBoxarts(MovieDbContext db, List<Movie> movie_list)
         {
