@@ -5,17 +5,26 @@
 @{
     ViewBag.Title = "Genres ripoff of index";
 }
-<script>    $(document).ready(function () {
+<script>
+    $(document).ready(function () {
         $("div#action_params").ready(function () {
-            $("div#action_params").dialog(
-            {
-                position:
-                    { my: "center", at: "top" }
+            $("div#action_params").dialog({
+                position: {
+                    my: "center",
+                    at: "top"
+                }
             });
         });
-    }); </script>
-    
+        $("#slider").ready(function () {
+            $("#slider").slider();
+        });
+    });
+</script>    
     <h1>@ViewBag.Title</h1>
+
+    <div id="slider" style="width: 100px"></div>
+
+
 
 <h2>
     Currently showing @Model.ToList().Count Titles out of @ViewBag.TotalMovies</h2>
