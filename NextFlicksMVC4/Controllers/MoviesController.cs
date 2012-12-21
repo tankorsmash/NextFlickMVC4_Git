@@ -313,25 +313,6 @@ namespace NextFlicksMVC4.Controllers
                 genre_params = "nothing";
             }
 
-            //returns a list of MoviesWithGenresVM that contain genre_params
-            //var MwG_list = ModelBuilder.CreateMovieWithGenreViewModelList(db, genre_params);
-
-            ////finds the genre id matching the argument "genre_params"
-            //var genre_ids = db.Genres.Where(
-            //    item => item.genre_string.ToLower().StartsWith(genre_params))
-            //                  .Select(item => item.genre_ID);
-            ////finds all movie_ids that have the genre_id from above
-            //var movies_ids_matching_the_genre =
-            //    db.MovieToGenres.Where(item => genre_ids.Contains(item.genre_ID))
-            //      .Select(item => item.movie_ID);
-
-            ////finds all movies based on the movie_ids
-            //List<Movie> movie_list =
-            //    db.Movies.Where(
-            //        item =>
-            //        movies_ids_matching_the_genre.Contains(item.movie_ID))
-            //      .ToList();
-
             var movie_list = GetMoviesMatchingGenre(db, genre_params);
 
             //adds the box art and genre strings to make the view model
