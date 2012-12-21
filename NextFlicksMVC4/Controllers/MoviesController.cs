@@ -316,7 +316,8 @@ namespace NextFlicksMVC4.Controllers
             //get a movie list that matches genres
             var movie_list = GetMoviesMatchingGenre(db, genre_params);
             //creates the MwGVM for the movie list
-            var MwG_list = ModelBuilder.CreateListOfMwGVM(db, movie_list);
+            var ranged_movie_list = movie_list.GetRange(start, count);
+            var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
 
             //to show a given view what the user searched for
             ViewBag.SearchTerms = genre_params;
@@ -328,9 +329,10 @@ namespace NextFlicksMVC4.Controllers
 
             ViewBag.Count = count;
             ViewBag.Start = start;
-            ViewBag.TotalMovies = MwG_list.Count;
+            ViewBag.TotalMovies = movie_list.Count;
 
-            return View(MwG_list.GetRange(start,count));
+            //var ret = MwG_list.GetRange(start, count);
+            return View(MwG_list);
 
         }
 

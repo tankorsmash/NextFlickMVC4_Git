@@ -23,7 +23,7 @@ namespace NextFlicksMVC4.DatabaseClasses
     public static class ModelBuilder
     {
         /// <summary>
-        /// returns a list of MwGs
+        /// OBSOLETE returns a list of MwGs
         /// </summary>
         /// <param name="db"></param>
         /// <param name="qry">Make sure that the query returns movietogenres.genre_id, movietogenres.movie_id, genres.genre_string </param>
