@@ -84,7 +84,15 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        public ActionResult Test(string genre = "action", int start =0, int count =25)
+        public ActionResult Test(string title = "",
+            int year_start = 1914, int year_end = 2012,
+            int mpaa_start = 0, int mpaa_end = 200,
+
+            bool? is_movie = null,
+
+            int runtime_start = 0, int runtime_end = 9999999,
+            string genre = "",
+            int start = 0, int count = 25)
         {
             ViewBag.Params = GetAllParamNames("Test");
 
@@ -98,13 +106,17 @@ namespace NextFlicksMVC4.Controllers
 
             var movie_list = db.Movies.ToList();
 
-            var MwG_list = FilterMovies(db, movie_list, 1990, 2012,
-                                        mpaa_end: 100,
-                                        is_movie: false,
-                                        start:start,
-                                        count:count,
-                                        //title: "kid");
-                                        genre: genre);
+            var MwG_list = FilterMovies(db, movie_list,
+            title:title, is_movie: is_movie,
+            year_start:year_start, year_end: year_end,
+            mpaa_start:mpaa_start, mpaa_end:mpaa_end,
+            runtime_start:runtime_start, runtime_end: runtime_end,
+            genre: genre,
+            start: start, count:count);
+                                        //start:start,
+                                        //count:count,
+                                        ////title: "kid");
+                                        //genre: genre);
 
 
             
@@ -194,8 +206,6 @@ namespace NextFlicksMVC4.Controllers
             //genre
             if (genre != "") {
                 Trace.WriteLine("\tGenres");
-
-                Trace.WriteLine("\t\tFind movies that match genre_string");
                 movie_list = ReduceMovieListToMatchingGenres(db, movie_list, genre);
             }
 
@@ -248,6 +258,7 @@ namespace NextFlicksMVC4.Controllers
                                                            string genre)
         {
             //gets the movie_ids that match 'genre'
+            Trace.WriteLine("\t\tFind movies that match genre_string");
             var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre, movie_list);
 
             //execute the find movie_id finding by calling the list
