@@ -99,7 +99,8 @@ namespace NextFlicksMVC4.Controllers
             var movie_list = db.Movies.ToList();
 
             var MwG_list = FilterMovies(db, movie_list, 1990, 2012,
-                                        mpaa_end: 100, 
+                                        mpaa_end: 100,
+                                        is_movie: false,
                                         title: "wild");
                                         //genre: "action");
 
@@ -126,13 +127,14 @@ namespace NextFlicksMVC4.Controllers
         /// <param name="runtime_start"></param>
         /// <param name="runtime_end"></param>
         /// <param name="genre"></param>
-        /// <param name="count"></param>
+        /// <param name="count">Limits the amount of movies returned -at the very end- of the function instead of the start</param>
         /// <returns></returns>
         public List<MovieWithGenreViewModel> FilterMovies(MovieDbContext db,
                                                           List<Movie> movie_list,
             int year_start = 1914, int year_end = 2012,
             int mpaa_start = 0, int mpaa_end = 200,
             string title = "",
+            bool? is_movie = null,
             
             int runtime_start = 0, int runtime_end = 9999999,
             string genre = "", int count =25)
@@ -152,8 +154,10 @@ namespace NextFlicksMVC4.Controllers
                 movie_list =
                     movie_list.Where(item => item.short_title.ToLower().StartsWith(title)).ToList();
             }
-            //alphabetical
-            //rating
+            //sort alphabetical
+
+            //netflix rating
+
             //runtime
             if (runtime_start != 0 || runtime_end != 9999999) {
                 Trace.WriteLine("\tRuntime Start");
@@ -192,16 +196,22 @@ namespace NextFlicksMVC4.Controllers
                 movie_list = ReduceMovieListToMatchingGenres(db, movie_list, genre);
             }
 
+            //is_movie
+            if (is_movie != null) {
+                Trace.WriteLine("\tIs Movie");
+                movie_list = movie_list.Where(item => item.is_movie == is_movie).ToList();
+            }
 
-            Trace.WriteLine("\tCreating MtGVM");
 
             //pass the movie_list through a function to marry them to genres and boxarts
+            Trace.WriteLine("\tCreating MtGVM");
             var MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
 
             //suppose we could use the netflix api to do searches like director, actor etc
 
-            Trace.WriteLine("\tToListing Before return");
-            return MwG_list.Take(count).ToList();
+            Trace.WriteLine("\tTaking Count");
+            MwG_list= MwG_list.Take(count).ToList();
+            return MwG_list;
 
         }
 

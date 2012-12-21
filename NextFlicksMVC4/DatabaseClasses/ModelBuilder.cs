@@ -222,7 +222,8 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
 
             //associate movies with lists of genre defs
             Dictionary<int, List<string>> movie_to_genre_string_dict =
-                new Dictionary<int, List<string>>();
+                                        new Dictionary<int, List<string>>();
+
             foreach (MovieToGenre movieToGenre in MtG_list) {
                 //if dict does not contain an entry for the key, make one, and inst
                 // a list for it too
