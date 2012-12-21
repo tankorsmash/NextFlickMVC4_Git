@@ -29,7 +29,8 @@ namespace NextFlicksMVC4.DatabaseClasses
         /// <param name="qry">Make sure that the query returns movietogenres.genre_id, movietogenres.movie_id, genres.genre_string </param>
         /// <param name="genre_params"></param>
         /// <returns></returns>
-        public static List<MoviesController.MovieWithGenreViewModel> CreateMovieWithGenreViewModelList(MovieDbContext db, string genre_params)
+        [Obsolete("this uses SQL, please use a different method that uses Linq", true)]
+        public  static List<MoviesController.MovieWithGenreViewModel> CreateMovieWithGenreViewModelList(MovieDbContext db, string genre_params)
         {
 
             // linq to sql example
@@ -140,7 +141,7 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
         /// <param name="movie_list"></param>
         /// <returns>a list of MovieWithGenreViewModels </returns>
         public static List<MoviesController.MovieWithGenreViewModel>
-            CreateListOfMtGVM(MovieDbContext db,
+            CreateListOfMwGVM(MovieDbContext db,
             List<Movie> movie_list)
         {
             //find all MtGs with movie_id matching movie_list
@@ -151,7 +152,8 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             //select all boxarts that match a movie_id from the list
             var boxart_list = GetListOfBoxarts(db, movie_list);
 
-            //add all the genre definitions and boxarts to the appropriate movie and return that
+            //add all the genre definitions and boxarts
+            //  to the appropriate movie and return that
 
             ///fill a list with new MwGVMs based on the movie, genre_strings and boxarts
             var MwG_list =
@@ -182,8 +184,7 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             Dictionary<int, List<string>> movie_to_genre_string_dict,
             int movie_id, string defaultString = "Not_Found")
         {
-            try
-            {
+            try {
                 return movie_to_genre_string_dict[movie_id];
             }
 

@@ -93,7 +93,7 @@ namespace NextFlicksMVC4.Controllers
 
             //var movie_list = db.Movies.Take(100).Take(10).ToList();
             //var movie_list = db.Movies.Where(item => item.year == year).ToList();
-            //List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
+            //List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMwGVM(db, movie_list);
             //MwG_list = MwG_list.Where(item => item.movie.runtime.TotalSeconds == 5767).ToList();
 
             var movie_list = db.Movies.ToList();
@@ -204,7 +204,7 @@ namespace NextFlicksMVC4.Controllers
 
             //pass the movie_list through a function to marry them to genres and boxarts
             Trace.WriteLine("\tCreating MtGVM");
-            var MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
+            var MwG_list = ModelBuilder.CreateListOfMwGVM(db, movie_list);
 
             //suppose we could use the netflix api to do searches like director, actor etc
 
@@ -313,10 +313,10 @@ namespace NextFlicksMVC4.Controllers
                 genre_params = "nothing";
             }
 
+            //get a movie list that matches genres
             var movie_list = GetMoviesMatchingGenre(db, genre_params);
-
-            //adds the box art and genre strings to make the view model
-            var MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
+            //creates the MwGVM for the movie list
+            var MwG_list = ModelBuilder.CreateListOfMwGVM(db, movie_list);
 
             //to show a given view what the user searched for
             ViewBag.SearchTerms = genre_params;
@@ -451,7 +451,7 @@ namespace NextFlicksMVC4.Controllers
 
 
             //turn all the movies into MovieWithGenresViewModel
-            var MwG_list = ModelBuilder.CreateListOfMtGVM(db,full_range);
+            var MwG_list = ModelBuilder.CreateListOfMwGVM(db,full_range);
 
             IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
 
