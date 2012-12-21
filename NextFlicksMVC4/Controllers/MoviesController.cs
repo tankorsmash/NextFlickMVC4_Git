@@ -84,7 +84,7 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        public ActionResult Test(string year= "2000")
+        public ActionResult Test(string genre = "action", int start =0, int count =25)
         {
             ViewBag.Params = GetAllParamNames("Test");
 
@@ -101,8 +101,10 @@ namespace NextFlicksMVC4.Controllers
             var MwG_list = FilterMovies(db, movie_list, 1990, 2012,
                                         mpaa_end: 100,
                                         is_movie: false,
-                                        title: "kid");
-                                        //genre: "action");
+                                        start:start,
+                                        count:count,
+                                        //title: "kid");
+                                        genre: genre);
 
 
             
@@ -127,6 +129,7 @@ namespace NextFlicksMVC4.Controllers
         /// <param name="runtime_start"></param>
         /// <param name="runtime_end"></param>
         /// <param name="genre"></param>
+        /// <param name="start"></param>
         /// <param name="count">Limits the amount of movies returned -at the very end- of the function instead of the start</param>
         /// <returns></returns>
         public List<MovieWithGenreViewModel> FilterMovies(MovieDbContext db,
@@ -137,7 +140,8 @@ namespace NextFlicksMVC4.Controllers
             bool? is_movie = null,
             
             int runtime_start = 0, int runtime_end = 9999999,
-            string genre = "", int count =25)
+            string genre = "",
+            int start =0, int count =25)
         {
             Trace.WriteLine("Starting to filter...");
 
@@ -203,10 +207,16 @@ namespace NextFlicksMVC4.Controllers
 
 
             //pass the movie_list through a function to marry them to genres and boxarts
-            Trace.WriteLine("\tCreating MtGVM");
-            var MwG_list = ModelBuilder.CreateListOfMwGVM(db, movie_list);
+            Trace.WriteLine("\tCreating MtGVM from a range in movies_list");
+            if (start > movie_list.Count) {
+                start = movie_list.Count - 1;
+            }
+            if (count > movie_list.Count) {
+                count = movie_list.Count;
+            }
+            var ranged_movie_list = movie_list.GetRange(start, count);
+            var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
 
-            //suppose we could use the netflix api to do searches like director, actor etc
 
             Trace.WriteLine("\tTaking Count");
             MwG_list= MwG_list.Take(count).ToList();
