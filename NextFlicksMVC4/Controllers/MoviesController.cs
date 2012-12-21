@@ -96,9 +96,9 @@ namespace NextFlicksMVC4.Controllers
             //List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
             //MwG_list = MwG_list.Where(item => item.movie.runtime.TotalSeconds == 5767).ToList();
 
-            var movie_list = db.Movies.Take(50000).ToList();
+            var movie_list = db.Movies.ToList();
 
-           var  MwG_list = FilterMovies(db, movie_list, 2000, 2002, genre:"action");
+           var  MwG_list = FilterMovies(db, movie_list, 1990, 2012, genre:"kid");
 
 
             
@@ -153,27 +153,17 @@ namespace NextFlicksMVC4.Controllers
             //genre
             if (genre != "") {
                 Trace.WriteLine("\tGenres");
-                    Trace.WriteLine("\t\tFind movies that match genre_string");
-                //TODO: limit this next method so that it doesn't find ALL matching movie_ids, just the ones in movie_list
-                var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre, movie_list);
 
-                Trace.WriteLine("\t\tFind moves that match movie_id");
-
-                var movie_iqry =
-                    movie_list.Where(
-                        item => movie_ids_for_genres.Contains(item.movie_ID));
-
-                Trace.WriteLine("\t\tTo List");
-                movie_list = movie_iqry.ToList();
+                //exTODO: limit this next method so that it doesn't find ALL matching movie_ids, just the ones in movie_list
+                Trace.WriteLine("\t\tFind movies that match genre_string");
+                movie_list = ReduceMovieListToMatchingGenres(db, movie_list, genre);
             }
 
 
             Trace.WriteLine("\tCreating MtGVM");
 
+            //pass the movie_list through a function to marry them to genres and boxarts
             var MwG_list = ModelBuilder.CreateListOfMtGVM(db, movie_list);
-
-
-
 
             //suppose we could use the netflix api to do searches like director, actor etc
 
@@ -181,6 +171,30 @@ namespace NextFlicksMVC4.Controllers
             return MwG_list;
 
         }
+
+        public static List<Movie> ReduceMovieListToMatchingGenres(MovieDbContext db,
+                                                           List<Movie> movie_list,
+                                                           string genre)
+        {
+            var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre, movie_list);
+
+            //execute the find movie_id finding by calling the list
+            Trace.WriteLine("\t\tList the movies that match genre_string");
+            var movie_ids_for_genres_list = movie_ids_for_genres.ToList();
+
+            Trace.WriteLine("\t\tFind moves that match movie_id");
+
+            var movie_iqry =
+                movie_list.Where(
+                    item => movie_ids_for_genres_list.Contains(item.movie_ID));
+
+            Trace.WriteLine("\t\tTo List");
+            movie_list = movie_iqry.ToList();
+            return movie_list;
+        }
+
+
+
 
         public int GetYearOr0(Movie movie)
         {
@@ -272,7 +286,7 @@ namespace NextFlicksMVC4.Controllers
         }
 
         /// <summary>
-        /// returns a iQry of movie_ids that match a genre_string
+        /// returns a queryable of movie_ids that match a genre_string
         /// </summary>
         /// <param name="db"></param>
         /// <param name="genre_params"></param>
@@ -283,15 +297,26 @@ namespace NextFlicksMVC4.Controllers
         {
             //finds the genre id matching the argument "genre_params"
             var genre_ids = db.Genres.Where(
-                item => item.genre_string.ToLower().StartsWith(genre_params))
+                item => item.genre_string.StartsWith(genre_params))
                               .Select(item => item.genre_ID);
+
             //finds all movie_ids that have the genre_id from above
-            var movies_ids_matching_the_genre =
+            var movies_ids_matching_the_genre_iq =
                 db.MovieToGenres.Where(item => genre_ids.Contains(item.genre_ID))
                   .Select(item => item.movie_ID);
 
-            return movies_ids_matching_the_genre;
+            //if movie_list was passed, select the movies from m_i_m_t_g_i that are in movie_list
+            if (movie_list != null) {
+                movies_ids_matching_the_genre_iq.Where(
+                    movie_id =>
+                    movie_list.Select(item => item.movie_ID).Contains(movie_id));
+            }
+            //var movies_ids_matching_the_genre =  movies_ids_matching_the_genre_iq.Select(item => item.movie_ID);
+
+            return movies_ids_matching_the_genre_iq;
         }
+
+        //-------------------------------------------------------
       
         public static List<Movie> GetMoviesMatchingGenre(MovieDbContext db,
                                                          string genre_params =
@@ -300,8 +325,7 @@ namespace NextFlicksMVC4.Controllers
 
             //get all movie ids that match the genre
             var movies_ids_matching_the_genre =
-                                        GetMovieIdsMatchingGenres(db,
-                                                                  genre_params);
+                                GetMovieIdsMatchingGenres(db, genre_params);
 
             //finds all movies based on the movie_ids
             List<Movie> movie_list =
