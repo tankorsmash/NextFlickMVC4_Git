@@ -98,7 +98,10 @@ namespace NextFlicksMVC4.Controllers
 
             var movie_list = db.Movies.ToList();
 
-           var  MwG_list = FilterMovies(db, movie_list, 1990, 2012, genre:"kid");
+            var MwG_list = FilterMovies(db, movie_list, 1990, 2012,
+                                        mpaa_end: 100, 
+                                        title: "wild");
+                                        //genre: "action");
 
 
             
@@ -110,13 +113,29 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
+        /// <summary>
+        /// Filters a list of movies down through a variety of optional params
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="movie_list"></param>
+        /// <param name="year_start"></param>
+        /// <param name="year_end"></param>
+        /// <param name="mpaa_start"></param>
+        /// <param name="mpaa_end"></param>
+        /// <param name="title"></param>
+        /// <param name="runtime_start"></param>
+        /// <param name="runtime_end"></param>
+        /// <param name="genre"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public List<MovieWithGenreViewModel> FilterMovies(MovieDbContext db,
                                                           List<Movie> movie_list,
             int year_start = 1914, int year_end = 2012,
             int mpaa_start = 0, int mpaa_end = 200,
             string title = "",
+            
             int runtime_start = 0, int runtime_end = 9999999,
-            string genre = "")
+            string genre = "", int count =25)
         {
             Trace.WriteLine("Starting to filter...");
 
@@ -131,7 +150,7 @@ namespace NextFlicksMVC4.Controllers
             if (title != "") {
             Trace.WriteLine("\tTitle");
                 movie_list =
-                    movie_list.Where(item => item.short_title == title).ToList();
+                    movie_list.Where(item => item.short_title.ToLower().StartsWith(title)).ToList();
             }
             //alphabetical
             //rating
@@ -149,6 +168,20 @@ namespace NextFlicksMVC4.Controllers
                               .ToList();
             }
             //mpaa
+            if (mpaa_start != 0 || mpaa_end != 200) {
+                Trace.WriteLine("\tMPAA Start");
+                movie_list =
+                    movie_list.Where(
+                        item =>
+                        ReturnMaturityOrDefault(item.maturity_rating) >=
+                        mpaa_start).ToList();
+                Trace.WriteLine("\tMPAA End");
+                movie_list =
+                    movie_list.Where(
+                        item =>
+                        ReturnMaturityOrDefault(item.maturity_rating) <=
+                        mpaa_end).ToList();
+            }
 
             //genre
             if (genre != "") {
@@ -167,9 +200,21 @@ namespace NextFlicksMVC4.Controllers
 
             //suppose we could use the netflix api to do searches like director, actor etc
 
+            Trace.WriteLine("\tToListing Before return");
+            return MwG_list.Take(count).ToList();
 
-            return MwG_list;
+        }
 
+        public static int ReturnMaturityOrDefault(string maturity_rating)
+        {
+            try {
+                return Convert.ToInt32(maturity_rating);
+            }
+            catch (Exception ex) {
+                
+                Trace.WriteLine(string.Format("maturity rating exception, probably not set:\r{0}", ex.Message));
+                return 200;
+            }
         }
 
         public static List<Movie> ReduceMovieListToMatchingGenres(MovieDbContext db,
