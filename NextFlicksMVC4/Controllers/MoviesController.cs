@@ -101,7 +101,7 @@ namespace NextFlicksMVC4.Controllers
             var MwG_list = FilterMovies(db, movie_list, 1990, 2012,
                                         mpaa_end: 100,
                                         is_movie: false,
-                                        title: "wild");
+                                        title: "kid");
                                         //genre: "action");
 
 
@@ -191,7 +191,6 @@ namespace NextFlicksMVC4.Controllers
             if (genre != "") {
                 Trace.WriteLine("\tGenres");
 
-                //exTODO: limit this next method so that it doesn't find ALL matching movie_ids, just the ones in movie_list
                 Trace.WriteLine("\t\tFind movies that match genre_string");
                 movie_list = ReduceMovieListToMatchingGenres(db, movie_list, genre);
             }
@@ -227,10 +226,18 @@ namespace NextFlicksMVC4.Controllers
             }
         }
 
+        /// <summary>
+        /// takes a movie_list and removes the movies that don't match the genre
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="movie_list"></param>
+        /// <param name="genre"></param>
+        /// <returns></returns>
         public static List<Movie> ReduceMovieListToMatchingGenres(MovieDbContext db,
                                                            List<Movie> movie_list,
                                                            string genre)
         {
+            //gets the movie_ids that match 'genre'
             var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre, movie_list);
 
             //execute the find movie_id finding by calling the list
@@ -239,6 +246,7 @@ namespace NextFlicksMVC4.Controllers
 
             Trace.WriteLine("\t\tFind moves that match movie_id");
 
+            //the iqueryable  for finding movies that match the movie_list
             var movie_iqry =
                 movie_list.Where(
                     item => movie_ids_for_genres_list.Contains(item.movie_ID));
@@ -251,6 +259,11 @@ namespace NextFlicksMVC4.Controllers
 
 
 
+        /// <summary>
+        /// returns the integer of a year, or 0, if not found
+        /// </summary>
+        /// <param name="movie"></param>
+        /// <returns></returns>
         public int GetYearOr0(Movie movie)
         {
             if (movie.year != "") {
