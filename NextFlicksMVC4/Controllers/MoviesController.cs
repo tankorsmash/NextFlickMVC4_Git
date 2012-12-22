@@ -396,15 +396,19 @@ namespace NextFlicksMVC4.Controllers
                   .Select(item => item.movie_ID);
 
             //if movie_list was passed, select the movies from m_i_m_t_g_i that are in movie_list
-            if (movie_list != null)
-            {
-                movies_ids_matching_the_genre_iq.Where(
-                    movie_id =>
-                    movie_list.Select(item => item.movie_ID).Contains(movie_id));
+            if (movie_list != null) {
+                var movie_list_ids =
+                    movie_list.Select(movie => movie.movie_ID);
+                var qwe = movies_ids_matching_the_genre_iq.Where(
+                    movie_id => 
+                   movie_list_ids.Contains(movie_id));
+                return qwe;
             }
-            //var movies_ids_matching_the_genre =  movies_ids_matching_the_genre_iq.Select(item => item.movie_ID);
+                //var movies_ids_matching_the_genre =  movies_ids_matching_the_genre_iq.Select(item => item.movie_ID);
+            else {
 
-            return movies_ids_matching_the_genre_iq;
+                return movies_ids_matching_the_genre_iq;
+            }
         }
 
         //-------------------------------------------------------
