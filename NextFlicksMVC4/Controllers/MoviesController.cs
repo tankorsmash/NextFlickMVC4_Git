@@ -118,6 +118,8 @@ namespace NextFlicksMVC4.Controllers
                                         ////title: "kid");
                                         //genre: genre);
 
+            ViewBag.Start = start;
+            ViewBag.Count = count;
 
             
 
@@ -160,9 +162,9 @@ namespace NextFlicksMVC4.Controllers
             ///gotta figure a way to filter all stuff down
             //year
             Trace.WriteLine("\tYear Start");
-            movie_list = movie_list.Where(item => GetYearOr0(item) > year_start).ToList();
+            movie_list = movie_list.Where(item => GetYearOr0(item) >= year_start).ToList();
             Trace.WriteLine("\tYear End");
-            movie_list = movie_list.Where(item => GetYearOr0(item) < year_end).ToList();
+            movie_list = movie_list.Where(item => GetYearOr0(item) <= year_end).ToList();
             ///title
             //specific
             if (title != "") {
@@ -179,12 +181,12 @@ namespace NextFlicksMVC4.Controllers
                 Trace.WriteLine("\tRuntime Start");
                 movie_list =
                     movie_list.Where(
-                        item => item.runtime.TotalSeconds > runtime_start)
+                        item => item.runtime.TotalSeconds >= runtime_start)
                               .ToList();
                 Trace.WriteLine("\tRuntime End");
                 movie_list =
                     movie_list.Where(
-                        item => item.runtime.TotalSeconds < runtime_end)
+                        item => item.runtime.TotalSeconds <= runtime_end)
                               .ToList();
             }
             //mpaa
@@ -259,7 +261,8 @@ namespace NextFlicksMVC4.Controllers
         {
             //gets the movie_ids that match 'genre'
             Trace.WriteLine("\t\tFind movies that match genre_string");
-            var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre, movie_list);
+            var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre,
+                                                                 movie_list);
 
             //execute the find movie_id finding by calling the list
             Trace.WriteLine("\t\tList the movies that match genre_string");
@@ -267,13 +270,28 @@ namespace NextFlicksMVC4.Controllers
 
             Trace.WriteLine("\t\tFind moves that match movie_id");
 
+            Trace.WriteLine("\t\tmovie_list to Array");
+            var movie_array = movie_list.ToArray();
+
+
             //the iqueryable  for finding movies that match the movie_list
             var movie_iqry =
-                movie_list.Where(
+                //movie_list.Where(
+                //item => movie_ids_for_genres_list.Contains(item.movie_ID));
+
+                ////tried using the iQry instead of list and it was slower
+                //// so I'm keeping to above line instead of the below one
+                // item => movie_ids_for_genres.Contains(item.movie_ID));
+
+                 movie_array.Where(
                     item => movie_ids_for_genres_list.Contains(item.movie_ID));
+
+            //Trace.WriteLine("\t\tto array after array.Where");
+            //var res_array = movie_iqry.ToArray();
 
             Trace.WriteLine("\t\tTo List");
             movie_list = movie_iqry.ToList();
+            //movie_list = movie_array.ToList();
             return movie_list;
         }
 
@@ -324,24 +342,24 @@ namespace NextFlicksMVC4.Controllers
         /// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
         /// </summary>
         /// <returns></returns>
-        public ActionResult Genres(string genre_params = "action", int count= 25, int start = 0)
+        public ActionResult Genres(string genre = "action", int count= 25, int start = 0)
         {
             MovieDbContext db = new MovieDbContext();
 
             //make sure params are set
-            if (genre_params == "")
+            if (genre == "")
             {
-                genre_params = "nothing";
+                genre = "nothing";
             }
 
             //get a movie list that matches genres
-            var movie_list = GetMoviesMatchingGenre(db, genre_params);
+            var movie_list = GetMoviesMatchingGenre(db, genre);
             //creates the MwGVM for the movie list
             var ranged_movie_list = movie_list.GetRange(start, count);
             var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
 
             //to show a given view what the user searched for
-            ViewBag.SearchTerms = genre_params;
+            ViewBag.SearchTerms = genre;
             //relectively get the list of parameters for this method and pass them to the view
             ViewBag.Params = GetAllParamNames("Genres");
 
@@ -367,7 +385,7 @@ namespace NextFlicksMVC4.Controllers
         public static IQueryable<Int32> GetMovieIdsMatchingGenres(
             MovieDbContext db, string genre_params, List<Movie> movie_list= null )
         {
-            //finds the genre id matching the argument "genre_params"
+            //finds the genre id matching the argument "genre"
             var genre_ids = db.Genres.Where(
                 item => item.genre_string.StartsWith(genre_params))
                               .Select(item => item.genre_ID);
@@ -378,7 +396,8 @@ namespace NextFlicksMVC4.Controllers
                   .Select(item => item.movie_ID);
 
             //if movie_list was passed, select the movies from m_i_m_t_g_i that are in movie_list
-            if (movie_list != null) {
+            if (movie_list != null)
+            {
                 movies_ids_matching_the_genre_iq.Where(
                     movie_id =>
                     movie_list.Select(item => item.movie_ID).Contains(movie_id));
@@ -390,6 +409,7 @@ namespace NextFlicksMVC4.Controllers
 
         //-------------------------------------------------------
       
+        ///faster than  ReduceMovieListToMatchingGenres
         public static List<Movie> GetMoviesMatchingGenre(MovieDbContext db,
                                                          string genre_params =
                                                              "action")
