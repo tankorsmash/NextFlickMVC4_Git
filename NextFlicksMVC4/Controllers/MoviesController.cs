@@ -387,7 +387,6 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-
         /// <summary>
         /// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
         /// </summary>
@@ -774,7 +773,10 @@ namespace NextFlicksMVC4.Controllers
         {
             MovieDbContext db = new MovieDbContext();
             //grab new movies, turn one into a Movie and view it
-            var data = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", term, max_results: "100", outputPath: @"C:/streamingAPI2.NFPOX");
+            var data =
+                OAuth1a.GetNextflixCatalogDataString(
+                    "catalog/titles/streaming", term, max_results: "100",
+                    outputPath: @"C:/streamingAPI2.NFPOX");
             var titles =
                 NextFlicksMVC4.Create.ParseXmlForCatalogTitles(data);
 
@@ -849,7 +851,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Edit(int id = 0)
         {
-            MovieDbContext db = new MovieDbContext();
+            var db = new MovieDbContext();
             Movie movie = db.Movies.Find(id);
             if (movie == null)
             {
