@@ -25,6 +25,51 @@ namespace NextFlicksMVC4.Controllers
         //public static MovieDbContext db = new MovieDbContext();
 
 
+        public ActionResult Cookies()
+        {
+            //create a cookie
+            var cookie_name = "TestCookie";
+            HttpCookie cookie = new HttpCookie(cookie_name);
+            cookie.Value = "Test Cookie Value";
+
+            //add the cookie
+            Response.Cookies.Add(cookie);
+            Trace.WriteLine("Cookie Added");
+
+            //test for the cookie creation, change ViewBag
+            if (Request.Cookies.Get(cookie_name) != null)
+            { ViewBag.cookies = true; }
+
+            return View();
+        }
+
+        public ActionResult Jar()
+        {
+            var cookie_name = "TestCookie";
+
+            //if cookie exists, remove it
+            if (Request.Cookies.AllKeys.Contains(cookie_name)) {
+                //get the cookie from the request, expire the time so it gets 
+                // deleted
+                var cookie = Request.Cookies.Get(cookie_name);
+                cookie.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Add(cookie);
+
+                ViewBag.cookies = false;
+
+                Trace.WriteLine("Cookie removed");
+            }
+
+
+            else {
+                Trace.WriteLine("Cookie didn't exist, no action");
+                ViewBag.cookies = true;
+            }
+
+            return View("Cookies");
+        }
+
+
         [HttpGet]
         public ActionResult Filter()
         {
@@ -908,7 +953,7 @@ namespace NextFlicksMVC4.Controllers
             db.Configuration.AutoDetectChangesEnabled = true;
         }
 
-        public ActionResult API(string term = "Jim Carrey")
+        public ActionResult Api(string term = "Jim Carrey")
         {
             MovieDbContext db = new MovieDbContext();
             //grab new movies, turn one into a Movie and view it
