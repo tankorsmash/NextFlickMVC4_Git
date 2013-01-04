@@ -107,6 +107,7 @@ namespace NextFlicksMVC4.Controllers
 
 
 
+        [Obsolete("shouldn't be needed anymore", true)]
         public ActionResult FilterHandler(string year_start, string year_end)
         {
             ViewData["year_start"] = year_start;
@@ -581,6 +582,7 @@ namespace NextFlicksMVC4.Controllers
 
         }
 
+        [Obsolete("shouldn't be needed anymore", true)]
         public ActionResult MtG()
         {
             //need to find movie_id, its genres and its boxarts
