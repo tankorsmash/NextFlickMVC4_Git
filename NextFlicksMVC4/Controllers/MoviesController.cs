@@ -17,7 +17,6 @@ using NextFlicksMVC4.Helpers;
 using System.Data.SqlClient;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using NUnit.Framework;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -947,36 +946,4 @@ namespace NextFlicksMVC4.Controllers
 
         }
     }
-
-    [TestFixture]
-    public class TestMoviesController
-    {
-    
-        [Test]
-        public void AddXtoY()
-        {
-            int x = 1;
-            int y = 100;
-
-            int z = x + y;
-
-            Assert.AreEqual(z, 101);
-        }
-
-
-        [Test]
-        public void TestGetAllParamNames()
-        {
-            List<String> result = MoviesController.GetAllParamNames("GetAllParamNames");
-
-            List<string> expected = new List<string> {"methodName"};
-  
-            Assert.AreEqual(result, expected);
-
-        } 
-
-
-    }
-
-
 }
