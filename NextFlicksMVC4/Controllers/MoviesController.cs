@@ -17,6 +17,7 @@ using NextFlicksMVC4.Helpers;
 using System.Data.SqlClient;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using NUnit.Framework;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -25,6 +26,7 @@ namespace NextFlicksMVC4.Controllers
         //public static MovieDbContext db = new MovieDbContext();
 
 
+        //Creates a cookie
         public ActionResult Cookies()
         {
             //create a cookie
@@ -43,6 +45,7 @@ namespace NextFlicksMVC4.Controllers
             return View();
         }
 
+        //Expires a cookie
         public ActionResult Jar()
         {
             var cookie_name = "TestCookie";
@@ -307,8 +310,10 @@ namespace NextFlicksMVC4.Controllers
         {
             //gets the movie_ids that match 'genre'
             Trace.WriteLine("\t\tFind movies that match genre_string");
-            var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre,
-                                                                 movie_list);
+            var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre
+                                                                            );
+                                       //OOM error if movie_list is passed
+                                                                 //,movie_list);
 
             //execute the find movie_id finding by calling the list
             Trace.WriteLine("\t\tList the movies that match genre_string");
@@ -942,4 +947,36 @@ namespace NextFlicksMVC4.Controllers
 
         }
     }
+
+    [TestFixture]
+    public class TestMoviesController
+    {
+    
+        [Test]
+        public void AddXtoY()
+        {
+            int x = 1;
+            int y = 100;
+
+            int z = x + y;
+
+            Assert.AreEqual(z, 101);
+        }
+
+
+        [Test]
+        public void TestGetAllParamNames()
+        {
+            List<String> result = MoviesController.GetAllParamNames("GetAllParamNames");
+
+            List<string> expected = new List<string> {"methodName"};
+  
+            Assert.AreEqual(result, expected);
+
+        } 
+
+
+    }
+
+
 }
