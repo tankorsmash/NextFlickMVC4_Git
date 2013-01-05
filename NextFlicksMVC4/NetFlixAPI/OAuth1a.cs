@@ -105,11 +105,13 @@ namespace NextFlicksMVC4.NetFlixAPI
             {
                 file.WriteLine(line);
                 line_count += 1;
-                Trace.WriteLine("Line written: {0}", line_count.ToString());
+                string msg = String.Format("Line number {0} written",
+                                           line_count.ToString());
+                Trace.WriteLine(msg);
 
             }
             file.Close();
-            Trace.WriteLine("Successfully wrote to {0}", outputPath);
+            Trace.WriteLine("Successfully wrote and closed to {0}", outputPath);
             return outputPath;
             //}
             //else

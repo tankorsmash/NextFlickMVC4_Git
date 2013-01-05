@@ -218,7 +218,7 @@ namespace NextFlicksMVC4.Controllers
             if (title != "") {
             Trace.WriteLine("\tTitle");
                 movie_list =
-                    movie_list.Where(item => item.short_title.ToLower().StartsWith(title)).ToList();
+                    movie_list.Where(item => item.short_title.ToLower().Contains(title)).ToList();
             }
             //sort alphabetical
 
@@ -775,8 +775,8 @@ namespace NextFlicksMVC4.Controllers
             //grab new movies, turn one into a Movie and view it
             var data =
                 OAuth1a.GetNextflixCatalogDataString(
-                    "catalog/titles/streaming", term, max_results: "100",
-                    outputPath: @"C:/streamingAPI2.NFPOX");
+                    "catalog/titles/dvd", term, max_results: "100",
+                    outputPath: @"C:/testdvd.NFPOX");
             var titles =
                 NextFlicksMVC4.Create.ParseXmlForCatalogTitles(data);
 
