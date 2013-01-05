@@ -213,6 +213,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MoviesController.cs" />
+    <Compile Include="Filters\TrackingFilter.cs" />
     <Compile Include="Tests\TestMoviesController.cs" />
     <Compile Include="Controllers\ToolsController.cs" />
     <Compile Include="DatabaseClasses\ModelBuilder.cs" />

@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Diagnostics;
+using NextFlicksMVC4.Filters;
 
 namespace NextFlicksMVC4
 {
@@ -20,6 +21,12 @@ namespace NextFlicksMVC4
             AreaRegistration.RegisterAllAreas();
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);
+
+            //add custom filter
+            GlobalFilters.Filters.Add(new TrackingActionFilterAttribute() );
+            
+            //end customization filter
+
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

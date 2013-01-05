@@ -17,6 +17,7 @@ using NextFlicksMVC4.Helpers;
 using System.Data.SqlClient;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using NextFlicksMVC4.Filters;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -45,6 +46,7 @@ namespace NextFlicksMVC4.Controllers
         }
 
         //Expires a cookie
+        [TrackingActionFilter]
         public ActionResult Jar()
         {
             var cookie_name = "TestCookie";
@@ -62,6 +64,8 @@ namespace NextFlicksMVC4.Controllers
                 Trace.WriteLine("Cookie removed");
             }
 
+
+                
 
             else {
                 Trace.WriteLine("Cookie didn't exist, no action");
@@ -775,8 +779,8 @@ namespace NextFlicksMVC4.Controllers
             //grab new movies, turn one into a Movie and view it
             var data =
                 OAuth1a.GetNextflixCatalogDataString(
-                    "catalog/titles/dvd", term, max_results: "100",
-                    outputPath: @"C:/testdvd.NFPOX");
+                    "catalog/titles/streaming", term, max_results: "100",
+                    outputPath: @"C:/testUS.NFPOX");
             var titles =
                 NextFlicksMVC4.Create.ParseXmlForCatalogTitles(data);
 

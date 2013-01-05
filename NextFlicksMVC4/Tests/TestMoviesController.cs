@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NextFlicksMVC4.Controllers;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 
-namespace NextFlicksMVC4.Controllers
+namespace NextFlicksMVC4.Tests
 {
     [TestFixture]
     public class TestMoviesController

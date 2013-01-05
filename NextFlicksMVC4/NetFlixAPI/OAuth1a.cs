@@ -61,7 +61,11 @@ namespace NextFlicksMVC4.NetFlixAPI
                                                            "start_index", start_index),
                                                        new KeyValuePair
                                                            <string, string>(
-                                                           "max_results", max_results));
+                                                           "max_results", max_results)
+                                                           );
+                                        //supposed to limit results to a country, but no luck
+                                                       //new KeyValuePair<string, string>(
+                                                       //    "country", "US"));
             Trace.WriteLine(oauth_signature);
 
             //Need to send the request now
