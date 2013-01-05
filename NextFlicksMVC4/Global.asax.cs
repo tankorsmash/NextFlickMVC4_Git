@@ -23,8 +23,7 @@ namespace NextFlicksMVC4
             WebApiConfig.Register(GlobalConfiguration.Configuration);
 
             //add custom filter
-            GlobalFilters.Filters.Add(new TrackingActionFilterAttribute() );
-            
+            //GlobalFilters.Filters.Add(new TrackingActionFilterAttribute() );
             //end customization filter
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

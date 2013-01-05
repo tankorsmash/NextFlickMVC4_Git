@@ -5,6 +5,11 @@
 @{
     ViewBag.Title = "Genres ripoff of index";
 }
+
+@if (ViewBag.filtered == true) {
+    <h1>The View bag was filtered</h1>
+}
+
 <script>
     $(document).ready(function () {
         $("div#action_params").ready(function () {

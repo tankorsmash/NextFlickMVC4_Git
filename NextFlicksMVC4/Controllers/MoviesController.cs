@@ -46,7 +46,6 @@ namespace NextFlicksMVC4.Controllers
         }
 
         //Expires a cookie
-        [TrackingActionFilter]
         public ActionResult Jar()
         {
             var cookie_name = "TestCookie";
@@ -136,6 +135,7 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
+        [TrackingActionFilter]
         public ActionResult Test(string title = "",
             int year_start = 1914, int year_end = 2012,
             int mpaa_start = 0, int mpaa_end = 200,

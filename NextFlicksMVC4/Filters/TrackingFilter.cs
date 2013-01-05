@@ -12,7 +12,7 @@ namespace NextFlicksMVC4.Filters
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             base.OnResultExecuting(context);
-            
+            Trace.WriteLine("Starting filter");
             //save url, userId from session, etc...
 
 
@@ -22,6 +22,7 @@ namespace NextFlicksMVC4.Filters
             //Trace.WriteLine(context.HttpContext.Request.FilePath);
 
 
+            context.Controller.ViewBag.filtered = true;
 
             HttpCookie cookie = context.HttpContext.Request.Cookies.Get("TestCookie");
             if (cookie != null) {
@@ -30,6 +31,8 @@ namespace NextFlicksMVC4.Filters
             else {
                 Trace.WriteLine("Cookie does not exist");
             }
+
+            Trace.WriteLine("Ending filter");
         }
     }
 }
