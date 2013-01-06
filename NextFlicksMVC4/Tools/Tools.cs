@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using NextFlicksMVC4.Controllers;
+using System.Xml;
 
 namespace NextFlicksMVC4.Tools
 {
@@ -43,5 +44,16 @@ namespace NextFlicksMVC4.Tools
             return param_names;
 
         }
+
+        //public static string GetXmlText(XmlDocument xmlDocument, string xpath, string error_msg = @"N/A")
+        //{
+
+        //    string result = xmlDocument.SelectSingleNode(xpath).InnerText;
+
+        //    return result;
+        //}
     }
+
+
+    
 }

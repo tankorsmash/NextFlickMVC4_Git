@@ -18,10 +18,12 @@ namespace NextFlicksMVC4.OMBD
                                                string response_type = "xml",
                                                string tomatoes = "true")
         {
+            Trace.WriteLine("creating Omdb entry");
             var xml = GetOmbdbTitleInfo(title, year, response_type, tomatoes);
             var xDoc = GetXmlDocumentFromOmdbResponse(xml);
             OmdbEntry omdbEntry = CreateOmdbEntryFromXmlDocument(xDoc);
 
+            Trace.WriteLine("\tdone creating Omdb entry");
 
             return omdbEntry;
         }
@@ -43,15 +45,19 @@ namespace NextFlicksMVC4.OMBD
 
             //Trace.WriteLine(full_url);
 
+            Trace.WriteLine("  GetResponse'ing");
             HttpWebRequest web = (HttpWebRequest) WebRequest.Create(full_url);
+            web.KeepAlive = true;
             var response = web.GetResponse();
 
             Stream objStream;
             objStream = response.GetResponseStream();
+            Trace.WriteLine("  GetResponseStream'ing");
 
             StreamReader objReader;
             objReader = new StreamReader(objStream);
 
+            Trace.WriteLine("  ReadToEnd'ing");
             string string_response = objReader.ReadToEnd();
 
 
@@ -76,6 +82,10 @@ namespace NextFlicksMVC4.OMBD
         private static OmdbEntry CreateOmdbEntryFromXmlDocument(
             XmlDocument xmlDocument)
         {
+
+            if (xmlDocument.SelectSingleNode(@"/root/@response").InnerText == "False") {
+                return new OmdbEntry();
+            }
 
             OmdbEntry omdbEntry;
             omdbEntry = new OmdbEntry
@@ -144,22 +154,22 @@ namespace NextFlicksMVC4.OMBD
 
     public class OmdbEntry
     {
-        public string title;
-        public string year;
+        public string title = @"N/A"; 
+        public string year = @"N/A"; 
 
-        public string i_Rating;
-        public string i_Votes;
-        public string i_ID;
+        public string i_Rating = @"N/A"; 
+        public string i_Votes = @"N/A"; 
+        public string i_ID = @"N/A"; 
 
-        public string t_Meter;
-        public string t_Image;
-        public string t_Rating;
-        public string t_Reviews;
-        public string t_Fresh;
-        public string t_Rotten;
-        public string t_Consensus;
-        public string t_UserMeter;
-        public string t_UserRating;
-        public string t_UserReviews;
+        public string t_Meter = @"N/A"; 
+        public string t_Image = @"N/A"; 
+        public string t_Rating = @"N/A"; 
+        public string t_Reviews = @"N/A"; 
+        public string t_Fresh = @"N/A"; 
+        public string t_Rotten = @"N/A"; 
+        public string t_Consensus = @"N/A"; 
+        public string t_UserMeter = @"N/A"; 
+        public string t_UserRating = @"N/A"; 
+        public string t_UserReviews = @"N/A"; 
     }
 }
