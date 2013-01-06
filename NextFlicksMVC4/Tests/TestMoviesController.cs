@@ -26,7 +26,7 @@ namespace NextFlicksMVC4.Tests
         [Test]
         public void TestGetAllParamNames()
         {
-            List<string> result = MoviesController.GetAllParamNames("GetAllParamNames");
+            List<string> result = Tools.Tools.GetAllParamNames("GetAllParamNames");
 
             List<string> expected = new List<string> {"methodName"};
   

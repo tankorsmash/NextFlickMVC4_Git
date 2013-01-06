@@ -683,8 +683,6 @@ namespace NextFlicksMVC4.Controllers
                     Trace.WriteLine(save_msg);
                 }
 
-                
-
                 //if at a certain amount of adds, save changes, to avoid memory error hopefully
                 if (checkpoints.Contains(index))
                 {
@@ -852,9 +850,9 @@ namespace NextFlicksMVC4.Controllers
         {
             string retVal = string.Empty;
 
-            if (method != null && method.GetParameters().Length > index)
+            if (method != null && method.GetParameters().Length > index) {
                 retVal = method.GetParameters()[index].Name;
-
+            }
 
             return retVal;
         }
