@@ -39,6 +39,8 @@ namespace NextFlicksMVC4.Filters
 
             //write out the user agent
             string userAgent = context.HttpContext.Request.UserAgent;
+
+            
             Trace.WriteLine(userAgent);
 
 
