@@ -17,6 +17,9 @@ namespace NextFlicksMVC4.Filters
             //save url, userId from session, etc...
 
 
+            
+
+
             //Trace.WriteLine("raw > url > filepath");
             //Trace.WriteLine(context.HttpContext.Request.RawUrl);
             //Trace.WriteLine(context.HttpContext.Request.Url);
@@ -30,7 +33,7 @@ namespace NextFlicksMVC4.Filters
             string[] keys =
                 context.HttpContext.Request.Headers.AllKeys;
             foreach (string key in keys) {
-                var msg = string.Format("{0} : {1}", key, headers[key]);
+                string msg = string.Format("{0} : {1}", key, headers[key]);
                 Trace.WriteLine(msg);
             }
 

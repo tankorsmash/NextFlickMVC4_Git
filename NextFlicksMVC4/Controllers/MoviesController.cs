@@ -15,9 +15,8 @@ using NextFlicksMVC4.NetFlixAPI;
 using System.Timers;
 using NextFlicksMVC4.Helpers;
 using System.Data.SqlClient;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using NextFlicksMVC4.Filters;
+using NextFlicksMVC4.Views.Movies.ViewModels;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -486,24 +485,6 @@ namespace NextFlicksMVC4.Controllers
             return movie_list;
         }
 
-
-        public class MovieToGenreViewModel
-        {
-            public int movie_id { get; set; }
-            public int genre_id { get; set; }
-            public string genre_string { get; set; }
-        }
-
-        public class MovieWithGenreViewModel
-        {
-            public Movie movie { get; set; }
-
-            [DisplayName("List of Genres")]
-            [DataType("CommaList")]
-            public List<string> genre_strings { get; set; }
-
-            public BoxArt boxart { get; set; }
-        }
 
         public ActionResult Index(int start = 0, int count = 10)
         {

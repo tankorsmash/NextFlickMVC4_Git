@@ -17,6 +17,7 @@ using NextFlicksMVC4.Helpers;
 using System.Data.SqlClient;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using NextFlicksMVC4.Views.Movies.ViewModels;
 
 namespace NextFlicksMVC4.DatabaseClasses
 {
@@ -30,7 +31,7 @@ namespace NextFlicksMVC4.DatabaseClasses
         /// <param name="genre_params"></param>
         /// <returns></returns>
         [Obsolete("this uses SQL, please use a different method that uses Linq", true)]
-        public  static List<MoviesController.MovieWithGenreViewModel> CreateMovieWithGenreViewModelList(MovieDbContext db, string genre_params)
+        public  static List<MovieWithGenreViewModel> CreateMovieWithGenreViewModelList(MovieDbContext db, string genre_params)
         {
 
             // linq to sql example
@@ -73,16 +74,16 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             //          where m.movie_id == 1
             //          select new Movie() {movie_ID = m.movie_id};
 
-            var res = db.Database.SqlQuery<MoviesController.MovieToGenreViewModel>(qry,
+            var res = db.Database.SqlQuery<MovieToGenreViewModel>(qry,
                                                                   genre_params);
-            List<MoviesController.MovieToGenreViewModel> movie_list = res.ToList();
+            List<MovieToGenreViewModel> movie_list = res.ToList();
 
             //loop over MtG and fill a dict with the associated strings to movie
             Dictionary<int, List<string>> dict_movId_genStr =
                 new Dictionary<int, List<string>>();
 
             //fo each model, add its genre string to a key of movie id, so there's one movie ID to several genre strings
-            foreach (MoviesController.MovieToGenreViewModel movieToGenreViewModel in movie_list)
+            foreach (MovieToGenreViewModel movieToGenreViewModel in movie_list)
             {
                 //if dict does not contain an entry for the key, make one, and inst
                 // a list for it too
@@ -108,10 +109,10 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
 
             //add the genres and Movie to the ViewModel
             Trace.WriteLine("Creating ViewModel with Genres and Movies");
-            var MwG_list = new List<MoviesController.MovieWithGenreViewModel>();
+            var MwG_list = new List<MovieWithGenreViewModel>();
             foreach (var movie in matched_movies)
             {
-                MwG_list.Add(new MoviesController.MovieWithGenreViewModel
+                MwG_list.Add(new MovieWithGenreViewModel
                                  {
                                      movie = movie,
                                      genre_strings =
@@ -140,7 +141,7 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
         /// </summary>
         /// <param name="movie_list"></param>
         /// <returns>a list of MovieWithGenreViewModels </returns>
-        public static List<MoviesController.MovieWithGenreViewModel>
+        public static List<MovieWithGenreViewModel>
             CreateListOfMwGVM(MovieDbContext db,
             List<Movie> movie_list)
         {
@@ -158,7 +159,7 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
             ///fill a list with new MwGVMs based on the movie, genre_strings and boxarts
             var MwG_list =
                 movie_list.Select(
-                    movie => new MoviesController.MovieWithGenreViewModel
+                    movie => new MovieWithGenreViewModel
                                  {
                                      //movie
                                      movie = movie,
