@@ -27,7 +27,7 @@ namespace NextFlicksMVC4.OMBD
         }
 
         //retrieve api data
-        public static string GetOmbdbTitleInfo(string title,
+        private static string GetOmbdbTitleInfo(string title,
                                                string year = null,
                                                string response_type = "xml",
                                                string tomatoes = "true")
@@ -63,7 +63,7 @@ namespace NextFlicksMVC4.OMBD
         
 
         //convert api string to xml
-        public static XmlDocument GetXmlDocumentFromOmdbResponse(string xml_string)
+        private static XmlDocument GetXmlDocumentFromOmdbResponse(string xml_string)
         {
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xml_string);
@@ -73,7 +73,7 @@ namespace NextFlicksMVC4.OMBD
         }
 
         //serve create object from xmlDoc
-        public static OmdbEntry CreateOmdbEntryFromXmlDocument(
+        private static OmdbEntry CreateOmdbEntryFromXmlDocument(
             XmlDocument xmlDocument)
         {
 
