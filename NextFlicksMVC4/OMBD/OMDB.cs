@@ -13,6 +13,18 @@ namespace NextFlicksMVC4.OMBD
     {
 
         //return all below
+        public static OmdbEntry GetOmdbEntryForMovie(string title,
+                                               string year = null,
+                                               string response_type = "xml",
+                                               string tomatoes = "true")
+        {
+            var xml = GetOmbdbTitleInfo(title, year, response_type, tomatoes);
+            var xDoc = GetXmlDocumentFromOmdbResponse(xml);
+            OmdbEntry omdbEntry = CreateOmdbEntryFromXmlDocument(xDoc);
+
+
+            return omdbEntry;
+        }
 
         //retrieve api data
         public static string GetOmbdbTitleInfo(string title,
@@ -64,7 +76,60 @@ namespace NextFlicksMVC4.OMBD
         public static OmdbEntry CreateOmdbEntryFromXmlDocument(
             XmlDocument xmlDocument)
         {
-            return new OmdbEntry();
+
+            OmdbEntry omdbEntry;
+            omdbEntry = new OmdbEntry
+                            {
+                                title =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@title")
+                                               .InnerText,
+                                year =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@year").InnerText,
+                                t_Meter =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoMeter")
+                                               .InnerText,
+                                t_Image =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoImage")
+                                               .InnerText,
+                                t_Rating =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoRating")
+                                               .InnerText,
+                                t_Reviews =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoReviews")
+                                               .InnerText,
+                                t_Fresh =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoFresh")
+                                               .InnerText,
+                                t_Rotten =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoRotten")
+                                               .InnerText,
+                                t_Consensus =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoConsensus")
+                                               .InnerText,
+                                t_UserMeter =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoUserMeter")
+                                               .InnerText,
+                                t_UserRating =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoUserRating")
+                                               .InnerText,
+                                t_UserReviews =
+                                    xmlDocument.SelectSingleNode(
+                                        "/root/movie/@tomatoUserReviews")
+                                               .InnerText,
+                            };
+
+            return omdbEntry;
         }
     }
 

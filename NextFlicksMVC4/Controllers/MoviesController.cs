@@ -147,7 +147,8 @@ namespace NextFlicksMVC4.Controllers
         {
             ViewBag.Params = Tools.Tools.GetAllParamNames("Test");
 
-            OMBD.Omdb.GetOmbdbTitleInfo("The Terminator", "1984");
+            //OMBD.Omdb.GetOmbdbTitleInfo("The Terminator", "1984");
+            OMBD.Omdb.GetOmdbEntryForMovie("The Terminator", "1984");
 
             MovieDbContext db = new MovieDbContext();
 
