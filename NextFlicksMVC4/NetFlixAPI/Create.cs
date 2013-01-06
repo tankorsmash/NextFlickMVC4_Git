@@ -140,8 +140,6 @@ namespace NextFlicksMVC4.NetFlixAPI
             //create an empty Title class
             Title createdTitle = new Title();
 
-
-
             //Add data to the appropriate fields
             AddPrimaryData(createdTitle, catalog_title);
             AddSecondaryData(createdTitle, catalog_title);
@@ -150,12 +148,9 @@ namespace NextFlicksMVC4.NetFlixAPI
             AddGroupData(createdTitle, catalog_title);
             AddImageData(createdTitle, catalog_title);
             
-
             return createdTitle;
 
         }
-
-
 
 
         /// <summary>

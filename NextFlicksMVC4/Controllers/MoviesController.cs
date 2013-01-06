@@ -492,15 +492,6 @@ namespace NextFlicksMVC4.Controllers
 
             //create a query string to full the proper count of movies from db
             Trace.WriteLine("Creating a query string");
-            //string qry = "select * from" +
-            //             " ( select " +
-            //             "  ROW_NUMBER() over (order by movie_id) as rownum," +
-            //             " *" +
-            //             " from Movies) foo" +
-            //             " where rownum  between {0} and {1}";
-            //var res = db.Movies.SqlQuery(qry, start, start + count);
-            //Trace.WriteLine("creating a list from the query");
-            //var fullList = res.ToList();
 
             //select a range of items, with linq rather than with query
             var fullList = db.Movies.OrderBy(item => item.movie_ID).Skip(start).Take(count).ToList();
@@ -541,9 +532,6 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-
-        
-
         public ActionResult Full()
         {
 
@@ -566,7 +554,6 @@ namespace NextFlicksMVC4.Controllers
 
 
             //------------------------------------------------------
-
 
 
             Trace.WriteLine("starting data read");
@@ -633,42 +620,6 @@ namespace NextFlicksMVC4.Controllers
                 //add boxart and genre data to db before saving the movie 
                 AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
 
-                //Trace.WriteLine("Beginning Add to DB");
-
-                //set up checkpoints for progress updates
-                //int modulo =0;
-                //List<int> checkpoints = new List<int>();
-                //int total = listOfMovies.Count;
-                //int start = total/25;
-                //if (start == 0)
-                //{
-                //    start = 1;
-                //}
-                //while (modulo <= listOfMovies.Count)
-                //{
-                //   checkpoints.Add(modulo);
-                //    modulo += start;
-                //}
-
-                //go through list of movies and add to database
-                //int counter = 0;
-                //if (listOfMovies.Count > 0)
-                //{
-                //    foreach (Movie movie in listOfMovies)
-                //    {
-                //        //db.Movies.Add(movie);
-
-
-                //        //counting stuff, not logic essential
-                //        counter += 1;
-                //        if (checkpoints.Contains(counter))
-                //        {
-                //            string msg =
-                //                String.Format(
-                //                    "Done adding at least {0} movies", counter);
-                //            Trace.WriteLine(msg);
-                //        }
-                //    }
 
                 Trace.WriteLine("Saving Changes any untracked ones, anyways");
                 db.SaveChanges();
