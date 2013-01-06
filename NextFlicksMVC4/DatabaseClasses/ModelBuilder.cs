@@ -31,7 +31,7 @@ namespace NextFlicksMVC4.DatabaseClasses
         /// <param name="genre_params"></param>
         /// <returns></returns>
         [Obsolete("this uses SQL, please use a different method that uses Linq", true)]
-        public  static List<MovieWithGenreViewModel> CreateMovieWithGenreViewModelList(MovieDbContext db, string genre_params)
+        private  static List<MovieWithGenreViewModel> CreateMovieWithGenreViewModelList(MovieDbContext db, string genre_params)
         {
 
             // linq to sql example

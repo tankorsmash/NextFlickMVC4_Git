@@ -35,8 +35,8 @@ namespace NextFlicksMVC4.NetFlixAPI
                 string start_index = "0", string max_results = "25", string outputPath = "")
         {
 
-            string VERB = "GET";
-            string URL = String.Format("http://api-public.netflix.com/{0}", resource);
+            const string verb = "GET";
+            string base_url = String.Format("http://api-public.netflix.com/{0}", resource);
 
                 //Not going to change
             string consumer_key = "u7r68et24v6rd5r9u828qvte";
@@ -47,7 +47,7 @@ namespace NextFlicksMVC4.NetFlixAPI
                 //dynamic values
             string oauth_timestamp = GenerateTimeStamp();
             string oauth_nonce = GenerateTimeStamp();
-            string oauth_signature = GenerateSignature(VERB, URL,
+            string oauth_signature = GenerateSignature(verb, base_url,
                                                        consumer_key,
                                                        consumer_secret,
                                                        oauth_timestamp,
@@ -76,7 +76,7 @@ namespace NextFlicksMVC4.NetFlixAPI
             //this creates the URL we are going to send. It takes the URL specified
             // at the top of the method, and then uses the rest of the params string
             // with the oauth_signature
-            string toSend = String.Format("{0}?{1}", URL, oauth_signature);
+            string toSend = String.Format("{0}?{1}", base_url, oauth_signature);
 
             //get the URL to send, now we need to create ethe request
             HttpWebRequest web = (HttpWebRequest)WebRequest.Create(toSend);

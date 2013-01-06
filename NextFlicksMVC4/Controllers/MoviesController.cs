@@ -145,8 +145,9 @@ namespace NextFlicksMVC4.Controllers
             string genre = "",
             int start = 0, int count = 25)
         {
-            ViewBag.Params = GetAllParamNames("Test");
+            ViewBag.Params = Tools.Tools.GetAllParamNames("Test");
 
+            OMBD.Omdb.GetOmbdbTitleInfo("The Terminator", "1984");
 
             MovieDbContext db = new MovieDbContext();
 
@@ -413,7 +414,7 @@ namespace NextFlicksMVC4.Controllers
             //to show a given view what the user searched for
             ViewBag.SearchTerms = genre;
             //relectively get the list of parameters for this method and pass them to the view
-            ViewBag.Params = GetAllParamNames("Genres");
+            ViewBag.Params = Tools.Tools.GetAllParamNames("Genres");
 
             if (count > MwG_list.Count)
                 count = MwG_list.Count;
@@ -509,7 +510,7 @@ namespace NextFlicksMVC4.Controllers
 
             //Param names
             Trace.WriteLine("getting param names");
-            ViewBag.Params = GetAllParamNames("Index");
+            ViewBag.Params = Tools.Tools.GetAllParamNames("Index");
 
             //make sure there's not a outofbounds
             if (count > fullList.Count)
@@ -842,44 +843,6 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
             db.Dispose();
             base.Dispose(disposing);
-        }
-        
-
-        ///TODO: Move these methods to a new file, since they're not a controller
-        public static string GetParamName(System.Reflection.MethodInfo method, int index)
-        {
-            string retVal = string.Empty;
-
-            if (method != null && method.GetParameters().Length > index) {
-                retVal = method.GetParameters()[index].Name;
-            }
-
-            return retVal;
-        }
-
-        /// <summary>
-        /// loop over params and save all the names in a list
-        /// </summary>
-        /// <param name="methodName"></param>
-        /// <returns></returns>
-        public static List<string> GetAllParamNames(string methodName)
-        {
-            List<string> param_names = new List<string>();
-
-            for (int i = 0; i < 15; i++) {
-                var info = typeof (MoviesController).GetMethod(methodName);
-                string param_name = GetParamName(info, i);
-                
-                //TODO: Improve method
-                //if the param is unnamed, there's probably no more params. Improve it
-                if (param_name == "")
-                break;
-
-                param_names.Add(param_name);
-            }
-
-            return param_names;
-
         }
     }
 }
