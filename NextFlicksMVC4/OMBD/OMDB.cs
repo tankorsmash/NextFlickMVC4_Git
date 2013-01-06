@@ -87,6 +87,15 @@ namespace NextFlicksMVC4.OMBD
                                 year =
                                     xmlDocument.SelectSingleNode(
                                         "/root/movie/@year").InnerText,
+                                i_Votes = 
+                                    xmlDocument.SelectSingleNode(
+                                    "/root/movie/@imdbVotes").InnerText,
+                                i_Rating = 
+                                    xmlDocument.SelectSingleNode(
+                                    "/root/movie/@imdbRating").InnerText,
+                                i_ID = 
+                                    xmlDocument.SelectSingleNode(
+                                    "/root/movie/@imdbID").InnerText,
                                 t_Meter =
                                     xmlDocument.SelectSingleNode(
                                         "/root/movie/@tomatoMeter")
@@ -137,6 +146,10 @@ namespace NextFlicksMVC4.OMBD
     {
         public string title;
         public string year;
+
+        public string i_Rating;
+        public string i_Votes;
+        public string i_ID;
 
         public string t_Meter;
         public string t_Image;
