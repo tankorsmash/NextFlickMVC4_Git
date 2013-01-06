@@ -494,7 +494,7 @@ namespace NextFlicksMVC4.Controllers
             public string genre_string { get; set; }
         }
 
-        public  class MovieWithGenreViewModel
+        public class MovieWithGenreViewModel
         {
             public Movie movie { get; set; }
 

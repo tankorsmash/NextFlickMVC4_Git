@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Diagnostics;
+using NextFlicksMVC4.Models;
 
 namespace NextFlicksMVC4.Filters
 {
@@ -12,7 +13,7 @@ namespace NextFlicksMVC4.Filters
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             base.OnResultExecuting(context);
-            Trace.WriteLine("Starting filter");
+            //Trace.WriteLine("Starting filter");
             //save url, userId from session, etc...
 
 
@@ -24,15 +25,36 @@ namespace NextFlicksMVC4.Filters
 
             context.Controller.ViewBag.filtered = true;
 
-            HttpCookie cookie = context.HttpContext.Request.Cookies.Get("TestCookie");
-            if (cookie != null) {
-                Trace.WriteLine(cookie.Value);
-            }
-            else {
-                Trace.WriteLine("Cookie does not exist");
+            //write out all headers
+            var headers = context.HttpContext.Request.Headers;
+            string[] keys =
+                context.HttpContext.Request.Headers.AllKeys;
+            foreach (string key in keys) {
+                var msg = string.Format("{0} : {1}", key, headers[key]);
+                Trace.WriteLine(msg);
             }
 
-            Trace.WriteLine("Ending filter");
+            //write out the user agent
+            string userAgent = context.HttpContext.Request.UserAgent;
+            Trace.WriteLine(userAgent);
+
+
+            //var model = context.Controller.ViewData.Model;
+            //if (model.GetType() == typeof(List<NextFlicksMVC4.Controllers.MoviesController.MovieWithGenreViewModel>))
+            //{
+            //    Trace.WriteLine("List of models");
+            //}
+
+            //test for the custom cookie
+            //HttpCookie cookie = context.HttpContext.Request.Cookies.Get("TestCookie");
+            //if (cookie != null) {
+            //    Trace.WriteLine(cookie.Value);
+            //}
+            //else {
+            //    Trace.WriteLine("Cookie does not exist");
+            //}
+
+            //Trace.WriteLine("Ending filter");
         }
     }
 }
