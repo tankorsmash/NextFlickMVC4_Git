@@ -13,6 +13,7 @@ using NextFlicksMVC4.NetFlixAPI;
 
 namespace NextFlicksMVC4.Controllers
 {
+    [Obsolete("",true)]
     public class ToolsController : Controller
     {
         //
