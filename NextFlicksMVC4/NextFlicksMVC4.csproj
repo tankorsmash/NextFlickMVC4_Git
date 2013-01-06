@@ -215,7 +215,6 @@
     <Compile Include="Controllers\MoviesController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
     <Compile Include="Tests\TestMoviesController.cs" />
-    <Compile Include="Controllers\ToolsController.cs" />
     <Compile Include="DatabaseClasses\ModelBuilder.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -230,6 +229,7 @@
     <Compile Include="NetFlixAPI\Title.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\CustomConstraint.cs" />
+    <Compile Include="Tracking\Tracking.cs" />
     <Compile Include="Views\DisplayTools.cs" />
     <Compile Include="Views\Movies\ViewModels\MovieToGenreViewModel.cs" />
     <Compile Include="Views\Movies\ViewModels\MovieWithGenreViewModel.cs" />
