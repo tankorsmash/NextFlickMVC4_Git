@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using NextFlicksMVC4.Models;
-using NextFlicksMVC4.NetFlixAPI;
 using NextFlicksMVC4.Tracking;
 using System.Web;
 
-namespace NextFlicksMVC4
+namespace NextFlicksMVC4.NetFlixAPI
 {
     //This class will be passed a catalogtitle tag group(sp?) and then pull out
     //the data and then create a movie instance.
@@ -131,38 +130,6 @@ namespace NextFlicksMVC4
 
             return titleList;
 
-        }
-
-        public static UserLog CreateUserLog(HttpRequestBase request)
-        {
-            var ip = request.UserHostAddress;
-            var ua = request.UserAgent;
-            var raw = request.RawUrl;
-            //could be null
-            var referrer_raw =
-                request.UrlReferrer;
-            string referrer_str;
-            if (referrer_raw != null)
-            {
-                referrer_str = referrer_raw.ToString();
-            }
-            else
-            {
-                referrer_str = null;
-            }
-            var time = DateTime.UtcNow;
-
-            UserLog userLog = new UserLog
-            {
-                ip_addr = ip,
-                raw_url = raw,
-                //?? means like catching
-                referrer = referrer_str,
-                time = time,
-                useragent = ua,
-            };
-
-            return userLog;
         }
 
 

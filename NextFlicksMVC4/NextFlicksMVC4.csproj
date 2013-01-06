@@ -214,6 +214,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MoviesController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
+    <Compile Include="Tracking\TrackingCreate.cs" />
     <Compile Include="Tests\TestMoviesController.cs" />
     <Compile Include="DatabaseClasses\ModelBuilder.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />

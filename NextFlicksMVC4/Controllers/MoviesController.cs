@@ -596,9 +596,9 @@ namespace NextFlicksMVC4.Controllers
                         {
                             //parse line for a title, which is what NF returns
                             List<Title> titles =
-                                NextFlicksMVC4.Create.ParseXmlForCatalogTitles(data);
+                                NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
                             Movie movie =
-                                NextFlicksMVC4.Create.CreateMovie(titles[0]);
+                                NetFlixAPI.Create.CreateMovie(titles[0]);
 
                             //add to DB and dict
                             //listOfMovies.Add(movie);
@@ -708,7 +708,7 @@ namespace NextFlicksMVC4.Controllers
             foreach (KeyValuePair<Movie, Title> keyValuePair in dictOfMoviesTitles) {
                 Movie movie = keyValuePair.Key;
                 Title title = keyValuePair.Value;
-                BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxartFromTitle(movie,
+                BoxArt boxArt = NetFlixAPI.Create.CreateMovieBoxartFromTitle(movie,
                                                                                  title);
                 db.BoxArts.Add(boxArt);
 
@@ -717,7 +717,7 @@ namespace NextFlicksMVC4.Controllers
                 foreach (Genre genre in title.ListGenres)
                 {
                     MovieToGenre movieToGenre =
-                        NextFlicksMVC4.Create.CreateMovieMovieToGenre(movie,
+                        NetFlixAPI.Create.CreateMovieMovieToGenre(movie,
                                                                       genre);
                     db.MovieToGenres.Add(movieToGenre);
                     //db.SaveChanges();
@@ -763,23 +763,23 @@ namespace NextFlicksMVC4.Controllers
                     "catalog/titles/streaming", term, max_results: "100",
                     outputPath: @"C:/testUS.NFPOX");
             var titles =
-                NextFlicksMVC4.Create.ParseXmlForCatalogTitles(data);
+                NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
 
             List<Movie> movies = new List<Movie>();
 
             foreach (Title title in titles)
             {
-                Movie movie = NextFlicksMVC4.Create.CreateMovie(title);
+                Movie movie = NetFlixAPI.Create.CreateMovie(title);
                 movies.Add(movie);
                 db.Movies.Add(movie);
 
-                BoxArt boxArt = NextFlicksMVC4.Create.CreateMovieBoxartFromTitle(movie,
+                BoxArt boxArt = NetFlixAPI.Create.CreateMovieBoxartFromTitle(movie,
                                                                         title);
                 db.BoxArts.Add(boxArt);
                 foreach (Genre genre in title.ListGenres)
                 {
                     MovieToGenre movieToGenre =
-                        NextFlicksMVC4.Create.CreateMovieMovieToGenre(movie,
+                        NetFlixAPI.Create.CreateMovieMovieToGenre(movie,
                                                                       genre);
                     db.MovieToGenres.Add(movieToGenre);
 

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Diagnostics;
 using NextFlicksMVC4.Models;
+using NextFlicksMVC4.NetFlixAPI;
 using NextFlicksMVC4.Tracking;
 
 namespace NextFlicksMVC4.Filters
@@ -21,7 +22,7 @@ namespace NextFlicksMVC4.Filters
             //create a Userlog for this request
             var request = context.HttpContext.Request;
 
-            UserLog userLog = Create.CreateUserLog(request);
+            UserLog userLog = TrackingCreate.CreateUserLog(request);
 
             TrackingDbContext db = new TrackingDbContext();
 
