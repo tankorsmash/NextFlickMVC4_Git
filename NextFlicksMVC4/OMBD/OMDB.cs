@@ -23,7 +23,7 @@ namespace NextFlicksMVC4.OMBD
             var xDoc = GetXmlDocumentFromOmdbResponse(xml);
             OmdbEntry omdbEntry = CreateOmdbEntryFromXmlDocument(xDoc);
 
-            Trace.WriteLine("\tdone creating Omdb entry");
+            Trace.WriteLine(" done creating Omdb entry");
 
             return omdbEntry;
         }
@@ -44,10 +44,13 @@ namespace NextFlicksMVC4.OMBD
             string full_url = string.Format("{0}{1}", base_url, url_params);
 
             //Trace.WriteLine(full_url);
-
+            System.Threading.Thread.Sleep(1000);
             Trace.WriteLine("  GetResponse'ing");
             HttpWebRequest web = (HttpWebRequest) WebRequest.Create(full_url);
             web.KeepAlive = true;
+            web.UserAgent = "Quickflicks API by Tankor Smash";
+            //set timeout to half a second
+            web.Timeout = 3000;
             var response = web.GetResponse();
 
             Stream objStream;
