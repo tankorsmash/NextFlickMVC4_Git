@@ -18,7 +18,7 @@ namespace NextFlicksMVC4.Tracking
         [DisplayName("IP Address")]
         public string ip_addr { get; set; }
 
-        [DisplayName("Time")]
+        [DisplayName("UTC Time")]
         public DateTime time { get; set; }
 
         [DisplayName("User Agent")]
