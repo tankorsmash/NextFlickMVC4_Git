@@ -780,6 +780,13 @@ namespace NextFlicksMVC4.Controllers
             return View(movie);
         }
 
+        public ActionResult TSV()
+        {
+
+            NextFlicksMVC4.OMBD.TSVParse.ParseTSVforOmdbData(@"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt");
+
+            return View();
+        }
         //
         // GET: /Movies/Create
 

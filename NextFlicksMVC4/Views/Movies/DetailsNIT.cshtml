@@ -1,0 +1,27 @@
+﻿@model NextFlicksMVC4.Views.Movies.ViewModels.NfImdbRtViewModel
+
+@*This is for making the layout @{
+    Layout = null;
+}*@
+
+@{ ViewBag.Title = "Complete Details"; }
+
+
+    <title>@ViewBag.Title</title>
+    
+    
+    @foreach (var property in ViewData.ModelMetadata.Properties)
+    {
+@*        <div class="display-label">
+            @Html.DisplayNameFor(item => property)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(item => property)
+        </div> *@
+        <div class="editor-line">
+            <div class="display-label">@(property.DisplayName ?? property.PropertyName)</div>
+            <div class="display-field">@Html.Display(property.PropertyName)</div>
+        </div>
+    }
+<div>
+    </div>
