@@ -7,6 +7,8 @@ using System.Net;
 using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using LumenWorks.Framework.IO.Csv;
 
 namespace NextFlicksMVC4.OMBD
 {
@@ -20,7 +22,7 @@ namespace NextFlicksMVC4.OMBD
                                                string tomatoes = "true")
         {
             Trace.WriteLine("creating Omdb entry");
-            var xml = GetOmbdbTitleInfo(title, year, response_type, tomatoes);
+            var xml = GetOmbdbTitleInfoFromApi(title, year, response_type, tomatoes);
             var xDoc = GetXmlDocumentFromOmdbResponse(xml);
             OmdbEntry omdbEntry = CreateOmdbEntryFromXmlDocument(xDoc);
 
@@ -30,7 +32,7 @@ namespace NextFlicksMVC4.OMBD
         }
 
         //retrieve api data
-        private static string GetOmbdbTitleInfo(string title,
+        private static string GetOmbdbTitleInfoFromApi(string title,
                                                string year = null,
                                                string response_type = "xml",
                                                string tomatoes = "true")
@@ -80,6 +82,36 @@ namespace NextFlicksMVC4.OMBD
 
             return xmlDocument;
 
+        }
+
+        //create 
+        private static OmdbEntry CreateOmdbEntryFromTsvRecord(
+            CsvReader csvReader)
+        {
+            OmdbEntry omdbEntry = new OmdbEntry
+                              {
+                                  ombd_ID = Convert.ToInt32(csvReader["ID"]),
+
+                                  title = csvReader["title"],
+                                  year = csvReader["year"],
+
+                                  i_Votes = csvReader["imdbVotes"],
+                                  i_Rating = csvReader["imdbRating"],
+                                  i_ID = csvReader["imdbID"],
+
+                                  t_Meter = csvReader["tomatoMeter"],
+                                  t_Image = csvReader["tomatoImage"],
+                                  t_Rating = csvReader["tomatoRating"],
+                                  t_Reviews = csvReader["tomatoReviews"],
+                                  t_Fresh = csvReader["tomatoFresh"],
+                                  t_Rotten = csvReader["tomatoRotten"],
+                                  t_Consensus = csvReader["tomatoConsensus"],
+                                  t_UserMeter = csvReader["tomatoUserMeter"],
+                                  t_UserRating = csvReader["tomatoUserRating"],
+                                  t_UserReviews = csvReader["tomatoUserReviews"],
+                              };
+
+            return omdbEntry;
         }
 
         //serve create object from xmlDoc
@@ -158,6 +190,9 @@ namespace NextFlicksMVC4.OMBD
 
     public class OmdbEntry
     {
+        [Key]
+        public int ombd_ID { get; set; }
+
         [DisplayName("Movie Title")]
         public string title { get; set; }
         [DisplayName("Release Year")]
