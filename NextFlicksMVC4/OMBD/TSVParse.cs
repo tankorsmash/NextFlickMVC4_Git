@@ -24,13 +24,17 @@ namespace NextFlicksMVC4.OMBD
                 //loop over all the rows until fail
                 while (csvReader.ReadNextRecord()) {
                     //for each field in record, assign the value to an object
-                    for (int i = 0; i < fieldcount; i++) {
-                        string msg = String.Format("{0}:{1};", headers[i],
-                                                   csvReader[i]);
-                        
-                        Trace.Write(msg);
-                    }
-                    //Trace.WriteLine("\n");
+                    //for (int i = 0; i < fieldcount; i++) {
+                    //string msg = String.Format("{0}:{1};", headers[i],
+                    //                           csvReader[i]);
+                    //Trace.Write(msg);
+
+                    var entry = Omdb.CreateOmdbEntryFromTsvRecord(csvReader);
+
+                    Trace.WriteLine(entry.title);
+                //}
+
+                //Trace.WriteLine("\n");
                     Trace.WriteLine(count.ToString());
                     count++;
                 }

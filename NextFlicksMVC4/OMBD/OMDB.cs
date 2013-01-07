@@ -85,7 +85,7 @@ namespace NextFlicksMVC4.OMBD
         }
 
         //create 
-        private static OmdbEntry CreateOmdbEntryFromTsvRecord(
+        public static OmdbEntry CreateOmdbEntryFromTsvRecord(
             CsvReader csvReader)
         {
             OmdbEntry omdbEntry = new OmdbEntry
@@ -99,16 +99,16 @@ namespace NextFlicksMVC4.OMBD
                                   i_Rating = csvReader["imdbRating"],
                                   i_ID = csvReader["imdbID"],
 
-                                  t_Meter = csvReader["tomatoMeter"],
-                                  t_Image = csvReader["tomatoImage"],
-                                  t_Rating = csvReader["tomatoRating"],
-                                  t_Reviews = csvReader["tomatoReviews"],
-                                  t_Fresh = csvReader["tomatoFresh"],
-                                  t_Rotten = csvReader["tomatoRotten"],
-                                  t_Consensus = csvReader["tomatoConsensus"],
-                                  t_UserMeter = csvReader["tomatoUserMeter"],
-                                  t_UserRating = csvReader["tomatoUserRating"],
-                                  t_UserReviews = csvReader["tomatoUserReviews"],
+                                  //t_Meter = csvReader["tomatoMeter"],
+                                  //t_Image = csvReader["tomatoImage"],
+                                  //t_Rating = csvReader["tomatoRating"],
+                                  //t_Reviews = csvReader["tomatoReviews"],
+                                  //t_Fresh = csvReader["tomatoFresh"],
+                                  //t_Rotten = csvReader["tomatoRotten"],
+                                  //t_Consensus = csvReader["tomatoConsensus"],
+                                  //t_UserMeter = csvReader["tomatoUserMeter"],
+                                  //t_UserRating = csvReader["tomatoUserRating"],
+                                  //t_UserReviews = csvReader["tomatoUserReviews"],
                               };
 
             return omdbEntry;
