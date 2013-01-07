@@ -13,21 +13,25 @@ namespace NextFlicksMVC4.OMBD
 
         public static void ParseTSVforOmdbData(string filepath)
         {
-            using (CsvReader csvReader = new CsvReader(new StreamReader(filepath), true)) {
+            using (CsvReader csvReader = new CsvReader(new StreamReader(filepath), true, '\t', '~', '`', '~', ValueTrimmingOptions.None)) {
 
                 int fieldcount = csvReader.FieldCount;
 
                 //csvReader.Delimiter = "\t";
+                
 
                 string[] headers = csvReader.GetFieldHeaders();
 
+                int count = 0;
                 while (csvReader.ReadNextRecord()) {
                     for (int i = 0; i < fieldcount; i++) {
                         string msg = String.Format("{0}\r{1};", headers[i],
                                                    csvReader[i]);
-                        Trace.Write(msg);
+                        //Trace.Write(msg);
                     }
-                    Trace.WriteLine("\n");
+                    //Trace.WriteLine("\n");
+                    Trace.WriteLine(count.ToString());
+                    count++;
                 }
             }
         }
