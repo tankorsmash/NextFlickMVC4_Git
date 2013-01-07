@@ -6,6 +6,7 @@ using System.Xml;
 using System.Net;
 using System.Diagnostics;
 using System.IO;
+using System.ComponentModel;
 
 namespace NextFlicksMVC4.OMBD
 {
@@ -50,7 +51,7 @@ namespace NextFlicksMVC4.OMBD
             web.KeepAlive = true;
             web.UserAgent = "Quickflicks API by Tankor Smash";
             //set timeout to half a second
-            web.Timeout = 3000;
+            //web.Timeout = 3000;
             var response = web.GetResponse();
 
             Stream objStream;
@@ -157,22 +158,37 @@ namespace NextFlicksMVC4.OMBD
 
     public class OmdbEntry
     {
-        public string title = @"N/A"; 
-        public string year = @"N/A"; 
+        [DisplayName("Movie Title")]
+        public string title { get; set; }
+        [DisplayName("Release Year")]
+        public string year { get; set; }
 
-        public string i_Rating = @"N/A"; 
-        public string i_Votes = @"N/A"; 
-        public string i_ID = @"N/A"; 
+        [DisplayName("IMDB Rating")]
+        public string i_Rating { get; set; }
+        [DisplayName("IMDB Votes")]
+        public string i_Votes { get; set; }
+        [DisplayName("IMDB ID")]
+        public string i_ID { get; set; }
 
-        public string t_Meter = @"N/A"; 
-        public string t_Image = @"N/A"; 
-        public string t_Rating = @"N/A"; 
-        public string t_Reviews = @"N/A"; 
-        public string t_Fresh = @"N/A"; 
-        public string t_Rotten = @"N/A"; 
-        public string t_Consensus = @"N/A"; 
-        public string t_UserMeter = @"N/A"; 
-        public string t_UserRating = @"N/A"; 
-        public string t_UserReviews = @"N/A"; 
+        [DisplayName("Rotten Tomatoes Meter")]
+        public string t_Meter { get; set; }
+        [DisplayName("Rotten Tomatoes Image")]
+        public string t_Image { get; set; }
+        [DisplayName("Rotten Tomatoes Rating")]
+        public string t_Rating { get; set; }
+        [DisplayName("Rotten Tomatoes Reviews")]
+        public string t_Reviews { get; set; }
+        [DisplayName("Rotten Tomatoes Fresh")]
+        public string t_Fresh { get; set; }
+        [DisplayName("Rotten Tomatoes Rotten")]
+        public string t_Rotten { get; set; }
+        [DisplayName("Rotten Tomatoes Consensus")]
+        public string t_Consensus { get; set; }
+        [DisplayName("Rotten Tomatoes UserMeter")]
+        public string t_UserMeter { get; set; }
+        [DisplayName("Rotten Tomatoes UserRating")]
+        public string t_UserRating { get; set; }
+        [DisplayName("Rotten Tomatoes UserReviews")]
+        public string t_UserReviews { get; set; }
     }
 }

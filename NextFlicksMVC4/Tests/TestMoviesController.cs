@@ -16,7 +16,6 @@ namespace NextFlicksMVC4.Tests
         {
             int x = 1;
             int y = 100;
-
             int z = x + y;
 
             Assert.AreEqual(z, 101);
@@ -27,11 +26,9 @@ namespace NextFlicksMVC4.Tests
         public void TestGetAllParamNames()
         {
             List<string> result = Tools.Tools.GetAllParamNames("GetAllParamNames");
-
             List<string> expected = new List<string> {"methodName"};
   
             Assert.AreEqual(result, expected);
-
         } 
 
         [Test(Description = "Testing testing testing")]
@@ -48,8 +45,6 @@ namespace NextFlicksMVC4.Tests
                                   TvRating = "not set",
                                   LinkToPage = "www.netflix.com/test",
                                   IsMovie = "true"
-
-
                               };
 
             Movie result = Create.CreateMovie(title);

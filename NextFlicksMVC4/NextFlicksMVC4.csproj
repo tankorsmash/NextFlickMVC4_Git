@@ -236,6 +236,7 @@
     <Compile Include="Views\DisplayTools.cs" />
     <Compile Include="Views\Movies\ViewModels\MovieToGenreViewModel.cs" />
     <Compile Include="Views\Movies\ViewModels\MovieWithGenreViewModel.cs" />
+    <Compile Include="Views\Movies\ViewModels\NfImdbRtViewModel.cs" />
     <Compile Include="Views\Tools\MovieWithGenres.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -417,6 +418,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Movies\Cookies.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Movies\DetailsNIT.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

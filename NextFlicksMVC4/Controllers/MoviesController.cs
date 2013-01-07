@@ -178,8 +178,31 @@ namespace NextFlicksMVC4.Controllers
 
             IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
 
-            Trace.WriteLine("Returning View");
+            Trace.WriteLine(@"Returning /Test View");
             return View("Genres", MwG_ienum);
+        }
+
+        public ActionResult DetailsNit()
+        {
+            //create a VM
+            MovieDbContext movieDb = new MovieDbContext();
+            List<Movie> movie_list = movieDb.Movies.Take(1).ToList();
+
+            MovieWithGenreViewModel MwGVM =
+                ModelBuilder.CreateListOfMwGVM(movieDb, movie_list)[ 0];
+            var omdbEntry =
+                OMBD.Omdb.GetOmdbEntryForMovie(MwGVM.movie.short_title,
+                                               MwGVM.movie.year);
+
+            NfImdbRtViewModel NITVM = new NfImdbRtViewModel
+                                          {
+                                              MovieWithGenre = MwGVM,
+                                              OmdbEntry = omdbEntry
+                                          };
+
+            return View(NITVM);
+
+
         }
 
 
@@ -210,18 +233,18 @@ namespace NextFlicksMVC4.Controllers
             string genre = "",
             int start =0, int count =25)
         {
-            Trace.WriteLine("Starting to filter...");
+            //Trace.WriteLine("Starting to filter...");
 
             ///gotta figure a way to filter all stuff down
             //year
-            Trace.WriteLine("\tYear Start");
+            //Trace.WriteLine("\tYear Start");
             movie_list = movie_list.Where(item => GetYearOr0(item) >= year_start).ToList();
-            Trace.WriteLine("\tYear End");
+            //Trace.WriteLine("\tYear End");
             movie_list = movie_list.Where(item => GetYearOr0(item) <= year_end).ToList();
             ///title
             //specific
             if (title != "") {
-            Trace.WriteLine("\tTitle");
+            //Trace.WriteLine("\tTitle");
                 movie_list =
                     movie_list.Where(item => item.short_title.ToLower().Contains(title)).ToList();
             }
@@ -231,12 +254,12 @@ namespace NextFlicksMVC4.Controllers
 
             //runtime
             if (runtime_start != 0 || runtime_end != 9999999) {
-                Trace.WriteLine("\tRuntime Start");
+                //Trace.WriteLine("\tRuntime Start");
                 movie_list =
                     movie_list.Where(
                         item => item.runtime.TotalSeconds >= runtime_start)
                               .ToList();
-                Trace.WriteLine("\tRuntime End");
+                //Trace.WriteLine("\tRuntime End");
                 movie_list =
                     movie_list.Where(
                         item => item.runtime.TotalSeconds <= runtime_end)
@@ -244,13 +267,13 @@ namespace NextFlicksMVC4.Controllers
             }
             //mpaa
             if (mpaa_start != 0 || mpaa_end != 200) {
-                Trace.WriteLine("\tMPAA Start");
+                //Trace.WriteLine("\tMPAA Start");
                 movie_list =
                     movie_list.Where(
                         item =>
                         ReturnMaturityOrDefault(item.maturity_rating) >=
                         mpaa_start).ToList();
-                Trace.WriteLine("\tMPAA End");
+                //Trace.WriteLine("\tMPAA End");
                 movie_list =
                     movie_list.Where(
                         item =>
@@ -260,19 +283,19 @@ namespace NextFlicksMVC4.Controllers
 
             //genre
             if (genre != "") {
-                Trace.WriteLine("\tGenres");
+                //Trace.WriteLine("\tGenres");
                 movie_list = ReduceMovieListToMatchingGenres(db, movie_list, genre);
             }
 
             //is_movie
             if (is_movie != null) {
-                Trace.WriteLine("\tIs Movie");
+                //Trace.WriteLine("\tIs Movie");
                 movie_list = movie_list.Where(item => item.is_movie == is_movie).ToList();
             }
 
 
             //pass the movie_list through a function to marry them to genres and boxarts
-            Trace.WriteLine("\tCreating MtGVM from a range in movies_list");
+            //Trace.WriteLine("\tCreating MtGVM from a range in movies_list");
             if (start > movie_list.Count) {
                 start = movie_list.Count - 1;
             }
@@ -283,7 +306,7 @@ namespace NextFlicksMVC4.Controllers
             var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
 
 
-            Trace.WriteLine("\tTaking Count");
+            //Trace.WriteLine("\tTaking Count");
             MwG_list= MwG_list.Take(count).ToList();
             return MwG_list;
 
