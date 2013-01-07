@@ -17,11 +17,13 @@ namespace NextFlicksMVC4.OMBD
 
                 int fieldcount = csvReader.FieldCount;
 
+                //csvReader.Delimiter = "\t";
+
                 string[] headers = csvReader.GetFieldHeaders();
 
                 while (csvReader.ReadNextRecord()) {
                     for (int i = 0; i < fieldcount; i++) {
-                        string msg = String.Format("{0} = {1};", headers[i],
+                        string msg = String.Format("{0}\r{1};", headers[i],
                                                    csvReader[i]);
                         Trace.Write(msg);
                     }
