@@ -30,15 +30,12 @@ namespace NextFlicksMVC4.OMBD
             Tools.WriteTimeStamp("tomatoes start");
             var tom_entries = ParseTSVforTomatoesData(tom_filepath);
 
-
             Trace.WriteLine("Starting to merge entries");
             Tools.WriteTimeStamp("merge start");
             complete_list = MergeTwoOmdbEntryLists(imdb_entries, tom_entries);
             Tools.WriteTimeStamp("merge end");
 
-
             //save to file so I don't  have to keep recreating objects
-
 
             var complete_time = Tools.WriteTimeStamp("done merging at");
             var duration = complete_time - start_time;
@@ -62,17 +59,26 @@ namespace NextFlicksMVC4.OMBD
                 OmdbEntry selected_tom_entry =
                     second_list.SingleOrDefault(item => item.ombd_ID == current_id);
 
-                if (selected_tom_entry != null) {
-                    //Tools.Tools.MergeWithSlow(omdbEntry, selected_tom_entry);
+                //If there IS a matching tomato data
+                if (selected_tom_entry != null)
+                {
                     var created_entry =
                         OMBD.Omdb.MergeImdbWithTomatoesOmdbEntry(omdbEntry,
                                                                  selected_tom_entry);
                     complete_list.Add(created_entry);
                 }
+                //if there's no matching query, there's no matching toms data so 
+                // just add the imdb  to complete list
+                else if (selected_tom_entry == null) {
+                    complete_list.Add(omdbEntry);
+                }
 
                 Trace.WriteLine(current_id);
             }
 
+            string msg = string.Format("Total entries in complete list: {0}",
+                                       complete_list.Count);
+            Trace.WriteLine(msg);
             return complete_list;
         }
 

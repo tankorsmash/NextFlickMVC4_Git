@@ -815,6 +815,7 @@ namespace NextFlicksMVC4.Controllers
             db.SaveChanges();
 
 
+            Tools.WriteTimeStamp("Done saving changes");
 
             return View();
 
