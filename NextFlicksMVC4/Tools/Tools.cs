@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Web;
 using NextFlicksMVC4.Controllers;
 using System.Xml;
+using System.Diagnostics;
 
 namespace NextFlicksMVC4.Tools
 {
@@ -53,6 +54,22 @@ namespace NextFlicksMVC4.Tools
 
         //    return result;
         //}
+
+        /// <summary>
+        /// Takes a message string and Trace.WriteLines it along with a DateTime, default Now
+        /// </summary>
+        /// <param name="msg">Message to write</param>
+        /// <param name="time">A custom time value</param>
+        public static void WriteTimeStamp(string msg, DateTime? time = null)
+        {
+            if (time == null) { time = DateTime.Now; }
+
+            string to_write = string.Format("{0}: {1}", msg,
+                                            time.Value.ToShortTimeString());
+            Trace.WriteLine(to_write);
+
+        }
+
         public static void MergeWithSlow<T>(this T primary, T secondary)
         {
             foreach (var pi in typeof(T).GetProperties())
