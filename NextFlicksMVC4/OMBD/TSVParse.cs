@@ -20,8 +20,8 @@ namespace NextFlicksMVC4.OMBD
         public static List<OmdbEntry> ParseTSVforOmdbData(string imdb_filepath,
                                                           string tom_filepath)
         {
-            DateTime start = DateTime.Now;
-            var msg = string.Format("Parsing operation start: {0}",start.ToShortTimeString());
+            DateTime start_time = DateTime.Now;
+            var msg = string.Format("Parsing operation start: {0}",start_time.ToShortTimeString());
             Trace.WriteLine(msg);
 
             List<OmdbEntry> complete_list = new List<OmdbEntry>();
@@ -38,35 +38,46 @@ namespace NextFlicksMVC4.OMBD
             Tools.Tools.WriteTimeStamp("merge start");
             //TODO:match the entries from imdb with the ones from tom
 
-            foreach (OmdbEntry omdbEntry in imdb_entries) {
-                int current_id = omdbEntry.ombd_ID;
+            complete_list = MergeTwoOmdbEntryLists(imdb_entries, tom_entries);
 
-                //find matching tomatoes.txt entry
-                OmdbEntry selected_tom_entry =
-                    tom_entries.SingleOrDefault(item => item.ombd_ID == current_id);
-
-                if (selected_tom_entry != null) {
-                    //Tools.Tools.MergeWithSlow(omdbEntry, selected_tom_entry);
-                    OMBD.Omdb.MergeImdbWithTomatoesOmdbEntry(omdbEntry, selected_tom_entry);
-                    complete_list.Add(omdbEntry);
-                }
-
-                Trace.WriteLine(current_id);
-            }
-
-            Trace.WriteLine("Done merging");
+            //Trace.WriteLine("Done merging");
 
             Tools.Tools.WriteTimeStamp("merge end");
 
-            var complete = Tools.Tools.WriteTimeStamp("completely done at");
+            var complete_time = Tools.Tools.WriteTimeStamp("completely done at");
 
-            var duration = complete - start;
+            var duration = complete_time - start_time;
             var duration_msg = string.Format("Took {0} to complete", duration);
             Trace.WriteLine(duration_msg);
 
 
             return complete_list;
 
+        }
+
+        public static List<OmdbEntry> MergeTwoOmdbEntryLists(List<OmdbEntry> first_list,
+                                    List<OmdbEntry> second_list)
+        {
+            List<OmdbEntry> complete_list = new List<OmdbEntry>();
+
+            foreach (OmdbEntry omdbEntry in first_list) {
+                int current_id = omdbEntry.ombd_ID;
+
+                //find matching tomatoes.txt entry
+                OmdbEntry selected_tom_entry =
+                    second_list.SingleOrDefault(item => item.ombd_ID == current_id);
+
+                if (selected_tom_entry != null) {
+                    //Tools.Tools.MergeWithSlow(omdbEntry, selected_tom_entry);
+                    OMBD.Omdb.MergeImdbWithTomatoesOmdbEntry(omdbEntry,
+                                                             selected_tom_entry);
+                    complete_list.Add(omdbEntry);
+                }
+
+                Trace.WriteLine(current_id);
+            }
+
+            return complete_list;
         }
 
 
