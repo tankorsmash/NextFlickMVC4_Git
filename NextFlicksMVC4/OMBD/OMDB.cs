@@ -141,6 +141,41 @@ namespace NextFlicksMVC4.OMBD
             return omdbEntry;
         }
 
+        /// <summary>
+        /// returns a merged entry from imdb and tomatoes entries
+        /// </summary>
+        /// <param name="imdb_entry"></param>
+        /// <param name="tomato_entry"></param>
+        /// <returns></returns>
+        public static OmdbEntry MergeImdbWithTomatoesOmdbEntry(
+            OmdbEntry imdb_entry, OmdbEntry tomato_entry)
+        {
+            OmdbEntry created_entry = new OmdbEntry
+                                          {
+                                              ombd_ID = imdb_entry.ombd_ID,
+                                              title = imdb_entry.title,
+                                              year = imdb_entry.year,
+
+                                              i_ID = imdb_entry.i_ID,
+                                              i_Rating = imdb_entry.i_Rating,
+                                              i_Votes =  imdb_entry.i_Votes,
+
+                                              t_Image = imdb_entry.t_Image,
+                                              t_Consensus = tomato_entry.t_Consensus,
+                                              t_Fresh = tomato_entry.t_Fresh,
+                                              t_Meter = tomato_entry.t_Meter,
+                                              t_Rating = tomato_entry.t_Rating,
+                                              t_Reviews = tomato_entry.t_Reviews,
+                                              t_Rotten = tomato_entry.t_Rotten,
+                                              t_UserMeter = tomato_entry.t_UserMeter,
+                                              t_UserRating = tomato_entry.t_UserRating,
+                                              t_UserReviews = tomato_entry.t_UserReviews
+
+                                          };
+
+            return created_entry;
+        }
+
         //serve create object from xmlDoc
         private static OmdbEntry CreateOmdbEntryFromXmlDocument(
             XmlDocument xmlDocument)
