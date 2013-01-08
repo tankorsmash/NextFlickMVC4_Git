@@ -74,6 +74,12 @@ namespace NextFlicksMVC4.Tools
             return time;
         }
 
+        /// <summary>
+        /// Merges any two object together, modifying the primary object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="primary">is modified in place</param>
+        /// <param name="secondary"></param>
         public static void MergeWithSlow<T>(this T primary, T secondary)
         {
             foreach (var pi in typeof(T).GetProperties())
