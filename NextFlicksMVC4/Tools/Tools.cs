@@ -59,15 +59,19 @@ namespace NextFlicksMVC4.Tools
         /// Takes a message string and Trace.WriteLines it along with a DateTime, default Now
         /// </summary>
         /// <param name="msg">Message to write</param>
-        /// <param name="time">A custom time value</param>
-        public static void WriteTimeStamp(string msg, DateTime? time = null)
+        /// <param name="presetDateTime">A custom time value</param>
+        /// <returns>Returns the DateTime that was written</returns>
+        public static DateTime WriteTimeStamp(string msg, DateTime? presetDateTime = null)
         {
-            if (time == null) { time = DateTime.Now; }
+            DateTime time;
+            if (presetDateTime == null) { time = DateTime.Now; }
+            else { time = (DateTime) presetDateTime; } 
 
             string to_write = string.Format("{0}: {1}", msg,
-                                            time.Value.ToShortTimeString());
+                                            time.ToShortTimeString());
             Trace.WriteLine(to_write);
 
+            return time;
         }
 
         public static void MergeWithSlow<T>(this T primary, T secondary)

@@ -26,22 +26,16 @@ namespace NextFlicksMVC4.OMBD
 
             List<OmdbEntry> complete_list = new List<OmdbEntry>();
 
-            DateTime imdb_start = DateTime.Now;
-            var imdb_msg = string.Format("imdb start: {0}",imdb_start.ToShortTimeString());
-            Trace.WriteLine(imdb_msg);
+            Tools.Tools.WriteTimeStamp("imdb start");
             var imdb_entries = ParseTSVforImdbData(imdb_filepath);
 
-            DateTime tom_start = DateTime.Now;
-            var tom_msg = string.Format("tomatoes start: {0}",tom_start.ToShortTimeString());
-            Trace.WriteLine(tom_msg);
+            Tools.Tools.WriteTimeStamp("tomatoes start");
             var tom_entries = ParseTSVforTomatoesData(tom_filepath);
 
 
             Trace.WriteLine("Starting to merge entries");
 
-            DateTime merge_start = DateTime.Now;
-            var merge_msg = string.Format("merge start: {0}",merge_start.ToShortTimeString());
-            Trace.WriteLine(merge_msg);
+            Tools.Tools.WriteTimeStamp("merge start");
             //TODO:match the entries from imdb with the ones from tom
 
             foreach (OmdbEntry omdbEntry in imdb_entries) {
@@ -62,13 +56,9 @@ namespace NextFlicksMVC4.OMBD
 
             Trace.WriteLine("Done merging");
 
-            DateTime done = DateTime.Now;
-            var done_msg = string.Format("merge end: {0}",done.ToShortTimeString());
-            Trace.WriteLine(done_msg);
+            Tools.Tools.WriteTimeStamp("merge end");
 
-            DateTime complete = DateTime.Now;
-            var complete_msg = string.Format("completely done at: {0}",complete.ToShortTimeString());
-            Trace.WriteLine(complete_msg);
+            var complete = Tools.Tools.WriteTimeStamp("completely done at");
 
             var duration = complete - start;
             var duration_msg = string.Format("Took {0} to complete", duration);
