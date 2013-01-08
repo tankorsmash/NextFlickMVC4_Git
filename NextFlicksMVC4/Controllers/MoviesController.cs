@@ -19,6 +19,7 @@ using NextFlicksMVC4.Filters;
 using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 using LumenWorks.Framework.IO.Csv;
+using ProtoBuf;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -787,16 +788,26 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult TSV()
         {
+            //TODO:Make these paths more general
+            string protobuf_path =
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
+            string imdb_path =
+                           @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
+            string tom_path = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt";
 
-            //NextFlicksMVC4.OMBD.TSVParse.ParseTSVforOmdbData(@"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt");
+            var complete_list_of_entries =
+                OMBD.TSVParse.ParseTSVforOmdbData(imdb_filepath: imdb_path,
+                                                  tom_filepath: tom_path);
 
-            var complete_list_of_entries = OMBD.TSVParse.ParseTSVforOmdbData(
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt",
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt");
+         
 
-            foreach (OmdbEntry omdbEntry in complete_list_of_entries) {
-                
+            Tools.WriteTimeStamp("Starting to serialize list");
+            using (
+                var file =
+                    System.IO.File.Create( protobuf_path) ) {
+                Serializer.Serialize(file, complete_list_of_entries);
             }
+            Tools.WriteTimeStamp("Done serializing list");
 
             //OMBD.TSVParse.ParseTSVforOmdbData()
 

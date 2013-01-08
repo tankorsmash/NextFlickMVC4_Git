@@ -40,7 +40,7 @@ namespace NextFlicksMVC4.OMBD
             //save to file so I don't  have to keep recreating objects
 
 
-            var complete_time = Tools.WriteTimeStamp("completely done at");
+            var complete_time = Tools.WriteTimeStamp("done merging at");
             var duration = complete_time - start_time;
             var duration_msg = string.Format("Took {0} to complete", duration);
             Trace.WriteLine(duration_msg);
@@ -50,7 +50,7 @@ namespace NextFlicksMVC4.OMBD
 
         }
 
-        public static List<OmdbEntry> MergeTwoOmdbEntryLists(List<OmdbEntry> first_list,
+    public static List<OmdbEntry> MergeTwoOmdbEntryLists(List<OmdbEntry> first_list,
                                     List<OmdbEntry> second_list)
         {
             List<OmdbEntry> complete_list = new List<OmdbEntry>();
