@@ -136,7 +136,7 @@ namespace NextFlicksMVC4.Models
         public DbSet<BoxArt> BoxArts { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<MovieToGenre> MovieToGenres { get; set; }
-        //public DbSet<OMBD.OmdbEntry> Omdb { get; set; }
+        public DbSet<OMBD.OmdbEntry> Omdb { get; set; }
     }
 
 

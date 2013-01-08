@@ -217,6 +217,15 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MoviesController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
+    <Compile Include="Migrations\201212192058340_InitialCreate.cs" />
+    <Compile Include="Migrations\201212192058340_InitialCreate.Designer.cs">
+      <DependentUpon>201212192058340_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201301081723398_AddOmdbContextProper.cs" />
+    <Compile Include="Migrations\201301081723398_AddOmdbContextProper.Designer.cs">
+      <DependentUpon>201301081723398_AddOmdbContextProper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="OMBD\OMDB.cs" />
     <Compile Include="OMBD\TSVParse.cs" />
     <Compile Include="Tools\Tools.cs" />
@@ -425,6 +434,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Movies\DetailsNIT.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201212192058340_InitialCreate.resx">
+      <DependentUpon>201212192058340_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201301081723398_AddOmdbContextProper.resx">
+      <DependentUpon>201301081723398_AddOmdbContextProper.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
