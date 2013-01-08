@@ -52,7 +52,8 @@ namespace NextFlicksMVC4.OMBD
                     tom_entries.SingleOrDefault(item => item.ombd_ID == current_id);
 
                 if (selected_tom_entry != null) {
-                    Tools.Tools.MergeWithSlow(omdbEntry, selected_tom_entry);
+                    //Tools.Tools.MergeWithSlow(omdbEntry, selected_tom_entry);
+                    OMBD.Omdb.MergeImdbWithTomatoesOmdbEntry(omdbEntry, selected_tom_entry);
                     complete_list.Add(omdbEntry);
                 }
 
@@ -66,8 +67,13 @@ namespace NextFlicksMVC4.OMBD
             Trace.WriteLine(done_msg);
 
             DateTime complete = DateTime.Now;
-            var complete_msg = string.Format("tomatoes start: {0}",complete.ToShortTimeString());
+            var complete_msg = string.Format("completely done at: {0}",complete.ToShortTimeString());
             Trace.WriteLine(complete_msg);
+
+            var duration = complete - start;
+            var duration_msg = string.Format("Took {0} to complete", duration);
+            Trace.WriteLine(duration_msg);
+
 
             return complete_list;
 

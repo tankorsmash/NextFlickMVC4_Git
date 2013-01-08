@@ -16,7 +16,9 @@ using System.Timers;
 using NextFlicksMVC4.Helpers;
 using System.Data.SqlClient;
 using NextFlicksMVC4.Filters;
+using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
+using LumenWorks.Framework.IO.Csv;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -785,9 +787,13 @@ namespace NextFlicksMVC4.Controllers
 
             //NextFlicksMVC4.OMBD.TSVParse.ParseTSVforOmdbData(@"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt");
 
-            OMBD.TSVParse.ParseTSVforOmdbData(
+            var complete_list_of_entries = OMBD.TSVParse.ParseTSVforOmdbData(
                 @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt",
                 @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt");
+
+            foreach (OmdbEntry omdbEntry in complete_list_of_entries) {
+                
+            }
 
             //OMBD.TSVParse.ParseTSVforOmdbData()
 
