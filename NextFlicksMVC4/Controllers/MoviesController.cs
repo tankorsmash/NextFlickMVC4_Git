@@ -177,12 +177,39 @@ namespace NextFlicksMVC4.Controllers
             ViewBag.Start = start;
             ViewBag.Count = count;
 
-            
+            //var completeVm_list = MatchListOfMwgvmWithOmdbEntrys(MwG_list, db);
+
 
             IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
 
             Trace.WriteLine(@"Returning /Test View");
             return View("Genres", MwG_ienum);
+        }
+
+        public static List<NfImdbRtViewModel> MatchListOfMwgvmWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list,
+                                                          MovieDbContext db)
+        {
+            //create complete view models based on MwGs
+            List<NfImdbRtViewModel> completeVm_list = new List<NfImdbRtViewModel>();
+            foreach (MovieWithGenreViewModel movieWithGenreViewModel in MwG_list) {
+                //find the omdbEntry for the mwgvm that matches the title and year
+                //TODO: fix omdb matching, for episodes
+                var matching_oe =
+                    db.Omdb.First(
+                        item =>
+                        item.title == movieWithGenreViewModel.movie.short_title &&
+                        item.year == movieWithGenreViewModel.movie.year);
+
+                var created_vm = new NfImdbRtViewModel
+                                     {
+                                         MovieWithGenre =
+                                             movieWithGenreViewModel,
+                                         OmdbEntry = matching_oe
+                                     };
+                //add the viewmodel to the list to be returned to the view
+                completeVm_list.Add(created_vm);
+            }
+            return completeVm_list;
         }
 
         public ActionResult DetailsNit()
@@ -191,19 +218,21 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext movieDb = new MovieDbContext();
             List<Movie> movie_list = movieDb.Movies.Take(1).ToList();
 
+            //create a list of MwGVMs but only take the first entry
             MovieWithGenreViewModel MwGVM =
                 ModelBuilder.CreateListOfMwGVM(movieDb, movie_list)[ 0];
+            //create a omdbEntry for the movie in the MwGVM
             var omdbEntry =
                 OMBD.Omdb.GetOmdbEntryForMovie(MwGVM.movie.short_title,
                                                MwGVM.movie.year);
-
-            NfImdbRtViewModel NITVM = new NfImdbRtViewModel
+            //create a NitVm from that OmdbEntry
+            NfImdbRtViewModel NitVm = new NfImdbRtViewModel
                                           {
                                               MovieWithGenre = MwGVM,
                                               OmdbEntry = omdbEntry
                                           };
 
-            return View(NITVM);
+            return View(NitVm);
 
 
         }
@@ -789,13 +818,13 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Regen()
         {
             //rebuild the serialized list of List<omdbentryies>
-            string protobuf_path =
+            string entry_dump_path =
                 @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
 
             //deserialize the list of omdbentries saved the the file
             //TODO: add check to make sure the file exists and is not corrupted
             List<OmdbEntry> complete_list;
-            using (var file = System.IO.File.OpenRead(protobuf_path)) {
+            using (var file = System.IO.File.OpenRead(entry_dump_path)) {
                 complete_list = Serializer.Deserialize<List<OmdbEntry>>(file);
             }
 
@@ -824,7 +853,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult TSV()
         {
             //TODO:Make these paths more general
-            string protobuf_path =
+            string entry_dump_path =
                 @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
             string imdb_path =
                            @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
@@ -839,7 +868,7 @@ namespace NextFlicksMVC4.Controllers
             Tools.WriteTimeStamp("Starting to serialize list");
             using (
                 var file =
-                    System.IO.File.Create( protobuf_path) ) {
+                    System.IO.File.Create( entry_dump_path) ) {
                 Serializer.Serialize(file, complete_list_of_entries);
             }
             Tools.WriteTimeStamp("Done serializing list");
