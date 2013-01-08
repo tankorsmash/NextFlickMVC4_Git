@@ -147,7 +147,7 @@ namespace NextFlicksMVC4.Controllers
             string genre = "",
             int start = 0, int count = 25)
         {
-            ViewBag.Params = Tools.Tools.GetAllParamNames("Test");
+            ViewBag.Params = Tools.GetAllParamNames("Test");
 
             //OMBD.Omdb.GetOmbdbTitleInfo("The Terminator", "1984");
             //OMBD.Omdb.GetOmdbEntryForMovie("The Terminator", "1984");
@@ -440,7 +440,7 @@ namespace NextFlicksMVC4.Controllers
             //to show a given view what the user searched for
             ViewBag.SearchTerms = genre;
             //relectively get the list of parameters for this method and pass them to the view
-            ViewBag.Params = Tools.Tools.GetAllParamNames("Genres");
+            ViewBag.Params = Tools.GetAllParamNames("Genres");
 
             if (count > MwG_list.Count)
                 count = MwG_list.Count;
@@ -536,7 +536,7 @@ namespace NextFlicksMVC4.Controllers
 
             //Param names
             Trace.WriteLine("getting param names");
-            ViewBag.Params = Tools.Tools.GetAllParamNames("Index");
+            ViewBag.Params = Tools.GetAllParamNames("Index");
 
             //make sure there's not a outofbounds
             if (count > fullList.Count)

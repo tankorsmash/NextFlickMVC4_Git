@@ -20,32 +20,24 @@ namespace NextFlicksMVC4.OMBD
         public static List<OmdbEntry> ParseTSVforOmdbData(string imdb_filepath,
                                                           string tom_filepath)
         {
-            DateTime start_time = DateTime.Now;
-            var msg = string.Format("Parsing operation start: {0}",start_time.ToShortTimeString());
-            Trace.WriteLine(msg);
+
+            var start_time = Tools.WriteTimeStamp("Parsing operation star");
 
             List<OmdbEntry> complete_list = new List<OmdbEntry>();
 
-            Tools.Tools.WriteTimeStamp("imdb start");
+            Tools.WriteTimeStamp("imdb start");
             var imdb_entries = ParseTSVforImdbData(imdb_filepath);
-
-            Tools.Tools.WriteTimeStamp("tomatoes start");
+            Tools.WriteTimeStamp("tomatoes start");
             var tom_entries = ParseTSVforTomatoesData(tom_filepath);
 
 
             Trace.WriteLine("Starting to merge entries");
-
-            Tools.Tools.WriteTimeStamp("merge start");
-            //TODO:match the entries from imdb with the ones from tom
-
+            Tools.WriteTimeStamp("merge start");
             complete_list = MergeTwoOmdbEntryLists(imdb_entries, tom_entries);
+            Tools.WriteTimeStamp("merge end");
 
-            //Trace.WriteLine("Done merging");
 
-            Tools.Tools.WriteTimeStamp("merge end");
-
-            var complete_time = Tools.Tools.WriteTimeStamp("completely done at");
-
+            var complete_time = Tools.WriteTimeStamp("completely done at");
             var duration = complete_time - start_time;
             var duration_msg = string.Format("Took {0} to complete", duration);
             Trace.WriteLine(duration_msg);

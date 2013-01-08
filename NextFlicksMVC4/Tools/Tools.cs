@@ -7,7 +7,7 @@ using NextFlicksMVC4.Controllers;
 using System.Xml;
 using System.Diagnostics;
 
-namespace NextFlicksMVC4.Tools
+namespace NextFlicksMVC4
 {
     public static class Tools
     {

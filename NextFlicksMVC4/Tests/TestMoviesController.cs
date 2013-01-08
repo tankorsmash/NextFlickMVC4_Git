@@ -25,7 +25,7 @@ namespace NextFlicksMVC4.Tests
         [Test]
         public void TestGetAllParamNames()
         {
-            List<string> result = Tools.Tools.GetAllParamNames("GetAllParamNames");
+            List<string> result = Tools.GetAllParamNames("GetAllParamNames");
             List<string> expected = new List<string> {"methodName"};
   
             Assert.AreEqual(result, expected);
