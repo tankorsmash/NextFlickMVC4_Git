@@ -583,9 +583,11 @@ namespace NextFlicksMVC4.Controllers
             //------------------------------------------------------
 
 
-            Trace.WriteLine("starting data read");
-            msg = DateTime.Now.ToShortTimeString();
-            Trace.WriteLine(msg);
+            //Trace.WriteLine("starting data read");
+            //msg = DateTime.Now.ToShortTimeString();
+            //Trace.WriteLine(msg);
+
+            Tools.WriteTimeStamp("starting data read");
 
             // Go line by line, and parse it for Movie files
             //List<Movie> listOfMovies = new List<Movie>();
@@ -656,10 +658,12 @@ namespace NextFlicksMVC4.Controllers
             }
 
 
-            Trace.WriteLine("Done everything");
-            msg = DateTime.Now.ToShortTimeString();
-            Trace.WriteLine(msg);
-            var end_time = DateTime.Now;
+            //Trace.WriteLine("Done everything");
+            //msg = DateTime.Now.ToShortTimeString();
+            //Trace.WriteLine(msg);
+            //var end_time = DateTime.Now;
+
+            var end_time = Tools.WriteTimeStamp("Done everything");
 
             TimeSpan span = end_time - start_time;
             Trace.WriteLine("It took this long:");
