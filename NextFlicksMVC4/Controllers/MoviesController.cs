@@ -586,7 +586,6 @@ namespace NextFlicksMVC4.Controllers
             //Trace.WriteLine("starting data read");
             //msg = DateTime.Now.ToShortTimeString();
             //Trace.WriteLine(msg);
-
             Tools.WriteTimeStamp("starting data read");
 
             // Go line by line, and parse it for Movie files

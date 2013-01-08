@@ -9,6 +9,7 @@ using System.IO;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using LumenWorks.Framework.IO.Csv;
+using ProtoBuf;
 
 namespace NextFlicksMVC4.OMBD
 {
@@ -250,42 +251,59 @@ namespace NextFlicksMVC4.OMBD
         }
     }
 
+    [ProtoContract]
     public class OmdbEntry
     {
         [Key]
+        [ProtoMember(1)]
         public int ombd_ID { get; set; }
 
         [DisplayName("Movie Title")]
+        [ProtoMember(2)]
         public string title { get; set; }
         [DisplayName("Release Year")]
+        [ProtoMember(3)]
         public string year { get; set; }
 
         [DisplayName("IMDB Rating")]
+        [ProtoMember(4)]
         public string i_Rating { get; set; }
         [DisplayName("IMDB Votes")]
+        [ProtoMember(5)]
         public string i_Votes { get; set; }
         [DisplayName("IMDB ID")]
+        [ProtoMember(6)]
         public string i_ID { get; set; }
 
         [DisplayName("Rotten Tomatoes Meter")]
+        [ProtoMember(7)]
         public string t_Meter { get; set; }
         [DisplayName("Rotten Tomatoes Image")]
+        [ProtoMember(8)]
         public string t_Image { get; set; }
         [DisplayName("Rotten Tomatoes Rating")]
+        [ProtoMember(9)]
         public string t_Rating { get; set; }
         [DisplayName("Rotten Tomatoes Reviews")]
+        [ProtoMember(10)]
         public string t_Reviews { get; set; }
         [DisplayName("Rotten Tomatoes Fresh")]
+        [ProtoMember(11)]
         public string t_Fresh { get; set; }
         [DisplayName("Rotten Tomatoes Rotten")]
+        [ProtoMember(12)]
         public string t_Rotten { get; set; }
         [DisplayName("Rotten Tomatoes Consensus")]
+        [ProtoMember(13)]
         public string t_Consensus { get; set; }
         [DisplayName("Rotten Tomatoes UserMeter")]
+        [ProtoMember(14)]
         public string t_UserMeter { get; set; }
         [DisplayName("Rotten Tomatoes UserRating")]
+        [ProtoMember(15)]
         public string t_UserRating { get; set; }
         [DisplayName("Rotten Tomatoes UserReviews")]
+        [ProtoMember(16)]
         public string t_UserReviews { get; set; }
     }
 }

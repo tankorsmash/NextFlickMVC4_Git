@@ -37,6 +37,9 @@ namespace NextFlicksMVC4.OMBD
             Tools.WriteTimeStamp("merge end");
 
 
+            //save to file so I don't  have to keep recreating objects
+
+
             var complete_time = Tools.WriteTimeStamp("completely done at");
             var duration = complete_time - start_time;
             var duration_msg = string.Format("Took {0} to complete", duration);
