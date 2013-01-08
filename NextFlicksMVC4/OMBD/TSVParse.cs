@@ -11,35 +11,134 @@ namespace NextFlicksMVC4.OMBD
     public static class TSVParse
     {
 
-        public static void ParseTSVforOmdbData(string filepath)
+        /// <summary>
+        /// Parses omdb.txt and tomatoes.txt and returns a list of completed OmdbEntrys
+        /// </summary>
+        /// <param name="imdb_filepath">full path to omdb.txt from the OMDB API</param>
+        /// <param name="tom_filepath">full path to tomatoes.txt from the OMDB API</param>
+        /// <returns></returns>
+        public static List<OmdbEntry> ParseTSVforOmdbData(string imdb_filepath,
+                                                          string tom_filepath)
         {
-            using (CsvReader csvReader = new CsvReader(new StreamReader(filepath), true, '\t', '~', '`', '~', ValueTrimmingOptions.None)) {
+            DateTime start = DateTime.Now;
+            var msg = string.Format("Parsing operation start: {0}",start.ToShortTimeString());
+            Trace.WriteLine(msg);
 
-                string[] headers = csvReader.GetFieldHeaders();
+            List<OmdbEntry> complete_list = new List<OmdbEntry>();
+
+            DateTime imdb_start = DateTime.Now;
+            var imdb_msg = string.Format("imdb start: {0}",imdb_start.ToShortTimeString());
+            Trace.WriteLine(imdb_msg);
+            var imdb_entries = ParseTSVforImdbData(imdb_filepath);
+
+            DateTime tom_start = DateTime.Now;
+            var tom_msg = string.Format("tomatoes start: {0}",tom_start.ToShortTimeString());
+            Trace.WriteLine(tom_msg);
+            var tom_entries = ParseTSVforTomatoesData(tom_filepath);
+
+
+            Trace.WriteLine("Starting to merge entries");
+
+            DateTime merge_start = DateTime.Now;
+            var merge_msg = string.Format("merge start: {0}",merge_start.ToShortTimeString());
+            Trace.WriteLine(merge_msg);
+            //TODO:match the entries from imdb with the ones from tom
+
+            foreach (OmdbEntry omdbEntry in imdb_entries) {
+                int current_id = omdbEntry.ombd_ID;
+
+                //find matching tomatoes.txt entry
+                OmdbEntry selected_tom_entry =
+                    tom_entries.SingleOrDefault(item => item.ombd_ID == current_id);
+
+                if (selected_tom_entry != null) {
+                    Tools.Tools.MergeWithSlow(omdbEntry, selected_tom_entry);
+                    complete_list.Add(omdbEntry);
+                }
+
+                Trace.WriteLine(current_id);
+            }
+
+            Trace.WriteLine("Done merging");
+
+            DateTime done = DateTime.Now;
+            var done_msg = string.Format("merge end: {0}",done.ToShortTimeString());
+            Trace.WriteLine(done_msg);
+
+            DateTime complete = DateTime.Now;
+            var complete_msg = string.Format("tomatoes start: {0}",complete.ToShortTimeString());
+            Trace.WriteLine(complete_msg);
+
+            return complete_list;
+
+        }
+
+
+        /// <summary>
+        /// returns a list of OmdbEntrys that can be combines with tomatoes data to form a complete ombd entry
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <returns></returns>
+        public static List<OmdbEntry> ParseTSVforImdbData(string filepath )
+        {
+
+            Trace.WriteLine("Start Parse for Imdb");
+
+            using (
+                CsvReader csvReader = new CsvReader(new StreamReader(filepath),
+                                                    true, '\t', '~', '`', '~',
+                                                    ValueTrimmingOptions.None)) 
+            {
+            List<OmdbEntry> omdbEntry_list;
+            omdbEntry_list = new List<OmdbEntry>();
 
                 int count = 0;
-                //count the fields/column name in the TSV
-                int fieldcount = csvReader.FieldCount;
-
-                //loop over all the rows until fail
+                //loop over all the rows until fail, adding the created entry to list
                 while (csvReader.ReadNextRecord()) {
-                    //for each field in record, assign the value to an object
-                    //for (int i = 0; i < fieldcount; i++) {
-                    //string msg = String.Format("{0}:{1};", headers[i],
-                    //                           csvReader[i]);
-                    //Trace.Write(msg);
-
-                    var entry = Omdb.CreateOmdbEntryFromTsvRecord(csvReader);
-
-                    Trace.WriteLine(entry.title);
-                //}
-
-                //Trace.WriteLine("\n");
+                    var entry = Omdb.CreateOmdbEntryFromTsvRecord(imdbReader:csvReader);
+                    omdbEntry_list.Add(entry);
+                    //Trace.WriteLine(entry.title);
                     Trace.WriteLine(count.ToString());
                     count++;
                 }
+
+                Trace.WriteLine("Done Parsing for Imdb");
+                return omdbEntry_list;
             }
         }
+
+        /// <summary>
+        /// returns a list of OmdbEntrys that can be combines with imdb data to form a complete ombd entry
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <returns></returns>
+        public static List<OmdbEntry> ParseTSVforTomatoesData(string filepath)
+        {
+
+                Trace.WriteLine("Start Parsing for Tomatoes");
+            List<OmdbEntry> omdbEntry_list;
+            //omdbEntry_list = existing_list ?? new List<OmdbEntry>();
+            omdbEntry_list =  new List<OmdbEntry>();
+
+            using (
+                CsvReader csvReader = new CsvReader(new StreamReader(filepath),
+                                                    true, '\t', '~', '`', '~',
+                                                    ValueTrimmingOptions.None)) {
+                int count = 0;
+                //loop over all the rows until fail, adding the created entry to list
+                while (csvReader.ReadNextRecord()) {
+                    var entry =
+                        Omdb.CreateOmdbEntryFromTsvRecord(tomReader: csvReader);
+                    omdbEntry_list.Add(entry);
+                    Trace.WriteLine(count.ToString());
+                    count++;
+                }
+                Trace.WriteLine("Done Parsing for Tomatoes");
+                return omdbEntry_list;
+            }
+        }
+
+
 
     }
 }

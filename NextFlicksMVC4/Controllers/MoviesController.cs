@@ -783,7 +783,13 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult TSV()
         {
 
-            NextFlicksMVC4.OMBD.TSVParse.ParseTSVforOmdbData(@"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt");
+            //NextFlicksMVC4.OMBD.TSVParse.ParseTSVforOmdbData(@"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt");
+
+            OMBD.TSVParse.ParseTSVforOmdbData(
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt",
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt");
+
+            //OMBD.TSVParse.ParseTSVforOmdbData()
 
             return View();
         }

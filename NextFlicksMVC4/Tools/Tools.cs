@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using NextFlicksMVC4.Controllers;
 using System.Xml;
@@ -9,7 +10,7 @@ namespace NextFlicksMVC4.Tools
 {
     public static class Tools
     {
-        public static string GetParamName(System.Reflection.MethodInfo method, int index)
+        public static string GetParamName(MethodInfo method, int index)
         {
             string retVal = String.Empty;
 
@@ -52,6 +53,18 @@ namespace NextFlicksMVC4.Tools
 
         //    return result;
         //}
+        public static void MergeWithSlow<T>(this T primary, T secondary)
+        {
+            foreach (var pi in typeof(T).GetProperties())
+            {
+                var priValue = pi.GetGetMethod().Invoke(primary, null);
+                var secValue = pi.GetGetMethod().Invoke(secondary, null);
+                if (priValue == null || (pi.PropertyType.IsValueType && priValue.Equals(Activator.CreateInstance(pi.PropertyType))))
+                {
+                    pi.GetSetMethod().Invoke(primary, new object[] { secValue });
+                }
+            }
+        }
     }
 
 

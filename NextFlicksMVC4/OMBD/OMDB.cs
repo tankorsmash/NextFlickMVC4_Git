@@ -126,16 +126,16 @@ namespace NextFlicksMVC4.OMBD
             if (tomReader != null)
             {
                 omdbEntry.ombd_ID = Convert.ToInt32(tomReader["ID"]);
-                omdbEntry.t_Meter = tomReader["tomatoMeter"];
-                omdbEntry.t_Image = tomReader["tomatoImage"];
-                omdbEntry.t_Rating = tomReader["tomatoRating"];
-                omdbEntry.t_Reviews = tomReader["tomatoReviews"];
-                omdbEntry.t_Fresh = tomReader["tomatoFresh"];
-                omdbEntry.t_Rotten = tomReader["tomatoRotten"];
-                omdbEntry.t_Consensus = tomReader["tomatoConsensus"];
-                omdbEntry.t_UserMeter = tomReader["tomatoUserMeter"];
-                omdbEntry.t_UserRating = tomReader["tomatoUserRating"];
-                omdbEntry.t_UserReviews = tomReader["tomatoUserReviews"];
+                omdbEntry.t_Image = tomReader["Image"];
+                omdbEntry.t_Rating = tomReader["Rating"];
+                omdbEntry.t_Meter = tomReader["Meter"];
+                omdbEntry.t_Reviews = tomReader["Reviews"];
+                omdbEntry.t_Fresh = tomReader["Fresh"];
+                omdbEntry.t_Rotten = tomReader["Rotten"];
+                omdbEntry.t_Consensus = tomReader["Consensus"];
+                omdbEntry.t_UserMeter = tomReader["userMeter"];
+                omdbEntry.t_UserRating = tomReader["userRating"];
+                omdbEntry.t_UserReviews = tomReader["userReviews"];
             }
 
             return omdbEntry;
