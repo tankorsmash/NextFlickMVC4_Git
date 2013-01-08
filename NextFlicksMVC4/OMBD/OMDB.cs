@@ -84,32 +84,59 @@ namespace NextFlicksMVC4.OMBD
 
         }
 
-        //create 
+        /// <summary>
+        /// Creates a OmdbEntry either from a imdb or tomatoes TSV.
+        ///  Send either one or both reader, and a premade entry
+        ///  if you want to fill it out
+        /// </summary>
+        /// <param name="imdbReader"></param>
+        /// <param name="tomReader"></param>
+        /// <param name="premadeEntry"></param>
+        /// <returns></returns>
         public static OmdbEntry CreateOmdbEntryFromTsvRecord(
-            CsvReader csvReader)
+            CsvReader imdbReader = null, CsvReader tomReader = null, OmdbEntry premadeEntry = null)
         {
-            OmdbEntry omdbEntry = new OmdbEntry
-                              {
-                                  ombd_ID = Convert.ToInt32(csvReader["ID"]),
 
-                                  title = csvReader["title"],
-                                  year = csvReader["year"],
+            //if there's a imdbReader, use its contents to fill the first half of a OE
+            OmdbEntry omdbEntry;
+            if (imdbReader != null) {
+                omdbEntry = new OmdbEntry
+                                {
+                                    ombd_ID = Convert.ToInt32( imdbReader["ID"]),
 
-                                  i_Votes = csvReader["imdbVotes"],
-                                  i_Rating = csvReader["imdbRating"],
-                                  i_ID = csvReader["imdbID"],
+                                    title = imdbReader["title"],
+                                    year = imdbReader["year"],
 
-                                  //t_Meter = csvReader["tomatoMeter"],
-                                  //t_Image = csvReader["tomatoImage"],
-                                  //t_Rating = csvReader["tomatoRating"],
-                                  //t_Reviews = csvReader["tomatoReviews"],
-                                  //t_Fresh = csvReader["tomatoFresh"],
-                                  //t_Rotten = csvReader["tomatoRotten"],
-                                  //t_Consensus = csvReader["tomatoConsensus"],
-                                  //t_UserMeter = csvReader["tomatoUserMeter"],
-                                  //t_UserRating = csvReader["tomatoUserRating"],
-                                  //t_UserReviews = csvReader["tomatoUserReviews"],
-                              };
+                                    i_Votes = imdbReader["imdbVotes"],
+                                    i_Rating = imdbReader["imdbRating"],
+                                    i_ID = imdbReader["imdbID"],
+                                };
+            }
+
+            //if there's a premade entry, we want to fill that with tom data, or create a new one to fill
+            else {
+                if (premadeEntry != null) {
+                    omdbEntry = premadeEntry;
+                }
+                else {
+                    omdbEntry = new OmdbEntry();
+                }
+            }
+            //so long as there's a tom reader, fill the OEntry with relevant data
+            if (tomReader != null)
+            {
+                omdbEntry.ombd_ID = Convert.ToInt32(tomReader["ID"]);
+                omdbEntry.t_Meter = tomReader["tomatoMeter"];
+                omdbEntry.t_Image = tomReader["tomatoImage"];
+                omdbEntry.t_Rating = tomReader["tomatoRating"];
+                omdbEntry.t_Reviews = tomReader["tomatoReviews"];
+                omdbEntry.t_Fresh = tomReader["tomatoFresh"];
+                omdbEntry.t_Rotten = tomReader["tomatoRotten"];
+                omdbEntry.t_Consensus = tomReader["tomatoConsensus"];
+                omdbEntry.t_UserMeter = tomReader["tomatoUserMeter"];
+                omdbEntry.t_UserRating = tomReader["tomatoUserRating"];
+                omdbEntry.t_UserReviews = tomReader["tomatoUserReviews"];
+            }
 
             return omdbEntry;
         }
