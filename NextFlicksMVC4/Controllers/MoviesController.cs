@@ -786,6 +786,40 @@ namespace NextFlicksMVC4.Controllers
             return View(movie);
         }
 
+        public ActionResult Regen()
+        {
+            //rebuild the serialized list of List<omdbentryies>
+            string protobuf_path =
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
+
+            //deserialize the list of omdbentries saved the the file
+            //TODO: add check to make sure the file exists and is not corrupted
+            List<OmdbEntry> complete_list;
+            using (var file = System.IO.File.OpenRead(protobuf_path)) {
+                complete_list = Serializer.Deserialize<List<OmdbEntry>>(file);
+            }
+
+            MovieDbContext db = new MovieDbContext();
+            db.Configuration.AutoDetectChangesEnabled = false;
+
+            int count = complete_list.Count;
+            foreach (OmdbEntry omdbEntry in complete_list) {
+
+                db.Omdb.Add(omdbEntry);
+
+                int remaining = count - complete_list.IndexOf(omdbEntry);
+                Trace.WriteLine(remaining);
+            }
+            Trace.WriteLine("saving changes");
+            db.Configuration.AutoDetectChangesEnabled = true;
+            db.SaveChanges();
+
+
+
+            return View();
+
+        }
+
         public ActionResult TSV()
         {
             //TODO:Make these paths more general

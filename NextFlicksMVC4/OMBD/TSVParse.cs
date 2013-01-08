@@ -64,9 +64,10 @@ namespace NextFlicksMVC4.OMBD
 
                 if (selected_tom_entry != null) {
                     //Tools.Tools.MergeWithSlow(omdbEntry, selected_tom_entry);
-                    OMBD.Omdb.MergeImdbWithTomatoesOmdbEntry(omdbEntry,
-                                                             selected_tom_entry);
-                    complete_list.Add(omdbEntry);
+                    var created_entry =
+                        OMBD.Omdb.MergeImdbWithTomatoesOmdbEntry(omdbEntry,
+                                                                 selected_tom_entry);
+                    complete_list.Add(created_entry);
                 }
 
                 Trace.WriteLine(current_id);
