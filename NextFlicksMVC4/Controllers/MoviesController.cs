@@ -25,8 +25,6 @@ namespace NextFlicksMVC4.Controllers
 {
     public class MoviesController : Controller
     {
-        //public static MovieDbContext db = new MovieDbContext();
-
 
         //Creates a cookie
         public ActionResult Cookies()
@@ -77,52 +75,52 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        [HttpGet]
-        public ActionResult Filter()
-        {
-            MovieDbContext db = new MovieDbContext();
+        //[HttpGet]
+        //public ActionResult Filter()
+        //{
+        //    MovieDbContext db = new MovieDbContext();
 
-            //grab the lowest year in Catalog
-            var min_qry = "select  top(1) * from Movies where year != \'\' order by year ASC";
-            var min_res = db.Movies.SqlQuery(min_qry);
-            var min_list = min_res.ToList();
-            string min_year = min_list[0].year;
-            ViewBag.min_year = min_year;
-            //grab the highest year in catalog
-            var max_qry = "select  top(1) * from Movies order by year DESC ";
-            var max_res = db.Movies.SqlQuery(max_qry);
-            var max_list = max_res.ToList();
-            string max_year = max_list[0].year;
-            ViewBag.max_year = max_year;
+        //    //grab the lowest year in Catalog
+        //    var min_qry = "select  top(1) * from Movies where year != \'\' order by year ASC";
+        //    var min_res = db.Movies.SqlQuery(min_qry);
+        //    var min_list = min_res.ToList();
+        //    string min_year = min_list[0].year;
+        //    ViewBag.min_year = min_year;
+        //    //grab the highest year in catalog
+        //    var max_qry = "select  top(1) * from Movies order by year DESC ";
+        //    var max_res = db.Movies.SqlQuery(max_qry);
+        //    var max_list = max_res.ToList();
+        //    string max_year = max_list[0].year;
+        //    ViewBag.max_year = max_year;
 
-            //Create a list of SelectListItems
-            List<SelectListItem> years = new List<SelectListItem>();
-            for (int i = Int32.Parse(min_year); i <= Int32.Parse(max_year); i++)
-            {
-                years.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
-            }
+        //    //Create a list of SelectListItems
+        //    List<SelectListItem> years = new List<SelectListItem>();
+        //    for (int i = Int32.Parse(min_year); i <= Int32.Parse(max_year); i++)
+        //    {
+        //        years.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+        //    }
 
-            //Create a selectList, but since it's looking for an IEnumerable,
-            // tell it what is the value and text parts
-            SelectList slist = new SelectList(years, "Value", "Text");
+        //    //Create a selectList, but since it's looking for an IEnumerable,
+        //    // tell it what is the value and text parts
+        //    SelectList slist = new SelectList(years, "Value", "Text");
 
-            //give the Viewbag a property for the SelectList
-            ViewBag.years = slist;
+        //    //give the Viewbag a property for the SelectList
+        //    ViewBag.years = slist;
 
-            return View();
-        }
+        //    return View();
+        //}
 
 
 
-        [Obsolete("shouldn't be needed anymore", true)]
-        public ActionResult FilterHandler(string year_start, string year_end)
-        {
-            ViewData["year_start"] = year_start;
-            ViewData["year_end"] = year_end;
-            Trace.WriteLine(ViewData["pet"]);
+        //[Obsolete("shouldn't be needed anymore", true)]
+        //public ActionResult FilterHandler(string year_start, string year_end)
+        //{
+        //    ViewData["year_start"] = year_start;
+        //    ViewData["year_end"] = year_end;
+        //    Trace.WriteLine(ViewData["pet"]);
 
-            return View("FilterHandler");
-        }
+        //    return View("FilterHandler");
+        //}
 
         /// <summary>
         /// Sloppy return random set of movies. redirects to Index with a random start and count of 10
@@ -132,7 +130,7 @@ namespace NextFlicksMVC4.Controllers
         {
             MovieDbContext db = new MovieDbContext();
 
-            int rand_title_int = new Random().Next(1, db.Movies.ToList().Count);
+            int rand_title_int = new Random().Next(1, db.Movies.Count());
             return RedirectToAction("Index", new { count = 1, start = rand_title_int });
         }
 
@@ -231,13 +229,14 @@ namespace NextFlicksMVC4.Controllers
         /// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
         /// </summary>
         /// <returns></returns>
-        public ActionResult Genres(string genre = "action", int count= 25, int start = 0)
+        public ActionResult Genres(string genre = "action",
+                                   int count = 25,
+                                   int start = 0)
         {
             MovieDbContext db = new MovieDbContext();
 
-            //make sure params are set
-            if (genre == "")
-            {
+            //make sure params are set, because "" is a valid parameter
+            if (genre == "") {
                 genre = "nothing";
             }
 
@@ -252,8 +251,11 @@ namespace NextFlicksMVC4.Controllers
             //relectively get the list of parameters for this method and pass them to the view
             ViewBag.Params = Tools.GetAllParamNames("Genres");
 
-            if (count > MwG_list.Count)
+            //if the count param is higher than the amount of MwG's in the list,
+            // make count the upper limit
+            if (count > MwG_list.Count) {
                 count = MwG_list.Count;
+            }
 
             ViewBag.Count = count;
             ViewBag.Start = start;
@@ -265,7 +267,6 @@ namespace NextFlicksMVC4.Controllers
         }
 
         //-------------------------------------------------------
-
 
         public ActionResult Index(int start = 0, int count = 10)
         {
@@ -293,8 +294,7 @@ namespace NextFlicksMVC4.Controllers
             ViewBag.Params = Tools.GetAllParamNames("Index");
 
             //make sure there's not a outofbounds
-            if (count > fullList.Count)
-            {
+            if (count > fullList.Count) {
                 count = fullList.Count;
                 Trace.WriteLine("had to shorten the returned results");
             }
@@ -322,28 +322,13 @@ namespace NextFlicksMVC4.Controllers
             Trace.WriteLine(msg);
             MovieDbContext db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = false;
-            //------------------------------------------------------
 
-            //need to have a Genre table first, so make sure that's there
-            //int genre_count = db.Genres.Count();
-            //if (genre_count == 0)
-            //{
-
-            //}
-
+            //create a genres table in the DB
             PopulateGenres.PopulateGenresTable();
 
-
-            //------------------------------------------------------
-
-
-            //Trace.WriteLine("starting data read");
-            //msg = DateTime.Now.ToShortTimeString();
-            //Trace.WriteLine(msg);
             Tools.WriteTimeStamp("starting data read");
 
             // Go line by line, and parse it for Movie files
-            //List<Movie> listOfMovies = new List<Movie>();
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
             string data;
             int count = 0;
@@ -353,16 +338,13 @@ namespace NextFlicksMVC4.Controllers
                 Trace.WriteLine("Starting to read");
 
                 data = reader.ReadLine();
-                try
-                {
-                    while (data != null)
-                    {
-                        if (!data.StartsWith("<catalog_title>"))
-                        {
-                            Trace.WriteLine("Invalid line of XML, probably CDATA or something");
+                try {
+                    while (data != null) {
+                        if (!data.StartsWith("<catalog_title>")) {
+                            Trace.WriteLine(
+                                "Invalid line of XML, probably CDATA or something");
                         }
-                        else
-                        {
+                        else {
                             //parse line for a title, which is what NF returns
                             List<Title> titles =
                                 NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
@@ -376,7 +358,10 @@ namespace NextFlicksMVC4.Controllers
 
 
                             //log adding data
-                            msg = String.Format("Added item {0} to database, moving to next one", count.ToString());
+                            msg =
+                                String.Format(
+                                    "Added item {0} to database, moving to next one",
+                                    count.ToString());
                             Trace.WriteLine(msg);
                             count += 1;
 
@@ -391,9 +376,9 @@ namespace NextFlicksMVC4.Controllers
 
                 }
 
-                catch (System.Xml.XmlException ex)
-                {
-                    Trace.WriteLine("Done parsing the XML because of something happened. Probably the end of file:");
+                catch (System.Xml.XmlException ex) {
+                    Trace.WriteLine(
+                        "Done parsing the XML because of something happened. Probably the end of file:");
                     Trace.WriteLine(ex.Message);
                 }
 
@@ -403,11 +388,10 @@ namespace NextFlicksMVC4.Controllers
                 Tools.AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
 
 
-                Trace.WriteLine("Saving Changes any untracked ones, anyways");
+                Trace.WriteLine("Saving Changes any untracked ones");
                 db.SaveChanges();
                 Trace.WriteLine("Done Saving! Check out Movies/index for a table of the stuff");
 
-                //}
             }
 
 
