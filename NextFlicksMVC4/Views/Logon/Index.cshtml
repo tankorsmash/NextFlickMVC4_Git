@@ -1,0 +1,42 @@
+﻿@model NextFlicksMVC4.Models.userAccount.LogonModel
+
+@{
+    ViewBag.Title = "Please Login to continue";
+}
+
+<div>
+    <h2>Logon</h2>
+    <p>Please enter your username and password to continue</p>
+    
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+       </div>
+
+    <div>
+    @using (Html.BeginForm())
+    {
+    <fieldset>
+            <legend>Account Information</legend>
+       <div class="editor-label">
+            @Html.LabelFor(model => model.Username)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Username)
+            @Html.ValidationMessageFor(model => model.Username)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Password)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Password)
+            @Html.ValidationMessageFor(model => model.Password)
+        </div>
+            <p>
+                <input type="submit" value="Log On" />
+                 @Html.ValidationSummary()
+                <br />
+                @Html.ActionLink("Register", "../Register") if you don't have an account. 
+            </p>
+        </fieldset>
+    }
+    </div>
