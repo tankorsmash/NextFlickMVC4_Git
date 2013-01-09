@@ -218,19 +218,22 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext movieDb = new MovieDbContext();
             List<Movie> movie_list = movieDb.Movies.Take(1).ToList();
 
-            //create a list of MwGVMs but only take the first entry
-            MovieWithGenreViewModel MwGVM =
-                ModelBuilder.CreateListOfMwGVM(movieDb, movie_list)[ 0];
-            //create a omdbEntry for the movie in the MwGVM
-            var omdbEntry =
-                OMBD.Omdb.GetOmdbEntryForMovie(MwGVM.movie.short_title,
-                                               MwGVM.movie.year);
-            //create a NitVm from that OmdbEntry
-            NfImdbRtViewModel NitVm = new NfImdbRtViewModel
-                                          {
-                                              MovieWithGenre = MwGVM,
-                                              OmdbEntry = omdbEntry
-                                          };
+            ////create a list of MwGVMs but only take the first entry
+            //MovieWithGenreViewModel MwGVM =
+            //    ModelBuilder.CreateListOfMwGVM(movieDb, movie_list)[ 0];
+            ////create a omdbEntry for the movie in the MwGVM
+            //var omdbEntry =
+            //    OMBD.Omdb.GetOmdbEntryForMovie(MwGVM.movie.short_title,
+            //                                   MwGVM.movie.year);
+            ////create a NitVm from that OmdbEntry
+            //NfImdbRtViewModel NitVm = new NfImdbRtViewModel
+            //                              {
+            //                                  MovieWithGenre = MwGVM,
+            //                                  OmdbEntry = omdbEntry
+            //                              };
+
+            var MwG_list = FilterMovies(movieDb, movie_list);
+            NfImdbRtViewModel NitVm = MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
 
             return View(NitVm);
 
