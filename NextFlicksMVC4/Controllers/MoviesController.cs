@@ -411,11 +411,6 @@ namespace NextFlicksMVC4.Controllers
             }
 
 
-            //Trace.WriteLine("Done everything");
-            //msg = DateTime.Now.ToShortTimeString();
-            //Trace.WriteLine(msg);
-            //var end_time = DateTime.Now;
-
             var end_time = Tools.WriteTimeStamp("Done everything");
 
             TimeSpan span = end_time - start_time;
@@ -440,13 +435,19 @@ namespace NextFlicksMVC4.Controllers
 
             foreach (Title title in titles)
             {
+                //create a  movie from the title, and add it to a list of movies and
+                // the database
                 Movie movie = NetFlixAPI.Create.CreateMovie(title);
                 movies.Add(movie);
                 db.Movies.Add(movie);
 
-                BoxArt boxArt = NetFlixAPI.Create.CreateMovieBoxartFromTitle(movie,
-                                                                        title);
+                //create a boxart object from the movie and title object
+                BoxArt boxArt =
+                    NetFlixAPI.Create.CreateMovieBoxartFromTitle(movie, title);
                 db.BoxArts.Add(boxArt);
+
+                //for all the genres in a title, create the linking MtG 
+                // and then add that object to the db
                 foreach (Genre genre in title.ListGenres)
                 {
                     MovieToGenre movieToGenre =
@@ -495,12 +496,12 @@ namespace NextFlicksMVC4.Controllers
 
             int count = complete_list.Count;
             foreach (OmdbEntry omdbEntry in complete_list) {
-
                 db.Omdb.Add(omdbEntry);
 
                 int remaining = count - complete_list.IndexOf(omdbEntry);
                 Trace.WriteLine(remaining);
             }
+
             Trace.WriteLine("saving changes");
             db.Configuration.AutoDetectChangesEnabled = true;
             db.SaveChanges();
@@ -522,15 +523,13 @@ namespace NextFlicksMVC4.Controllers
             string tom_path = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt";
 
             var complete_list_of_entries =
-                OMBD.TSVParse.ParseTSVforOmdbData(imdb_filepath: imdb_path,
-                                                  tom_filepath: tom_path);
+                TSVParse.ParseTSVforOmdbData(imdb_filepath: imdb_path,
+                                             tom_filepath: tom_path);
 
          
 
             Tools.WriteTimeStamp("Starting to serialize list");
-            using (
-                var file =
-                    System.IO.File.Create( entry_dump_path) ) {
+            using (var file = System.IO.File.Create(entry_dump_path)) {
                 Serializer.Serialize(file, complete_list_of_entries);
             }
             Tools.WriteTimeStamp("Done serializing list");
