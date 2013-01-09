@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Xml;
 using System.Net;
@@ -9,6 +10,9 @@ using System.IO;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using LumenWorks.Framework.IO.Csv;
+using NextFlicksMVC4.Models;
+using NextFlicksMVC4.NetFlixAPI;
+using NextFlicksMVC4.Views.Movies.ViewModels;
 using ProtoBuf;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -41,15 +45,15 @@ namespace NextFlicksMVC4.OMBD
         {
             //build url
             string base_url = @"http://www.omdbapi.com/";
-            string url_params = string.Format(
+            string url_params = String.Format(
                 "?t={0}&y={1}&tomatoes={2}&r={3}",
-                NetFlixAPI.OAuth1a.UpperCaseUrlEncode(title),
+                OAuth1a.UpperCaseUrlEncode(title),
                 year, tomatoes,
                 response_type);
-            string full_url = string.Format("{0}{1}", base_url, url_params);
+            string full_url = String.Format("{0}{1}", base_url, url_params);
 
             //Trace.WriteLine(full_url);
-            System.Threading.Thread.Sleep(1000);
+            Thread.Sleep(1000);
             Trace.WriteLine("  GetResponse'ing");
             HttpWebRequest web = (HttpWebRequest) WebRequest.Create(full_url);
             web.KeepAlive = true;
@@ -249,6 +253,32 @@ namespace NextFlicksMVC4.OMBD
                             };
 
             return omdbEntry;
+        }
+
+        public static List<NfImdbRtViewModel> MatchListOfMwgvmWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list,
+                                                                             MovieDbContext db)
+        {
+            //create complete view models based on MwGs
+            List<NfImdbRtViewModel> completeVm_list = new List<NfImdbRtViewModel>();
+            foreach (MovieWithGenreViewModel movieWithGenreViewModel in MwG_list) {
+                //find the omdbEntry for the mwgvm that matches the title and year
+                //TODO: fix omdb matching, for episodes
+                var matching_oe =
+                    db.Omdb.First(
+                        item =>
+                        item.title == movieWithGenreViewModel.movie.short_title &&
+                        item.year == movieWithGenreViewModel.movie.year);
+
+                var created_vm = new NfImdbRtViewModel
+                                     {
+                                         MovieWithGenre =
+                                             movieWithGenreViewModel,
+                                         OmdbEntry = matching_oe
+                                     };
+                //add the viewmodel to the list to be returned to the view
+                completeVm_list.Add(created_vm);
+            }
+            return completeVm_list;
         }
     }
 

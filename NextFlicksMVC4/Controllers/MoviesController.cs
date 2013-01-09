@@ -186,54 +186,16 @@ namespace NextFlicksMVC4.Controllers
             return View("Genres", MwG_ienum);
         }
 
-        public static List<NfImdbRtViewModel> MatchListOfMwgvmWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list,
-                                                          MovieDbContext db)
-        {
-            //create complete view models based on MwGs
-            List<NfImdbRtViewModel> completeVm_list = new List<NfImdbRtViewModel>();
-            foreach (MovieWithGenreViewModel movieWithGenreViewModel in MwG_list) {
-                //find the omdbEntry for the mwgvm that matches the title and year
-                //TODO: fix omdb matching, for episodes
-                var matching_oe =
-                    db.Omdb.First(
-                        item =>
-                        item.title == movieWithGenreViewModel.movie.short_title &&
-                        item.year == movieWithGenreViewModel.movie.year);
-
-                var created_vm = new NfImdbRtViewModel
-                                     {
-                                         MovieWithGenre =
-                                             movieWithGenreViewModel,
-                                         OmdbEntry = matching_oe
-                                     };
-                //add the viewmodel to the list to be returned to the view
-                completeVm_list.Add(created_vm);
-            }
-            return completeVm_list;
-        }
-
         public ActionResult DetailsNit()
         {
             //create a VM
             MovieDbContext movieDb = new MovieDbContext();
             List<Movie> movie_list = movieDb.Movies.Take(1).ToList();
 
-            ////create a list of MwGVMs but only take the first entry
-            //MovieWithGenreViewModel MwGVM =
-            //    ModelBuilder.CreateListOfMwGVM(movieDb, movie_list)[ 0];
-            ////create a omdbEntry for the movie in the MwGVM
-            //var omdbEntry =
-            //    OMBD.Omdb.GetOmdbEntryForMovie(MwGVM.movie.short_title,
-            //                                   MwGVM.movie.year);
-            ////create a NitVm from that OmdbEntry
-            //NfImdbRtViewModel NitVm = new NfImdbRtViewModel
-            //                              {
-            //                                  MovieWithGenre = MwGVM,
-            //                                  OmdbEntry = omdbEntry
-            //                              };
+
 
             var MwG_list = FilterMovies(movieDb, movie_list);
-            NfImdbRtViewModel NitVm = MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
+            NfImdbRtViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
 
             return View(NitVm);
 
