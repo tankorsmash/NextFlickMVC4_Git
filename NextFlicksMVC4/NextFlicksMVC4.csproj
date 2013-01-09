@@ -229,6 +229,7 @@
       <DependentUpon>201301081723398_AddOmdbContextProper.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="NetFlixAPI\MoviesTools.cs" />
     <Compile Include="OMBD\OMDB.cs" />
     <Compile Include="OMBD\TSVParse.cs" />
     <Compile Include="Tools\Tools.cs" />
