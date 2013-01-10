@@ -158,6 +158,9 @@ namespace NextFlicksMVC4.Controllers
             //List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMwGVM(db, movie_list);
             //MwG_list = MwG_list.Where(item => item.movie.runtime.TotalSeconds == 5767).ToList();
 
+            //Tools.TraceLine("TITS!");
+            //throw  new Exception();
+
             var movie_list = db.Movies.ToList();
 
             var MwG_list = Tools.FilterMovies(db, movie_list,
@@ -182,6 +185,7 @@ namespace NextFlicksMVC4.Controllers
 
             Trace.WriteLine(@"Returning /Test View");
             return View("Genres", MwG_ienum);
+            //return View();
         }
 
         public ActionResult DetailsNit()
