@@ -11,7 +11,28 @@ using NextFlicksMVC4.Helpers;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 using NextFlicksMVC4.Views.Movies.ViewModels;
-
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using NextFlicksMVC4;
+using NextFlicksMVC4.DatabaseClasses;
+using NextFlicksMVC4.Models;
+using NextFlicksMVC4.NetFlixAPI;
+using System.Timers;
+using NextFlicksMVC4.Helpers;
+using System.Data.SqlClient;
+using NextFlicksMVC4.Filters;
+using NextFlicksMVC4.OMBD;
+using NextFlicksMVC4.Views.Movies.ViewModels;
+using LumenWorks.Framework.IO.Csv;
+using ProtoBuf;
 namespace NextFlicksMVC4
 {
     public static class Tools
@@ -123,7 +144,7 @@ namespace NextFlicksMVC4
             
                                                                  int runtime_start = 0, int runtime_end = 9999999,
                                                                  string genre = "",
-                                                                 int start =0, int count =25)
+                                                                 int start =0, int count =25 )
         {
             //Trace.WriteLine("Starting to filter...");
 
@@ -197,11 +218,18 @@ namespace NextFlicksMVC4
             var ranged_movie_list = movie_list.GetRange(start, count);
             var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
 
+            TraceLine("Total results after Filter: {0}", movie_list.Count);
 
             //Trace.WriteLine("\tTaking Count");
             MwG_list= MwG_list.Take(count).ToList();
             return MwG_list;
 
+        }
+
+        public static void TraceLine(string msg_string, params object[] vals)
+        {
+            string msg = String.Format(msg_string, vals);
+            Trace.WriteLine(msg);
         }
 
         public static int ReturnMaturityOrDefault(string maturity_rating)
