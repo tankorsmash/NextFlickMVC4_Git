@@ -8,6 +8,9 @@ namespace NextFlicksMVC4.Controllers
 {
     public class ErrorsController : Controller
     {
+        //TODO: Add tracking to error handling
+
+
         public ActionResult General(Exception exception)
         {
             return View("Exception", exception);
