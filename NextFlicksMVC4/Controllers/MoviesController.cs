@@ -645,21 +645,20 @@ namespace NextFlicksMVC4.Controllers
             //get list of movies
             var movie_queryable = db.Movies.AsQueryable();
 
+            //TODO: match better, curr. only finds 12k movies but there should be closer to 56k
             //find matching omdb entry that shares year and title
             var omdb_list =
                 db.Omdb.Where(
                     omdb =>
                     movie_queryable.Select(movie => movie.short_title)
                                    .Contains(omdb.title))
-                  .Where(
-                      omdb =>
-                      movie_queryable.Select(movie => movie.year)
-                                     .Contains(omdb.year));
-            //foreach (Movie movie in movie_list) {
-                
-            //}
+            .Where(
+                omdb =>
+                movie_queryable.Select(movie => movie.year)
+                               .Contains(omdb.year));
 
-            Tools.TraceLine("Total omdbs found: {0}", omdb_list.Count());
+
+
 
             return View();
 

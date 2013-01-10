@@ -78,7 +78,8 @@ namespace NextFlicksMVC4.OMBD
             return string_response;
 
         }
-        
+
+
 
         //convert api string to xml
         private static XmlDocument GetXmlDocumentFromOmdbResponse(string xml_string)

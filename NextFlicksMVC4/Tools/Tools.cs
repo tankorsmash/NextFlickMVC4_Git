@@ -2,37 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Web;
 using NextFlicksMVC4.Controllers;
-using System.Xml;
 using System.Diagnostics;
 using NextFlicksMVC4.DatabaseClasses;
 using NextFlicksMVC4.Helpers;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 using NextFlicksMVC4.Views.Movies.ViewModels;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using NextFlicksMVC4;
-using NextFlicksMVC4.DatabaseClasses;
-using NextFlicksMVC4.Models;
-using NextFlicksMVC4.NetFlixAPI;
-using System.Timers;
-using NextFlicksMVC4.Helpers;
-using System.Data.SqlClient;
-using NextFlicksMVC4.Filters;
-using NextFlicksMVC4.OMBD;
-using NextFlicksMVC4.Views.Movies.ViewModels;
-using LumenWorks.Framework.IO.Csv;
-using ProtoBuf;
+
 namespace NextFlicksMVC4
 {
     public static class Tools
