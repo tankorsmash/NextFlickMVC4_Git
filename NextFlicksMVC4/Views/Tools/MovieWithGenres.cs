@@ -7,6 +7,8 @@ using System.ComponentModel;
 
 namespace NextFlicksMVC4.Views.Tools
 {
+
+    [Obsolete("I don't actually think this was ever used...", true)]
     public class MovieWithGenres
     {
 

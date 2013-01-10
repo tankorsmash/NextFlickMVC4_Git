@@ -10,19 +10,16 @@
     <title>@ViewBag.Title</title>
     
     
+@*  Using reflection to loop over properties. Is hard code
+
     @foreach (var property in ViewData.ModelMetadata.Properties)
     {
-@*        <div class="display-label">
-            @Html.DisplayNameFor(item => property)
-        </div>
-        <div class="display-field">
-            @Html.DisplayFor(item => property)
-        </div> *@
+
         <div class="editor-line">
             <div class="display-label">@(property.DisplayName ?? property.PropertyName)</div>
             <div class="display-field">@Html.Display(property.PropertyName)</div>
         </div>
-    }
+    }*@
 <div>
     </div>
     

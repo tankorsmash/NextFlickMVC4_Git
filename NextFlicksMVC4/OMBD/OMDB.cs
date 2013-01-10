@@ -271,8 +271,12 @@ namespace NextFlicksMVC4.OMBD
 
                 var created_vm = new NfImdbRtViewModel
                                      {
-                                         MovieWithGenre =
-                                             movieWithGenreViewModel,
+                                         Movie =
+                                             movieWithGenreViewModel.movie,
+                                         Genres =
+                                             movieWithGenreViewModel
+                                             .genre_strings,
+                                         boxart = movieWithGenreViewModel.boxart,
                                          OmdbEntry = matching_oe
                                      };
                 //add the viewmodel to the list to be returned to the view
