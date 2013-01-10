@@ -51,7 +51,8 @@ namespace NextFlicksMVC4.Controllers
             var cookie_name = "TestCookie";
 
             //if cookie exists, remove it
-            if (Request.Cookies.AllKeys.Contains(cookie_name)) {
+            if (Request.Cookies.AllKeys.Contains(cookie_name))
+            {
                 //get the cookie from the request, expire the time so it gets 
                 // deleted
                 var cookie = Request.Cookies.Get(cookie_name);
@@ -64,9 +65,10 @@ namespace NextFlicksMVC4.Controllers
             }
 
 
-                
 
-            else {
+
+            else
+            {
                 Trace.WriteLine("Cookie didn't exist, no action");
                 ViewBag.cookies = true;
             }
@@ -164,16 +166,16 @@ namespace NextFlicksMVC4.Controllers
             var movie_list = db.Movies.ToList();
 
             var MwG_list = Tools.FilterMovies(db, movie_list,
-            title:title, is_movie: is_movie,
-            year_start:year_start, year_end: year_end,
-            mpaa_start:mpaa_start, mpaa_end:mpaa_end,
-            runtime_start:runtime_start, runtime_end: runtime_end,
+            title: title, is_movie: is_movie,
+            year_start: year_start, year_end: year_end,
+            mpaa_start: mpaa_start, mpaa_end: mpaa_end,
+            runtime_start: runtime_start, runtime_end: runtime_end,
             genre: genre,
-            start: start, count:count);
-                                        //start:start,
-                                        //count:count,
-                                        ////title: "kid");
-                                        //genre: genre);
+            start: start, count: count);
+            //start:start,
+            //count:count,
+            ////title: "kid");
+            //genre: genre);
 
             ViewBag.Start = start;
             ViewBag.Count = count;
@@ -187,6 +189,8 @@ namespace NextFlicksMVC4.Controllers
             return View("Genres", MwG_ienum);
             //return View();
         }
+
+
 
         public ActionResult DetailsNit()
         {
@@ -240,7 +244,8 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
             //make sure params are set, because "" is a valid parameter
-            if (genre == "") {
+            if (genre == "")
+            {
                 genre = "nothing";
             }
 
@@ -257,7 +262,8 @@ namespace NextFlicksMVC4.Controllers
 
             //if the count param is higher than the amount of MwG's in the list,
             // make count the upper limit
-            if (count > MwG_list.Count) {
+            if (count > MwG_list.Count)
+            {
                 count = MwG_list.Count;
             }
 
@@ -298,7 +304,8 @@ namespace NextFlicksMVC4.Controllers
             ViewBag.Params = Tools.GetAllParamNames("Index");
 
             //make sure there's not a outofbounds
-            if (count > fullList.Count) {
+            if (count > fullList.Count)
+            {
                 count = fullList.Count;
                 Trace.WriteLine("had to shorten the returned results");
             }
@@ -308,12 +315,12 @@ namespace NextFlicksMVC4.Controllers
 
 
             //turn all the movies into MovieWithGenresViewModel
-            var MwG_list = ModelBuilder.CreateListOfMwGVM(db,full_range);
+            var MwG_list = ModelBuilder.CreateListOfMwGVM(db, full_range);
 
             IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
 
             Trace.WriteLine("Returning View");
-            return View("Genres",MwG_ienum);
+            return View("Genres", MwG_ienum);
         }
 
 
@@ -342,13 +349,17 @@ namespace NextFlicksMVC4.Controllers
                 Trace.WriteLine("Starting to read");
 
                 data = reader.ReadLine();
-                try {
-                    while (data != null) {
-                        if (!data.StartsWith("<catalog_title>")) {
+                try
+                {
+                    while (data != null)
+                    {
+                        if (!data.StartsWith("<catalog_title>"))
+                        {
                             Trace.WriteLine(
                                 "Invalid line of XML, probably CDATA or something");
                         }
-                        else {
+                        else
+                        {
                             //parse line for a title, which is what NF returns
                             List<Title> titles =
                                 NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
@@ -380,7 +391,8 @@ namespace NextFlicksMVC4.Controllers
 
                 }
 
-                catch (System.Xml.XmlException ex) {
+                catch (System.Xml.XmlException ex)
+                {
                     Trace.WriteLine(
                         "Done parsing the XML because of something happened. Probably the end of file:");
                     Trace.WriteLine(ex.Message);
@@ -436,7 +448,8 @@ namespace NextFlicksMVC4.Controllers
 
                 //for all the genres in a title, create the linking MtG 
                 // and then add that object to the db
-                foreach (Genre genre in title.ListGenres) {
+                foreach (Genre genre in title.ListGenres)
+                {
                     MovieToGenre movieToGenre =
                         NetFlixAPI.Create.CreateMovieMovieToGenre(movie,
                                                                   genre);
@@ -458,7 +471,8 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
             Movie movie = db.Movies.Find(movie_ID);
-            if (movie == null) {
+            if (movie == null)
+            {
                 return HttpNotFound();
             }
             return View(movie);
@@ -477,7 +491,8 @@ namespace NextFlicksMVC4.Controllers
             //deserialize the list of omdbentries saved the the file
             //TODO: add check to make sure the file exists and is not corrupted
             List<OmdbEntry> complete_list;
-            using (var file = System.IO.File.OpenRead(entry_dump_path)) {
+            using (var file = System.IO.File.OpenRead(entry_dump_path))
+            {
                 complete_list = Serializer.Deserialize<List<OmdbEntry>>(file);
             }
 
@@ -485,7 +500,8 @@ namespace NextFlicksMVC4.Controllers
             db.Configuration.AutoDetectChangesEnabled = false;
 
             int count = complete_list.Count;
-            foreach (OmdbEntry omdbEntry in complete_list) {
+            foreach (OmdbEntry omdbEntry in complete_list)
+            {
                 db.Omdb.Add(omdbEntry);
 
                 int remaining = count - complete_list.IndexOf(omdbEntry);
@@ -522,7 +538,8 @@ namespace NextFlicksMVC4.Controllers
                                              tom_filepath: tom_path);
 
             Tools.WriteTimeStamp("Starting to serialize list");
-            using (var file = System.IO.File.Create(entry_dump_path)) {
+            using (var file = System.IO.File.Create(entry_dump_path))
+            {
                 Serializer.Serialize(file, complete_list_of_entries);
             }
             Tools.WriteTimeStamp("Done serializing list");
@@ -618,5 +635,37 @@ namespace NextFlicksMVC4.Controllers
             db.Dispose();
             base.Dispose(disposing);
         }
+
+        //loop over all the movies in Movies and find an omdb entry for it
+        public ActionResult Merge()
+        {
+
+            MovieDbContext db = new MovieDbContext();
+
+            //get list of movies
+            var movie_queryable = db.Movies.AsQueryable();
+
+            //find matching omdb entry that shares year and title
+            var omdb_list =
+                db.Omdb.Where(
+                    omdb =>
+                    movie_queryable.Select(movie => movie.short_title)
+                                   .Contains(omdb.title))
+                  .Where(
+                      omdb =>
+                      movie_queryable.Select(movie => movie.year)
+                                     .Contains(omdb.year));
+            //foreach (Movie movie in movie_list) {
+                
+            //}
+
+            Tools.TraceLine("Total omdbs found: {0}", omdb_list.Count());
+
+            return View();
+
+        }
     }
+
 }
+
+
