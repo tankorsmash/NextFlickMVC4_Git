@@ -650,8 +650,9 @@ namespace NextFlicksMVC4.Controllers
             var movie_titles = movie_queryable.Select(movie => movie.short_title);
             var movie_years = movie_queryable.Select(movie => movie.year);
             var both_omdb_qry =
-                db.Omdb.Where(omdb => movie_titles.Contains(omdb.title))
-                  .Where(omdb => movie_years.Contains(omdb.year));
+                db.Omdb.Where(omdb => movie_titles.Contains(omdb.title) && movie_years.Contains(omdb.year));
+                //db.Omdb.Where(omdb => movie_titles.Contains(omdb.title))
+                //  .Where(omdb => movie_years.Contains(omdb.year));
             var year_omdb_qry =
                 db.Omdb .Where(omdb => movie_years.Contains(omdb.year));
             var title_omdb_qry =
@@ -662,7 +663,37 @@ namespace NextFlicksMVC4.Controllers
             Tools.TraceLine("year movies found {0}", year_omdb_qry.Count());
             Tools.TraceLine("title movies found {0}", title_omdb_qry.Count());
 
+            //movie_queryable.ToList();
+            //both_omdb_qry.ToList();
+            //year_omdb_qry.ToList();
+            //title_omdb_qry.ToList();
+            //unrelated, test modifying an entry to db
+            //Movie warlock =
+            //    movie_queryable.First( movie => movie.movie_ID == 1);
+            //warlock.short_title = "Warlock";
+            //db.Entry(warlock).State = EntityState.Modified;
+            //db.SaveChanges();
 
+
+            var movie_list = db.Movies.ToList();
+
+            //loop over all the omdb entries and find the movie_ids for them
+            //List<Movie> matched_list = new List<Movie>();
+            Dictionary<Movie,OmdbEntry> matches_MtO = new Dictionary<Movie, OmdbEntry>();
+
+            int count = 0;
+            foreach (OmdbEntry omdbEntry in both_omdb_qry) {
+                var matched_movie =
+                    movie_list.First(
+                        movie =>
+                        omdbEntry.title == movie.short_title &&
+                        omdbEntry.year == movie.year);
+
+                matches_MtO[matched_movie] = omdbEntry;
+
+                Tools.TraceLine("Matched: {0}", count);
+                count++;
+            }
 
             return View();
 
