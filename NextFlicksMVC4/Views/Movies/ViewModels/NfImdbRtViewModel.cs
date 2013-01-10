@@ -14,7 +14,7 @@ namespace NextFlicksMVC4.Views.Movies.ViewModels
 
         public List<string> Genres { get; set; }
 
-        public BoxArt boxart { get; set; }
+        public BoxArt Boxarts { get; set; }
 
         public OMBD.OmdbEntry OmdbEntry { get; set; }
     }

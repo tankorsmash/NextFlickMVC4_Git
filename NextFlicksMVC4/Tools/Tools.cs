@@ -226,6 +226,11 @@ namespace NextFlicksMVC4
 
         }
 
+        /// <summary>
+        /// Wraps Trace.WriteLine, cannot accept category though, due to params 
+        /// </summary>
+        /// <param name="msg_string"></param>
+        /// <param name="vals"></param>
         public static void TraceLine(string msg_string, params object[] vals)
         {
             string msg = String.Format(msg_string, vals);

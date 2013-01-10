@@ -269,6 +269,7 @@ namespace NextFlicksMVC4.OMBD
                         item.title == movieWithGenreViewModel.movie.short_title &&
                         item.year == movieWithGenreViewModel.movie.year);
 
+                //create a NITViewModel from the MwGVM and OmdbEntry
                 var created_vm = new NfImdbRtViewModel
                                      {
                                          Movie =
@@ -276,7 +277,7 @@ namespace NextFlicksMVC4.OMBD
                                          Genres =
                                              movieWithGenreViewModel
                                              .genre_strings,
-                                         boxart = movieWithGenreViewModel.boxart,
+                                         Boxarts = movieWithGenreViewModel.boxart,
                                          OmdbEntry = matching_oe
                                      };
                 //add the viewmodel to the list to be returned to the view
