@@ -432,11 +432,10 @@ namespace NextFlicksMVC4.Controllers
 
                 //for all the genres in a title, create the linking MtG 
                 // and then add that object to the db
-                foreach (Genre genre in title.ListGenres)
-                {
+                foreach (Genre genre in title.ListGenres) {
                     MovieToGenre movieToGenre =
                         NetFlixAPI.Create.CreateMovieMovieToGenre(movie,
-                                                                      genre);
+                                                                  genre);
                     db.MovieToGenres.Add(movieToGenre);
 
                 }
@@ -455,8 +454,7 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
             Movie movie = db.Movies.Find(movie_ID);
-            if (movie == null)
-            {
+            if (movie == null) {
                 return HttpNotFound();
             }
             return View(movie);
