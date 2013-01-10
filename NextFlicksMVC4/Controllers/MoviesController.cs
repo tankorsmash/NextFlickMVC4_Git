@@ -647,21 +647,19 @@ namespace NextFlicksMVC4.Controllers
 
             //TODO: match better, curr. only finds 12k movies but there should be closer to 56k
             //find matching omdb entry that shares year and title
-            var movie_titles = movie_queryable.Select(movie => movie.short_title);
-            var movie_years = movie_queryable.Select(movie => movie.year);
-            var both_omdb_qry =
-                db.Omdb.Where(omdb => movie_titles.Contains(omdb.title) && movie_years.Contains(omdb.year));
-                //db.Omdb.Where(omdb => movie_titles.Contains(omdb.title))
-                //  .Where(omdb => movie_years.Contains(omdb.year));
-            var year_omdb_qry =
-                db.Omdb .Where(omdb => movie_years.Contains(omdb.year));
-            var title_omdb_qry =
-                db.Omdb.Where(omdb => movie_titles.Contains(omdb.title));
+            //var movie_titles = movie_queryable.Select(movie => movie.short_title);
+            //var movie_years = movie_queryable.Select(movie => movie.year);
+            //var both_omdb_qry =
+            //    db.Omdb.Where(omdb => movie_titles.Contains(omdb.title) && movie_years.Contains(omdb.year));
+            //    //db.Omdb.Where(omdb => movie_titles.Contains(omdb.title))
+            //    //  .Where(omdb => movie_years.Contains(omdb.year));
+            //var year_omdb_qry =
+            //    db.Omdb .Where(omdb => movie_years.Contains(omdb.year));
 
 
-            Tools.TraceLine("title + year movies found {0}", both_omdb_qry.Count());
-            Tools.TraceLine("year movies found {0}", year_omdb_qry.Count());
-            Tools.TraceLine("title movies found {0}", title_omdb_qry.Count());
+            //Tools.TraceLine("title + year movies found {0}", both_omdb_qry.Count());
+            //Tools.TraceLine("year movies found {0}", year_omdb_qry.Count());
+            //Tools.TraceLine("title movies found {0}", title_omdb_qry.Count());
 
             //movie_queryable.ToList();
             //both_omdb_qry.ToList();
@@ -674,26 +672,37 @@ namespace NextFlicksMVC4.Controllers
             //db.Entry(warlock).State = EntityState.Modified;
             //db.SaveChanges();
 
+            
 
             var movie_list = db.Movies.ToList();
-
-            //loop over all the omdb entries and find the movie_ids for them
-            //List<Movie> matched_list = new List<Movie>();
+            var omdb_list = db.Omdb.ToList();
             Dictionary<Movie,OmdbEntry> matches_MtO = new Dictionary<Movie, OmdbEntry>();
 
-            int count = 0;
-            foreach (OmdbEntry omdbEntry in both_omdb_qry) {
-                var matched_movie =
-                    movie_list.First(
-                        movie =>
-                        omdbEntry.title == movie.short_title &&
-                        omdbEntry.year == movie.year);
 
-                matches_MtO[matched_movie] = omdbEntry;
+            //titles from both sources
+            var movie_titles = movie_list.Select(movie => movie.short_title);
+            var omdb_titles = omdb_list.Select(omdb => omdb.title);
 
-                Tools.TraceLine("Matched: {0}", count);
-                count++;
-            }
+            //titles in movies that are also in omdb
+            var matched_title =
+                movie_titles.Where(
+                    movie_title => omdb_titles.Contains(movie_title));
+            //titles in ombd that are also in omdb
+            var title_omdb_qry =
+                db.Omdb.Where(omdb => movie_titles.Contains(omdb.title));
+
+            //int count = 0;
+            //foreach (Movie movie in movie_list) {
+            //    Movie movie1 = movie;
+            //    foreach ( OmdbEntry omdb in omdb_list.Where( omdb => movie1.short_title == omdb.title && movie1.year == omdb.year)) {
+            //        matches_MtO[movie] = omdb;
+            //        Tools.TraceLine("matched {0}", count);
+            //        count++;
+            //        break;
+            //    }
+            //}
+
+            //loop over all the omdb entries and find the movie_ids for them
 
             return View();
 
