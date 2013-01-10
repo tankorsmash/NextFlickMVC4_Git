@@ -229,6 +229,10 @@
     <Compile Include="Migrations\201301081723398_AddOmdbContextProper.Designer.cs">
       <DependentUpon>201301081723398_AddOmdbContextProper.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201301101600158_AddMovieIDtoOmdbEntry.cs" />
+    <Compile Include="Migrations\201301101600158_AddMovieIDtoOmdbEntry.Designer.cs">
+      <DependentUpon>201301101600158_AddMovieIDtoOmdbEntry.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NetFlixAPI\MoviesTools.cs" />
     <Compile Include="OMBD\OMDB.cs" />
@@ -446,6 +450,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201301081723398_AddOmdbContextProper.resx">
       <DependentUpon>201301081723398_AddOmdbContextProper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201301101600158_AddMovieIDtoOmdbEntry.resx">
+      <DependentUpon>201301101600158_AddMovieIDtoOmdbEntry.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

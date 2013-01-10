@@ -187,72 +187,76 @@ namespace NextFlicksMVC4.OMBD
             XmlDocument xmlDocument)
         {
 
-            if (xmlDocument.SelectSingleNode(@"/root/@response").InnerText == "False") {
+            if (xmlDocument.SelectSingleNode(@"/root/@response").InnerText ==
+                "False") {
                 return new OmdbEntry();
             }
+            else {
 
-            OmdbEntry omdbEntry;
-            omdbEntry = new OmdbEntry
-                            {
-                                title =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@title")
-                                               .InnerText,
-                                year =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@year").InnerText,
-                                i_Votes = 
-                                    xmlDocument.SelectSingleNode(
-                                    "/root/movie/@imdbVotes").InnerText,
-                                i_Rating = 
-                                    xmlDocument.SelectSingleNode(
-                                    "/root/movie/@imdbRating").InnerText,
-                                i_ID = 
-                                    xmlDocument.SelectSingleNode(
-                                    "/root/movie/@imdbID").InnerText,
-                                t_Meter =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoMeter")
-                                               .InnerText,
-                                t_Image =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoImage")
-                                               .InnerText,
-                                t_Rating =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoRating")
-                                               .InnerText,
-                                t_Reviews =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoReviews")
-                                               .InnerText,
-                                t_Fresh =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoFresh")
-                                               .InnerText,
-                                t_Rotten =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoRotten")
-                                               .InnerText,
-                                t_Consensus =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoConsensus")
-                                               .InnerText,
-                                t_UserMeter =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoUserMeter")
-                                               .InnerText,
-                                t_UserRating =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoUserRating")
-                                               .InnerText,
-                                t_UserReviews =
-                                    xmlDocument.SelectSingleNode(
-                                        "/root/movie/@tomatoUserReviews")
-                                               .InnerText,
-                            };
 
-            return omdbEntry;
+                OmdbEntry omdbEntry;
+                omdbEntry = new OmdbEntry
+                                {
+                                    title =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@title")
+                                                   .InnerText,
+                                    year =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@year").InnerText,
+                                    i_Votes =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@imdbVotes").InnerText,
+                                    i_Rating =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@imdbRating").InnerText,
+                                    i_ID =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@imdbID").InnerText,
+                                    t_Meter =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoMeter")
+                                                   .InnerText,
+                                    t_Image =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoImage")
+                                                   .InnerText,
+                                    t_Rating =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoRating")
+                                                   .InnerText,
+                                    t_Reviews =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoReviews")
+                                                   .InnerText,
+                                    t_Fresh =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoFresh")
+                                                   .InnerText,
+                                    t_Rotten =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoRotten")
+                                                   .InnerText,
+                                    t_Consensus =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoConsensus")
+                                                   .InnerText,
+                                    t_UserMeter =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoUserMeter")
+                                                   .InnerText,
+                                    t_UserRating =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoUserRating")
+                                                   .InnerText,
+                                    t_UserReviews =
+                                        xmlDocument.SelectSingleNode(
+                                            "/root/movie/@tomatoUserReviews")
+                                                   .InnerText,
+                                };
+
+                return omdbEntry;
+            }
         }
 
         public static List<NfImdbRtViewModel> MatchListOfMwgvmWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list,
@@ -294,6 +298,9 @@ namespace NextFlicksMVC4.OMBD
         //[DatabaseGenerated(DatabaseGeneratedOption.None)]
         [ProtoMember(1)]
         public int ombd_ID { get; set; }
+
+        //to Movie class' movie_ID
+        public virtual int movie_ID { get; set; }
 
         [DisplayName("Movie Title")]
         [ProtoMember(2)]

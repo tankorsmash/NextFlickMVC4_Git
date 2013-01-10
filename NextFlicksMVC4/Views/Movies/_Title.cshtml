@@ -16,8 +16,8 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
         <div class="title_runtime">
             @Html.DisplayFor(model => model.movie.runtime)
         </div>
-        <div class="title_maturity">
-            @Html.DisplayFor(model => model.movie.maturity_rating)
+        <div class="title_rating">
+            @Html.DisplayFor(model => model.movie.tv_rating)
         </div>
         <div class="title_webpage">
             <a href=@Html.DisplayFor(model => model.movie.web_page) >Movie Page</a>
