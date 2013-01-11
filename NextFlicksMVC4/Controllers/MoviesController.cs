@@ -672,24 +672,66 @@ namespace NextFlicksMVC4.Controllers
             //db.Entry(warlock).State = EntityState.Modified;
             //db.SaveChanges();
 
-            
+
 
             var movie_list = db.Movies.ToList();
             var omdb_list = db.Omdb.ToList();
-            Dictionary<Movie,OmdbEntry> matches_MtO = new Dictionary<Movie, OmdbEntry>();
+            Dictionary<Movie, OmdbEntry> matches_MtO =
+                new Dictionary<Movie, OmdbEntry>();
+
 
 
             //titles from both sources
-            var movie_titles = movie_list.Select(movie => movie.short_title);
+            var movie_titles_ids =
+                movie_list.Select(
+                    movie => new {movie.short_title, movie.movie_ID}).ToList();
+            var movie_ids = movie_list.Select(movie => movie.movie_ID);
             var omdb_titles = omdb_list.Select(omdb => omdb.title);
 
+
+            //pseudo code for what I want
+            //where omdb.title == movie.short_title && omdb.year == movie.year select new {omdb_id, movie_id}
+
+            var ombdID_movieIDs =
+                db.Omdb.Select(
+                    omdb =>
+                    new int[]
+                        {
+                            omdb.ombd_ID,
+                            movie_titles_ids.Where(
+                                movie => movie.short_title == omdb.title)
+                                            .Select(item => item.movie_ID)
+                                            .First()
+                        });
+
+            ombdID_movieIDs.ToList();
+        var res =
+                ombdID_movieIDs.Select(
+                    pair => new int[] { pair[0], pair[1] });
+                    //pair => new int[] { pair.movie_ID, pair.ombd_ID });
+
+            foreach (var ombdIdMovieID in ombdID_movieIDs) {
+
+                //Tools.TraceLine("Omdb {0}, Movie {1}", ombdIdMovieID.ombd_ID,
+                //                ombdIdMovieID.movie_ID);
+                Tools.TraceLine("Omdb {0}, Movie {1}", ombdIdMovieID[0],
+                                ombdIdMovieID[1]);
+            }
+
+                
+                //omdb => movie_titles_ids.Select(item => item.short_title).Contains(omdb.title)).Select(omdb => new { omdb.title, item });
+
+
             //titles in movies that are also in omdb
-            var matched_title =
-                movie_titles.Where(
-                    movie_title => omdb_titles.Contains(movie_title));
-            //titles in ombd that are also in omdb
-            var title_omdb_qry =
-                db.Omdb.Where(omdb => movie_titles.Contains(omdb.title));
+            //var matched_title =
+            //    movie_titles.Where(
+            //        movie_title => omdb_titles.Contains(movie_title));
+            ////titles in ombd that are also in omdb
+            //var title_omdb_qry =
+            //    db.Omdb.Where(omdb => movie_titles.Contains(omdb.title)).Select(omdb => omdb.title);
+
+            //var title_id =
+            //    db.Omdb.SelectMany(omdb => omdb, (OmdbEntry, Movie) => new {OmdbEntry, Movie} );
 
             //int count = 0;
             //foreach (Movie movie in movie_list) {
