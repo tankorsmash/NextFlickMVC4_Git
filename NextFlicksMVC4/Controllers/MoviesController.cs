@@ -343,7 +343,7 @@ namespace NextFlicksMVC4.Controllers
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
             string data;
             int count = 0;
-            using (StreamReader reader = new StreamReader(@"C:\fixedAPI.NFPOX"))
+            using (StreamReader reader = new StreamReader(@"C:\testUS.NFPOX"))
             {
 
                 Trace.WriteLine("Starting to read");
