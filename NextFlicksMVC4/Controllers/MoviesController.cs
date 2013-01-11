@@ -674,7 +674,8 @@ namespace NextFlicksMVC4.Controllers
 
 
 
-            var movie_list = db.Movies.ToList();
+            //take only movies, since OMDB doesn't hold tv shows
+            var movie_list = db.Movies.ToList().Where(movie => movie.is_movie);
             var omdb_list = db.Omdb.ToList();
             Dictionary<Movie, OmdbEntry> matches_MtO =
                 new Dictionary<Movie, OmdbEntry>();
@@ -692,31 +693,84 @@ namespace NextFlicksMVC4.Controllers
             //pseudo code for what I want
             //where omdb.title == movie.short_title && omdb.year == movie.year select new {omdb_id, movie_id}
 
-            var ombdID_movieIDs =
-                db.Omdb.Select(
-                    omdb =>
-                    new int[]
-                        {
-                            omdb.ombd_ID,
-                            movie_titles_ids.Where(
-                                movie => movie.short_title == omdb.title)
-                                            .Select(item => item.movie_ID)
-                                            .First()
-                        });
+            //var ombdID_movieIDs =
+            //    db.Omdb.Select(
+            //        omdb =>
+            //        new MovieToGenre()
+            //            {
+            //                movie_ID = omdb.ombd_ID,
+            //                genre_ID=movie_titles_ids.Where(
+            //                    movie => movie.short_title == omdb.title)
+            //                                .Select(item => item.movie_ID)
+            //                                .First()
+            //            });
 
-            ombdID_movieIDs.ToList();
-        var res =
-                ombdID_movieIDs.Select(
-                    pair => new int[] { pair[0], pair[1] });
-                    //pair => new int[] { pair.movie_ID, pair.ombd_ID });
+            //ombdID_movieIDs.ToList(); var res =
+            //    ombdID_movieIDs.Select(
+            //        //pair => new int[] { pair[0], pair[1] });
+            //        //pair => new int[] { pair.movie_ID, pair.ombd_ID });
+            //        pair => new int[] { pair.movie_ID, pair.genre_ID });
 
-            foreach (var ombdIdMovieID in ombdID_movieIDs) {
+            //foreach (var ombdIdMovieID in ombdID_movieIDs) {
+            //int count = 0;
+            //foreach (Movie movie in movie_list)
+            //{
+            //    var omdb =
+            //        omdb_list.FirstOrDefault(
+            //            om => (movie.short_title == om.title && movie.year == om.year));
+            //    matches_MtO[movie] = omdb;
+
+            //    Tools.TraceLine("count {0}", count);
+            //    if (omdb != null)
+            //    {
+            //        Tools.TraceLine("Omdb {0}, Movie {1}", omdb.title,
+            //                        movie.short_title);
+            //    }
+            //    else { Tools.TraceLine("Movie {0}, had no match", movie.short_title);}
+            //    count++;
+
+//          var matches = (
+//    from f in movie_list
+//    join b in omdb_list on 
+//     f.year equals b.year  and
+//    f.short_title equals b.title
+//    select new {f, b}
+//);//var matches = (
+//    from f in movie_list
+//    join b in omdb_list
+//    on f.year equals b.year 
+//    && equals b.name
+//    select new {f, b}
+//);
+
+            var query = from fm in db.Movies
+            join bm in db.Omdb on 
+              new { name = fm.short_title, year = fm.year } equals new { name = bm.title, year = bm.year } 
+            select new {
+               FamilyMan = fm,
+               BusinessMan = bm
+            };
+
+var resultList = query.ToList();
+//var query = from fm in db.Movies
+//            join bm in db.Omdb on 
+//                bm.title equals fm.short_title and bm.year equals fm.year
+//            select new {
+//               Movie = fm,
+//               OmdbEntry = bm
+//            };
+
+//var resultList = query.ToList();
+
+            //}
 
                 //Tools.TraceLine("Omdb {0}, Movie {1}", ombdIdMovieID.ombd_ID,
                 //                ombdIdMovieID.movie_ID);
-                Tools.TraceLine("Omdb {0}, Movie {1}", ombdIdMovieID[0],
-                                ombdIdMovieID[1]);
-            }
+                //Tools.TraceLine("Omdb {0}, Movie {1}", ombdIdMovieID[0],
+                //                ombdIdMovieID[1]);
+                //Tools.TraceLine("Omdb {0}, Movie {1}", ombdIdMovieID.genre_ID,
+                //                ombdIdMovieID.movie_ID);
+            //}
 
                 
                 //omdb => movie_titles_ids.Select(item => item.short_title).Contains(omdb.title)).Select(omdb => new { omdb.title, item });
