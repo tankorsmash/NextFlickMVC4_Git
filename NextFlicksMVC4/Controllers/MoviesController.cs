@@ -735,7 +735,8 @@ namespace NextFlicksMVC4.Controllers
 //     f.year equals b.year  and
 //    f.short_title equals b.title
 //    select new {f, b}
-//);//var matches = (
+//);
+//var matches = (
 //    from f in movie_list
 //    join b in omdb_list
 //    on f.year equals b.year 
