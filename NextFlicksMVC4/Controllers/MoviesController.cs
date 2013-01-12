@@ -640,6 +640,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Sort()
         {
 
+            DateTime start = DateTime.Now;
             MovieDbContext db = new MovieDbContext();
 
             ////has never worked, but shows the idea
@@ -657,6 +658,12 @@ namespace NextFlicksMVC4.Controllers
             Tools.TraceLine("count: {0}", qwe.Count);
 
             Tools.TraceLine("Top t_meter movie: {0}", qwe.First().title);
+
+            DateTime end = DateTime.Now;
+
+            var span = end - start;
+
+            Tools.TraceLine("Took {0} seconds", span.TotalSeconds);
 
             return View();
         }
