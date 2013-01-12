@@ -9,6 +9,7 @@ using NextFlicksMVC4.Helpers;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 using NextFlicksMVC4.Views.Movies.ViewModels;
+using NextFlicksMVC4.OMBD;
 
 namespace NextFlicksMVC4
 {
@@ -228,9 +229,29 @@ namespace NextFlicksMVC4
             var ranged_movie_list = movie_list.GetRange(start, count);
             var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
 
+            //combine the remaining movies with omdbs and then filter from there too
+
+            List<NfImdbRtViewModel> nit_list = new List<NfImdbRtViewModel>();
+            foreach (var MwGVM in MwG_list) {
+
+                OmdbEntry omdbEntry =
+                    MatchMovieIdToOmdbEntry(MwGVM.movie.movie_ID);
+
+                NfImdbRtViewModel nitvm = new NfImdbRtViewModel
+                                              {
+                                                  Boxarts = MwGVM.boxart,
+                                                  Genres = MwGVM.genre_strings,
+                                                  Movie = MwGVM.movie,
+                                                  OmdbEntry = omdbEntry
+                                              };
+
+                nit_list.Add(nitvm);
+
+            }
+
+            //return the count number of movies to return
             if (verbose == true)
                 TraceLine("Total results after Filter: {0}", movie_list.Count);
-
             if (verbose == true)
                 Trace.WriteLine("\tTaking Count");
             MwG_list = MwG_list.Take(count).ToList();
@@ -331,7 +352,7 @@ namespace NextFlicksMVC4
         /// <param name="genre_params"></param>
         /// <param name="movie_list">if this is given, limit the search to </param>
         /// <returns></returns>
-        public static IQueryable<Int32> GetMovieIdsMatchingGenres(
+        public static IQueryable<int> GetMovieIdsMatchingGenres(
             MovieDbContext db, string genre_params, List<Movie> movie_list= null )
         {
             //finds the genre id matching the argument "genre"
@@ -440,6 +461,15 @@ namespace NextFlicksMVC4
             db.SaveChanges();
             Trace.WriteLine("\t\tdone saving boxarts and genres");
             db.Configuration.AutoDetectChangesEnabled = true;
+        }
+
+        //from a movie.movie_ID, find the matching omdbEntry
+        public static OmdbEntry MatchMovieIdToOmdbEntry(int movie_ID)
+        {
+            MovieDbContext db = new MovieDbContext();
+            var omdbEntry = db.Omdb.FirstOrDefault(omdb => omdb.movie_ID == movie_ID);
+
+            return omdbEntry;
         }
     }
 
