@@ -134,9 +134,7 @@ namespace NextFlicksMVC4
             if (verbose == true)
                 Trace.WriteLine("Starting to filter...");
 
-
-
-            //year
+            //year released
             if (verbose == true)
                 Trace.WriteLine("\tYear Start");
             movie_list =
@@ -146,8 +144,8 @@ namespace NextFlicksMVC4
                 Trace.WriteLine("\tYear End");
             movie_list =
                 movie_list.Where(item => GetYearOr0(item) <= year_end).ToList();
-            ///title
-            //specific
+
+            //title
             if (title != "")
             {
                 if (verbose == true)
@@ -161,7 +159,7 @@ namespace NextFlicksMVC4
 
             //netflix rating
 
-            //runtime
+            //movie runtime
             if (runtime_start != 0 || runtime_end != 9999999)
             {
                 if (verbose == true)
@@ -177,7 +175,8 @@ namespace NextFlicksMVC4
                         item => item.runtime.TotalSeconds <= runtime_end)
                               .ToList();
             }
-            //mpaa
+
+            //mpaa rating       OR
             if (mpaa_start != 0 || mpaa_end != 200)
             {
                 if (verbose == true)
@@ -245,12 +244,19 @@ namespace NextFlicksMVC4
 
         }
 
+        /// <summary>
+        /// Matches a list of MwGVMs to the appropriate OmdbEntry and returns a new list of NitVM
+        /// </summary>
+        /// <param name="MwG_list"></param>
+        /// <returns>List of NitVMs</returns>
         public static List<NfImdbRtViewModel> MatchMwGVMsWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list)
         {
             List<NfImdbRtViewModel> nit_list = new List<NfImdbRtViewModel>();
             foreach (var MwGVM in MwG_list) {
+                //find the matching omdb entry based on the MwGVM's movie_ID
                 OmdbEntry omdbEntry =
                     MatchMovieIdToOmdbEntry(MwGVM.movie.movie_ID);
+                //create the NitVM based on the new omdb entry
                 NfImdbRtViewModel nitvm = new NfImdbRtViewModel
                                               {
                                                   Boxarts = MwGVM .boxart,
@@ -258,6 +264,7 @@ namespace NextFlicksMVC4
                                                   Movie = MwGVM .movie,
                                                   OmdbEntry = omdbEntry
                                               };
+                //add to the list
                 nit_list.Add(nitvm);
             }
 
@@ -271,18 +278,33 @@ namespace NextFlicksMVC4
         /// <param name="vals"></param>
         public static void TraceLine(string msg_string, params object[] vals)
         {
+            //create a new string based on the params given in the arguments
             string msg = String.Format(msg_string, vals);
+            //send the message to Stdout
             Trace.WriteLine(msg);
         }
 
+        /// <summary>
+        /// Gets the maturity rating, or returns 200 if none found so it's highly rated in case it's adult
+        /// </summary>
+        /// <param name="maturity_rating"></param>
+        /// <returns></returns>
         public static int ReturnMaturityOrDefault(string maturity_rating)
         {
             try {
                 return Convert.ToInt32(maturity_rating);
             }
+
             catch (Exception ex) {
-                
-                Trace.WriteLine(String.Format("maturity rating exception, probably not set:\r{0}", ex.Message));
+                //Trace.WriteLine(
+                //    String.Format(
+                //        "maturity rating exception, probably not set:\r{0}",
+                //        ex.Message));
+
+                Tools.TraceLine(
+                    "maturity rating exception, probably not set:\r{0}",
+                    ex.Message);
+                //200 is way overkill, but you don't want a porno sorted along kids movies
                 return 200;
             }
         }
@@ -300,14 +322,11 @@ namespace NextFlicksMVC4
         {
             //gets the movie_ids that match 'genre'
             Trace.WriteLine("\t\tFind movies that match genre_string");
-            var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre
-                );
-            //OOM error if movie_list is passed
-            //,movie_list);
+            var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre);
 
             //execute the find movie_id finding by calling the list
             Trace.WriteLine("\t\tList the movies that match genre_string");
-            var movie_ids_for_genres_list = Enumerable.ToList(movie_ids_for_genres);
+            var movie_ids_for_genres_list = movie_ids_for_genres.ToList();
 
             Trace.WriteLine("\t\tFind moves that match movie_id");
 
@@ -317,18 +336,9 @@ namespace NextFlicksMVC4
 
             //the iqueryable  for finding movies that match the movie_list
             var movie_iqry =
-                //movie_list.Where(
-                //item => movie_ids_for_genres_list.Contains(item.movie_ID));
-
-                ////tried using the iQry instead of list and it was slower
-                //// so I'm keeping to above line instead of the below one
-                // item => movie_ids_for_genres.Contains(item.movie_ID));
-
                 movie_array.Where(
                     item => movie_ids_for_genres_list.Contains(item.movie_ID));
 
-            //Trace.WriteLine("\t\tto array after array.Where");
-            //var res_array = movie_iqry.ToArray();
 
             Trace.WriteLine("\t\tTo List");
             movie_list = movie_iqry.ToList();
