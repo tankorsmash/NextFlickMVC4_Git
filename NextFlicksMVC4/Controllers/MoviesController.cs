@@ -146,22 +146,15 @@ namespace NextFlicksMVC4.Controllers
 
             int runtime_start = 0, int runtime_end = 9999999,
             string genre = "",
-            int start = 0, int count = 25)
+            int start = 0, int count = 25,
+            string sort = "movie_ID")
         {
             ViewBag.Params = Tools.GetAllParamNames("Test");
 
-            //OMBD.Omdb.GetOmbdbTitleInfo("The Terminator", "1984");
-            //OMBD.Omdb.GetOmdbEntryForMovie("The Terminator", "1984");
 
             MovieDbContext db = new MovieDbContext();
 
-            //var movie_list = db.Movies.Take(100).Take(10).ToList();
-            //var movie_list = db.Movies.Where(item => item.year == year).ToList();
-            //List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMwGVM(db, movie_list);
-            //MwG_list = MwG_list.Where(item => item.movie.runtime.TotalSeconds == 5767).ToList();
 
-            //Tools.TraceLine("TITS!");
-            //throw  new Exception();
 
             var movie_list = db.Movies.ToList();
 
@@ -174,23 +167,14 @@ namespace NextFlicksMVC4.Controllers
                                               runtime_start: runtime_start,
                                               runtime_end: runtime_end,
                                               genre: genre,
-                                              start: start, count: count);
-            //start:start,
-            //count:count,
-            ////title: "kid");
-            //genre: genre);
+                                              start: start, count: count,
+                                              sort: sort);
+
 
             ViewBag.Start = start;
             ViewBag.Count = count;
 
-            //var completeVm_list = MatchListOfMwgvmWithOmdbEntrys(MwG_list, db);
 
-
-
-            //IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
-            //Trace.WriteLine(@"Returning /Test View");
-            //return View("Genres", MwG_ienum);
-            //return View();
 
             return View("Genres", nitlist);
         }

@@ -129,6 +129,8 @@ namespace NextFlicksMVC4
             string genre = "",
             int start = 0,
             int count = 25,
+
+            string sort = "movie_id",
             bool verbose = false)
         {
             if (verbose == true)
@@ -240,8 +242,30 @@ namespace NextFlicksMVC4
                 //MwG_list = MwG_list.Take(count).ToList();
                 //return MwG_list;
 
+            if (sort.ToLower() == "t_meter") {
+                return
+                    nit_list.Where(item => item.OmdbEntry != null)
+                            .OrderByDescending(item => StringToDouble(item.OmdbEntry.t_Meter))
+                            .ToList();
+            }
             return nit_list;
 
+        }
+
+
+        public static double StringToDouble(string str)
+        {
+            double toDouble;
+            try {
+                toDouble = Convert.ToDouble(str);
+            }
+
+            catch (Exception ex) {
+                TraceLine("decimal conversion error, returning 0.0\n{0}", ex.Message);
+                toDouble = 0.0;
+            }
+
+            return toDouble;
         }
 
         /// <summary>
