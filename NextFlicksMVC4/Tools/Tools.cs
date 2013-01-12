@@ -256,6 +256,8 @@ namespace NextFlicksMVC4
 
         }
 
+        
+
 
         public static double StringToDouble(string str)
         {

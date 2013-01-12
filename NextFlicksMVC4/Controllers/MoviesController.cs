@@ -179,6 +179,37 @@ namespace NextFlicksMVC4.Controllers
             return View("Genres", nitlist);
         }
 
+        public ActionResult sql()
+        {
+
+            MovieDbContext db = new MovieDbContext();
+
+            Tools.TraceLine("start build query to list");
+            var res = (from movie in db.Movies
+                       from boxart in db.BoxArts
+                       where boxart.movie_ID == movie.movie_ID
+                       select new
+                                  {
+                                      Boxarts = boxart,
+                                      Movie = movie,
+                                      OmdbEntry = (from omdb in db.Omdb where omdb.movie_ID == movie.movie_ID select  omdb),
+                                      Genres = (from genre in db.Genres
+                                                join gid in
+                                                    (from mtg in db.MovieToGenres
+                                                     where
+                                                         mtg.movie_ID ==
+                                                         movie.movie_ID
+                                                     select mtg.genre_ID) on
+                                                    genre.genre_ID equals gid
+                                                select genre.genre_string)
+                                  }).ToList();
+
+
+
+
+
+            return View();
+        }
 
 
         public ActionResult DetailsNit()
