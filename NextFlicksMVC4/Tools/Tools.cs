@@ -111,59 +111,83 @@ namespace NextFlicksMVC4
         /// <param name="genre"></param>
         /// <param name="start"></param>
         /// <param name="count">Limits the amount of movies returned -at the very end- of the function instead of the start</param>
+        /// <param name="verbose"> whether or not to print output trace lines</param>
         /// <returns></returns>
-        public static List<MovieWithGenreViewModel> FilterMovies(MovieDbContext db,
-                                                                 List<Movie> movie_list,
-                                                                 int year_start = 1914, int year_end = 2012,
-                                                                 int mpaa_start = 0, int mpaa_end = 200,
-                                                                 string title = "",
-                                                                 bool? is_movie = null,
-            
-                                                                 int runtime_start = 0, int runtime_end = 9999999,
-                                                                 string genre = "",
-                                                                 int start =0, int count =25 )
-        {
-            //Trace.WriteLine("Starting to filter...");
+        public static List<MovieWithGenreViewModel> FilterMovies(
+            MovieDbContext db,
+            List<Movie> movie_list,
+            int year_start = 1914,
+            int year_end = 2012,
+            int mpaa_start = 0,
+            int mpaa_end = 200,
+            string title = "",
+            bool? is_movie = null,
 
-            ///gotta figure a way to filter all stuff down
+            int runtime_start = 0,
+            int runtime_end = 9999999,
+            string genre = "",
+            int start = 0,
+            int count = 25,
+            bool verbose = false)
+        {
+            if (verbose == true)
+                Trace.WriteLine("Starting to filter...");
+
+
+
             //year
-            //Trace.WriteLine("\tYear Start");
-            movie_list = movie_list.Where(item => GetYearOr0(item) >= year_start).ToList();
-            //Trace.WriteLine("\tYear End");
-            movie_list = movie_list.Where(item => GetYearOr0(item) <= year_end).ToList();
+            if (verbose == true)
+                Trace.WriteLine("\tYear Start");
+            movie_list =
+                movie_list.Where(item => GetYearOr0(item) >= year_start)
+                          .ToList();
+            if (verbose == true)
+                Trace.WriteLine("\tYear End");
+            movie_list =
+                movie_list.Where(item => GetYearOr0(item) <= year_end).ToList();
             ///title
             //specific
-            if (title != "") {
-                //Trace.WriteLine("\tTitle");
+            if (title != "")
+            {
+                if (verbose == true)
+                    Trace.WriteLine("\tTitle");
                 movie_list =
-                    movie_list.Where(item => item.short_title.ToLower().Contains(title)).ToList();
+                    movie_list.Where(
+                        item => item.short_title.ToLower().Contains(title))
+                              .ToList();
             }
             //sort alphabetical
 
             //netflix rating
 
             //runtime
-            if (runtime_start != 0 || runtime_end != 9999999) {
-                //Trace.WriteLine("\tRuntime Start");
+            if (runtime_start != 0 || runtime_end != 9999999)
+            {
+                if (verbose == true)
+                    Trace.WriteLine("\tRuntime Start");
                 movie_list =
                     movie_list.Where(
                         item => item.runtime.TotalSeconds >= runtime_start)
                               .ToList();
-                //Trace.WriteLine("\tRuntime End");
+                if (verbose == true)
+                    Trace.WriteLine("\tRuntime End");
                 movie_list =
                     movie_list.Where(
                         item => item.runtime.TotalSeconds <= runtime_end)
                               .ToList();
             }
             //mpaa
-            if (mpaa_start != 0 || mpaa_end != 200) {
-                //Trace.WriteLine("\tMPAA Start");
+            if (mpaa_start != 0 || mpaa_end != 200)
+            {
+                if (verbose == true)
+                    Trace.WriteLine("\tMPAA Start");
                 movie_list =
                     movie_list.Where(
                         item =>
                         ReturnMaturityOrDefault(item.maturity_rating) >=
                         mpaa_start).ToList();
-                //Trace.WriteLine("\tMPAA End");
+                if (verbose == true)
+                    Trace.WriteLine("\tMPAA End");
                 movie_list =
                     movie_list.Where(
                         item =>
@@ -172,33 +196,44 @@ namespace NextFlicksMVC4
             }
 
             //genre
-            if (genre != "") {
-                //Trace.WriteLine("\tGenres");
-                movie_list = ReduceMovieListToMatchingGenres(db, movie_list, genre);
+            if (genre != "")
+            {
+                if (verbose == true)
+                    Trace.WriteLine("\tGenres");
+                movie_list = ReduceMovieListToMatchingGenres(db, movie_list,
+                                                             genre);
             }
 
             //is_movie
-            if (is_movie != null) {
-                //Trace.WriteLine("\tIs Movie");
-                movie_list = movie_list.Where(item => item.is_movie == is_movie).ToList();
+            if (is_movie != null)
+            {
+                if (verbose == true)
+                    Trace.WriteLine("\tIs Movie");
+                movie_list =
+                    movie_list.Where(item => item.is_movie == is_movie).ToList();
             }
 
 
             //pass the movie_list through a function to marry them to genres and boxarts
-            //Trace.WriteLine("\tCreating MtGVM from a range in movies_list");
-            if (start > movie_list.Count) {
+            if (verbose == true)
+                Trace.WriteLine("\tCreating MtGVM from a range in movies_list");
+            if (start > movie_list.Count)
+            {
                 start = movie_list.Count - 1;
             }
-            if (count > movie_list.Count) {
+            if (count > movie_list.Count)
+            {
                 count = movie_list.Count;
             }
             var ranged_movie_list = movie_list.GetRange(start, count);
             var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
 
-            TraceLine("Total results after Filter: {0}", movie_list.Count);
+            if (verbose == true)
+                TraceLine("Total results after Filter: {0}", movie_list.Count);
 
-            //Trace.WriteLine("\tTaking Count");
-            MwG_list= MwG_list.Take(count).ToList();
+            if (verbose == true)
+                Trace.WriteLine("\tTaking Count");
+            MwG_list = MwG_list.Take(count).ToList();
             return MwG_list;
 
         }

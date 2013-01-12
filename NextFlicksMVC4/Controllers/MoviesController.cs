@@ -668,6 +668,16 @@ namespace NextFlicksMVC4.Controllers
             return View();
         }
 
+
+        //from a movie.movie_ID, find the matching omdbEntry
+        public OmdbEntry MatchMovieIdToOmdbEntry(int movie_ID)
+        {
+            MovieDbContext db = new MovieDbContext();
+            var omdbEntry = db.Omdb.FirstOrDefault(omdb => omdb.movie_ID == movie_ID);
+
+            return omdbEntry;
+        }
+
         //loop over all the movies in Movies and find an omdb entry for it
         public ActionResult Merge()
         {
