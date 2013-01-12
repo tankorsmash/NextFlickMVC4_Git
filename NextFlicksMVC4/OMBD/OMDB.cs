@@ -300,6 +300,7 @@ namespace NextFlicksMVC4.OMBD
         [ProtoMember(1)]
         public int ombd_ID { get; set; }
 
+        //TODO: Add movie_id to PROTOBUF
         //to Movie class' movie_ID
         public virtual int movie_ID { get; set; }
 
