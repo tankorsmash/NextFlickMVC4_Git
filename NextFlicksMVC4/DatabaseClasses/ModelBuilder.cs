@@ -168,7 +168,8 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
                                              movie.movie_ID),
                                      //boxart
                                      boxart =
-                                         boxart_list.First(
+                                         boxart_list.FirstOrDefault(
+
                                              item =>
                                              item.movie_ID == movie.movie_ID)
                                  }).ToList();
@@ -197,10 +198,36 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
         public static List<BoxArt> GetListOfBoxarts(MovieDbContext db, List<Movie> movie_list)
         {
             List<BoxArt> boxart_list = new List<BoxArt>();
-            List<int> movie_id_list = new List<int>();
-            movie_id_list = movie_list.Select(item2 => item2.movie_ID).ToList();
-            boxart_list = db.BoxArts.Where(
-                item => movie_id_list.Contains(item.movie_ID)).ToList();
+            List<int> movie_ids = new List<int>();
+            movie_ids = movie_list.Select(item2 => item2.movie_ID).ToList();
+            if (movie_ids.Count <= 50000) {
+                boxart_list = db.BoxArts.Where(
+                    item => movie_ids.Contains(item.movie_ID)).ToList();
+            }
+            else {
+                Tools.TraceLine("Too many ids for Boxarts{0}", movie_ids.Count);
+
+                //first 50 000 
+                List<int> first50000 = movie_ids.Take(50000).ToList();
+                var first_res =
+                    db.BoxArts.Where(
+                        MtG => first50000.Contains(MtG.movie_ID));
+                var first_list = first_res.ToList();
+
+                //remainder
+                var rem_ids = movie_ids.Count - 50000;
+                List<int> remaining_id_list = movie_ids.Take(rem_ids).ToList();
+                var rem_res =
+                    db.BoxArts.Where(
+                        MtG => remaining_id_list.Contains(MtG.movie_ID));
+                var rem_list = rem_res.ToList();
+
+                //combine and join
+                boxart_list = new List<BoxArt>();
+                boxart_list.AddRange(first_list);
+                boxart_list.AddRange(rem_list);
+
+            }
             return boxart_list;
         }
 
@@ -253,11 +280,56 @@ WHERE  ( movietogenres.movie_id IN (SELECT DISTINCT movies.movie_id AS movieid
         {
             var movie_ids = movie_list.Select(movie => movie.movie_ID)
                                       .ToList();
-            var mtg_res = db.MovieToGenres.Where(
-                mtg => movie_ids.Contains(mtg.movie_ID));
+
+            List<MovieToGenre> MtG_list;
+            //if there's few enough movie_ids business as usual
+            if (movie_ids.Count <= 50000) {
+                var mtg_res = db.MovieToGenres.Where(
+                    mtg => movie_ids.Contains(mtg.movie_ID));
+
+                MtG_list = mtg_res.ToList();
+            }
+            //there's too many ids to work through at a time, split the calls up a
+                //and join em later
+            else {
+                Tools.TraceLine("Too many ids for MtGs {0}", movie_ids.Count);
+
+                //first 50 000 
+                List<int> first50000 = movie_ids.Take(50000).ToList();
+                var first_res =
+                    db.MovieToGenres.Where(
+                        MtG => first50000.Contains(MtG.movie_ID));
+                var first_list = first_res.ToList();
+
+                //remainder
+                var rem_ids = movie_ids.Count - 50000;
+                List<int> remaining_id_list = movie_ids.Take(rem_ids).ToList();
+                var rem_res =
+                    db.MovieToGenres.Where(
+                        MtG => remaining_id_list.Contains(MtG.movie_ID));
+                var rem_list = rem_res.ToList();
+
+                //combine and join
+                MtG_list = new List<MovieToGenre>();
+                MtG_list.AddRange(first_list);
+                MtG_list.AddRange(rem_list);
+
+            }
 
             //this is a list of MovieToGenres that I'll use to make that dict of ID to strings
-            var MtG_list = mtg_res.ToList();
+            //List<MovieToGenre> MtG_list;
+            //try {
+            //    MtG_list = mtg_res.ToList();
+            //}
+            //catch (System.Data.EntityCommandExecutionException) {
+            //    var first5000 = mtg_res.Take(5000).ToList();
+            //    var leftover = mtg_res.Take(mtg_res.Count() - 5000).ToList();
+
+            //    MtG_list = new List<MovieToGenre>();
+            //    MtG_list.AddRange(first5000);
+            //    MtG_list.AddRange(leftover);
+            //}
+
             return MtG_list;
         }
     }

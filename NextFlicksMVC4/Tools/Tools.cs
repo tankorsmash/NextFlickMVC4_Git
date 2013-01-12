@@ -230,8 +230,11 @@ namespace NextFlicksMVC4
             var ranged_movie_list = movie_list.GetRange(start, count);
             var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
 
-            //combine the remaining movies with omdbs and then filter from there too
+            //TraceLine("creating list of mwgvm");
+            //var MwG_list = ModelBuilder.CreateListOfMwGVM(db, movie_list);
 
+            TraceLine("matching to omdb");
+            //combine the remaining movies with omdbs and then filter from there too
             var nit_list = MatchMwGVMsWithOmdbEntrys(MwG_list);
 
             //return the count number of movies to return
@@ -242,6 +245,7 @@ namespace NextFlicksMVC4
                 //MwG_list = MwG_list.Take(count).ToList();
                 //return MwG_list;
 
+            TraceLine("about to return");
             if (sort.ToLower() == "t_meter") {
                 return
                     nit_list.Where(item => item.OmdbEntry != null)
