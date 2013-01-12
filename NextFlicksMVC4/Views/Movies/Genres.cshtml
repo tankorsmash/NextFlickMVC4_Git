@@ -64,78 +64,79 @@
     <table>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.movie.short_title)
+                @Html.DisplayNameFor(model => model.Movie.short_title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.movie.year)
+                @Html.DisplayNameFor(model => model.Movie.year)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.movie.runtime)
+                @Html.DisplayNameFor(model => model.Movie.runtime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.movie.avg_rating)
+                @Html.DisplayNameFor(model => model.Movie.avg_rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.movie.tv_rating)
+                @Html.DisplayNameFor(model => model.Movie.tv_rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.movie.current_season)
+                @Html.DisplayNameFor(model => model.Movie.current_season)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.movie.is_movie)
+                @Html.DisplayNameFor(model => model.Movie.is_movie)
             </th>
             @*        <th>
             @Html.DisplayNameFor(model => model.movie.genres)
         </th>*@
             <th>
-                @Html.DisplayNameFor(model => model.movie.maturity_rating)
+                @Html.DisplayNameFor(model => model.Movie.maturity_rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.genre_strings)
+                @Html.DisplayNameFor(model => model.Genres)
             </th>
         </tr>
         @foreach (var item in Model) {
             <tr>
                 <td style="white-space: nowrap">
                     @*<a href="@Html.DisplayFor(asd => item.web_page)">*@
-                    <img src=" @Html.DisplayFor(modelItem => item.boxart.boxart_38) " alt="BoxArt" style="vertical-align: middle; height: 60px"/>
-                    <span style="line-height: 60px">@Html.DisplayFor(modelItem => item.movie.short_title)</span>
+                    <img src=" @Html.DisplayFor(modelItem => item.Boxarts.boxart_38) " alt="BoxArt" style="vertical-align: middle; height: 60px"/>
+                    <span style="line-height: 60px">@Html.DisplayFor(modelItem => item.Movie.short_title)</span>
                     @*</a>*@
-                    <span>@Html.ActionLink("details", "Details", new {movie_ID = item.movie.movie_ID})</span>
+                    <span>@Html.ActionLink("details", "Details", new {movie_ID = item.Movie.movie_ID})</span>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.movie.year)
+                    @Html.DisplayFor(modelItem => item.Movie.year)
                 </td>
                 <td>
-                    @if (item.movie.is_movie) {
-                        @Html.DisplayFor(modelItem => item.movie.runtime)
+                    @if (item.Movie.is_movie) {
+                        @Html.DisplayFor(modelItem => item.Movie.runtime)
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.movie.avg_rating)
+                    @Html.DisplayFor(modelItem => item.Movie.avg_rating)
+                    @Html.DisplayFor(modelItem => item.OmdbEntry.t_Meter)
 @*                    @NextFlicksMVC4.OMBD.Omdb.GetOmdbEntryForMovie(item.movie.short_title, item.movie.year).t_Rating
 *@                           
                     
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.movie.tv_rating)
+                    @Html.DisplayFor(modelItem => item.Movie.tv_rating)
                 </td>
                 <td>
-                    @if (!(item.movie.is_movie)) {
-                        @Html.DisplayFor(modelItem => item.movie.current_season)
+                    @if (!(item.Movie.is_movie)) {
+                        @Html.DisplayFor(modelItem => item.Movie.current_season)
                         ;
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.movie.is_movie)
+                    @Html.DisplayFor(modelItem => item.Movie.is_movie)
                 </td>
                 @*            <td>
-                @Html.DisplayFor(modelItem => item.movie.genres)
+                @Html.DisplayFor(modelItem => item.Movie.genres)
             </td>*@
                 <td>
-                    @Html.DisplayFor(modelItem => item.movie.maturity_rating)
+                    @Html.DisplayFor(modelItem => item.Movie.maturity_rating)
                 </td>
-                <td>@Html.DisplayFor(modelItem => item.genre_strings)</td>
+                <td>@Html.DisplayFor(modelItem => item.Genres)</td>
                 @*        <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
             @Html.ActionLink("Details", "Details", new { id=item.ID }) |

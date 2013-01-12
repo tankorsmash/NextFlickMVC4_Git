@@ -114,7 +114,7 @@ namespace NextFlicksMVC4
         /// <param name="count">Limits the amount of movies returned -at the very end- of the function instead of the start</param>
         /// <param name="verbose"> whether or not to print output trace lines</param>
         /// <returns></returns>
-        public static List<MovieWithGenreViewModel> FilterMovies(
+        public static List<NfImdbRtViewModel> FilterMovies(
             MovieDbContext db,
             List<Movie> movie_list,
             int year_start = 1914,
@@ -231,7 +231,7 @@ namespace NextFlicksMVC4
 
             //combine the remaining movies with omdbs and then filter from there too
 
-            MatchMwGVMsWithOmdbEntrys(MwG_list);
+            var nit_list = MatchMwGVMsWithOmdbEntrys(MwG_list);
 
             //return the count number of movies to return
                 //if (verbose == true)
@@ -241,11 +241,11 @@ namespace NextFlicksMVC4
                 //MwG_list = MwG_list.Take(count).ToList();
                 //return MwG_list;
 
+            return nit_list;
 
+        }
 
-            }
-
-        public static void MatchMwGVMsWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list)
+        public static List<NfImdbRtViewModel> MatchMwGVMsWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list)
         {
             List<NfImdbRtViewModel> nit_list = new List<NfImdbRtViewModel>();
             foreach (var MwGVM in MwG_list) {
@@ -260,6 +260,8 @@ namespace NextFlicksMVC4
                                               };
                 nit_list.Add(nitvm);
             }
+
+            return nit_list;
         }
 
         /// <summary>

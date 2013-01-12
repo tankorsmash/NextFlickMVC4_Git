@@ -165,13 +165,16 @@ namespace NextFlicksMVC4.Controllers
 
             var movie_list = db.Movies.ToList();
 
-            var MwG_list = Tools.FilterMovies(db, movie_list,
-            title: title, is_movie: is_movie,
-            year_start: year_start, year_end: year_end,
-            mpaa_start: mpaa_start, mpaa_end: mpaa_end,
-            runtime_start: runtime_start, runtime_end: runtime_end,
-            genre: genre,
-            start: start, count: count);
+            var nitlist = Tools.FilterMovies(db, movie_list,
+                                              title: title, is_movie: is_movie,
+                                              year_start: year_start,
+                                              year_end: year_end,
+                                              mpaa_start: mpaa_start,
+                                              mpaa_end: mpaa_end,
+                                              runtime_start: runtime_start,
+                                              runtime_end: runtime_end,
+                                              genre: genre,
+                                              start: start, count: count);
             //start:start,
             //count:count,
             ////title: "kid");
@@ -183,11 +186,13 @@ namespace NextFlicksMVC4.Controllers
             //var completeVm_list = MatchListOfMwgvmWithOmdbEntrys(MwG_list, db);
 
 
-            IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
 
-            Trace.WriteLine(@"Returning /Test View");
-            return View("Genres", MwG_ienum);
+            //IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
+            //Trace.WriteLine(@"Returning /Test View");
+            //return View("Genres", MwG_ienum);
             //return View();
+
+            return View("Genres", nitlist);
         }
 
 
@@ -201,7 +206,9 @@ namespace NextFlicksMVC4.Controllers
 
 
             var MwG_list = Tools.FilterMovies(movieDb, movie_list);
-            NfImdbRtViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
+            //NfImdbRtViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
+
+            var NitVm = MwG_list.First();
 
             return View(NitVm);
 
