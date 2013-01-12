@@ -231,32 +231,35 @@ namespace NextFlicksMVC4
 
             //combine the remaining movies with omdbs and then filter from there too
 
-            List<NfImdbRtViewModel> nit_list = new List<NfImdbRtViewModel>();
-            foreach (var MwGVM in MwG_list) {
+            MatchMwGVMsWithOmdbEntrys(MwG_list);
 
-                OmdbEntry omdbEntry =
-                    MatchMovieIdToOmdbEntry(MwGVM.movie.movie_ID);
+            //return the count number of movies to return
+                //if (verbose == true)
+                //    TraceLine("Total results after Filter: {0}", movie_list.Count);
+                //if (verbose == true)
+                //    Trace.WriteLine("\tTaking Count");
+                //MwG_list = MwG_list.Take(count).ToList();
+                //return MwG_list;
 
-                NfImdbRtViewModel nitvm = new NfImdbRtViewModel
-                                              {
-                                                  Boxarts = MwGVM.boxart,
-                                                  Genres = MwGVM.genre_strings,
-                                                  Movie = MwGVM.movie,
-                                                  OmdbEntry = omdbEntry
-                                              };
 
-                nit_list.Add(nitvm);
 
             }
 
-            //return the count number of movies to return
-            if (verbose == true)
-                TraceLine("Total results after Filter: {0}", movie_list.Count);
-            if (verbose == true)
-                Trace.WriteLine("\tTaking Count");
-            MwG_list = MwG_list.Take(count).ToList();
-            return MwG_list;
-
+        public static void MatchMwGVMsWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list)
+        {
+            List<NfImdbRtViewModel> nit_list = new List<NfImdbRtViewModel>();
+            foreach (var MwGVM in MwG_list) {
+                OmdbEntry omdbEntry =
+                    MatchMovieIdToOmdbEntry(MwGVM.movie.movie_ID);
+                NfImdbRtViewModel nitvm = new NfImdbRtViewModel
+                                              {
+                                                  Boxarts = MwGVM .boxart,
+                                                  Genres = MwGVM .genre_strings,
+                                                  Movie = MwGVM .movie,
+                                                  OmdbEntry = omdbEntry
+                                              };
+                nit_list.Add(nitvm);
+            }
         }
 
         /// <summary>
