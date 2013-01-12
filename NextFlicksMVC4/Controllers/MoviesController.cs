@@ -660,17 +660,40 @@ namespace NextFlicksMVC4.Controllers
             Tools.TraceLine("Starting LINQ query");
 
             var query = from movie in db.Movies
-            join omdbEntry in db.Omdb on 
-              new { name = movie.short_title, year = movie.year } equals new { name = omdbEntry.title, year = omdbEntry.year } 
-            select new {
-               FamilyMan = movie,
-               BusinessMan = omdbEntry
+                        join omdbEntry in db.Omdb on
+                            new {name = movie.short_title, year = movie.year}
+                            equals
+                            new {name = omdbEntry.title, year = omdbEntry.year}
+                        select new {movie = movie, omdbEntry = omdbEntry};
 
-            };
             Tools.TraceLine("Done LINQ query");
             Tools.TraceLine("turning results into a list");
             var resultList = query.ToList();
             Tools.TraceLine("done turning results into a list, found {0} movies", resultList.Count);
+
+            //update movie_id for each of the matched omdbs
+
+            Trace.WriteLine("Looping through pairs");
+            foreach (var pair in resultList) {
+
+                OmdbEntry omdb = pair.omdbEntry;
+                omdb.movie_ID = pair.movie.movie_ID;
+
+                //Tools.TraceLine("m: {0} ID: {2}\no: {1}", pair.movie.short_title,
+                //                omdb.title, pair.movie.movie_ID);
+
+                ////might not be needed since its being tracked along the same context
+                //db.Entry(omdb).State = EntityState.Modified;
+
+            }
+
+            Trace.WriteLine("done looping");
+
+            Trace.WriteLine("starting to save changes");
+            db.SaveChanges();
+            Trace.WriteLine("done saving changes");
+
+
 
             return View();
 
