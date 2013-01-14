@@ -185,41 +185,47 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
 
-            //var movie_id_to_String = db.MovieToGenres.Join(db.Genres, mtg => mtg.genre_ID,
-            //                                gen => gen.genre_ID,
-            //                                (mtg, gen) => new
-            //                                                  {
-            //                                                      movie_id =
-            //                                                  mtg.movie_ID,
-            //                                                      genre_string =
-            //                                                  gen.genre_string
-            //                                                  });
-            //var grouped_strings = from ms in movie_id_to_String
-            //                      group ms by ms.movie_id
-            //                      into groupOfstrings
-            //                      select
-            //                          groupOfstrings.Select(x => x.genre_string)
-            //                                        .ToList();
+            Tools.TraceLine("housing");
 
-            //List<MovieWithGenreViewModel> MwG_list =
-            //    grouped_strings.Select(names => new MovieWithGenreViewModel
-            //                                        {
-            //                                            genre_strings = names
-            //                                        }).ToList();
+            var movie_id_to_String = db.MovieToGenres.Join(db.Genres, mtg => mtg.genre_ID,
+                                            gen => gen.genre_ID,
+                                            (mtg, gen) => new
+                                                              {
+                                                                  movie_id =
+                                                              mtg.movie_ID,
+                                                                  genre_string =
+                                                              gen.genre_string
+                                                              }).ToList();
+            var grouped_strings = from ms in movie_id_to_String
+                                  group ms by ms.movie_id
+                                      into groupOfstrings
+                                      select new { strings = 
+                                          groupOfstrings.Select(x => x.genre_string), 
+                                          id = movie_id_to_String.Select(y => y.movie_id).First() };
+
+            List<MovieWithGenreViewModel> MwG_list =
+                grouped_strings.Select(names => new MovieWithGenreViewModel
+                                                    {
+                                                        genre_strings = names.strings.ToList(),
+                                                        movie = db.Movies.First(movie => movie.movie_ID==names.id),
+                                                        boxart = db.BoxArts.First(box => box.movie_ID == names.id)
+
+
+                                                    }).ToList();
 
             
 //--------------------------------------------------------------------------------,
 
-            //var gen2 = (from genre in db.Genres
-            //            join gid in
-            //                (from mtg in db.MovieToGenres
-            //                 from movie in db.Movies
-            //                 where
-            //                     mtg.movie_ID ==
-            //                     movie.movie_ID
-            //                 select mtg.genre_ID) on
-            //                genre.genre_ID equals gid
-            //            select genre.genre_string);
+            var gen2 = (from genre in db.Genres
+                        join gid in
+                            (from mtg in db.MovieToGenres
+                             from movie in db.Movies
+                             where
+                                 mtg.movie_ID ==
+                                 movie.movie_ID
+                             select mtg.genre_ID)
+                              on genre.genre_ID equals gid
+                        select genre.genre_string);
 
 
             Tools.TraceLine("start build query to list");
@@ -252,6 +258,8 @@ namespace NextFlicksMVC4.Controllers
                                       (from omdb in db.Omdb where omdb.movie_ID == movie.movie_ID select omdb)
                                       //, Genres = (from mtg in db.MovieToGenres where movie.movie_ID == mtg.movie_ID)
                                       //, Genres = mtgs.Where(mtg => mtg.movie_ID == movie.movie_ID)
+                                      //, Genres = (from mtg in db.MovieToGenres where mtg.movie_ID == movie.movie_ID group mtg by mtg.movie_ID into matches select matches)
+                                      //, Genres = gen2
                                   }).ToList();
 
 
