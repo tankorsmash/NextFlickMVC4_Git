@@ -185,61 +185,81 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
 
-            var movie_id_to_String = db.MovieToGenres.Join(db.Genres, mtg => mtg.genre_ID,
-                                            gen => gen.genre_ID,
-                                            (mtg, gen) => new
-                                                              {
-                                                                  movie_id =
-                                                              mtg.movie_ID,
-                                                                  genre_string =
-                                                              gen.genre_string
-                                                              });
-            var grouped_strings = from ms in movie_id_to_String
-                                  group ms by ms.movie_id
-                                  into groupOfstrings
-                                  select
-                                      groupOfstrings.Select(x => x.genre_string)
-                                                    .ToList();
+            //var movie_id_to_String = db.MovieToGenres.Join(db.Genres, mtg => mtg.genre_ID,
+            //                                gen => gen.genre_ID,
+            //                                (mtg, gen) => new
+            //                                                  {
+            //                                                      movie_id =
+            //                                                  mtg.movie_ID,
+            //                                                      genre_string =
+            //                                                  gen.genre_string
+            //                                                  });
+            //var grouped_strings = from ms in movie_id_to_String
+            //                      group ms by ms.movie_id
+            //                      into groupOfstrings
+            //                      select
+            //                          groupOfstrings.Select(x => x.genre_string)
+            //                                        .ToList();
 
-            List<MovieWithGenreViewModel> MwG_list =
-                grouped_strings.Select(names => new MovieWithGenreViewModel
-                                                    {
-                                                        genre_strings = names
-                                                    }).ToList();
+            //List<MovieWithGenreViewModel> MwG_list =
+            //    grouped_strings.Select(names => new MovieWithGenreViewModel
+            //                                        {
+            //                                            genre_strings = names
+            //                                        }).ToList();
 
+            
+//--------------------------------------------------------------------------------,
 
             //var gen2 = (from genre in db.Genres
-            //           join gid in
-            //               (from mtg in db.MovieToGenres
-            //                from movie in db.Movies
-            //                where
-            //                    mtg.movie_ID ==
-            //                    movie.movie_ID
-            //                select mtg.genre_ID) on
-            //               genre.genre_ID equals gid
-            //           select genre.genre_string);
+            //            join gid in
+            //                (from mtg in db.MovieToGenres
+            //                 from movie in db.Movies
+            //                 where
+            //                     mtg.movie_ID ==
+            //                     movie.movie_ID
+            //                 select mtg.genre_ID) on
+            //                genre.genre_ID equals gid
+            //            select genre.genre_string);
 
 
-            //Tools.TraceLine("start build query to list");
-
-
-
-            //var res = (from movie in db.Movies
-            //           from boxart in db.BoxArts
-            //           where boxart.movie_ID == movie.movie_ID
-            //           select new
-            //                      {
-            //                          Boxarts = boxart,
-            //                          Movie = movie,
-            //                          OmdbEntry = (from omdb in db.Omdb where omdb.movie_ID == movie.movie_ID select  omdb)
-            //                          //,Genres = 
-            //                      }).ToList();
+            Tools.TraceLine("start build query to list");
 
 
 
+            var res = (
+                       from movie in db.Movies
+                       from boxart in db.BoxArts
+                       where boxart.movie_ID == movie.movie_ID
+                       
+                       
+                       //from mtg in db.MovieToGenres
+                       //where  mtg.movie_ID == movie.movie_ID
+                       //group  mtg by mtg.movie_ID into mtgs
+                       //join omdb in db.Omdb on movie.movie_ID equals omdb.movie_ID
+            
+            
+                       //join mtg in db.MovieToGenres 
+                       //on movie.movie_ID equals  mtg.movie_ID
 
+
+
+                       select new
+                                  {
+                                      Boxarts =  boxart,
+                                      Movie = movie,
+                                      //has to be here, instead of at the start of the query since not all movies have an omdb entry
+                                      OmdbEntry = //omdb
+                                      (from omdb in db.Omdb where omdb.movie_ID == movie.movie_ID select omdb)
+                                      //, Genres = (from mtg in db.MovieToGenres where movie.movie_ID == mtg.movie_ID)
+                                      //, Genres = mtgs.Where(mtg => mtg.movie_ID == movie.movie_ID)
+                                  }).ToList();
+
+
+
+            Tools.TraceLine("amount of results {0}", res.Count);
 
             return View();
+            
         }
 
 
