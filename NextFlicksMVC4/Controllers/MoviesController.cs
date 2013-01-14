@@ -185,7 +185,7 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
 
-            Tools.TraceLine("housing");
+            Tools.TraceLine("matching strings");
 
             var movie_id_to_String = db.MovieToGenres.Join(db.Genres, mtg => mtg.genre_ID,
                                             gen => gen.genre_ID,
@@ -196,23 +196,57 @@ namespace NextFlicksMVC4.Controllers
                                                                   genre_string =
                                                               gen.genre_string
                                                               }).ToList();
+
+            Tools.TraceLine("grouping");
             var grouped_strings = from ms in movie_id_to_String
                                   group ms by ms.movie_id
                                       into groupOfstrings
                                       select new { strings = 
-                                          groupOfstrings.Select(x => x.genre_string), 
+                                          groupOfstrings.Select(x => x.genre_string).ToList(), 
                                           id = movie_id_to_String.Select(y => y.movie_id).First() };
 
-            List<MovieWithGenreViewModel> MwG_list =
+            Tools.TraceLine("mwg listing");
+            //List<MovieWithGenreViewModel> MwG_list =
+            var MwG_list =
                 grouped_strings.Select(names => new MovieWithGenreViewModel
                                                     {
-                                                        genre_strings = names.strings.ToList(),
-                                                        movie = db.Movies.First(movie => movie.movie_ID==names.id),
-                                                        boxart = db.BoxArts.First(box => box.movie_ID == names.id)
+                                                        genre_strings = names.strings.ToList()
+                                                        //,movie = db.Movies.First(movie => movie.movie_ID==names.id)
+                                                        //,boxart = db.BoxArts.First(box => box.movie_ID == names.id)
 
 
-                                                    }).ToList();
+                                                    //}).ToList();
+                                                    });
 
+            
+
+            Tools.TraceLine("querying");
+            var res1 = (from movies in db.Movies
+                       from boxart in db.BoxArts
+                        //from gen in grouped_strings
+                       where boxart.movie_ID == movies.movie_ID
+                       select new MovieWithGenreViewModel
+                                  {
+                                      boxart = boxart,
+                                      movie = movies
+                                      //,genre_strings = gen.strings
+                                      //,genre_strings = 
+                                  }).ToList();
+
+            Tools.TraceLine("linqing");
+            //res1.ForEach( item => item.genre_strings == grouped_strings.FirstOrDefault(group => group.id == item.movie.movie_ID));
+
+
+            Tools.TraceLine("foreachin'");
+            foreach (MovieWithGenreViewModel MwG in res1) {
+                var genres =
+                    grouped_strings.FirstOrDefault(
+                        grouped => grouped.id == MwG.movie.movie_ID);
+                if (genres != null) {
+                    MwG.genre_strings = genres.strings.ToList();
+                }
+            }
+    
             
 //--------------------------------------------------------------------------------,
 
