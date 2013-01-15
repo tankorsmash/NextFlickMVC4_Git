@@ -2,13 +2,15 @@
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
+using NextFlicksMVC4.Models;
 using NextFlicksMVC4.Models.userAccount;
 
 namespace NextFlicksMVC4.Controllers.userAccount
 { 
     public class UserController : Controller
     {
-       private Users.UserDbContext _userDb = new Users.UserDbContext();
+      // private Users.UserDbContext _userDb = new Users.UserDbContext();
+        MovieDbContext _userDb = new MovieDbContext();
         private FormsIdentity TicketId;// use this to get the user identity.
         private FormsAuthenticationTicket ticket; //use this ot pull acopy of the ticket 
         

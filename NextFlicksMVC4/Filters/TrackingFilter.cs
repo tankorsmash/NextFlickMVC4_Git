@@ -24,7 +24,8 @@ namespace NextFlicksMVC4.Filters
 
             UserLog userLog = TrackingCreate.CreateUserLog(request);
 
-            TrackingDbContext db = new TrackingDbContext();
+            //TrackingDbContext db = new TrackingDbContext();
+            MovieDbContext db = new MovieDbContext();
 
             db.UserLogs.Add(userLog);
             db.SaveChanges();

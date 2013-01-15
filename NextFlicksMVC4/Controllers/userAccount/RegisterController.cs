@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using NextFlicksMVC4.Models;
 using NextFlicksMVC4.Models.userAccount;
 
 namespace NextFlicksMVC4.Controllers.userAccount
@@ -7,7 +8,8 @@ namespace NextFlicksMVC4.Controllers.userAccount
     //TODO: need to figure out how to test https ont he local before deploying
     public class RegisterController : Controller
     {
-        Users.UserDbContext _userDb = new Users.UserDbContext();
+        //Users.UserDbContext _userDb = new Users.UserDbContext();
+        MovieDbContext _userDb = new MovieDbContext();
         //
         // GET: /Register/
         public ActionResult Index()

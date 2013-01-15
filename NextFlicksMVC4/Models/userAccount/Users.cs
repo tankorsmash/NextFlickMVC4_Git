@@ -87,10 +87,10 @@ namespace NextFlicksMVC4.Models.userAccount
             return password == GetHashedPassword(maybePwd);
         }
 
-        public class UserDbContext : DbContext
+     /*   public class UserDbContext : DbContext
         {
             public DbSet<Users> Users { get; set; }
-        }
+        } */
 
         public class RegistrationViewModel
         {

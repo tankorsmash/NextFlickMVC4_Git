@@ -238,13 +238,9 @@
     <Compile Include="Controllers\userAccount\RegisterController.cs" />
     <Compile Include="Controllers\userAccount\UserController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
-    <Compile Include="Migrations\201212192058340_InitialCreate.cs" />
-    <Compile Include="Migrations\201212192058340_InitialCreate.Designer.cs">
-      <DependentUpon>201212192058340_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201301081723398_AddOmdbContextProper.cs" />
-    <Compile Include="Migrations\201301081723398_AddOmdbContextProper.Designer.cs">
-      <DependentUpon>201301081723398_AddOmdbContextProper.cs</DependentUpon>
+    <Compile Include="Migrations\201301151400583_MergeTrackingDB.cs" />
+    <Compile Include="Migrations\201301151400583_MergeTrackingDB.Designer.cs">
+      <DependentUpon>201301151400583_MergeTrackingDB.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\userAccount\LogonModel.cs" />
@@ -402,9 +398,6 @@
     <Content Include="Views\Movies\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Movies\Edit.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Movies\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -459,14 +452,6 @@
     <Content Include="Views\Movies\DetailsNIT.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201212192058340_InitialCreate.resx">
-      <DependentUpon>201212192058340_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201301081723398_AddOmdbContextProper.resx">
-      <DependentUpon>201301081723398_AddOmdbContextProper.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\LogOff\Index.cshtml" />
     <Content Include="Views\Logon\Index.cshtml" />
     <Content Include="Views\Register\Index.cshtml" />
@@ -475,6 +460,14 @@
     <Content Include="Views\User\Details.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201301151400583_MergeTrackingDB.resx">
+      <DependentUpon>201301151400583_MergeTrackingDB.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Movies\Edit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

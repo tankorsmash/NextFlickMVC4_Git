@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using DotNetOpenAuth;
 using System.ComponentModel.DataAnnotations.Schema;
+using NextFlicksMVC4.Models.userAccount;
+using NextFlicksMVC4.Tracking;
 
 namespace NextFlicksMVC4.Models
 {
@@ -127,6 +129,15 @@ namespace NextFlicksMVC4.Models
 
     }
 
+    public class MovieTags
+    {
+        [Key]
+        public int TagId { get; set; }
+        public string Tag { get; set; }
+        public virtual int userID { get; set; }
+        public virtual int movie_ID { get; set; }
+    }
+
     public class MovieDbContext : DbContext
     {
         public DbSet<Movie> Movies { get; set; }
@@ -134,6 +145,9 @@ namespace NextFlicksMVC4.Models
         public DbSet<Genre> Genres { get; set; }
         public DbSet<MovieToGenre> MovieToGenres { get; set; }
         public DbSet<OMBD.OmdbEntry> Omdb { get; set; }
+        public DbSet<MovieTags> Tags { get; set; }
+        public DbSet<Users> Users { get; set; }
+        public DbSet<UserLog> UserLogs { get; set; }
     }
 
 

@@ -8,7 +8,6 @@
 
 <fieldset>
     <legend>Movie</legend>
-
     <div class="display-label">
          @Html.DisplayNameFor(model => model.short_title)
     </div>
@@ -78,8 +77,13 @@
     <div class="display-field">
         @Html.DisplayFor(model => model.maturity_rating)
     </div>
+    @*TODO: get the editor field to allow users to add Tags, need to make a viewmodel for movies with tags + genres me thinks *@
+      <div class="editor-field">
+            @Html.EditorFor(model => model.short_titl)
+            @Html.ValidationMessageFor(model => model.short_title)
+        </div>
 
- @*   <div class="display-label">
+    @*   <div class="display-label">
          @Html.DisplayNameFor(model => model.boxart_38)
     </div>
     <div class="display-field">

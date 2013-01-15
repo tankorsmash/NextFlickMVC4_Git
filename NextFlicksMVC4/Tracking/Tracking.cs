@@ -35,8 +35,8 @@ namespace NextFlicksMVC4.Tracking
     }
 
 
-    public class TrackingDbContext : DbContext
+   /* public class TrackingDbContext : DbContext
     {
         public DbSet<UserLog> UserLogs { get; set; }
-    }
+    }*/
 }

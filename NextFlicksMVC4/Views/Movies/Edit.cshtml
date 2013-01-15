@@ -1,7 +1,7 @@
 ﻿@model NextFlicksMVC4.Models.Movie
 
 @{
-    ViewBag.short_title = "Edit";
+    ViewBag.Title = "Edit";
 }
 
 <h2>Edit</h2>
@@ -12,7 +12,7 @@
     <fieldset>
         <legend>Movie</legend>
 
-        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.movie_ID)
 
         <div class="editor-label">
             @Html.LabelFor(model => model.short_title)
@@ -52,6 +52,38 @@
         <div class="editor-field">
             @Html.EditorFor(model => model.tv_rating)
             @Html.ValidationMessageFor(model => model.tv_rating)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.web_page)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.web_page)
+            @Html.ValidationMessageFor(model => model.web_page)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.current_season)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.current_season)
+            @Html.ValidationMessageFor(model => model.current_season)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.is_movie)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.is_movie)
+            @Html.ValidationMessageFor(model => model.is_movie)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.maturity_rating)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.maturity_rating)
+            @Html.ValidationMessageFor(model => model.maturity_rating)
         </div>
 
         <p>
