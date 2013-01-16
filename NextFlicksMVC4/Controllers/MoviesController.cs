@@ -203,29 +203,41 @@ namespace NextFlicksMVC4.Controllers
                                  group genre.genre_string by mtg.movie_ID;
 
             Tools.TraceLine("creating mwgs");
-            var Mwg_list =  
+            var Mwg_list =
                 //from mtg in db.MovieToGenres
                 //                 join genre in db.Genres on mtg.genre_ID equals
                 //                     genre.genre_ID
                 //                 group genre.genre_string by mtg.movie_ID into ids
-                           from movie in db.Movies
-                           from boxart in db.BoxArts
-                           where movie.movie_ID == boxart.movie_ID
+                           from mwg in
+                               (from movie in db.Movies
+                                from boxart in db.BoxArts
+                                where movie.movie_ID == boxart.movie_ID
+
+                                select new MovieWithGenreViewModel
+                                           {
+                                               movie = movie,
+                                               boxart = boxart,
+                                               //genre_strings = ids.ToList()
+                                           })
+                           from ids in id_to_string_2
+                           where ids.Key == mwg.movie.movie_ID
                            select new MovieWithGenreViewModel
                                       {
-                                          movie = movie,
-                                          boxart = boxart,
-                                          //genre_strings = ids.ToList()
-                                      };
+                                          boxart = mwg.boxart,
+                                          movie = mwg.movie,
+                                          //genre_strings = ids.First()
+                                      }
 
-            var Mwg_list2 = Mwg_list.ToList();
+            ;
+
+            //var Mwg_list2 = Mwg_list.ToList();
 
             
 
             Tools.TraceLine("for eaching first");
             foreach (var elem in id_to_string_2) {
 
-                var first = Mwg_list2.First(mwg => mwg.movie.movie_ID == elem.Key);
+                var first = Mwg_list.First(mwg => mwg.movie.movie_ID == elem.Key);
                 first.genre_strings = elem.ToList();
             }
 
