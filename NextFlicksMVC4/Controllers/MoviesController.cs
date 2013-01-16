@@ -631,7 +631,7 @@ namespace NextFlicksMVC4.Controllers
             var data =
                 OAuth1a.GetNextflixCatalogDataString(
                     "catalog/titles/streaming", term, max_results: "100",
-                    outputPath: @"C:/testUS.NFPOX");
+                    outputPath: @"C:/testtesttest.NFPOX");
             var titles =
                 NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
 
@@ -829,6 +829,13 @@ namespace NextFlicksMVC4.Controllers
             return View();
         }
 
+        public ActionResult Join()
+        {
+            //Tools.JoinLines("C:/testtesttest.NFPOX");
+
+            return View();
+        }
+
         public ActionResult FullDbBuild()
         {
             string netflixPosFilepath = @"catalogStreaming.NFPOX";
@@ -837,6 +844,7 @@ namespace NextFlicksMVC4.Controllers
             var data = OAuth1a.GetNextflixCatalogDataString( "catalog/titles/streaming", "", outputPath: netflixPosFilepath);
 
             //join the lines that don't match <catalog to the ones above it
+            Tools.JoinLines(netflixPosFilepath);
 
             //parse the lines into a Title then Movie object, along with boxart data
 

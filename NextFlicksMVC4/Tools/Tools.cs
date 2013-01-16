@@ -67,7 +67,7 @@ namespace NextFlicksMVC4
         /// <param name="msg">Message to write</param>
         /// <param name="presetDateTime">A custom time value</param>
         /// <returns>Returns the DateTime that was written</returns>
-        public static DateTime WriteTimeStamp(string msg= "The time is {0}", DateTime? presetDateTime = null)
+        public static DateTime WriteTimeStamp(string msg= "The time is", DateTime? presetDateTime = null)
         {
             DateTime time;
             if (presetDateTime == null) { time = DateTime.Now; }
@@ -570,6 +570,75 @@ namespace NextFlicksMVC4
                 Serializer.Serialize(file, complete_list_of_entries);
             }
             WriteTimeStamp("Done serializing list");
+        }
+
+        /// <summary>
+        /// Joins lines that don't start with a given string, default "<catalog"
+        /// </summary>
+        /// <param name="filepath"></param>
+        ///<param name="start_string">string to match on the start of the line</param>
+        /// <param name="skip_default_xml">whether or not to skip the fist two lines and the last one</param>
+        public static void JoinLines(string filepath,
+                                     string start_string = "<catalog",
+                                     bool skip_default_xml = true)
+        {
+
+            //read the file into a list of lines
+            WriteTimeStamp("Reading file");
+            List<string> lines = new List<string>();
+            using (StreamReader reader = new StreamReader(filepath)) {
+                string line;
+                while ((line = reader.ReadLine()) != null) {
+                    lines.Add(line);
+                }
+            }
+
+            //remove the lines that start with the lines below
+            if (skip_default_xml) {
+                WriteTimeStamp("removing default xml");
+                lines =
+                    lines.Where(
+                        line =>
+                        (!line.StartsWith(
+                            "<?xml version=\"1.0\" standalone=\"yes\"?>") &&
+                         !line.StartsWith("<catalog_titles>") &&
+                         !line.StartsWith("</catalog_titles>"))).ToList();
+            }
+
+            List<string> fixed_lines = new List<string>();
+
+            //find all lines that don't star with <catalog
+            WriteTimeStamp("removing lines that don't match the string");
+            foreach (string line in lines) {
+                if (line.StartsWith(start_string) != true) {
+                    TraceLine(line);
+                    //System.Diagnostics.Debug.WriteLine(line);
+
+                    //line above current line
+                    int curr_line = lines.IndexOf(line);
+                    string above = lines[curr_line - 1];
+
+                    //join lines
+                    string joined = string.Format("{0} {1}", above.TrimEnd(), line.TrimStart());
+
+                    //add joined lines to list
+                    fixed_lines.RemoveAt(fixed_lines.Count - 1);
+                    fixed_lines.Add(joined);
+                }
+
+                    //no change, add current line
+                else {
+                    fixed_lines.Add(line);
+                }
+            }
+
+            //write file from fixed_lines
+            WriteTimeStamp("writing fixed file");
+            using (StreamWriter writer = new StreamWriter(filepath)) {
+                foreach (string fixedLine in fixed_lines) {
+                    writer.WriteLine(fixedLine);
+                }
+            }
         }
     }
 
