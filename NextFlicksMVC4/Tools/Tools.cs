@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NextFlicksMVC4.Controllers;
@@ -10,6 +11,7 @@ using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 using NextFlicksMVC4.OMBD;
+using ProtoBuf;
 
 namespace NextFlicksMVC4
 {
@@ -331,7 +333,7 @@ namespace NextFlicksMVC4
                 //        "maturity rating exception, probably not set:\r{0}",
                 //        ex.Message));
 
-                Tools.TraceLine(
+                TraceLine(
                     "maturity rating exception, probably not set:\r{0}",
                     ex.Message);
                 //200 is way overkill, but you don't want a porno sorted along kids movies
@@ -515,6 +517,59 @@ namespace NextFlicksMVC4
             var omdbEntry = db.Omdb.FirstOrDefault(omdb => omdb.movie_ID == movie_ID);
 
             return omdbEntry;
+        }
+
+        public static void RebuildOmdbsFromProtobufDump()
+        {
+//rebuild the serialized list of List<omdbentryies>
+            string entry_dump_path =
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
+
+            //deserialize the list of omdbentries saved the the file
+            //TODO: add check to make sure the file exists and is not corrupted
+            List<OmdbEntry> complete_list;
+            using (var file = File.OpenRead(entry_dump_path)) {
+                complete_list = Serializer.Deserialize<List<OmdbEntry>>(file);
+            }
+
+            MovieDbContext db = new MovieDbContext();
+            db.Configuration.AutoDetectChangesEnabled = false;
+
+            int count = complete_list.Count;
+            foreach (OmdbEntry omdbEntry in complete_list) {
+                db.Omdb.Add(omdbEntry);
+
+                int remaining = count - complete_list.IndexOf(omdbEntry);
+                Trace.WriteLine(remaining);
+            }
+
+            Trace.WriteLine("saving changes");
+            db.Configuration.AutoDetectChangesEnabled = true;
+            db.SaveChanges();
+
+
+            WriteTimeStamp("Done saving changes");
+        }
+
+        public static void SerializeOmdbTsv()
+        {
+//TODO:Make these paths more general
+            string entry_dump_path =
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
+            string imdb_path =
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
+            string tom_path =
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt";
+
+            var complete_list_of_entries =
+                TSVParse.ParseTSVforOmdbData(imdb_filepath: imdb_path,
+                                             tom_filepath: tom_path);
+
+            WriteTimeStamp("Starting to serialize list");
+            using (var file = File.Create(entry_dump_path)) {
+                Serializer.Serialize(file, complete_list_of_entries);
+            }
+            WriteTimeStamp("Done serializing list");
         }
     }
 

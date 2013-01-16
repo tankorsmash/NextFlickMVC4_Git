@@ -831,7 +831,10 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult FullDbBuild()
         {
+            string netflixPosFilepath = @"catalogStreaming.NFPOX";
+
             //retrieve API .POX
+            var data = OAuth1a.GetNextflixCatalogDataString( "catalog/titles/streaming", "", outputPath: netflixPosFilepath);
 
             //join the lines that don't match <catalog to the ones above it
 
@@ -846,6 +849,9 @@ namespace NextFlicksMVC4.Controllers
 
             //deserialize the file, turn it into omdb
             //  can't remember if it does it here or not, but marry the omdbs and movie
+
+
+            return View();
         }
 
 
