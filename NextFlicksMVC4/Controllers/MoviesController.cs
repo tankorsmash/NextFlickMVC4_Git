@@ -698,30 +698,16 @@ namespace NextFlicksMVC4.Controllers
         /// Reads the OMDB API data txts and dumps the list of OMBD Entrys to file, use Movies/Regen to rebuild them
         /// </summary>
         /// <returns></returns>
-        public ActionResult TSV()
+        public ActionResult Tsv()
         {
-            //TODO:Make these paths more general
-            string entry_dump_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
-            string imdb_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
-            string tom_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt";
-
-            var complete_list_of_entries =
-                TSVParse.ParseTSVforOmdbData(imdb_filepath: imdb_path,
-                                             tom_filepath: tom_path);
-
-            Tools.WriteTimeStamp("Starting to serialize list");
-            using (var file = System.IO.File.Create(entry_dump_path))
-            {
-                Serializer.Serialize(file, complete_list_of_entries);
-            }
-            Tools.WriteTimeStamp("Done serializing list");
+            //read the Omdb.txt file and turn the resulting objects into a protobuf dump
+            // to be read by the Tools.RebuildOmdbsFromProtobufDump method
+            Tools.SerializeOmdbTsv();
 
 
             return View();
         }
+
         //
         // GET: /Movies/Create
 
