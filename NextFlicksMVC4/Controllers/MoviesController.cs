@@ -221,6 +221,7 @@ namespace NextFlicksMVC4.Controllers
                         grouping_array.First(
                             grp => grp.Key == mwg.movie.movie_ID).ToList();
                 }
+
                 catch (System.InvalidOperationException ex) {
                     Tools.TraceLine("no matching genre string on movie {0}",
                                     mwg.movie.short_title);
