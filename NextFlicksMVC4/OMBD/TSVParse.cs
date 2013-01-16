@@ -13,7 +13,7 @@ namespace NextFlicksMVC4.OMBD
     {
 
 
-        public static void DownloadOmdbZip(string url = @"http://www.beforethecode.net/projects/OMDb/download.aspx?e=tankorsmash%40gmail.com", string outputPath = @"omdb.zip")
+        public static void DownloadOmdbZip(string url = @"http://www.beforethecode.net/projects/OMDb/download.aspx?e=tankorsmash@gmail.com", string outputPath = @"omdb.zip")
         {
 
             //doesn't work
@@ -24,18 +24,20 @@ namespace NextFlicksMVC4.OMBD
             //}
             //Tools.TraceLine("done download");
 
+            Uri uri = new Uri(url);
 
             //download the omdbzip
-            HttpWebRequest web = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebRequest web = (HttpWebRequest)WebRequest.Create(uri);
             web.KeepAlive = true;
             web.AutomaticDecompression = DecompressionMethods.GZip |
                                          DecompressionMethods.Deflate;
-
+            //web.UserAgent = @"Mozilla/5.0 Windows NT 6.1 WOW64 AppleWebKit/537.11 KHTML, like Gecko Chrome/23.0.1271.97 Safari/537.11";
+            web.UserAgent = @"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11";
 
             Tools.TraceLine("Starting GetResponse with\n{0}", url);
             var resp = web.GetResponse();
 
-            Trace.WriteLine("Starting GetStream");
+            Tools.TraceLine("Starting GetStream");
             Stream responseStream;
             responseStream = resp.GetResponseStream();
 
@@ -54,16 +56,17 @@ namespace NextFlicksMVC4.OMBD
                 while ((line = responseReader.ReadLine()) != null && !(line_count > line_limit))
                 {
                     file.WriteLine(line);
+                    Tools.TraceLine("returned: {0}",line);
                     line_count += 1;
                     string msg = String.Format("Line number {0} written",
                                                line_count.ToString());
-                    Trace.WriteLine(msg);
+                    Tools.TraceLine(msg);
 
                 }
                 file.Close();
             }
             Tools.WriteTimeStamp();
-            Trace.WriteLine("Successfully wrote and closed to {0}", outputPath);
+            Tools.TraceLine("Successfully wrote and closed to {0}", outputPath);
 
 
 
@@ -93,7 +96,7 @@ namespace NextFlicksMVC4.OMBD
             Tools.WriteTimeStamp("tomatoes start");
             var tom_entries = ParseTSVforTomatoesData(tom_filepath);
 
-            Trace.WriteLine("Starting to merge entries");
+            Tools.TraceLine("Starting to merge entries");
             Tools.WriteTimeStamp("merge start");
             complete_list = MergeTwoOmdbEntryLists(imdb_entries, tom_entries);
             Tools.WriteTimeStamp("merge end");
@@ -103,7 +106,7 @@ namespace NextFlicksMVC4.OMBD
             var complete_time = Tools.WriteTimeStamp("done merging at");
             var duration = complete_time - start_time;
             var duration_msg = string.Format("Took {0} to complete", duration);
-            Trace.WriteLine(duration_msg);
+            Tools.TraceLine(duration_msg);
 
 
             return complete_list;
@@ -136,12 +139,13 @@ namespace NextFlicksMVC4.OMBD
                     complete_list.Add(omdbEntry);
                 }
 
-                Trace.WriteLine(current_id);
+                Tools.TraceLine(current_id.ToString());
+
             }
 
             string msg = string.Format("Total entries in complete list: {0}",
                                        complete_list.Count);
-            Trace.WriteLine(msg);
+            Tools.TraceLine(msg);
             return complete_list;
         }
 
@@ -154,7 +158,7 @@ namespace NextFlicksMVC4.OMBD
         public static List<OmdbEntry> ParseTSVforImdbData(string filepath )
         {
 
-            Trace.WriteLine("Start Parse for Imdb");
+            Tools.TraceLine("Start Parse for Imdb");
 
             using (
                 CsvReader csvReader = new CsvReader(new StreamReader(filepath),
@@ -169,12 +173,12 @@ namespace NextFlicksMVC4.OMBD
                 while (csvReader.ReadNextRecord()) {
                     var entry = Omdb.CreateOmdbEntryFromTsvRecord(imdbReader:csvReader);
                     omdbEntry_list.Add(entry);
-                    //Trace.WriteLine(entry.title);
-                    Trace.WriteLine(count.ToString());
+                    //Tools.TraceLine(entry.title);
+                    Tools.TraceLine(count.ToString());
                     count++;
                 }
 
-                Trace.WriteLine("Done Parsing for Imdb");
+                Tools.TraceLine("Done Parsing for Imdb");
                 return omdbEntry_list;
             }
         }
@@ -187,7 +191,7 @@ namespace NextFlicksMVC4.OMBD
         public static List<OmdbEntry> ParseTSVforTomatoesData(string filepath)
         {
 
-                Trace.WriteLine("Start Parsing for Tomatoes");
+                Tools.TraceLine("Start Parsing for Tomatoes");
             List<OmdbEntry> omdbEntry_list;
             //omdbEntry_list = existing_list ?? new List<OmdbEntry>();
             omdbEntry_list =  new List<OmdbEntry>();
@@ -202,10 +206,10 @@ namespace NextFlicksMVC4.OMBD
                     var entry =
                         Omdb.CreateOmdbEntryFromTsvRecord(tomReader: csvReader);
                     omdbEntry_list.Add(entry);
-                    Trace.WriteLine(count.ToString());
+                    Tools.TraceLine(count.ToString());
                     count++;
                 }
-                Trace.WriteLine("Done Parsing for Tomatoes");
+                Tools.TraceLine("Done Parsing for Tomatoes");
                 return omdbEntry_list;
             }
         }
