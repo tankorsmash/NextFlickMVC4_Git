@@ -183,168 +183,213 @@ namespace NextFlicksMVC4.Controllers
         {
 
             MovieDbContext db = new MovieDbContext();
-
-
-            Tools.TraceLine("matching strings");
-
-            //var movie_id_to_String = db.MovieToGenres.Join(db.Genres, mtg => mtg.genre_ID,
-            //                                gen => gen.genre_ID,
-            //                                (mtg, gen) => new
-            //                                                  {
-            //                                                      movie_id =
-            //                                                  mtg.movie_ID,
-            //                                                      genre_string =
-            //                                                  gen.genre_string
-            //                                                  }).ToList();
-            Tools.TraceLine("ids to stri");
-            var id_to_string_2 = from mtg in db.MovieToGenres
+            var start = Tools.WriteTimeStamp("starting /sql");
+            //I can't do what I wanted so I'll build most of the MwGVM and then fill it with genre
+            // strings right after
+            Tools.TraceLine("Create strings group");
+            var movieID_genreString_grouping = from mtg in db.MovieToGenres
                                  join genre in db.Genres on mtg.genre_ID equals
                                      genre.genre_ID
                                  group genre.genre_string by mtg.movie_ID;
+            var grouping_array = movieID_genreString_grouping.ToArray();
 
-            Tools.TraceLine("creating mwgs");
-            var Mwg_list =
-                //from mtg in db.MovieToGenres
-                //                 join genre in db.Genres on mtg.genre_ID equals
-                //                     genre.genre_ID
-                //                 group genre.genre_string by mtg.movie_ID into ids
-                           from mwg in
-                               (from movie in db.Movies
-                                from boxart in db.BoxArts
-                                where movie.movie_ID == boxart.movie_ID
 
-                                select new MovieWithGenreViewModel
-                                           {
-                                               movie = movie,
-                                               boxart = boxart,
-                                               //genre_strings = ids.ToList()
-                                           })
-                           from ids in id_to_string_2
-                           where ids.Key == mwg.movie.movie_ID
-                           select new MovieWithGenreViewModel
-                                      {
-                                          boxart = mwg.boxart,
-                                          movie = mwg.movie,
-                                          //genre_strings = ids.First()
-                                      }
+            //create the list of partial mwgvms
+            Tools.TraceLine("create partial mwgarry");
+            var partial_Mwg_qry =
+                from movie in db.Movies
+                from boxart in db.BoxArts
+                where movie.movie_ID == boxart.movie_ID
+                select
+                    new MovieWithGenreViewModel
+                        {
+                            movie = movie,
+                            boxart = boxart,
+                        };
 
-            ;
-
-            //var Mwg_list2 = Mwg_list.ToList();
-
+            //array instead list for performance
+            var partial_Mwg_array = partial_Mwg_qry.ToArray();
             
 
-            Tools.TraceLine("for eaching first");
-            foreach (var elem in id_to_string_2) {
+            //WAY TOO SLOW, takes 1m15s
+            Tools.TraceLine("for looping over array to populate it completely");
+            for (int i = 0; i < partial_Mwg_array.Length; i++) {
+                var mwg = partial_Mwg_array[i];
+                try
+                {
+                    mwg.genre_strings =
+                        grouping_array.First(
+                            grp => grp.Key == mwg.movie.movie_ID).ToList();
+                }
+                catch (System.InvalidOperationException ex) {
+                    Tools.TraceLine("no matching genre string on movie {0}",
+                                    mwg.movie.short_title);
+                }
 
-                var first = Mwg_list.First(mwg => mwg.movie.movie_ID == elem.Key);
-                first.genre_strings = elem.ToList();
             }
 
-            var qwe = Mwg_list.ToList();
 
-            Tools.TraceLine("grouping");
-            //var grouped_strings = from id_to_str in movie_id_to_String
-            //                      group id_to_str by id_to_str.movie_id
-            //                          into groupOfstrings
-            //                          select new { strings = 
-            //                              groupOfstrings.Select(grp_str => grp_str.genre_string).ToList(), 
-            //                              id = movie_id_to_String.Select(y => y.movie_id).First() };
+//            Tools.TraceLine("matching strings");
 
-            //Tools.TraceLine("mwg listing");
-            ////List<MovieWithGenreViewModel> MwG_list =
-            //var MwG_list =
-            //    grouped_strings.Select(names => new MovieWithGenreViewModel
-            //                                        {
-            //                                            genre_strings = names.strings.ToList()
-            //                                            //,movie = db.Movies.First(movie => movie.movie_ID==names.id)
-            //                                            //,boxart = db.BoxArts.First(box => box.movie_ID == names.id)
+//            //var movie_id_to_String = db.MovieToGenres.Join(db.Genres, mtg => mtg.genre_ID,
+//            //                                gen => gen.genre_ID,
+//            //                                (mtg, gen) => new
+//            //                                                  {
+//            //                                                      movie_id =
+//            //                                                  mtg.movie_ID,
+//            //                                                      genre_string =
+//            //                                                  gen.genre_string
+//            //                                                  }).ToList();
+//            Tools.TraceLine("ids to stri");
+//            var id_to_string_2 = from mtg in db.MovieToGenres
+//                                 join genre in db.Genres on mtg.genre_ID equals
+//                                     genre.genre_ID
+//                                 group genre.genre_string by mtg.movie_ID;
 
+//            Tools.TraceLine("creating mwgs");
+//            var Mwg_list =
+//                //from mtg in db.MovieToGenres
+//                //                 join genre in db.Genres on mtg.genre_ID equals
+//                //                     genre.genre_ID
+//                //                 group genre.genre_string by mtg.movie_ID into ids
+//                           from mwg in
+//                               (from movie in db.Movies
+//                                from boxart in db.BoxArts
+//                                where movie.movie_ID == boxart.movie_ID
 
-            //                                        //}).ToList();
-            //                                        });
+//                                select new MovieWithGenreViewModel
+//                                           {
+//                                               movie = movie,
+//                                               boxart = boxart,
+//                                               //genre_strings = ids.ToList()
+//                                           })
+//                           from ids in id_to_string_2
+//                           where ids.Key == mwg.movie.movie_ID
+//                           select new MovieWithGenreViewModel
+//                                      {
+//                                          boxart = mwg.boxart,
+//                                          movie = mwg.movie,
+//                                          //genre_strings = ids.First()
+//                                      }
+
+//            ;
+
+//            //var Mwg_list2 = Mwg_list.ToList();
 
             
 
-            //Tools.TraceLine("querying");
-            //var res1 = (from movies in db.Movies
-            //           from boxart in db.BoxArts
-            //            //from gen in grouped_strings
-            //           where boxart.movie_ID == movies.movie_ID
-            //           select new MovieWithGenreViewModel
-            //                      {
-            //                          boxart = boxart,
-            //                          movie = movies
-            //                          //,genre_strings = gen.strings
-            //                          //,genre_strings = 
-            //                      }).ToList();
+//            Tools.TraceLine("for eaching first");
+//            foreach (var elem in id_to_string_2) {
 
-            //Tools.TraceLine("linqing");
-            ////res1.ForEach( item => item.genre_strings == grouped_strings.FirstOrDefault(group => group.id == item.movie.movie_ID));
+//                var first = Mwg_list.First(mwg => mwg.movie.movie_ID == elem.Key);
+//                first.genre_strings = elem.ToList();
+//            }
+
+//            var qwe = Mwg_list.ToList();
+
+//            Tools.TraceLine("grouping");
+//            //var grouped_strings = from id_to_str in movie_id_to_String
+//            //                      group id_to_str by id_to_str.movie_id
+//            //                          into groupOfstrings
+//            //                          select new { strings = 
+//            //                              groupOfstrings.Select(grp_str => grp_str.genre_string).ToList(), 
+//            //                              id = movie_id_to_String.Select(y => y.movie_id).First() };
+
+//            //Tools.TraceLine("mwg listing");
+//            ////List<MovieWithGenreViewModel> MwG_list =
+//            //var MwG_list =
+//            //    grouped_strings.Select(names => new MovieWithGenreViewModel
+//            //                                        {
+//            //                                            genre_strings = names.strings.ToList()
+//            //                                            //,movie = db.Movies.First(movie => movie.movie_ID==names.id)
+//            //                                            //,boxart = db.BoxArts.First(box => box.movie_ID == names.id)
 
 
-            //Tools.TraceLine("foreachin'");
-            //foreach (MovieWithGenreViewModel MwG in res1) {
-            //    var genres =
-            //        grouped_strings.FirstOrDefault(
-            //            grouped => grouped.id == MwG.movie.movie_ID);
-            //    if (genres != null) {
-            //        MwG.genre_strings = genres.strings.ToList();
-            //    }
-            //}
+//            //                                        //}).ToList();
+//            //                                        });
+
+            
+
+//            //Tools.TraceLine("querying");
+//            //var res1 = (from movies in db.Movies
+//            //           from boxart in db.BoxArts
+//            //            //from gen in grouped_strings
+//            //           where boxart.movie_ID == movies.movie_ID
+//            //           select new MovieWithGenreViewModel
+//            //                      {
+//            //                          boxart = boxart,
+//            //                          movie = movies
+//            //                          //,genre_strings = gen.strings
+//            //                          //,genre_strings = 
+//            //                      }).ToList();
+
+//            //Tools.TraceLine("linqing");
+//            ////res1.ForEach( item => item.genre_strings == grouped_strings.FirstOrDefault(group => group.id == item.movie.movie_ID));
+
+
+//            //Tools.TraceLine("foreachin'");
+//            //foreach (MovieWithGenreViewModel MwG in res1) {
+//            //    var genres =
+//            //        grouped_strings.FirstOrDefault(
+//            //            grouped => grouped.id == MwG.movie.movie_ID);
+//            //    if (genres != null) {
+//            //        MwG.genre_strings = genres.strings.ToList();
+//            //    }
+//            //}
     
             
-//--------------------------------------------------------------------------------,
+////--------------------------------------------------------------------------------,
 
-            var gen2 = (from genre in db.Genres
-                        join gid in
-                            (from mtg in db.MovieToGenres
-                             from movie in db.Movies
-                             where
-                                 mtg.movie_ID ==
-                                 movie.movie_ID
-                             select mtg.genre_ID)
-                              on genre.genre_ID equals gid
-                        select genre.genre_string);
-
-
-            Tools.TraceLine("start build query to list");
+//            var gen2 = (from genre in db.Genres
+//                        join gid in
+//                            (from mtg in db.MovieToGenres
+//                             from movie in db.Movies
+//                             where
+//                                 mtg.movie_ID ==
+//                                 movie.movie_ID
+//                             select mtg.genre_ID)
+//                              on genre.genre_ID equals gid
+//                        select genre.genre_string);
 
 
+//            Tools.TraceLine("start build query to list");
 
-            var res = (
-                       from movie in db.Movies
-                       from boxart in db.BoxArts
-                       where boxart.movie_ID == movie.movie_ID
+
+
+//            var res = (
+//                       from movie in db.Movies
+//                       from boxart in db.BoxArts
+//                       where boxart.movie_ID == movie.movie_ID
                        
                        
-                       //from mtg in db.MovieToGenres
-                       //where  mtg.movie_ID == movie.movie_ID
-                       //group  mtg by mtg.movie_ID into mtgs
-                       //join omdb in db.Omdb on movie.movie_ID equals omdb.movie_ID
+//                       //from mtg in db.MovieToGenres
+//                       //where  mtg.movie_ID == movie.movie_ID
+//                       //group  mtg by mtg.movie_ID into mtgs
+//                       //join omdb in db.Omdb on movie.movie_ID equals omdb.movie_ID
             
             
-                       //join mtg in db.MovieToGenres 
-                       //on movie.movie_ID equals  mtg.movie_ID
+//                       //join mtg in db.MovieToGenres 
+//                       //on movie.movie_ID equals  mtg.movie_ID
 
 
 
-                       select new
-                                  {
-                                      Boxarts =  boxart,
-                                      Movie = movie,
-                                      //has to be here, instead of at the start of the query since not all movies have an omdb entry
-                                      OmdbEntry = //omdb
-                                      (from omdb in db.Omdb where omdb.movie_ID == movie.movie_ID select omdb)
-                                      //, Genres = (from mtg in db.MovieToGenres where movie.movie_ID == mtg.movie_ID)
-                                      //, Genres = mtgs.Where(mtg => mtg.movie_ID == movie.movie_ID)
-                                      //, Genres = (from mtg in db.MovieToGenres where mtg.movie_ID == movie.movie_ID group mtg by mtg.movie_ID into matches select matches)
-                                      //, Genres = gen2
-                                  }).ToList();
+//                       select new
+//                                  {
+//                                      Boxarts =  boxart,
+//                                      Movie = movie,
+//                                      //has to be here, instead of at the start of the query since not all movies have an omdb entry
+//                                      OmdbEntry = //omdb
+//                                      (from omdb in db.Omdb where omdb.movie_ID == movie.movie_ID select omdb)
+//                                      //, Genres = (from mtg in db.MovieToGenres where movie.movie_ID == mtg.movie_ID)
+//                                      //, Genres = mtgs.Where(mtg => mtg.movie_ID == movie.movie_ID)
+//                                      //, Genres = (from mtg in db.MovieToGenres where mtg.movie_ID == movie.movie_ID group mtg by mtg.movie_ID into matches select matches)
+//                                      //, Genres = gen2
+//                                  }).ToList();
 
 
-
-            Tools.TraceLine("amount of results {0}", res.Count);
+            var done = Tools.WriteTimeStamp("done at");
+            Tools.TraceLine("took: {0}", done-start);
+            //Tools.TraceLine("amount of results {0}", res.Count);
 
             return View();
             

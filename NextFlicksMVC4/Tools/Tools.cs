@@ -65,7 +65,7 @@ namespace NextFlicksMVC4
         /// <param name="msg">Message to write</param>
         /// <param name="presetDateTime">A custom time value</param>
         /// <returns>Returns the DateTime that was written</returns>
-        public static DateTime WriteTimeStamp(string msg, DateTime? presetDateTime = null)
+        public static DateTime WriteTimeStamp(string msg= "The time is {0}", DateTime? presetDateTime = null)
         {
             DateTime time;
             if (presetDateTime == null) { time = DateTime.Now; }
