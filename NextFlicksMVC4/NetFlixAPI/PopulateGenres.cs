@@ -75,7 +75,7 @@ namespace NextFlicksMVC4.NetFlixAPI
             //}
 
             //returns a dict of id to genres
-            Dictionary<string, string> dict = NetFlixAPI.PopulateGenres.CreateDictofGenres(@"c:\genres.NFPOx");
+            Dictionary<string, string> dict = NetFlixAPI.PopulateGenres.CreateDictofGenres(@"genres.NFPOX");
             //create all the genre models
             List<Genre> genres = new List<Genre>();
             foreach (KeyValuePair<string, string> keyValuePair in dict)

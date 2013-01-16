@@ -619,7 +619,7 @@ namespace NextFlicksMVC4
                     string above = lines[curr_line - 1];
 
                     //join lines
-                    string joined = string.Format("{0} {1}", above.TrimEnd(), line.TrimStart());
+                    string joined = String.Format("{0} {1}", above.TrimEnd(), line.TrimStart());
 
                     //add joined lines to list
                     fixed_lines.RemoveAt(fixed_lines.Count - 1);
@@ -639,6 +639,88 @@ namespace NextFlicksMVC4
                     writer.WriteLine(fixedLine);
                 }
             }
+        }
+
+        public static void BuildMoviesBoxartGenresTables()
+        {
+            Trace.WriteLine("starting Full Action");
+            string msg = DateTime.Now.ToShortTimeString();
+            var start_time = DateTime.Now;
+            Trace.WriteLine(msg);
+            MovieDbContext db = new MovieDbContext();
+            db.Configuration.AutoDetectChangesEnabled = false;
+
+
+            WriteTimeStamp("starting data read");
+
+            // Go line by line, and parse it for Movie files
+            Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
+            string data;
+            int count = 0;
+            using (StreamReader reader = new StreamReader(@"C:\testUS.NFPOX")) {
+                Trace.WriteLine("Starting to read");
+
+                data = reader.ReadLine();
+                try {
+                    while (data != null) {
+                        if (!data.StartsWith("<catalog_title>")) {
+                            Trace.WriteLine(
+                                "Invalid line of XML, probably CDATA or something");
+                        }
+                        else {
+                            //parse line for a title, which is what NF returns
+                            List<Title> titles =
+                                Create.ParseXmlForCatalogTitles(data);
+                            Movie movie =
+                                Create.CreateMovie(titles[0]);
+
+                            //add to DB and dict
+                            //listOfMovies.Add(movie);
+                            dictOfMoviesTitles[movie] = titles[0];
+                            db.Movies.Add(movie);
+
+
+                            //log adding data
+                            msg =
+                                String.Format(
+                                    "Added item {0} to database, moving to next one",
+                                    count.ToString());
+                            Trace.WriteLine(msg);
+                            count += 1;
+                        }
+                        data = reader.ReadLine();
+                    }
+
+                    //save the movies added to db
+                    Trace.WriteLine("Saving Movies");
+                    db.SaveChanges();
+                    db.Configuration.AutoDetectChangesEnabled = true;
+                }
+
+                catch (System.Xml.XmlException ex) {
+                    Trace.WriteLine(
+                        "Done parsing the XML because of something happened. Probably the end of file:");
+                    Trace.WriteLine(ex.Message);
+                }
+
+                db.SaveChanges();
+                Trace.WriteLine("Adding Boxart and Genre");
+                //add boxart and genre data to db before saving the movie 
+                AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
+
+
+                Trace.WriteLine("Saving Changes any untracked ones");
+                db.SaveChanges();
+                Trace.WriteLine(
+                    "Done Saving! Check out Movies/index for a table of the stuff");
+            }
+
+
+            var end_time = WriteTimeStamp("Done everything");
+
+            TimeSpan span = end_time - start_time;
+            Trace.WriteLine("It took this long:");
+            Trace.WriteLine(span);
         }
     }
 
