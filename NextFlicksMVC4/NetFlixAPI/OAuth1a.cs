@@ -81,6 +81,9 @@ namespace NextFlicksMVC4.NetFlixAPI
             //get the URL to send, now we need to create ethe request
             HttpWebRequest web = (HttpWebRequest)WebRequest.Create(toSend);
             web.KeepAlive = true;
+            //adding gzip
+            web.AutomaticDecompression = DecompressionMethods.GZip |
+                                         DecompressionMethods.Deflate;
 
 
             Trace.WriteLine("Starting GetResponse with\n{0}", toSend);
@@ -110,9 +113,9 @@ namespace NextFlicksMVC4.NetFlixAPI
                 {
                     file.WriteLine(line);
                     line_count += 1;
-                    //string msg = String.Format("Line number {0} written",
-                    //                           line_count.ToString());
-                    //Trace.WriteLine(msg);
+                    string msg = String.Format("Line number {0} written",
+                                               line_count.ToString());
+                    Trace.WriteLine(msg);
 
                 }
                 file.Close();
