@@ -20,6 +20,7 @@ using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 using LumenWorks.Framework.IO.Csv;
 using ProtoBuf;
+using Ionic.Zip;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -745,7 +746,8 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Zip()
         {
-            TSVParse.DownloadOmdbZip();
+            Omdb.DownloadOmdbZipAndExtract();
+
 
             return View();
         }
@@ -762,17 +764,21 @@ namespace NextFlicksMVC4.Controllers
             Tools.JoinLines(netflixPosFilepath);
 
             //build a genres txt file for all the genres in the NFPOX
+            //ASSUMES GENRES.NFPOX IS THERE
             PopulateGenres.PopulateGenresTable();
 
             //parse the lines into a Title then Movie object, along with boxart data and genre
             Tools.BuildMoviesBoxartGenresTables();
 
             //download the omdbapi 
+            Omdb.DownloadOmdbZipAndExtract();
 
             //parse it for omdbentrys, serialize it to file
+            Tools.SerializeOmdbTsv();
 
             //deserialize the file, turn it into omdb
             //  can't remember if it does it here or not, but marry the omdbs and movie
+            Tools.RebuildOmdbsFromProtobufDump();
 
 
             return View();

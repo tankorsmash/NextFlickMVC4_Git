@@ -13,7 +13,7 @@ namespace NextFlicksMVC4.OMBD
     {
 
 
-        public static void DownloadOmdbZip(string url = @"http://www.beforethecode.net/projects/OMDb/download.aspx?e=tankorsmash@gmail.com", string outputPath = @"omdb.zip")
+        public static void DownloadOmdbZip(string url = @"http://www.beforethecode.net/projects/OMDb/download.aspx?e=tankorsmash@gmail.com" , string outputPath = @"omdb.zip")
         {
 
             //doesn't work
@@ -51,16 +51,16 @@ namespace NextFlicksMVC4.OMBD
 
             //write the file from the response
             Tools.WriteTimeStamp("Starting to write");
-            using (StreamWriter file = new StreamWriter(outputPath, append: true))
+            using (StreamWriter file = new StreamWriter(outputPath))
             {
                 while ((line = responseReader.ReadLine()) != null && !(line_count > line_limit))
                 {
                     file.WriteLine(line);
-                    Tools.TraceLine("returned: {0}",line);
+                    //Tools.TraceLine("returned: {0}", line);
+                    //string msg = String.Format("Line number {0} written",
+                    //                           line_count.ToString());
+                    //Tools.TraceLine(msg);
                     line_count += 1;
-                    string msg = String.Format("Line number {0} written",
-                                               line_count.ToString());
-                    Tools.TraceLine(msg);
 
                 }
                 file.Close();
@@ -73,7 +73,6 @@ namespace NextFlicksMVC4.OMBD
 
 
 
-            //extract it
         }
 
 
