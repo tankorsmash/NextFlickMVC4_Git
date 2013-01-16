@@ -829,6 +829,24 @@ namespace NextFlicksMVC4.Controllers
             return View();
         }
 
+        public ActionResult FullDbBuild()
+        {
+            //retrieve API .POX
+
+            //join the lines that don't match <catalog to the ones above it
+
+            //parse the lines into a Title then Movie object, along with boxart data
+
+            //build a genres txt file for all the genres in the NFPOX
+
+
+            //download the omdbapi 
+
+            //parse it for omdbentrys, serialize it to file
+
+            //deserialize the file, turn it into omdb
+            //  can't remember if it does it here or not, but marry the omdbs and movie
+        }
 
 
         //loop over all the movies in Movies and find an omdb entry for it
