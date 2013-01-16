@@ -113,9 +113,9 @@ namespace NextFlicksMVC4.NetFlixAPI
                 {
                     file.WriteLine(line);
                     line_count += 1;
-                    string msg = String.Format("Line number {0} written",
-                                               line_count.ToString());
-                    Trace.WriteLine(msg);
+                    //string msg = String.Format("Line number {0} written",
+                    //                           line_count.ToString());
+                    //Trace.WriteLine(msg);
 
                 }
                 file.Close();

@@ -5,11 +5,74 @@ using System.Linq;
 using System.Web;
 using LumenWorks.Framework.IO.Csv;
 using System.Diagnostics;
+using System.Net;
 
 namespace NextFlicksMVC4.OMBD
 {
     public static class TSVParse
     {
+
+
+        public static void DownloadOmdbZip(string url = @"http://www.beforethecode.net/projects/OMDb/download.aspx?e=tankorsmash%40gmail.com", string outputPath = @"omdb.zip")
+        {
+
+            //doesn't work
+            //Tools.TraceLine("start download:\n{0}", url);
+            //using (WebClient client = new WebClient()) {
+                
+            //    client.DownloadFile(url, outputPath);
+            //}
+            //Tools.TraceLine("done download");
+
+
+            //download the omdbzip
+            HttpWebRequest web = (HttpWebRequest)WebRequest.Create(url);
+            web.KeepAlive = true;
+            web.AutomaticDecompression = DecompressionMethods.GZip |
+                                         DecompressionMethods.Deflate;
+
+
+            Tools.TraceLine("Starting GetResponse with\n{0}", url);
+            var resp = web.GetResponse();
+
+            Trace.WriteLine("Starting GetStream");
+            Stream responseStream;
+            responseStream = resp.GetResponseStream();
+
+            //store the returned data in memory
+            StreamReader responseReader = new StreamReader(responseStream);
+
+            string line;
+            int line_limit = 10000000;
+            int line_count = 0;
+
+
+            //write the file from the response
+            Tools.WriteTimeStamp("Starting to write");
+            using (StreamWriter file = new StreamWriter(outputPath, append: true))
+            {
+                while ((line = responseReader.ReadLine()) != null && !(line_count > line_limit))
+                {
+                    file.WriteLine(line);
+                    line_count += 1;
+                    string msg = String.Format("Line number {0} written",
+                                               line_count.ToString());
+                    Trace.WriteLine(msg);
+
+                }
+                file.Close();
+            }
+            Tools.WriteTimeStamp();
+            Trace.WriteLine("Successfully wrote and closed to {0}", outputPath);
+
+
+
+
+
+
+            //extract it
+        }
+
 
         /// <summary>
         /// Parses omdb.txt and tomatoes.txt and returns a list of completed OmdbEntrys

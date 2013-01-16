@@ -743,12 +743,13 @@ namespace NextFlicksMVC4.Controllers
             return View();
         }
 
-        public ActionResult Join()
+        public ActionResult Zip()
         {
-            //Tools.JoinLines("C:/testtesttest.NFPOX");
+            TSVParse.DownloadOmdbZip();
 
             return View();
         }
+
 
         public ActionResult FullDbBuild()
         {
