@@ -12,7 +12,7 @@ namespace NextFlicksMVC4.Views.Movies.ViewModels
 
         public Movie Movie { get; set; }
 
-        public List<string> Genres { get; set; }
+        public IEnumerable<string> Genres { get; set; }
 
         public BoxArt Boxarts { get; set; }
 
