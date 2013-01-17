@@ -206,34 +206,33 @@ namespace NextFlicksMVC4.Controllers
                 select new NfImdbRtViewModel
                            {
 
-                               movie = movie,
-                               boxart = boxart,
-                               genres = grp,
-                               omdb = @"n/a"
+                               Movie = movie,
+                               Boxarts = boxart,
+                               Genres = grp,
 
                            };
 
             //array instead list for performance
-            var partial_Mwg_array = partial_Mwg_qry.ToArray();
+            var partial_NITVM_array = partial_Mwg_qry.ToArray();
 
 
             //find omdbs
-            var omdb_res = db.Omdb.Where(omdb => omdb.movie_ID >= 1).ToList();
+            var omdb_res = db.Omdb.Where(omdb => omdb.movie_ID >= 1).ToArray();
             //find the movie_ids for the omdbs, so we can match them to the mwgs
             var omdb_mids = omdb_res.Select(omdb => omdb.movie_ID).ToArray();
 
             //MwGs that share a movieId with omdb
-            var matching_objs =
-                partial_Mwg_array.Where(
-                    mwg => omdb_mids.Contains(mwg.movie.movie_ID)).ToList();
+            var matching_NITVM =
+                partial_NITVM_array.Where(
+                    mwg => omdb_mids.Contains(mwg.Movie.movie_ID)).ToArray();
 
-            foreach (var matchingObj in matching_objs) {
-                matchingObj.omdb =
+            //add the omdbs to the MwGs
+            foreach (var matchingObj in matching_NITVM) {
+                matchingObj.OmdbEntry =
                     omdb_res.First(
-                        omdb => omdb.movie_ID == matchingObj.movie.movie_ID);
+                        omdb => omdb.movie_ID == matchingObj.Movie.movie_ID);
             }
 
-            IEnumerable qwe = partial_Mwg_array[0].genres;
             //Dictionary<int, MovieWithGenreViewModel> MwG_dict =
             //    new Dictionary<int, MovieWithGenreViewModel>();
             //foreach (var anon in partial_Mwg_array) {
