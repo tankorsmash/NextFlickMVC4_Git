@@ -201,31 +201,41 @@ namespace NextFlicksMVC4.Controllers
                 from movie in db.Movies
                 from boxart in db.BoxArts
                 where movie.movie_ID == boxart.movie_ID
-                select
-                    new MovieWithGenreViewModel
-                        {
-                            movie = movie,
-                            boxart = boxart,
-                        };
+                from grp in movieID_genreString_grouping
+                where grp.Key == movie.movie_ID
+                select new
+                           {
+
+                               movie = movie,
+                               boxart = boxart,
+                               genres = grp
+
+                           };
 
             //array instead list for performance
             var partial_Mwg_array = partial_Mwg_qry.ToArray();
-            
 
-            //WAY TOO SLOW, takes 1m15s with a for, 1:35 with a foreach
-            Tools.TraceLine("for looping over array to populate it completely");
-            foreach (var mwg in partial_Mwg_array) {
-                try {
-                    MovieWithGenreViewModel mwg1 = mwg;
-                    mwg.genre_strings =
-                        grouping_array.First(
-                            grp => grp.Key == mwg1.movie.movie_ID).ToList();
-                }
-                catch (System.InvalidOperationException ex) {
-                    Tools.TraceLine("no matching genre string on movie {0}",
-                                    mwg.movie.short_title);
-                }
-            }
+            //Dictionary<int, MovieWithGenreViewModel> MwG_dict =
+            //    new Dictionary<int, MovieWithGenreViewModel>();
+            //foreach (var anon in partial_Mwg_array) {
+            //    MwG_dict[anon.id] = anon.mwg;
+            //}
+
+
+            ////WAY TOO SLOW, takes 1m15s with a for, 1:35 with a foreach
+            //Tools.TraceLine("for looping over array to populate it completely");
+            //foreach (var mwg in partial_Mwg_array) {
+            //    try {
+            //        MovieWithGenreViewModel mwg1 = mwg;
+            //        mwg.genre_strings =
+            //            grouping_array.First(
+            //                grp => grp.Key == mwg1.movie.movie_ID).ToList();
+            //    }
+            //    catch (System.InvalidOperationException ex) {
+            //        Tools.TraceLine("no matching genre string on movie {0}",
+            //                        mwg.movie.short_title);
+            //    }
+            //}
 
 
 //            Tools.TraceLine("matching strings");

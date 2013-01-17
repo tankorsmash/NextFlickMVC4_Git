@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Ionic.Zip;
 using LumenWorks.Framework.IO.Csv;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
@@ -290,6 +291,19 @@ namespace NextFlicksMVC4.OMBD
                 completeVm_list.Add(created_vm);
             }
             return completeVm_list;
+        }
+
+        public static void DownloadOmdbZipAndExtract()
+        {
+            string zip_output = @"omdb.zip";
+
+            //download 
+            TSVParse.DownloadOmdbZip(outputPath: zip_output);
+
+            //extract it
+            using (ZipFile zip = new ZipFile(zip_output)) {
+                zip.ExtractAll("OMDB");
+            }
         }
     }
 
