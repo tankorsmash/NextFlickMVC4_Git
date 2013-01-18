@@ -186,48 +186,14 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
             
             var start = Tools.WriteTimeStamp("\n*** starting /sql ***");
-            //I can't do what I wanted so I'll build most of the MwGVM and then fill it with genre
-            // strings right after
-            Tools.TraceLine("Group the genres by movie ID");
-            var movieID_genreString_grouping = from mtg in db.MovieToGenres
-                                               join genre in db.Genres on
-                                                   mtg.genre_ID equals
-                                                   genre.genre_ID
-                                               group genre.genre_string by
-                                                   mtg.movie_ID;
 
-
-            //create the list of partial mwgvms
-            Tools.TraceLine("Build the query for all the movies in the DB");
-            var Nitvm_query =
-                //left outer join so that all movies get selected even if there's no omdb match
-                from movie in db.Movies
-                join omdb in db.Omdb on 
-                movie.movie_ID equals omdb.movie_ID into mov_omdb_matches
-                from mov_omdb_match in mov_omdb_matches.DefaultIfEmpty()
-
-                //match the boxarts
-                from boxart in db.BoxArts
-                where movie.movie_ID == boxart.movie_ID
-
-                //match the genres
-                from grp in movieID_genreString_grouping
-                where grp.Key == movie.movie_ID
-
-                //create the NITVM
-                select new NfImdbRtViewModel
-                           {
-                               Movie = movie,
-                               Boxarts = boxart,
-                               Genres = grp,
-                               OmdbEntry = mov_omdb_match
-                           };
-
+            //returns a IQueryable populated with all the entries in the movies/etc 
+            var nitvmQuery = Tools.GetFullDbQuery(db);
 
 
             Tools.TraceLine("Ordering the movies and taking {0}", 25);
             //array instead list for performance
-            var nitvmArray = Nitvm_query.OrderBy(item => item.OmdbEntry.t_Meter).Take(25).ToArray();
+            var nitvmArray = nitvmQuery.OrderBy(item => item.OmdbEntry.t_Meter).Take(25).ToArray();
 
 
             var done = Tools.WriteTimeStamp("done at");

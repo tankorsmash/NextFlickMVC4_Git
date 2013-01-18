@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
 using NextFlicksMVC4.Controllers;
 using System.Diagnostics;
 using NextFlicksMVC4.DatabaseClasses;
@@ -697,7 +698,7 @@ namespace NextFlicksMVC4
                     db.Configuration.AutoDetectChangesEnabled = true;
                 }
 
-                catch (System.Xml.XmlException ex) {
+                catch (XmlException ex) {
                     Trace.WriteLine(
                         "Done parsing the XML because of something happened. Probably the end of file:");
                     Trace.WriteLine(ex.Message);
@@ -721,6 +722,46 @@ namespace NextFlicksMVC4
             TimeSpan span = end_time - start_time;
             Trace.WriteLine("It took this long:");
             Trace.WriteLine(span);
+        }
+
+        public static IQueryable<NfImdbRtViewModel> GetFullDbQuery(MovieDbContext db)
+        {
+//pulls all the mtgs and joins the genre_strings to the appropriate movie_id
+            // so the end result is something like {terminator's movie_id : ["action", "drama"]}
+            // but is a IGrouping, so it handles a bit weird.
+            TraceLine("Group the genres by movie ID");
+            var movieID_genreString_grouping = from mtg in db.MovieToGenres
+                                               join genre in db.Genres on
+                                                   mtg.genre_ID equals
+                                                   genre.genre_ID
+                                               group genre.genre_string by
+                                                   mtg.movie_ID;
+
+
+            //create the list of NITVMs
+            TraceLine("Build the query for all the movies in the DB");
+            var nitvmQuery =
+                //left outer join so that all movies get selected even if there's no omdb match
+                from movie in db.Movies
+                join omdb in db.Omdb on
+                    movie.movie_ID equals omdb.movie_ID into mov_omdb_matches
+                from mov_omdb_match in mov_omdb_matches.DefaultIfEmpty()
+                //match the boxarts
+                from boxart in db.BoxArts
+                where movie.movie_ID == boxart.movie_ID
+                //match the genres
+                from grp in movieID_genreString_grouping
+                where grp.Key == movie.movie_ID
+                //create the NITVM
+                select new NfImdbRtViewModel
+                           {
+                               Movie = movie,
+                               Boxarts = boxart,
+                               Genres = grp,
+                               OmdbEntry = mov_omdb_match
+                           };
+
+            return nitvmQuery;
         }
     }
 
