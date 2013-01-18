@@ -25,11 +25,12 @@ namespace NextFlicksMVC4.Filters
         {
             public SimpleMembershipInitializer()
             {
-                Database.SetInitializer<UsersContext>(null);
+                //TODO: Hod to change this to my DB context to get the db to autocreate!
+                Database.SetInitializer<MovieDbContext>(null);
 
                 try
                 {
-                    using (var context = new UsersContext())
+                    using (var context = new MovieDbContext())
                     {
                         if (!context.Database.Exists())
                         {
@@ -38,7 +39,7 @@ namespace NextFlicksMVC4.Filters
                         }
                     }
                     //TODO: had to change this to match my database conneciton name, DB name and identify user id and username for simple role membership providers.
-                    //WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username", autoCreateTables: true);
+                    WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username", autoCreateTables: true);
                 }
                 catch (Exception ex)
                 {

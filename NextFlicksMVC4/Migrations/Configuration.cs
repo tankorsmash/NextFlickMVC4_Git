@@ -1,4 +1,5 @@
 using System.Web.Security;
+using NextFlicksMVC4.Models.userAccount;
 using WebMatrix.WebData;
 
 namespace NextFlicksMVC4.Migrations
@@ -12,7 +13,7 @@ namespace NextFlicksMVC4.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(NextFlicksMVC4.Models.MovieDbContext context)
@@ -25,10 +26,11 @@ namespace NextFlicksMVC4.Migrations
             if(!Roles.RoleExists("User"))
                 Roles.CreateRole(("User"));
 
-            if (!WebSecurity.UserExists("sec_goat"))
-                WebSecurity.CreateUserAndAccount("sec_goat", "password");
+
+            /*if (!WebSecurity.UserExists("sec_goat"))
+                WebSecurity.CreateUserAndAccount("sec_goat", "password", firstName = "Josh", lastName = "tilson", email = "1@1.1.1" ); 
             if(!Roles.GetRolesForUser("sec_goat").Contains("Admin"))
-                Roles.AddUserToRole("sec_goat", "Admin");
+                Roles.AddUserToRole("sec_goat", "Admin"); */
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

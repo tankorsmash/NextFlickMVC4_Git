@@ -4,9 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Diagnostics;
+using NextFlicksMVC4.Filters;
 
 namespace NextFlicksMVC4.Controllers
 {
+    [InitializeSimpleMembership]
     public class HomeController : Controller
     {
         public ActionResult Index()

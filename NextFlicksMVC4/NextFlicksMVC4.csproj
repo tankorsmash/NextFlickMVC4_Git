@@ -238,9 +238,9 @@
     <Compile Include="Controllers\userAccount\RegisterController.cs" />
     <Compile Include="Controllers\userAccount\UserController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
-    <Compile Include="Migrations\201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.cs" />
-    <Compile Include="Migrations\201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.Designer.cs">
-      <DependentUpon>201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.cs</DependentUpon>
+    <Compile Include="Migrations\201301182043294_dirp!.cs" />
+    <Compile Include="Migrations\201301182043294_dirp!.Designer.cs">
+      <DependentUpon>201301182043294_dirp!.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\userAccount\LogonModel.cs" />
@@ -469,8 +469,8 @@
     <Content Include="Views\Movies\DetailsTag.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.resx">
-      <DependentUpon>201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201301182043294_dirp!.resx">
+      <DependentUpon>201301182043294_dirp!.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

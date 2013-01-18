@@ -29,7 +29,7 @@ namespace NextFlicksMVC4
             //end customization filter
 
             //enable Simple Membership Provider database
-              WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username", autoCreateTables: true);
+             // WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username", autoCreateTables: true);
             //end simple role membership init
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
