@@ -20,6 +20,7 @@ using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 using LumenWorks.Framework.IO.Csv;
 using ProtoBuf;
+using Ionic.Zip;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -146,50 +147,63 @@ namespace NextFlicksMVC4.Controllers
 
             int runtime_start = 0, int runtime_end = 9999999,
             string genre = "",
-            int start = 0, int count = 25)
+            int start = 0, int count = 25,
+            string sort = "movie_ID")
         {
             ViewBag.Params = Tools.GetAllParamNames("Test");
 
-            //OMBD.Omdb.GetOmbdbTitleInfo("The Terminator", "1984");
-            //OMBD.Omdb.GetOmdbEntryForMovie("The Terminator", "1984");
 
             MovieDbContext db = new MovieDbContext();
 
-            //var movie_list = db.Movies.Take(100).Take(10).ToList();
-            //var movie_list = db.Movies.Where(item => item.year == year).ToList();
-            //List<MovieWithGenreViewModel> MwG_list = ModelBuilder.CreateListOfMwGVM(db, movie_list);
-            //MwG_list = MwG_list.Where(item => item.movie.runtime.TotalSeconds == 5767).ToList();
 
-            //Tools.TraceLine("TITS!");
-            //throw  new Exception();
 
             var movie_list = db.Movies.ToList();
 
-            var MwG_list = Tools.FilterMovies(db, movie_list,
-            title: title, is_movie: is_movie,
-            year_start: year_start, year_end: year_end,
-            mpaa_start: mpaa_start, mpaa_end: mpaa_end,
-            runtime_start: runtime_start, runtime_end: runtime_end,
-            genre: genre,
-            start: start, count: count);
-            //start:start,
-            //count:count,
-            ////title: "kid");
-            //genre: genre);
+            var nitlist = Tools.FilterMovies(db, movie_list,
+                                              title: title, is_movie: is_movie,
+                                              year_start: year_start,
+                                              year_end: year_end,
+                                              mpaa_start: mpaa_start,
+                                              mpaa_end: mpaa_end,
+                                              runtime_start: runtime_start,
+                                              runtime_end: runtime_end,
+                                              genre: genre,
+                                              start: start, count: count,
+                                              sort: sort);
+
 
             ViewBag.Start = start;
             ViewBag.Count = count;
 
-            //var completeVm_list = MatchListOfMwgvmWithOmdbEntrys(MwG_list, db);
 
 
-            IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
-
-            Trace.WriteLine(@"Returning /Test View");
-            return View("Genres", MwG_ienum);
-            //return View();
+            return View("Genres", nitlist);
         }
 
+        public ActionResult sort()
+        {
+
+            MovieDbContext db = new MovieDbContext();
+            
+            var start = Tools.WriteTimeStamp("\n*** starting /sql ***");
+
+            //returns a IQueryable populated with all the entries in the movies/etc 
+            var nitvmQuery = Tools.GetFullDbQuery(db);
+
+
+            Tools.TraceLine("Ordering the movies and taking {0}", 25);
+            //array instead list for performance
+            var nitvmArray = nitvmQuery.OrderBy(item => item.OmdbEntry.t_Meter).Take(25).ToArray();
+
+
+            var done = Tools.WriteTimeStamp("done at");
+            Tools.TraceLine("took: {0}", done-start);
+            //Tools.TraceLine("amount of results {0}", res.Count);
+
+
+            return View();
+            
+        }
 
 
         public ActionResult DetailsNit()
@@ -201,7 +215,9 @@ namespace NextFlicksMVC4.Controllers
 
 
             var MwG_list = Tools.FilterMovies(movieDb, movie_list);
-            NfImdbRtViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
+            //NfImdbRtViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
+
+            var NitVm = MwG_list.First();
 
             return View(NitVm);
 
@@ -326,96 +342,11 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Full()
         {
-
-            Trace.WriteLine("starting Full Action");
-            string msg = DateTime.Now.ToShortTimeString();
-            var start_time = DateTime.Now;
-            Trace.WriteLine(msg);
-            MovieDbContext db = new MovieDbContext();
-            db.Configuration.AutoDetectChangesEnabled = false;
-
             //create a genres table in the DB
             PopulateGenres.PopulateGenresTable();
 
-            Tools.WriteTimeStamp("starting data read");
 
-            // Go line by line, and parse it for Movie files
-            Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
-            string data;
-            int count = 0;
-            using (StreamReader reader = new StreamReader(@"C:\testUS.NFPOX"))
-            {
-
-                Trace.WriteLine("Starting to read");
-
-                data = reader.ReadLine();
-                try
-                {
-                    while (data != null)
-                    {
-                        if (!data.StartsWith("<catalog_title>"))
-                        {
-                            Trace.WriteLine(
-                                "Invalid line of XML, probably CDATA or something");
-                        }
-                        else
-                        {
-                            //parse line for a title, which is what NF returns
-                            List<Title> titles =
-                                NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
-                            Movie movie =
-                                NetFlixAPI.Create.CreateMovie(titles[0]);
-
-                            //add to DB and dict
-                            //listOfMovies.Add(movie);
-                            dictOfMoviesTitles[movie] = titles[0];
-                            db.Movies.Add(movie);
-
-
-                            //log adding data
-                            msg =
-                                String.Format(
-                                    "Added item {0} to database, moving to next one",
-                                    count.ToString());
-                            Trace.WriteLine(msg);
-                            count += 1;
-
-                        }
-                        data = reader.ReadLine();
-                    }
-
-                    //save the movies added to db
-                    Trace.WriteLine("Saving Movies");
-                    db.SaveChanges();
-                    db.Configuration.AutoDetectChangesEnabled = true;
-
-                }
-
-                catch (System.Xml.XmlException ex)
-                {
-                    Trace.WriteLine(
-                        "Done parsing the XML because of something happened. Probably the end of file:");
-                    Trace.WriteLine(ex.Message);
-                }
-
-                db.SaveChanges();
-                Trace.WriteLine("Adding Boxart and Genre");
-                //add boxart and genre data to db before saving the movie 
-                Tools.AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
-
-
-                Trace.WriteLine("Saving Changes any untracked ones");
-                db.SaveChanges();
-                Trace.WriteLine("Done Saving! Check out Movies/index for a table of the stuff");
-
-            }
-
-
-            var end_time = Tools.WriteTimeStamp("Done everything");
-
-            TimeSpan span = end_time - start_time;
-            Trace.WriteLine("It took this long:");
-            Trace.WriteLine(span);
+            Tools.BuildMoviesBoxartGenresTables();
 
             return View();
         }
@@ -427,7 +358,7 @@ namespace NextFlicksMVC4.Controllers
             var data =
                 OAuth1a.GetNextflixCatalogDataString(
                     "catalog/titles/streaming", term, max_results: "100",
-                    outputPath: @"C:/testUS.NFPOX");
+                    outputPath: @"C:/testtesttest.NFPOX");
             var titles =
                 NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
 
@@ -502,69 +433,26 @@ namespace NextFlicksMVC4.Controllers
         /// <returns></returns>
         public ActionResult Regen()
         {
-            //rebuild the serialized list of List<omdbentryies>
-            string entry_dump_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
-
-            //deserialize the list of omdbentries saved the the file
-            //TODO: add check to make sure the file exists and is not corrupted
-            List<OmdbEntry> complete_list;
-            using (var file = System.IO.File.OpenRead(entry_dump_path))
-            {
-                complete_list = Serializer.Deserialize<List<OmdbEntry>>(file);
-            }
-
-            MovieDbContext db = new MovieDbContext();
-            db.Configuration.AutoDetectChangesEnabled = false;
-
-            int count = complete_list.Count;
-            foreach (OmdbEntry omdbEntry in complete_list)
-            {
-                db.Omdb.Add(omdbEntry);
-
-                int remaining = count - complete_list.IndexOf(omdbEntry);
-                Trace.WriteLine(remaining);
-            }
-
-            Trace.WriteLine("saving changes");
-            db.Configuration.AutoDetectChangesEnabled = true;
-            db.SaveChanges();
-
-
-            Tools.WriteTimeStamp("Done saving changes");
+            //finds the file dump from the TSV to OmdbEntry read and adds it to the db
+            Tools.RebuildOmdbsFromProtobufDump();
 
             return View();
-
         }
 
         /// <summary>
         /// Reads the OMDB API data txts and dumps the list of OMBD Entrys to file, use Movies/Regen to rebuild them
         /// </summary>
         /// <returns></returns>
-        public ActionResult TSV()
+        public ActionResult Tsv()
         {
-            //TODO:Make these paths more general
-            string entry_dump_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
-            string imdb_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
-            string tom_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt";
-
-            var complete_list_of_entries =
-                TSVParse.ParseTSVforOmdbData(imdb_filepath: imdb_path,
-                                             tom_filepath: tom_path);
-
-            Tools.WriteTimeStamp("Starting to serialize list");
-            using (var file = System.IO.File.Create(entry_dump_path))
-            {
-                Serializer.Serialize(file, complete_list_of_entries);
-            }
-            Tools.WriteTimeStamp("Done serializing list");
+            //read the Omdb.txt file and turn the resulting objects into a protobuf dump
+            // to be read by the Tools.RebuildOmdbsFromProtobufDump method
+            Tools.SerializeOmdbTsv();
 
 
             return View();
         }
+
         //
         // GET: /Movies/Create
 
@@ -654,6 +542,79 @@ namespace NextFlicksMVC4.Controllers
             base.Dispose(disposing);
         }
 
+        ////sort movies by t_meter
+        //public ActionResult Sort()
+        //{
+
+        //    DateTime start = DateTime.Now;
+        //    MovieDbContext db = new MovieDbContext();
+
+        //    ////has never worked, but shows the idea
+        //    //var result_list = db.Database.SqlQuery<NfImdbRtViewModel>(
+        //    //"SELECT        Movies.short_title, OmdbEntries.t_Meter" +
+        //    //"FROM            OmdbEntries INNER JOIN" +
+        //    //"Movies ON OmdbEntries.movie_ID = Movies.movie_ID" +
+        //    //"WHERE        (OmdbEntries.t_Meter <> 'n/a')" +
+        //    //"ORDER BY OmdbEntries.t_Meter DESC");
+
+        //    var result_list = db.Omdb.Where(omdb => omdb.movie_ID != 0).OrderByDescending(item => item.t_Meter);
+
+        //    var qwe = result_list.ToList();
+
+        //    Tools.TraceLine("count: {0}", qwe.Count);
+
+        //    Tools.TraceLine("Top t_meter movie: {0}", qwe.First().title);
+
+        //    DateTime end = DateTime.Now;
+
+        //    var span = end - start;
+
+        //    Tools.TraceLine("Took {0} seconds", span.TotalSeconds);
+
+        //    return View();
+        //}
+
+        public ActionResult Zip()
+        {
+            Omdb.DownloadOmdbZipAndExtract();
+
+
+            return View();
+        }
+
+
+        public ActionResult FullDbBuild()
+        {
+            string netflixPosFilepath = @"catalogStreaming.NFPOX";
+
+            //retrieve API .POX
+            var data = OAuth1a.GetNextflixCatalogDataString( "catalog/titles/streaming", "", outputPath: netflixPosFilepath);
+
+            //join the lines that don't match <catalog to the ones above it
+            Tools.JoinLines(netflixPosFilepath);
+
+            //build a genres txt file for all the genres in the NFPOX
+            //ASSUMES GENRES.NFPOX IS THERE
+            PopulateGenres.PopulateGenresTable();
+
+            //parse the lines into a Title then Movie object, along with boxart data and genre
+            Tools.BuildMoviesBoxartGenresTables();
+
+            //download the omdbapi 
+            Omdb.DownloadOmdbZipAndExtract();
+
+            //parse it for omdbentrys, serialize it to file
+            Tools.SerializeOmdbTsv();
+
+            //deserialize the file, turn it into omdb
+            //  can't remember if it does it here or not, but marry the omdbs and movie
+            Tools.RebuildOmdbsFromProtobufDump();
+
+
+            return View();
+        }
+
+
         //loop over all the movies in Movies and find an omdb entry for it
         public ActionResult Merge()
         {
@@ -661,163 +622,57 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
             //get list of movies
-            var movie_queryable = db.Movies.AsQueryable();
+            //var movie_queryable = db.Movies.AsQueryable();
 
-            //TODO: match better, curr. only finds 12k movies but there should be closer to 56k
-            //find matching omdb entry that shares year and title
-            //var movie_titles = movie_queryable.Select(movie => movie.short_title);
-            //var movie_years = movie_queryable.Select(movie => movie.year);
-            //var both_omdb_qry =
-            //    db.Omdb.Where(omdb => movie_titles.Contains(omdb.title) && movie_years.Contains(omdb.year));
-            //    //db.Omdb.Where(omdb => movie_titles.Contains(omdb.title))
-            //    //  .Where(omdb => movie_years.Contains(omdb.year));
-            //var year_omdb_qry =
-            //    db.Omdb .Where(omdb => movie_years.Contains(omdb.year));
+            //TODO: match better, curr. only finds 6k movies but there should be closer to 56k
 
-
-            //Tools.TraceLine("title + year movies found {0}", both_omdb_qry.Count());
-            //Tools.TraceLine("year movies found {0}", year_omdb_qry.Count());
-            //Tools.TraceLine("title movies found {0}", title_omdb_qry.Count());
-
-            //movie_queryable.ToList();
-            //both_omdb_qry.ToList();
-            //year_omdb_qry.ToList();
-            //title_omdb_qry.ToList();
-            //unrelated, test modifying an entry to db
-            //Movie warlock =
-            //    movie_queryable.First( movie => movie.movie_ID == 1);
-            //warlock.short_title = "Warlock";
-            //db.Entry(warlock).State = EntityState.Modified;
-            //db.SaveChanges();
-
-
-
-            //take only movies, since OMDB doesn't hold tv shows
-            var movie_list = db.Movies.ToList().Where(movie => movie.is_movie);
-            var omdb_list = db.Omdb.ToList();
-            Dictionary<Movie, OmdbEntry> matches_MtO =
-                new Dictionary<Movie, OmdbEntry>();
-
-
-
-            //titles from both sources
-            var movie_titles_ids =
-                movie_list.Select(
-                    movie => new {movie.short_title, movie.movie_ID}).ToList();
-            var movie_ids = movie_list.Select(movie => movie.movie_ID);
-            var omdb_titles = omdb_list.Select(omdb => omdb.title);
+            ////take only movies, since OMDB doesn't hold tv shows
+            //var movie_list = db.Movies.ToList().Where(movie => movie.is_movie);
+            //var omdb_list = db.Omdb.ToList();
+            //Dictionary<Movie, OmdbEntry> matches_MtO =
+            //    new Dictionary<Movie, OmdbEntry>();
 
 
             //pseudo code for what I want
             //where omdb.title == movie.short_title && omdb.year == movie.year select new {omdb_id, movie_id}
 
-            //var ombdID_movieIDs =
-            //    db.Omdb.Select(
-            //        omdb =>
-            //        new MovieToGenre()
-            //            {
-            //                movie_ID = omdb.ombd_ID,
-            //                genre_ID=movie_titles_ids.Where(
-            //                    movie => movie.short_title == omdb.title)
-            //                                .Select(item => item.movie_ID)
-            //                                .First()
-            //            });
+            Tools.TraceLine("Starting LINQ query");
 
-            //ombdID_movieIDs.ToList(); var res =
-            //    ombdID_movieIDs.Select(
-            //        //pair => new int[] { pair[0], pair[1] });
-            //        //pair => new int[] { pair.movie_ID, pair.ombd_ID });
-            //        pair => new int[] { pair.movie_ID, pair.genre_ID });
+            var query = from movie in db.Movies
+                        join omdbEntry in db.Omdb on
+                            new {name = movie.short_title, year = movie.year}
+                            equals
+                            new {name = omdbEntry.title, year = omdbEntry.year}
+                        select new {movie = movie, omdbEntry = omdbEntry};
 
-            //foreach (var ombdIdMovieID in ombdID_movieIDs) {
-            //int count = 0;
-            //foreach (Movie movie in movie_list)
-            //{
-            //    var omdb =
-            //        omdb_list.FirstOrDefault(
-            //            om => (movie.short_title == om.title && movie.year == om.year));
-            //    matches_MtO[movie] = omdb;
+            Tools.TraceLine("Done LINQ query");
+            Tools.TraceLine("turning results into a list");
+            var resultList = query.ToList();
+            Tools.TraceLine("done turning results into a list, found {0} movies", resultList.Count);
 
-            //    Tools.TraceLine("count {0}", count);
-            //    if (omdb != null)
-            //    {
-            //        Tools.TraceLine("Omdb {0}, Movie {1}", omdb.title,
-            //                        movie.short_title);
-            //    }
-            //    else { Tools.TraceLine("Movie {0}, had no match", movie.short_title);}
-            //    count++;
+            //update movie_id for each of the matched omdbs
 
-//          var matches = (
-//    from f in movie_list
-//    join b in omdb_list on 
-//     f.year equals b.year  and
-//    f.short_title equals b.title
-//    select new {f, b}
-//);
-//var matches = (
-//    from f in movie_list
-//    join b in omdb_list
-//    on f.year equals b.year 
-//    && equals b.name
-//    select new {f, b}
-//);
+            Trace.WriteLine("Looping through pairs");
+            foreach (var pair in resultList) {
 
-            var query = from fm in db.Movies
-            join bm in db.Omdb on 
-              new { name = fm.short_title, year = fm.year } equals new { name = bm.title, year = bm.year } 
-            select new {
-               FamilyMan = fm,
-               BusinessMan = bm
-            };
+                OmdbEntry omdb = pair.omdbEntry;
+                omdb.movie_ID = pair.movie.movie_ID;
 
-var resultList = query.ToList();
-//var query = from fm in db.Movies
-//            join bm in db.Omdb on 
-//                bm.title equals fm.short_title and bm.year equals fm.year
-//            select new {
-//               Movie = fm,
-//               OmdbEntry = bm
-//            };
+                //Tools.TraceLine("m: {0} ID: {2}\no: {1}", pair.movie.short_title,
+                //                omdb.title, pair.movie.movie_ID);
 
-//var resultList = query.ToList();
+                ////might not be needed since its being tracked along the same context
+                //db.Entry(omdb).State = EntityState.Modified;
 
-            //}
+            }
 
-                //Tools.TraceLine("Omdb {0}, Movie {1}", ombdIdMovieID.ombd_ID,
-                //                ombdIdMovieID.movie_ID);
-                //Tools.TraceLine("Omdb {0}, Movie {1}", ombdIdMovieID[0],
-                //                ombdIdMovieID[1]);
-                //Tools.TraceLine("Omdb {0}, Movie {1}", ombdIdMovieID.genre_ID,
-                //                ombdIdMovieID.movie_ID);
-            //}
+            Trace.WriteLine("done looping");
 
-                
-                //omdb => movie_titles_ids.Select(item => item.short_title).Contains(omdb.title)).Select(omdb => new { omdb.title, item });
+            Trace.WriteLine("starting to save changes");
+            db.SaveChanges();
+            Trace.WriteLine("done saving changes");
 
 
-            //titles in movies that are also in omdb
-            //var matched_title =
-            //    movie_titles.Where(
-            //        movie_title => omdb_titles.Contains(movie_title));
-            ////titles in ombd that are also in omdb
-            //var title_omdb_qry =
-            //    db.Omdb.Where(omdb => movie_titles.Contains(omdb.title)).Select(omdb => omdb.title);
-
-            //var title_id =
-            //    db.Omdb.SelectMany(omdb => omdb, (OmdbEntry, Movie) => new {OmdbEntry, Movie} );
-
-            //int count = 0;
-            //foreach (Movie movie in movie_list) {
-            //    Movie movie1 = movie;
-            //    foreach ( OmdbEntry omdb in omdb_list.Where( omdb => movie1.short_title == omdb.title && movie1.year == omdb.year)) {
-            //        matches_MtO[movie] = omdb;
-            //        Tools.TraceLine("matched {0}", count);
-            //        count++;
-            //        break;
-            //    }
-            //}
-
-            //loop over all the omdb entries and find the movie_ids for them
 
             return View();
 

@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Ionic.Zip;
 using LumenWorks.Framework.IO.Csv;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
@@ -144,6 +145,7 @@ namespace NextFlicksMVC4.OMBD
                 omdbEntry.t_UserRating = tomReader["userRating"];
                 omdbEntry.t_UserReviews = tomReader["userReviews"];
             }
+
 
             return omdbEntry;
         }
@@ -290,6 +292,19 @@ namespace NextFlicksMVC4.OMBD
             }
             return completeVm_list;
         }
+
+        public static void DownloadOmdbZipAndExtract()
+        {
+            string zip_output = @"omdb.zip";
+
+            //download 
+            TSVParse.DownloadOmdbZip(outputPath: zip_output);
+
+            //extract it
+            using (ZipFile zip = new ZipFile(zip_output)) {
+                zip.ExtractAll("OMDB");
+            }
+        }
     }
 
     [ProtoContract]
@@ -300,6 +315,7 @@ namespace NextFlicksMVC4.OMBD
         [ProtoMember(1)]
         public int ombd_ID { get; set; }
 
+        //TODO: Add movie_id to PROTOBUF
         //to Movie class' movie_ID
         public virtual int movie_ID { get; set; }
 
