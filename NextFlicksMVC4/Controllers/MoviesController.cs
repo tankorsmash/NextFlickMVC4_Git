@@ -184,6 +184,7 @@ namespace NextFlicksMVC4.Controllers
         {
 
             MovieDbContext db = new MovieDbContext();
+            
             var start = Tools.WriteTimeStamp("starting /sql");
             //I can't do what I wanted so I'll build most of the MwGVM and then fill it with genre
             // strings right after
@@ -198,40 +199,51 @@ namespace NextFlicksMVC4.Controllers
             //create the list of partial mwgvms
             Tools.TraceLine("create partial mwgarry");
             var partial_Mwg_qry =
+                //left outer join so that all movies get selected even if there's no omdb match
                 from movie in db.Movies
+                join omdb in db.Omdb on 
+                movie.movie_ID equals omdb.movie_ID into ps
+                from p in ps.DefaultIfEmpty()
+
+                //match the boxarts
                 from boxart in db.BoxArts
                 where movie.movie_ID == boxart.movie_ID
+
+                //match the genres
                 from grp in movieID_genreString_grouping
                 where grp.Key == movie.movie_ID
+
+                //create the NITVM
                 select new NfImdbRtViewModel
                            {
 
                                Movie = movie,
                                Boxarts = boxart,
                                Genres = grp,
+                               OmdbEntry = p
 
                            };
 
             //array instead list for performance
-            var partial_NITVM_array = partial_Mwg_qry.ToArray();
+            var partial_NITVM_array = partial_Mwg_qry.OrderBy(item => item.OmdbEntry.t_Meter).Take(25).ToArray();
 
 
-            //find omdbs
-            var omdb_res = db.Omdb.Where(omdb => omdb.movie_ID >= 1).ToArray();
-            //find the movie_ids for the omdbs, so we can match them to the mwgs
-            var omdb_mids = omdb_res.Select(omdb => omdb.movie_ID).ToArray();
+            ////find omdbs
+            //var omdb_res = db.Omdb.Where(omdb => omdb.movie_ID >= 1).ToArray();
+            ////find the movie_ids for the omdbs, so we can match them to the mwgs
+            //var omdb_mids = omdb_res.Select(omdb => omdb.movie_ID).ToArray();
 
-            //MwGs that share a movieId with omdb
-            var matching_NITVM =
-                partial_NITVM_array.Where(
-                    mwg => omdb_mids.Contains(mwg.Movie.movie_ID)).ToArray();
+            ////MwGs that share a movieId with omdb
+            //var matching_NITVM =
+            //    partial_NITVM_array.Where(
+            //        mwg => omdb_mids.Contains(mwg.Movie.movie_ID)).ToArray();
 
-            //add the omdbs to the MwGs
-            foreach (var matchingObj in matching_NITVM) {
-                matchingObj.OmdbEntry =
-                    omdb_res.First(
-                        omdb => omdb.movie_ID == matchingObj.Movie.movie_ID);
-            }
+            ////add the omdbs to the MwGs
+            //foreach (var matchingObj in matching_NITVM) {
+            //    matchingObj.OmdbEntry =
+            //        omdb_res.First(
+            //            omdb => omdb.movie_ID == matchingObj.Movie.movie_ID);
+            //}
 
             //Dictionary<int, MovieWithGenreViewModel> MwG_dict =
             //    new Dictionary<int, MovieWithGenreViewModel>();
@@ -417,6 +429,7 @@ namespace NextFlicksMVC4.Controllers
             var done = Tools.WriteTimeStamp("done at");
             Tools.TraceLine("took: {0}", done-start);
             //Tools.TraceLine("amount of results {0}", res.Count);
+
 
             return View();
             
