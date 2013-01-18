@@ -190,10 +190,11 @@ namespace NextFlicksMVC4.Controllers
             // strings right after
             Tools.TraceLine("Create strings group");
             var movieID_genreString_grouping = from mtg in db.MovieToGenres
-                                 join genre in db.Genres on mtg.genre_ID equals
-                                     genre.genre_ID
-                                 group genre.genre_string by mtg.movie_ID;
-            var grouping_array = movieID_genreString_grouping.ToArray();
+                                               join genre in db.Genres on
+                                                   mtg.genre_ID equals
+                                                   genre.genre_ID
+                                               group genre.genre_string by
+                                                   mtg.movie_ID;
 
 
             //create the list of partial mwgvms
