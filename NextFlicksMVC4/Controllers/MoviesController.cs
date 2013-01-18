@@ -465,6 +465,24 @@ namespace NextFlicksMVC4.Controllers
 
         //
         // GET: /Movies/Details/5
+        public ActionResult DetailsTag(int movie_ID = 0)
+        {
+            MovieDbContext db = new MovieDbContext();
+
+            Movie movie = db.Movies.Find(movie_ID);
+            if (movie == null)
+            {
+                return HttpNotFound();
+            }
+
+            MovieTagViewModel tags = new MovieTagViewModel();
+            tags.movie = movie;
+            tags.genre_strings = new List<string>();
+            tags.Tags = new List<string>();
+            foreach (Genre genre in db.Genres.ToList()) { tags.genre_strings.Add(genre.genre_string);}
+            foreach(MovieTags tag in db.Tags){tags.Tags.Add(tag.Tag);}
+            return View(tags);
+        }
 
         public ActionResult Details(int movie_ID = 0)
         {

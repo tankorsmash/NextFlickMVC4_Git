@@ -37,8 +37,8 @@ namespace NextFlicksMVC4.Filters
                             ((IObjectContextAdapter)context).ObjectContext.CreateDatabase();
                         }
                     }
-
-                    WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
+                    //TODO: had to change this to match my database conneciton name, DB name and identify user id and username for simple role membership providers.
+                    //WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username", autoCreateTables: true);
                 }
                 catch (Exception ex)
                 {

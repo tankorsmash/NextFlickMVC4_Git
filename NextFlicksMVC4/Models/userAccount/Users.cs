@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,12 +9,20 @@ using DevOne.Security.Cryptography.BCrypt;
 
 namespace NextFlicksMVC4.Models.userAccount
 {
+    [Table("UserProfile")]
     public class Users
     {
 
-       
+
         [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int userID { get; set; }
+        [Required]
+        [StringLength(15, MinimumLength = 3)]
+        [Display(Name = "User Name")]
+        [RegularExpression(@"(\S)+", ErrorMessage = " White Space is not allowed in User Names")]
+        [ScaffoldColumn(false)]
+        public String Username { get; set; }
 
         [Required]
         [Display(Name = "Email")]
@@ -25,15 +34,10 @@ namespace NextFlicksMVC4.Models.userAccount
         public String password { get; set; }
 
         
-
+        /* edit out admin flag as I am using simple role providers now
         public int admin { get; set; }
-
-        [Required]
-        [StringLength(15, MinimumLength = 3)]
-        [Display(Name = "User Name")]
-        [RegularExpression(@"(\S)+", ErrorMessage = " White Space is not allowed in User Names")]
-        [ScaffoldColumn(false)]
-        public String Username { get; set;}
+        */
+        
 
         [Required]
         [StringLength(15, MinimumLength = 3)]

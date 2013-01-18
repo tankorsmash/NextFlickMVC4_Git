@@ -238,9 +238,9 @@
     <Compile Include="Controllers\userAccount\RegisterController.cs" />
     <Compile Include="Controllers\userAccount\UserController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
-    <Compile Include="Migrations\201301151400583_MergeTrackingDB.cs" />
-    <Compile Include="Migrations\201301151400583_MergeTrackingDB.Designer.cs">
-      <DependentUpon>201301151400583_MergeTrackingDB.cs</DependentUpon>
+    <Compile Include="Migrations\201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.cs" />
+    <Compile Include="Migrations\201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.Designer.cs">
+      <DependentUpon>201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\userAccount\LogonModel.cs" />
@@ -266,6 +266,7 @@
     <Compile Include="Tests\CustomConstraint.cs" />
     <Compile Include="Tracking\Tracking.cs" />
     <Compile Include="Views\DisplayTools.cs" />
+    <Compile Include="Views\Movies\ViewModels\MovieTagViewModel.cs" />
     <Compile Include="Views\Movies\ViewModels\MovieToGenreViewModel.cs" />
     <Compile Include="Views\Movies\ViewModels\MovieWithGenreViewModel.cs" />
     <Compile Include="Views\Movies\ViewModels\NfImdbRtViewModel.cs" />
@@ -462,12 +463,15 @@
     <Content Include="Views\User\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201301151400583_MergeTrackingDB.resx">
-      <DependentUpon>201301151400583_MergeTrackingDB.cs</DependentUpon>
-    </EmbeddedResource>
+    <Content Include="Views\Movies\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Movies\Edit.cshtml" />
+    <Content Include="Views\Movies\DetailsTag.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.resx">
+      <DependentUpon>201301181707585_addedRolesRemovedMyAdminFlagFroMuSer.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

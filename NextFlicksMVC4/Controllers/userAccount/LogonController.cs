@@ -40,7 +40,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
                         if(user.CheckHash(model.Password, user.password))
                         {
                             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, model.Username,
-                                DateTime.Now, DateTime.Now.AddMinutes(60), false, user.admin.ToString(),
+                                DateTime.Now, DateTime.Now.AddMinutes(60), false, Roles.GetRolesForUser().ToString(),
                                 FormsAuthentication.FormsCookiePath);
                             string encTicket = FormsAuthentication.Encrypt(ticket);
                             Response.Cookies.Add(new HttpCookie(FormsAuthentication.FormsCookieName, encTicket));

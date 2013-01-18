@@ -2,11 +2,14 @@
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
+using NextFlicksMVC4.Filters;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.Models.userAccount;
 
 namespace NextFlicksMVC4.Controllers.userAccount
-{ 
+{
+    [Authorize]
+    [InitializeSimpleMembership]
     public class UserController : Controller
     {
       // private Users.UserDbContext _userDb = new Users.UserDbContext();
@@ -15,14 +18,15 @@ namespace NextFlicksMVC4.Controllers.userAccount
         private FormsAuthenticationTicket ticket; //use this ot pull acopy of the ticket 
         
         // GET: /User/
-        [Authorize]
+        [Authorize(Roles="Admin")]
         public ViewResult Index(string returnUrl)
         {
-            if (IsAdmin())
+            //var usernames = Roles.GetUsersInRole(UserRole.Admin.ToString());
+            //if (IsAdmin())
                 return View(_userDb.Users.ToList());
             //else not an admin
-            ViewBag.Error = "Unathorized Access! I'm afraid I Can't Do that Dave!";
-            return View("Error");
+            //ViewBag.Error = "Unathorized Access! I'm afraid I Can't Do that Dave!";
+            //return View("Error");
         }
 
         //

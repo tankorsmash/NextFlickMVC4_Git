@@ -9,6 +9,7 @@ using System.Web.Routing;
 using System.Diagnostics;
 using NextFlicksMVC4.Controllers;
 using NextFlicksMVC4.Filters;
+using WebMatrix.WebData;
 
 namespace NextFlicksMVC4
 {
@@ -26,6 +27,10 @@ namespace NextFlicksMVC4
             //add custom filter
             GlobalFilters.Filters.Add(new TrackingActionFilterAttribute());
             //end customization filter
+
+            //enable Simple Membership Provider database
+              WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username", autoCreateTables: true);
+            //end simple role membership init
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
