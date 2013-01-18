@@ -203,8 +203,8 @@ namespace NextFlicksMVC4.Controllers
                 //left outer join so that all movies get selected even if there's no omdb match
                 from movie in db.Movies
                 join omdb in db.Omdb on 
-                movie.movie_ID equals omdb.movie_ID into ps
-                from p in ps.DefaultIfEmpty()
+                movie.movie_ID equals omdb.movie_ID into mov_omdb_matches
+                from mov_omdb_match in mov_omdb_matches.DefaultIfEmpty()
 
                 //match the boxarts
                 from boxart in db.BoxArts
@@ -217,12 +217,10 @@ namespace NextFlicksMVC4.Controllers
                 //create the NITVM
                 select new NfImdbRtViewModel
                            {
-
                                Movie = movie,
                                Boxarts = boxart,
                                Genres = grp,
-                               OmdbEntry = p
-
+                               OmdbEntry = mov_omdb_match
                            };
 
             //array instead list for performance
