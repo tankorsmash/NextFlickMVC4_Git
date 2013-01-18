@@ -26,7 +26,7 @@ namespace NextFlicksMVC4.Migrations
                 Roles.CreateRole(("User"));
 
             if (!WebSecurity.UserExists("sec_goat"))
-                WebSecurity.CreateUserAndAccount("sec_goat", "moon23");
+                WebSecurity.CreateUserAndAccount("sec_goat", "password");
             if(!Roles.GetRolesForUser("sec_goat").Contains("Admin"))
                 Roles.AddUserToRole("sec_goat", "Admin");
             //  This method will be called after migrating to the latest version.
