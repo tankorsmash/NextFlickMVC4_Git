@@ -180,15 +180,15 @@ namespace NextFlicksMVC4.Controllers
             return View("Genres", nitlist);
         }
 
-        public ActionResult sql()
+        public ActionResult sort()
         {
 
             MovieDbContext db = new MovieDbContext();
             
-            var start = Tools.WriteTimeStamp("starting /sql");
+            var start = Tools.WriteTimeStamp("\n*** starting /sql ***");
             //I can't do what I wanted so I'll build most of the MwGVM and then fill it with genre
             // strings right after
-            Tools.TraceLine("Create strings group");
+            Tools.TraceLine("Group the genres by movie ID");
             var movieID_genreString_grouping = from mtg in db.MovieToGenres
                                                join genre in db.Genres on
                                                    mtg.genre_ID equals
@@ -198,8 +198,8 @@ namespace NextFlicksMVC4.Controllers
 
 
             //create the list of partial mwgvms
-            Tools.TraceLine("create partial mwgarry");
-            var partial_Mwg_qry =
+            Tools.TraceLine("Build the query for all the movies in the DB");
+            var Nitvm_query =
                 //left outer join so that all movies get selected even if there's no omdb match
                 from movie in db.Movies
                 join omdb in db.Omdb on 
@@ -223,8 +223,11 @@ namespace NextFlicksMVC4.Controllers
                                OmdbEntry = mov_omdb_match
                            };
 
+
+
+            Tools.TraceLine("Ordering the movies and taking {0}", 25);
             //array instead list for performance
-            var partial_NITVM_array = partial_Mwg_qry.OrderBy(item => item.OmdbEntry.t_Meter).Take(25).ToArray();
+            var nitvmArray = Nitvm_query.OrderBy(item => item.OmdbEntry.t_Meter).Take(25).ToArray();
 
 
             var done = Tools.WriteTimeStamp("done at");
@@ -555,37 +558,37 @@ namespace NextFlicksMVC4.Controllers
             base.Dispose(disposing);
         }
 
-        //sort movies by t_meter
-        public ActionResult Sort()
-        {
+        ////sort movies by t_meter
+        //public ActionResult Sort()
+        //{
 
-            DateTime start = DateTime.Now;
-            MovieDbContext db = new MovieDbContext();
+        //    DateTime start = DateTime.Now;
+        //    MovieDbContext db = new MovieDbContext();
 
-            ////has never worked, but shows the idea
-            //var result_list = db.Database.SqlQuery<NfImdbRtViewModel>(
-            //"SELECT        Movies.short_title, OmdbEntries.t_Meter" +
-            //"FROM            OmdbEntries INNER JOIN" +
-            //"Movies ON OmdbEntries.movie_ID = Movies.movie_ID" +
-            //"WHERE        (OmdbEntries.t_Meter <> 'n/a')" +
-            //"ORDER BY OmdbEntries.t_Meter DESC");
+        //    ////has never worked, but shows the idea
+        //    //var result_list = db.Database.SqlQuery<NfImdbRtViewModel>(
+        //    //"SELECT        Movies.short_title, OmdbEntries.t_Meter" +
+        //    //"FROM            OmdbEntries INNER JOIN" +
+        //    //"Movies ON OmdbEntries.movie_ID = Movies.movie_ID" +
+        //    //"WHERE        (OmdbEntries.t_Meter <> 'n/a')" +
+        //    //"ORDER BY OmdbEntries.t_Meter DESC");
 
-            var result_list = db.Omdb.Where(omdb => omdb.movie_ID != 0).OrderByDescending(item => item.t_Meter);
+        //    var result_list = db.Omdb.Where(omdb => omdb.movie_ID != 0).OrderByDescending(item => item.t_Meter);
 
-            var qwe = result_list.ToList();
+        //    var qwe = result_list.ToList();
 
-            Tools.TraceLine("count: {0}", qwe.Count);
+        //    Tools.TraceLine("count: {0}", qwe.Count);
 
-            Tools.TraceLine("Top t_meter movie: {0}", qwe.First().title);
+        //    Tools.TraceLine("Top t_meter movie: {0}", qwe.First().title);
 
-            DateTime end = DateTime.Now;
+        //    DateTime end = DateTime.Now;
 
-            var span = end - start;
+        //    var span = end - start;
 
-            Tools.TraceLine("Took {0} seconds", span.TotalSeconds);
+        //    Tools.TraceLine("Took {0} seconds", span.TotalSeconds);
 
-            return View();
-        }
+        //    return View();
+        //}
 
         public ActionResult Zip()
         {
