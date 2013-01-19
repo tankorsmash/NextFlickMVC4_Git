@@ -520,16 +520,14 @@ namespace NextFlicksMVC4
             return omdbEntry;
         }
 
-        public static void RebuildOmdbsFromProtobufDump()
+        public static void RebuildOmdbsFromProtobufDump(string entryDumpPath)
         {
 //rebuild the serialized list of List<omdbentryies>
-            string entry_dump_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
 
             //deserialize the list of omdbentries saved the the file
             //TODO: add check to make sure the file exists and is not corrupted
             List<OmdbEntry> complete_list;
-            using (var file = File.OpenRead(entry_dump_path)) {
+            using (var file = File.OpenRead(entryDumpPath)) {
                 complete_list = Serializer.Deserialize<List<OmdbEntry>>(file);
             }
 
@@ -540,8 +538,8 @@ namespace NextFlicksMVC4
             foreach (OmdbEntry omdbEntry in complete_list) {
                 db.Omdb.Add(omdbEntry);
 
-                int remaining = count - complete_list.IndexOf(omdbEntry);
-                Trace.WriteLine(remaining);
+                //int remaining = count - complete_list.IndexOf(omdbEntry);
+                //Trace.WriteLine(remaining);
             }
 
             Trace.WriteLine("saving changes");
@@ -552,22 +550,16 @@ namespace NextFlicksMVC4
             WriteTimeStamp("Done saving changes");
         }
 
-        public static void SerializeOmdbTsv()
+        public static void SerializeOmdbTsv(string entryDumpPath, string imdbPath, string tomPath)
         {
 //TODO:Make these paths more general
-            string entry_dump_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP";
-            string imdb_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
-            string tom_path =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt";
 
             var complete_list_of_entries =
-                TSVParse.ParseTSVforOmdbData(imdb_filepath: imdb_path,
-                                             tom_filepath: tom_path);
+                TSVParse.ParseTSVforOmdbData(imdb_filepath: imdbPath,
+                                             tom_filepath: tomPath);
 
             WriteTimeStamp("Starting to serialize list");
-            using (var file = File.Create(entry_dump_path)) {
+            using (var file = File.Create(entryDumpPath)) {
                 Serializer.Serialize(file, complete_list_of_entries);
             }
             WriteTimeStamp("Done serializing list");
@@ -666,7 +658,7 @@ namespace NextFlicksMVC4
                     while (data != null) {
                         if (!data.StartsWith("<catalog_title>")) {
                             Trace.WriteLine(
-                                "Invalid line of XML, probably CDATA or something");
+                                "Invalid line of XML, probably CDATA or something\n***{0}", data);
                         }
                         else {
                             //parse line for a title, which is what NF returns
@@ -767,6 +759,59 @@ namespace NextFlicksMVC4
                            };
 
             return nitvmQuery;
+        }
+
+        public static void MarryMovieToOmdb(MovieDbContext db)
+        {
+//get list of movies
+            //var movie_queryable = db.Movies.AsQueryable();
+
+            //TODO: match better, curr. only finds 6k movies but there should be closer to 56k
+
+            ////take only movies, since OMDB doesn't hold tv shows
+            //var movie_list = db.Movies.ToList().Where(movie => movie.is_movie);
+            //var omdb_list = db.Omdb.ToList();
+            //Dictionary<Movie, OmdbEntry> matches_MtO =
+            //    new Dictionary<Movie, OmdbEntry>();
+
+
+            //pseudo code for what I want
+            //where omdb.title == movie.short_title && omdb.year == movie.year select new {omdb_id, movie_id}
+
+            TraceLine("Starting LINQ query");
+
+            var query = from movie in db.Movies
+                        join omdbEntry in db.Omdb on
+                            new {name = movie.short_title, year = movie.year}
+                            equals
+                            new {name = omdbEntry.title, year = omdbEntry.year}
+                        select new {movie = movie, omdbEntry = omdbEntry};
+
+            TraceLine("Done LINQ query");
+            TraceLine("turning results into a list");
+            var resultList = query.ToList();
+            TraceLine("done turning results into a list, found {0} movies",
+                            resultList.Count);
+
+            //update movie_id for each of the matched omdbs
+
+            Trace.WriteLine("Looping through pairs");
+            foreach (var pair in resultList) {
+                OmdbEntry omdb = pair.omdbEntry;
+                omdb.movie_ID = pair.movie.movie_ID;
+
+                //Tools.TraceLine("m: {0} ID: {2}\no: {1}", pair.movie.short_title,
+                //                omdb.title, pair.movie.movie_ID);
+
+                ////might not be needed since its being tracked along the same context
+                //db.Entry(omdb).State = EntityState.Modified;
+            }
+
+            Trace.WriteLine("done looping");
+
+            Trace.WriteLine("starting to save changes");
+            db.SaveChanges();
+            Trace.WriteLine("done saving changes");
         }
     }
 

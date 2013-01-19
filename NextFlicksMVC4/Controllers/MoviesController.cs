@@ -189,17 +189,19 @@ namespace NextFlicksMVC4.Controllers
 
             MovieDbContext db = new MovieDbContext();
 
+            int count = 25;
+
             var start = Tools.WriteTimeStamp("\n*** starting /sql ***");
 
             //returns a IQueryable populated with all the entries in the movies/etc 
             var nitvmQuery = Tools.GetFullDbQuery(db);
 
 
-            Tools.TraceLine("Ordering the movies and taking {0}", 25);
+            Tools.TraceLine("Ordering the movies and taking {0}", count);
             //array instead list for performance
             var nitvmArray =
                 nitvmQuery.OrderBy(item => item.OmdbEntry.t_Meter)
-                          .Take(25)
+                          .Take(count)
                           .ToArray();
 
 
@@ -471,7 +473,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Regen()
         {
             //finds the file dump from the TSV to OmdbEntry read and adds it to the db
-            Tools.RebuildOmdbsFromProtobufDump();
+            Tools.RebuildOmdbsFromProtobufDump(@"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP");
 
             return View();
         }
@@ -484,7 +486,7 @@ namespace NextFlicksMVC4.Controllers
         {
             //read the Omdb.txt file and turn the resulting objects into a protobuf dump
             // to be read by the Tools.RebuildOmdbsFromProtobufDump method
-            Tools.SerializeOmdbTsv();
+            Tools.SerializeOmdbTsv(@"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP", @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt", @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt");
 
 
             return View();
@@ -613,7 +615,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Zip()
         {
-            Omdb.DownloadOmdbZipAndExtract();
+            Omdb.DownloadOmdbZipAndExtract(@"omdb.zip");
 
 
             return View();
@@ -623,6 +625,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult FullDbBuild()
         {
             string netflixPosFilepath = @"catalogStreaming.NFPOX";
+            MovieDbContext db = new MovieDbContext();
 
             //retrieve API .POX
             var data = OAuth1a.GetNextflixCatalogDataString( "catalog/titles/streaming", "", outputPath: netflixPosFilepath);
@@ -638,14 +641,19 @@ namespace NextFlicksMVC4.Controllers
             Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
 
             //download the omdbapi 
-            Omdb.DownloadOmdbZipAndExtract();
+            Omdb.DownloadOmdbZipAndExtract(@"omdb.zip");
 
             //parse it for omdbentrys, serialize it to file
-            Tools.SerializeOmdbTsv();
+            Tools.SerializeOmdbTsv(
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP",
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt",
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt");
 
             //deserialize the file, turn it into omdb
             //  can't remember if it does it here or not, but marry the omdbs and movie
-            Tools.RebuildOmdbsFromProtobufDump();
+            Tools.RebuildOmdbsFromProtobufDump(
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP");
+            Tools.MarryMovieToOmdb(db);
 
 
             return View();
@@ -658,57 +666,7 @@ namespace NextFlicksMVC4.Controllers
 
             MovieDbContext db = new MovieDbContext();
 
-            //get list of movies
-            //var movie_queryable = db.Movies.AsQueryable();
-
-            //TODO: match better, curr. only finds 6k movies but there should be closer to 56k
-
-            ////take only movies, since OMDB doesn't hold tv shows
-            //var movie_list = db.Movies.ToList().Where(movie => movie.is_movie);
-            //var omdb_list = db.Omdb.ToList();
-            //Dictionary<Movie, OmdbEntry> matches_MtO =
-            //    new Dictionary<Movie, OmdbEntry>();
-
-
-            //pseudo code for what I want
-            //where omdb.title == movie.short_title && omdb.year == movie.year select new {omdb_id, movie_id}
-
-            Tools.TraceLine("Starting LINQ query");
-
-            var query = from movie in db.Movies
-                        join omdbEntry in db.Omdb on
-                            new {name = movie.short_title, year = movie.year}
-                            equals
-                            new {name = omdbEntry.title, year = omdbEntry.year}
-                        select new {movie = movie, omdbEntry = omdbEntry};
-
-            Tools.TraceLine("Done LINQ query");
-            Tools.TraceLine("turning results into a list");
-            var resultList = query.ToList();
-            Tools.TraceLine("done turning results into a list, found {0} movies", resultList.Count);
-
-            //update movie_id for each of the matched omdbs
-
-            Trace.WriteLine("Looping through pairs");
-            foreach (var pair in resultList) {
-
-                OmdbEntry omdb = pair.omdbEntry;
-                omdb.movie_ID = pair.movie.movie_ID;
-
-                //Tools.TraceLine("m: {0} ID: {2}\no: {1}", pair.movie.short_title,
-                //                omdb.title, pair.movie.movie_ID);
-
-                ////might not be needed since its being tracked along the same context
-                //db.Entry(omdb).State = EntityState.Modified;
-
-            }
-
-            Trace.WriteLine("done looping");
-
-            Trace.WriteLine("starting to save changes");
-            db.SaveChanges();
-            Trace.WriteLine("done saving changes");
-
+            Tools.MarryMovieToOmdb(db);
 
 
             return View();

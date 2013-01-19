@@ -293,15 +293,13 @@ namespace NextFlicksMVC4.OMBD
             return completeVm_list;
         }
 
-        public static void DownloadOmdbZipAndExtract()
+        public static void DownloadOmdbZipAndExtract(string zipOutput)
         {
-            string zip_output = @"omdb.zip";
-
             //download 
-            TSVParse.DownloadOmdbZip(outputPath: zip_output);
+            TSVParse.DownloadOmdbZip(outputPath: zipOutput);
 
             //extract it
-            using (ZipFile zip = new ZipFile(zip_output)) {
+            using (ZipFile zip = new ZipFile(zipOutput)) {
                 zip.ExtractAll("OMDB");
             }
         }
