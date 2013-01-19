@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using System.Web.Security;
+using WebMatrix.WebData;
 
 namespace NextFlicksMVC4.Controllers.userAccount
 {
@@ -10,8 +11,11 @@ namespace NextFlicksMVC4.Controllers.userAccount
 
         public ActionResult Index()
         {
-            FormsAuthentication.SignOut();
-            return View();
+            WebSecurity.Logout();
+
+            return RedirectToAction("Index", "Home");
+            //FormsAuthentication.SignOut();
+            //return View();
 
         }
 

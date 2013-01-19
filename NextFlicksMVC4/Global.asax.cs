@@ -15,7 +15,6 @@ namespace NextFlicksMVC4
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
-
     public class MvcApplication : System.Web.HttpApplication
     {
         protected void Application_Start()
@@ -29,6 +28,8 @@ namespace NextFlicksMVC4
             //end customization filter
 
             //enable Simple Membership Provider database
+            GlobalFilters.Filters.Add(new InitializeSimpleMembershipAttribute());
+           
              // WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username", autoCreateTables: true);
             //end simple role membership init
 

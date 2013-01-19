@@ -8,7 +8,7 @@ using NextFlicksMVC4.Filters;
 
 namespace NextFlicksMVC4.Controllers
 {
-    [InitializeSimpleMembership]
+   // [InitializeSimpleMembership]
     public class HomeController : Controller
     {
         public ActionResult Index()

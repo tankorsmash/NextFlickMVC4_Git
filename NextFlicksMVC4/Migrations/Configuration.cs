@@ -18,19 +18,30 @@ namespace NextFlicksMVC4.Migrations
 
         protected override void Seed(NextFlicksMVC4.Models.MovieDbContext context)
         {
-            WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username", autoCreateTables: true );
+           /* WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username",
+                                                     autoCreateTables: true);
             if (!Roles.RoleExists("Admin"))
                 Roles.CreateRole("Admin");
             if (!Roles.RoleExists("Mod"))
                 Roles.CreateRole(("Mod"));
-            if(!Roles.RoleExists("User"))
+            if (!Roles.RoleExists("User"))
                 Roles.CreateRole(("User"));
 
 
-            /*if (!WebSecurity.UserExists("sec_goat"))
-                WebSecurity.CreateUserAndAccount("sec_goat", "password", firstName = "Josh", lastName = "tilson", email = "1@1.1.1" ); 
-            if(!Roles.GetRolesForUser("sec_goat").Contains("Admin"))
-                Roles.AddUserToRole("sec_goat", "Admin"); */
+            if (!WebSecurity.UserExists("Admin"))
+                WebSecurity.CreateUserAndAccount("Admin", "Admin",
+                                                 propertyValues:
+                                                     new
+                                                         {
+                                                             firstName = "Admin", 
+                                                             lastName = "Admin", 
+                                                             email = "Admin@phall.us"
+                                                         })
+        
+
+    ; 
+            if(!Roles.GetRolesForUser("Admin").Contains("Admin"))
+                Roles.AddUserToRole("Admin", "Admin"); */
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

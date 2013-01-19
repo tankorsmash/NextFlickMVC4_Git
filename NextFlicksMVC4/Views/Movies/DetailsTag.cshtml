@@ -5,87 +5,101 @@
 }
 
 <h2>Details</h2>
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Movie</legend>
 
-<fieldset>
-    <legend>Movie</legend>
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.movie.short_title)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.movie.short_title)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.movie.year)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.movie.year)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.movie.runtime)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.movie.runtime)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.movie.avg_rating)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.movie.avg_rating)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.movie.tv_rating)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.movie.tv_rating)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.movie.web_page)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.movie.web_page)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.movie.current_season)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.movie.current_season)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.movie.is_movie)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.movie.is_movie)
-    </div>
-
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.movie.maturity_rating)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.movie.maturity_rating)
-    </div>
-    @*TODO: get the editor field to allow users to add Tags, need to make a viewmodel for movies with tags + genres me thinks *@
-     <div class="display-label">
-         @Html.DisplayNameFor(model => model.Tags)
-    </div>
-    <div class="display-field">
-            @Html.DisplayFor(model => model.Tags)
-            @using (Html.BeginForm())
-            {
-               
-                @Html.TextBoxFor((model => model.Tags))
-                <input type="submit" value="Add Tags" />
-            }
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.movie.short_title)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.movie.short_title)
         </div>
 
-</fieldset>
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.movie.year)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.movie.year)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.movie.runtime)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.movie.runtime)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.movie.avg_rating)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.movie.avg_rating)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.movie.tv_rating)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.movie.tv_rating)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.movie.web_page)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.movie.web_page)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.movie.current_season)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.movie.current_season)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.movie.is_movie)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.movie.is_movie)
+        </div>
+
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.movie.maturity_rating)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.movie.maturity_rating)
+        </div>
+        @*TODO: get the editor field to allow users to add Tags, need to make a viewmodel for movies with tags + genres me thinks *@
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.Tags)
+        
+        </div>
+        <div class="display-field"> @Html.DisplayFor(model => model.Tags)</div>
+        <div class="display-field">
+            @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
+            {
+
+
+
+                @Html.TextBoxFor((model => model.Tags))
+                <input type="submit" value="Add Tags" />
+
+            }
+            else
+            {
+                <p> nope!</p>
+            }
+            
+            
+                 
+        </div>
+        
+    </fieldset>
+}
 <p>
     
     @*Html.ActionLink("Edit", "Edit", new { id=Model.movie.movie_ID }) |

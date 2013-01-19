@@ -18,13 +18,18 @@ namespace NextFlicksMVC4.Filters
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             // Ensure ASP.NET Simple Membership is initialized only once per app start
+            //the commented lines below are a tiem check for the speed of this check at every action from .001 - .002 MS per call
+            //var start = Tools.WriteTimeStamp("\n*** WebSecurity Init Start ***");
             LazyInitializer.EnsureInitialized(ref _initializer, ref _isInitialized, ref _initializerLock);
+            //var done = Tools.WriteTimeStamp("done at");
+            //Tools.TraceLine("took: {0}", done - start);
         }
 
         private class SimpleMembershipInitializer
         {
             public SimpleMembershipInitializer()
             {
+               
                 //TODO: Hod to change this to my DB context to get the db to autocreate!
                 Database.SetInitializer<MovieDbContext>(null);
 

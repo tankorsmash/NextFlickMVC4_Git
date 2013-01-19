@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using NextFlicksMVC4;
 using NextFlicksMVC4.DatabaseClasses;
 using NextFlicksMVC4.Models;
@@ -20,6 +21,7 @@ using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 using LumenWorks.Framework.IO.Csv;
 using ProtoBuf;
+using WebMatrix.WebData;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -468,7 +470,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult DetailsTag(int movie_ID = 0)
         {
             MovieDbContext db = new MovieDbContext();
-
+            
             Movie movie = db.Movies.Find(movie_ID);
             if (movie == null)
             {
@@ -482,6 +484,27 @@ namespace NextFlicksMVC4.Controllers
             foreach (Genre genre in db.Genres.ToList()) { tags.genre_strings.Add(genre.genre_string);}
             foreach(MovieTags tag in db.Tags){tags.Tags.Add(tag.Tag);}
             return View(tags);
+        }
+        [HttpPost]
+        public ActionResult DetailsTag(MovieTagViewModel movie)
+        {
+            if (ModelState.IsValid)
+            {
+                MovieDbContext db = new MovieDbContext();
+                Movie taggedMovie = db.Movies.Find(movie.movie.movie_ID);
+                foreach (string tag in movie.Tags)
+                {
+                    MovieTags newTag = new MovieTags();
+                    newTag.Tag = tag;
+                    newTag.movie_ID = taggedMovie.movie_ID;
+                    newTag.userID = WebSecurity.CurrentUserId;
+                    db.Tags.Add(newTag);
+                    //db.Movies.Add(movie);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            return View(movie);
         }
 
         public ActionResult Details(int movie_ID = 0)
