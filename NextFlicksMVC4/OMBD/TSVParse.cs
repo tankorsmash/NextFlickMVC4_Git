@@ -97,6 +97,7 @@ namespace NextFlicksMVC4.OMBD
 
             Tools.TraceLine("Starting to merge entries");
             Tools.WriteTimeStamp("merge start");
+            //combine the two lists
             complete_list = MergeTwoOmdbEntryLists(imdb_entries, tom_entries);
             Tools.WriteTimeStamp("merge end");
 
@@ -138,7 +139,7 @@ namespace NextFlicksMVC4.OMBD
                     complete_list.Add(omdbEntry);
                 }
 
-                Tools.TraceLine(current_id.ToString());
+                //Tools.TraceLine(current_id.ToString());
 
             }
 
@@ -173,7 +174,7 @@ namespace NextFlicksMVC4.OMBD
                     var entry = Omdb.CreateOmdbEntryFromTsvRecord(imdbReader:csvReader);
                     omdbEntry_list.Add(entry);
                     //Tools.TraceLine(entry.title);
-                    Tools.TraceLine(count.ToString());
+                    //Tools.TraceLine(count.ToString());
                     count++;
                 }
 
@@ -205,7 +206,7 @@ namespace NextFlicksMVC4.OMBD
                     var entry =
                         Omdb.CreateOmdbEntryFromTsvRecord(tomReader: csvReader);
                     omdbEntry_list.Add(entry);
-                    Tools.TraceLine(count.ToString());
+                    //Tools.TraceLine(count.ToString());
                     count++;
                 }
                 Tools.TraceLine("Done Parsing for Tomatoes");
