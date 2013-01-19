@@ -115,33 +115,68 @@ namespace NextFlicksMVC4.OMBD
 
     public static List<OmdbEntry> MergeTwoOmdbEntryLists(List<OmdbEntry> first_list,
                                     List<OmdbEntry> second_list)
-        {
-            List<OmdbEntry> complete_list = new List<OmdbEntry>();
+    {
 
-            foreach (OmdbEntry omdbEntry in first_list) {
-                int current_id = omdbEntry.ombd_ID;
+        //left out join two lists, one imdb data , one RT data
+        var res = from imdb in first_list
+                  join tom in second_list on 
+                  imdb.ombd_ID equals tom.ombd_ID into matched
+                  from match in matched.DefaultIfEmpty()
+                  select new OmdbEntry
+                             {
+                                 ombd_ID = imdb.ombd_ID,
+                                 title = imdb.title,
+                                 year = imdb.year,
 
-                //find matching tomatoes.txt entry
-                OmdbEntry selected_tom_entry =
-                    second_list.SingleOrDefault(item => item.ombd_ID == current_id);
+                                 i_ID = imdb.i_ID,
+                                 i_Rating = imdb.i_Rating,
+                                 i_Votes = imdb.i_Votes,
 
-                //If there IS a matching tomato data
-                if (selected_tom_entry != null)
-                {
-                    var created_entry =
-                        OMBD.Omdb.MergeImdbWithTomatoesOmdbEntry(omdbEntry,
-                                                                 selected_tom_entry);
-                    complete_list.Add(created_entry);
-                }
-                //if there's no matching query, there's no matching toms data so 
-                // just add the imdb  to complete list
-                else if (selected_tom_entry == null) {
-                    complete_list.Add(omdbEntry);
-                }
+                                 //if the joined omdb doesn't exist, fill in null
+                                 t_Image = (match == null? "N/A" :match.t_Image),
+                                 t_Consensus = (match == null ? "N/A": match.t_Consensus),
+                                 t_Fresh = (match == null ? "N/A": match.t_Fresh),
+                                 t_Meter = (match == null ? "N/A": match.t_Meter),
+                                 t_Rating = (match == null ? "N/A": match.t_Rating),
+                                 t_Reviews = (match == null ? "N/A": match.t_Reviews),
+                                 t_Rotten = (match == null ? "N/A": match.t_Rotten),
+                                 t_UserMeter = (match == null ? "N/A": match.t_UserMeter),
+                                 t_UserRating = (match == null ? "N/A": match.t_UserRating),
+                                 t_UserReviews = (match == null ? "N/A": match.t_UserReviews)
 
-                //Tools.TraceLine(current_id.ToString());
+                             };
+        List<OmdbEntry> complete_list = res.ToList();
 
-            }
+        
+
+        //old way below
+
+            //List<OmdbEntry> complete_list = new List<OmdbEntry>();
+
+            //foreach (OmdbEntry imdbEntry in first_list) {
+            //    int current_id = imdbEntry.ombd_ID;
+
+            //    //find matching tomatoes.txt entry
+            //    OmdbEntry selected_tom_entry =
+            //        second_list.SingleOrDefault(item => item.ombd_ID == current_id);
+
+            //    //If there IS a matching tomato data
+            //    if (selected_tom_entry != null)
+            //    {
+            //        var created_entry =
+            //            OMBD.Omdb.MergeImdbWithTomatoesOmdbEntry(imdbEntry,
+            //                                                     selected_tom_entry);
+            //        complete_list.Add(created_entry);
+            //    }
+            //    //if there's no matching query, there's no matching toms data so 
+            //    // just add the imdb  to complete list
+            //    else if (selected_tom_entry == null) {
+            //        complete_list.Add(imdbEntry);
+            //    }
+
+            //    //Tools.TraceLine(current_id.ToString());
+
+            //}
 
             string msg = string.Format("Total entries in complete list: {0}",
                                        complete_list.Count);
