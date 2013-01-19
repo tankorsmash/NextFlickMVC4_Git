@@ -40,8 +40,9 @@ namespace NextFlicksMVC4.Controllers
             Trace.WriteLine("Cookie Added");
 
             //test for the cookie creation, change ViewBag
-            if (Request.Cookies.Get(cookie_name) != null)
-            { ViewBag.cookies = true; }
+            if (Request.Cookies.Get(cookie_name) != null) {
+                ViewBag.cookies = true;
+            }
 
             return View();
         }
@@ -52,8 +53,7 @@ namespace NextFlicksMVC4.Controllers
             var cookie_name = "TestCookie";
 
             //if cookie exists, remove it
-            if (Request.Cookies.AllKeys.Contains(cookie_name))
-            {
+            if (Request.Cookies.AllKeys.Contains(cookie_name)) {
                 //get the cookie from the request, expire the time so it gets 
                 // deleted
                 var cookie = Request.Cookies.Get(cookie_name);
@@ -68,8 +68,7 @@ namespace NextFlicksMVC4.Controllers
 
 
 
-            else
-            {
+            else {
                 Trace.WriteLine("Cookie didn't exist, no action");
                 ViewBag.cookies = true;
             }
@@ -134,21 +133,26 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
             int rand_title_int = new Random().Next(1, db.Movies.Count());
-            return RedirectToAction("Index", new { count = 1, start = rand_title_int });
+            return RedirectToAction("Index",
+                                    new {count = 1, start = rand_title_int});
         }
 
 
         [TrackingActionFilter]
         public ActionResult Test(string title = "",
-            int year_start = 1914, int year_end = 2012,
-            int mpaa_start = 0, int mpaa_end = 200,
+                                 int year_start = 1914,
+                                 int year_end = 2012,
+                                 int mpaa_start = 0,
+                                 int mpaa_end = 200,
 
-            bool? is_movie = null,
+                                 bool? is_movie = null,
 
-            int runtime_start = 0, int runtime_end = 9999999,
-            string genre = "",
-            int start = 0, int count = 25,
-            string sort = "movie_ID")
+                                 int runtime_start = 0,
+                                 int runtime_end = 9999999,
+                                 string genre = "",
+                                 int start = 0,
+                                 int count = 25,
+                                 string sort = "movie_ID")
         {
             ViewBag.Params = Tools.GetAllParamNames("Test");
 
@@ -160,16 +164,16 @@ namespace NextFlicksMVC4.Controllers
             var movie_list = db.Movies.ToList();
 
             var nitlist = Tools.FilterMovies(db, movie_list,
-                                              title: title, is_movie: is_movie,
-                                              year_start: year_start,
-                                              year_end: year_end,
-                                              mpaa_start: mpaa_start,
-                                              mpaa_end: mpaa_end,
-                                              runtime_start: runtime_start,
-                                              runtime_end: runtime_end,
-                                              genre: genre,
-                                              start: start, count: count,
-                                              sort: sort);
+                                             title: title, is_movie: is_movie,
+                                             year_start: year_start,
+                                             year_end: year_end,
+                                             mpaa_start: mpaa_start,
+                                             mpaa_end: mpaa_end,
+                                             runtime_start: runtime_start,
+                                             runtime_end: runtime_end,
+                                             genre: genre,
+                                             start: start, count: count,
+                                             sort: sort);
 
 
             ViewBag.Start = start;
@@ -184,7 +188,7 @@ namespace NextFlicksMVC4.Controllers
         {
 
             MovieDbContext db = new MovieDbContext();
-            
+
             var start = Tools.WriteTimeStamp("\n*** starting /sql ***");
 
             //returns a IQueryable populated with all the entries in the movies/etc 
@@ -193,20 +197,53 @@ namespace NextFlicksMVC4.Controllers
 
             Tools.TraceLine("Ordering the movies and taking {0}", 25);
             //array instead list for performance
-            var nitvmArray = nitvmQuery.OrderBy(item => item.OmdbEntry.t_Meter).Take(25).ToArray();
+            var nitvmArray =
+                nitvmQuery.OrderBy(item => item.OmdbEntry.t_Meter)
+                          .Take(25)
+                          .ToArray();
 
 
             var done = Tools.WriteTimeStamp("done at");
-            Tools.TraceLine("took: {0}", done-start);
+            Tools.TraceLine("took: {0}", done - start);
             //Tools.TraceLine("amount of results {0}", res.Count);
 
 
             return View();
-            
+
         }
 
 
-        public ActionResult DetailsNit()
+        public ActionResult testsort()
+        {
+
+            var db = new MovieDbContext();
+            var total_qry = Tools.GetFullDbQuery(db);
+
+            var res =
+                from nit in total_qry
+                //title
+                where nit.Movie.short_title.StartsWith("")  &&
+                //runtime
+                 nit.Movie.runtime > new TimeSpan(0, 0, 0, 0) &&
+                 nit.Movie.runtime < new TimeSpan(55,0,0,0) &&
+                 //year
+                 Tools.GetYearOr0(nit.Movie) >= 0 &&
+                 Tools.GetYearOr0(nit.Movie) >= 3000 &&
+                 //maturity rating
+                 Tools.ReturnMaturityOrDefault(nit.Movie.maturity_rating) >= 0 &&
+                 Tools.ReturnMaturityOrDefault(nit.Movie.maturity_rating) >= 200 
+
+                    select  nit;
+
+            var nit_list = res.ToList();
+
+            return View();
+
+        }
+
+
+
+    public ActionResult DetailsNit()
         {
             //create a VM
             MovieDbContext movieDb = new MovieDbContext();
