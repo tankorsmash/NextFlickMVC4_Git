@@ -171,13 +171,13 @@ namespace NextFlicksMVC4
                     Trace.WriteLine("\tRuntime Start");
                 movie_list =
                     movie_list.Where(
-                        item => item.runtime.TotalSeconds >= runtime_start)
+                        item => item.runtime >= runtime_start)
                               .ToList();
                 if (verbose == true)
                     Trace.WriteLine("\tRuntime End");
                 movie_list =
                     movie_list.Where(
-                        item => item.runtime.TotalSeconds <= runtime_end)
+                        item => item.runtime <= runtime_end)
                               .ToList();
             }
 
@@ -189,14 +189,14 @@ namespace NextFlicksMVC4
                 movie_list =
                     movie_list.Where(
                         item =>
-                        ReturnMaturityOrDefault(item.maturity_rating) >=
+                        item.maturity_rating >=
                         mpaa_start).ToList();
                 if (verbose == true)
                     Trace.WriteLine("\tMPAA End");
                 movie_list =
                     movie_list.Where(
                         item =>
-                        ReturnMaturityOrDefault(item.maturity_rating) <=
+                        item.maturity_rating <=
                         mpaa_end).ToList();
             }
 
@@ -642,7 +642,7 @@ namespace NextFlicksMVC4
             }
         }
 
-        public static void BuildMoviesBoxartGenresTables()
+        public static void BuildMoviesBoxartGenresTables(string filepath)
         {
             Trace.WriteLine("starting Full Action");
             string msg = DateTime.Now.ToShortTimeString();
@@ -658,7 +658,7 @@ namespace NextFlicksMVC4
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
             string data;
             int count = 0;
-            using (StreamReader reader = new StreamReader(@"C:\testUS.NFPOX")) {
+            using (StreamReader reader = new StreamReader(filepath)) {
                 Trace.WriteLine("Starting to read");
 
                 data = reader.ReadLine();
@@ -682,11 +682,11 @@ namespace NextFlicksMVC4
 
 
                             //log adding data
-                            msg =
-                                String.Format(
-                                    "Added item {0} to database, moving to next one",
-                                    count.ToString());
-                            Trace.WriteLine(msg);
+                            //msg =
+                            //    String.Format(
+                            //        "Added item {0} to database, moving to next one",
+                            //        count.ToString());
+                            //Trace.WriteLine(msg);
                             count += 1;
                         }
                         data = reader.ReadLine();
@@ -702,6 +702,11 @@ namespace NextFlicksMVC4
                     Trace.WriteLine(
                         "Done parsing the XML because of something happened. Probably the end of file:");
                     Trace.WriteLine(ex.Message);
+                    msg =
+                        String.Format(
+                            "Failed around item {0} to database",
+                            count.ToString());
+                    Trace.WriteLine(msg);
                 }
 
                 db.SaveChanges();

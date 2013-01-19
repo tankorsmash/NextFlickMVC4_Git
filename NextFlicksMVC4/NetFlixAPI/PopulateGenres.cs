@@ -99,7 +99,12 @@ namespace NextFlicksMVC4.NetFlixAPI
 
 
             Trace.WriteLine("starting to save genre table");
-            db.SaveChanges();
+            try {
+                db.SaveChanges();
+            }
+            catch (System.Data.Entity.Infrastructure.DbUpdateException ex) {
+                Tools.TraceLine("caught error while saving Genres Table. It probably already exists:\n***{0}", ex.Message);
+            }
         }
     }
 }

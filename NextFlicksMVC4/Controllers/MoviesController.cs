@@ -224,14 +224,14 @@ namespace NextFlicksMVC4.Controllers
                 //title
                 where nit.Movie.short_title.StartsWith("")  &&
                 //runtime
-                 nit.Movie.runtime > new TimeSpan(0, 0, 0, 0) &&
-                 nit.Movie.runtime < new TimeSpan(55,0,0,0) &&
+                 nit.Movie.runtime >  0 &&
+                 nit.Movie.runtime <  10000 &&
                  //year
                  Tools.GetYearOr0(nit.Movie) >= 0 &&
                  Tools.GetYearOr0(nit.Movie) >= 3000 &&
                  //maturity rating
-                 Tools.ReturnMaturityOrDefault(nit.Movie.maturity_rating) >= 0 &&
-                 Tools.ReturnMaturityOrDefault(nit.Movie.maturity_rating) >= 200 
+                 nit.Movie.maturity_rating >= 0 &&
+                 nit.Movie.maturity_rating >= 200 
 
                     select  nit;
 
@@ -383,7 +383,7 @@ namespace NextFlicksMVC4.Controllers
             PopulateGenres.PopulateGenresTable();
 
 
-            Tools.BuildMoviesBoxartGenresTables();
+            Tools.BuildMoviesBoxartGenresTables(@"C:\fixedAPI.NFPOX");
 
             return View();
         }
@@ -635,7 +635,7 @@ namespace NextFlicksMVC4.Controllers
             PopulateGenres.PopulateGenresTable();
 
             //parse the lines into a Title then Movie object, along with boxart data and genre
-            Tools.BuildMoviesBoxartGenresTables();
+            Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
 
             //download the omdbapi 
             Omdb.DownloadOmdbZipAndExtract();

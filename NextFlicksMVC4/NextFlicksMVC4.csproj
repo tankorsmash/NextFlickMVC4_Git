@@ -241,6 +241,10 @@
     <Compile Include="Controllers\userAccount\RegisterController.cs" />
     <Compile Include="Controllers\userAccount\UserController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
+    <Compile Include="Migrations\201301191906198_string_to_int_matrating_year.cs" />
+    <Compile Include="Migrations\201301191906198_string_to_int_matrating_year.Designer.cs">
+      <DependentUpon>201301191906198_string_to_int_matrating_year.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\userAccount\LogonModel.cs" />
     <Compile Include="Models\userAccount\Users.cs" />
@@ -517,9 +521,9 @@
     <Content Include="Views\Movies\DetailsTag.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NetFlixAPI\genres.NFPOX">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <EmbeddedResource Include="Migrations\201301191906198_string_to_int_matrating_year.resx">
+      <DependentUpon>201301191906198_string_to_int_matrating_year.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
