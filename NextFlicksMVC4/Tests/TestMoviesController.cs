@@ -37,7 +37,7 @@ namespace NextFlicksMVC4.Tests
             Title title = new Title
                               {
                                   TitleString = "Test Title",
-                                  ReleaseYear = "2009",
+                                  ReleaseYear = 2009,
                                   RuntimeInSeconds = 3600,
                                   AvgRating = "3",
                                   WhichSeason = "0",
@@ -52,7 +52,7 @@ namespace NextFlicksMVC4.Tests
             Movie expected = new Movie
                                  {
                                      short_title = "Test Title",
-                                     year = "2009",
+                                     year = 2009,
                                      runtime = 3600,
                                      avg_rating = "3",
                                      is_movie = true,

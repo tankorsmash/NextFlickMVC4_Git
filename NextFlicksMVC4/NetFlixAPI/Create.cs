@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -170,7 +171,7 @@ namespace NextFlicksMVC4.NetFlixAPI
             //find the year released
             var release_node = catalog_title.SelectSingleNode("release_year");
             var year = release_node.InnerText;
-            createdTitle.ReleaseYear = year;
+            createdTitle.ReleaseYear = Convert.ToInt32(year);
 
             //find the runtime
             var runtime_node = catalog_title.SelectSingleNode("link/delivery_formats/availability/runtime");

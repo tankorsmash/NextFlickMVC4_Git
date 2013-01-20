@@ -18,7 +18,7 @@ namespace NextFlicksMVC4.Models
         public string short_title { get; set; }
 
         [DisplayName("Year Release")]
-        public string year { get; set; }
+        public int year { get; set; }
 
         [DisplayName("Runtime")]
         public int runtime { get; set; }

@@ -229,8 +229,8 @@ namespace NextFlicksMVC4.Controllers
                  nit.Movie.runtime >  0 &&
                  nit.Movie.runtime <  10000 &&
                  //year
-                 Tools.GetYearOr0(nit.Movie) >= 0 &&
-                 Tools.GetYearOr0(nit.Movie) >= 3000 &&
+                 nit.Movie.year >= 0 &&
+                 nit.Movie.year >= 3000 &&
                  //maturity rating
                  nit.Movie.maturity_rating >= 0 &&
                  nit.Movie.maturity_rating >= 200 

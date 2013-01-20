@@ -143,12 +143,12 @@ namespace NextFlicksMVC4
             if (verbose == true)
                 Trace.WriteLine("\tYear Start");
             movie_list =
-                movie_list.Where(item => GetYearOr0(item) >= year_start)
+                movie_list.Where(item => item.year >= year_start)
                           .ToList();
             if (verbose == true)
                 Trace.WriteLine("\tYear End");
             movie_list =
-                movie_list.Where(item => GetYearOr0(item) <= year_end).ToList();
+                movie_list.Where(item => item.year <= year_end).ToList();
 
             //title
             if (title != "")
@@ -384,13 +384,15 @@ namespace NextFlicksMVC4
         /// </summary>
         /// <param name="movie"></param>
         /// <returns></returns>
+        [Obsolete("Movie Class doesn't have a string year property", true)]
         public static int GetYearOr0(Movie movie)
         {
-            if (movie.year != "") {
-                return Convert.ToInt32(movie.year);
-            }
-            else
-                return 0;
+            //if (movie.year != "") {
+            //    return Convert.ToInt32(movie.year);
+            //}
+            //else
+            //    return 0;
+            return 0;
         }
 
         /// <summary>

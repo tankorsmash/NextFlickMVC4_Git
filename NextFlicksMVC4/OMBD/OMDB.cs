@@ -113,7 +113,7 @@ namespace NextFlicksMVC4.OMBD
                                     ombd_ID = Convert.ToInt32( imdbReader["ID"]),
 
                                     title = imdbReader["title"],
-                                    year = imdbReader["year"],
+                                    year = Convert.ToInt32(imdbReader["year"]),
 
                                     i_Votes = imdbReader["imdbVotes"],
                                     i_Rating = imdbReader["imdbRating"],
@@ -205,8 +205,8 @@ namespace NextFlicksMVC4.OMBD
                                             "/root/movie/@title")
                                                    .InnerText,
                                     year =
-                                        xmlDocument.SelectSingleNode(
-                                            "/root/movie/@year").InnerText,
+                                        Convert.ToInt32(xmlDocument.SelectSingleNode(
+                                            "/root/movie/@year").InnerText),
                                     i_Votes =
                                         xmlDocument.SelectSingleNode(
                                             "/root/movie/@imdbVotes").InnerText,
@@ -322,7 +322,7 @@ namespace NextFlicksMVC4.OMBD
         public string title { get; set; }
         [DisplayName("Release Year")]
         [ProtoMember(3)]
-        public string year { get; set; }
+        public int year { get; set; }
 
         [DisplayName("IMDB Rating")]
         [ProtoMember(4)]
