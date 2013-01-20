@@ -1,15 +1,17 @@
 ﻿@model NextFlicksMVC4.Views.Movies.ViewModels.MovieTagViewModel
 
+
 @{
     ViewBag.Title = "Details";
+   
 }
 
 <h2>Details</h2>
 @using (Html.BeginForm())
 {
-    <fieldset>
+  <fieldset>
         <legend>Movie</legend>
-
+        @Html.HiddenFor(model => model.movie.movie_ID)
         <div class="display-label">
             @Html.DisplayNameFor(model => model.movie.short_title)
         </div>
@@ -82,12 +84,8 @@
         <div class="display-field">
             @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
             {
-
-
-
-                @Html.TextBoxFor((model => model.Tags))
-                <input type="submit" value="Add Tags" />
-
+                <p>@Html.TextBoxFor((model => model.Tags))</p>
+                <p><input type="submit" value="Add Tags" /></p>
             }
             else
             {

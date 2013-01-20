@@ -485,26 +485,29 @@ namespace NextFlicksMVC4.Controllers
             foreach(MovieTags tag in db.Tags){tags.Tags.Add(tag.Tag);}
             return View(tags);
         }
+
         [HttpPost]
-        public ActionResult DetailsTag(MovieTagViewModel movie)
+        public ActionResult DetailsTag(int movie_ID, List<string> tags )
         {
             if (ModelState.IsValid)
             {
                 MovieDbContext db = new MovieDbContext();
-                Movie taggedMovie = db.Movies.Find(movie.movie.movie_ID);
-                foreach (string tag in movie.Tags)
+                Movie taggedMovie = db.Movies.Find(movie_ID);
+                foreach (string tag in tags)
                 {
-                    MovieTags newTag = new MovieTags();
-                    newTag.Tag = tag;
-                    newTag.movie_ID = taggedMovie.movie_ID;
-                    newTag.userID = WebSecurity.CurrentUserId;
+                    MovieTags newTag = new MovieTags()
+                    {
+                        Tag = tag,
+                        movie_ID = taggedMovie.movie_ID,
+                        userID = WebSecurity.CurrentUserId
+                    };
                     db.Tags.Add(newTag);
                     //db.Movies.Add(movie);
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
             }
-            return View(movie);
+            return View();
         }
 
         public ActionResult Details(int movie_ID = 0)
