@@ -218,26 +218,34 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult testsort()
         {
 
+            var start = Tools.WriteTimeStamp("start");
+
             var db = new MovieDbContext();
             var total_qry = Tools.GetFullDbQuery(db);
 
             var res =
                 from nit in total_qry
                 //title
-                where nit.Movie.short_title.StartsWith("")  &&
-                //runtime
-                 nit.Movie.runtime >  0 &&
-                 nit.Movie.runtime <  10000 &&
-                 //year
-                 nit.Movie.year >= 0 &&
-                 nit.Movie.year >= 3000 &&
-                 //maturity rating
-                 nit.Movie.maturity_rating >= 0 &&
-                 nit.Movie.maturity_rating >= 200 
+                where nit.Movie.short_title.StartsWith("")
+                      //runtime
+                      && nit.Movie.runtime > 0
+                      && nit.Movie.runtime < 100000
+                      //year
+                      && nit.Movie.year >= 0
+                      && nit.Movie.year <= 3000
+                      //maturity rating
+                      && nit.Movie.maturity_rating >= 0
+                      && nit.Movie.maturity_rating <= 200
+                      //genre
+                      && nit.Genres.Any(item => item.StartsWith(""))
 
-                    select  nit;
+                select nit;
 
-            var nit_list = res.ToList();
+            var nit_list = res.ToArray();
+
+            Tools.TraceLine("items in nit list {0}", res.Count());
+            var end = Tools.WriteTimeStamp("end");
+            Tools.TraceLine((end-start).ToString());
 
             return View();
 
