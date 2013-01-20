@@ -537,9 +537,37 @@ namespace NextFlicksMVC4
             db.Configuration.AutoDetectChangesEnabled = false;
 
             int count = complete_list.Count;
+            const int quarter_1 = 50000;
+            const int quarter_2 = 100000;
+            const int quarter_3 = 150000;
+            const int quarter_4 = 200000;
+            int index = 0;
             foreach (OmdbEntry omdbEntry in complete_list) {
                 db.Omdb.Add(omdbEntry);
 
+                switch (index) {
+                    case quarter_1:
+                        {
+                            db.SaveChanges();
+                            break;  
+                        }
+                    case quarter_2:
+                        {
+                            db.SaveChanges();
+                            break;  
+                        }
+                    case quarter_3:
+                        {
+                            db.SaveChanges();
+                            break;  
+                        }
+                    case quarter_4:
+                        {
+                            db.SaveChanges();
+                            break;  
+                        }
+                }
+                index++;
                 //int remaining = count - complete_list.IndexOf(omdbEntry);
                 //Trace.WriteLine(remaining);
             }

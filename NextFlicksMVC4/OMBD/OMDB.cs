@@ -138,12 +138,21 @@ namespace NextFlicksMVC4.OMBD
                 omdbEntry.t_Rating = tomReader["Rating"];
                 omdbEntry.t_Meter = tomReader["Meter"];
                 omdbEntry.t_Reviews = tomReader["Reviews"];
-                omdbEntry.t_Fresh = tomReader["Fresh"];
-                omdbEntry.t_Rotten = tomReader["Rotten"];
+                //might be "n/a" or ""  so I've got to account for that
+                int t_fresh;
+                int.TryParse(tomReader["Fresh"],out t_fresh);
+                omdbEntry.t_Fresh = t_fresh;
+                int t_rotten;
+                int.TryParse(tomReader["Rotten"], out t_rotten);
+                omdbEntry.t_Rotten = t_rotten;
+
                 omdbEntry.t_Consensus = tomReader["Consensus"];
                 omdbEntry.t_UserMeter = tomReader["userMeter"];
                 omdbEntry.t_UserRating = tomReader["userRating"];
-                omdbEntry.t_UserReviews = tomReader["userReviews"];
+                //same as above, need to deal with "n/a"
+                int t_userreviews;
+                int.TryParse(tomReader["userReviews"], out t_userreviews);
+                omdbEntry.t_UserReviews = t_userreviews;
             }
 
 
@@ -233,13 +242,13 @@ namespace NextFlicksMVC4.OMBD
                                             "/root/movie/@tomatoReviews")
                                                    .InnerText,
                                     t_Fresh =
-                                        xmlDocument.SelectSingleNode(
+                                        Convert.ToInt32(xmlDocument.SelectSingleNode(
                                             "/root/movie/@tomatoFresh")
-                                                   .InnerText,
+                                                                   .InnerText),
                                     t_Rotten =
-                                        xmlDocument.SelectSingleNode(
+                                        Convert.ToInt32(xmlDocument.SelectSingleNode(
                                             "/root/movie/@tomatoRotten")
-                                                   .InnerText,
+                                                                   .InnerText),
                                     t_Consensus =
                                         xmlDocument.SelectSingleNode(
                                             "/root/movie/@tomatoConsensus")
@@ -253,9 +262,9 @@ namespace NextFlicksMVC4.OMBD
                                             "/root/movie/@tomatoUserRating")
                                                    .InnerText,
                                     t_UserReviews =
-                                        xmlDocument.SelectSingleNode(
+                                        Convert.ToInt32(xmlDocument.SelectSingleNode(
                                             "/root/movie/@tomatoUserReviews")
-                                                   .InnerText,
+                                                                   .InnerText),
                                 };
 
                 return omdbEntry;
@@ -348,10 +357,10 @@ namespace NextFlicksMVC4.OMBD
         public string t_Reviews { get; set; }
         [DisplayName("Rotten Tomatoes Fresh")]
         [ProtoMember(11)]
-        public string t_Fresh { get; set; }
+        public int t_Fresh { get; set; }
         [DisplayName("Rotten Tomatoes Rotten")]
         [ProtoMember(12)]
-        public string t_Rotten { get; set; }
+        public int t_Rotten { get; set; }
         [DisplayName("Rotten Tomatoes Consensus")]
         [ProtoMember(13)]
         public string t_Consensus { get; set; }
@@ -363,6 +372,6 @@ namespace NextFlicksMVC4.OMBD
         public string t_UserRating { get; set; }
         [DisplayName("Rotten Tomatoes UserReviews")]
         [ProtoMember(16)]
-        public string t_UserReviews { get; set; }
+        public int t_UserReviews { get; set; }
     }
 }

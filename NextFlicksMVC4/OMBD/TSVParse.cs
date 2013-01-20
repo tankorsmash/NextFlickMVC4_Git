@@ -135,14 +135,14 @@ namespace NextFlicksMVC4.OMBD
                                  //if the joined omdb doesn't exist, fill in null
                                  t_Image = (match == null? "N/A" :match.t_Image),
                                  t_Consensus = (match == null ? "N/A": match.t_Consensus),
-                                 t_Fresh = (match == null ? "N/A": match.t_Fresh),
+                                 t_Fresh = (match == null ? 0 : match.t_Fresh),
                                  t_Meter = (match == null ? "N/A": match.t_Meter),
                                  t_Rating = (match == null ? "N/A": match.t_Rating),
                                  t_Reviews = (match == null ? "N/A": match.t_Reviews),
-                                 t_Rotten = (match == null ? "N/A": match.t_Rotten),
+                                 t_Rotten = (match == null ? 0 : match.t_Rotten),
                                  t_UserMeter = (match == null ? "N/A": match.t_UserMeter),
                                  t_UserRating = (match == null ? "N/A": match.t_UserRating),
-                                 t_UserReviews = (match == null ? "N/A": match.t_UserReviews)
+                                 t_UserReviews = (match == null ? 0 : match.t_UserReviews)
 
                              };
         List<OmdbEntry> complete_list = res.ToList();

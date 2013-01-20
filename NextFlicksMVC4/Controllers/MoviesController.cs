@@ -225,8 +225,9 @@ namespace NextFlicksMVC4.Controllers
 
             var res =
                 from nit in total_qry
-                //title
-                where nit.Movie.short_title.StartsWith("")
+                where
+                    //title
+                nit.Movie.short_title.StartsWith("")
                       //runtime
                       && nit.Movie.runtime > 0
                       && nit.Movie.runtime < 100000
@@ -239,6 +240,9 @@ namespace NextFlicksMVC4.Controllers
                       //genre
                       && nit.Genres.Any(item => item.StartsWith(""))
 
+                      //RT meter
+                      //&& nit.OmdbEntry.t_Meter >= 0
+                      //&& nit.OmdbEntry.t_Meter <= 200
                 select nit;
 
             var nit_list = res.ToArray();
