@@ -710,14 +710,14 @@ namespace NextFlicksMVC4.Controllers
 
             //parse it for omdbentrys, serialize it to file
             Tools.SerializeOmdbTsv(
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP",
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt",
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt");
+                @"\OMBD\omdb.DUMP",
+                @"\OMDB\omdb.txt",
+                @"\OMDB\tomatoes.txt");
 
             //deserialize the file, turn it into omdb
             //  can't remember if it does it here or not, but marry the omdbs and movie
             Tools.RebuildOmdbsFromProtobufDump(
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP");
+                @"\OMBD\omdb.DUMP");
             Tools.MarryMovieToOmdb(db);
 
 
