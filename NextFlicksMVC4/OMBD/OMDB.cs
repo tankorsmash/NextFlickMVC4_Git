@@ -136,7 +136,7 @@ namespace NextFlicksMVC4.OMBD
                 omdbEntry.ombd_ID = Convert.ToInt32(tomReader["ID"]);
                 omdbEntry.t_Image = tomReader["Image"];
                 omdbEntry.t_Rating = tomReader["Rating"];
-                omdbEntry.t_Meter = tomReader["Meter"];
+                omdbEntry.t_Meter = Convert.ToInt32(tomReader["Meter"]);
                 omdbEntry.t_Reviews = tomReader["Reviews"];
                 //might be "n/a" or ""  so I've got to account for that
                 int t_fresh;
@@ -226,9 +226,9 @@ namespace NextFlicksMVC4.OMBD
                                         xmlDocument.SelectSingleNode(
                                             "/root/movie/@imdbID").InnerText,
                                     t_Meter =
-                                        xmlDocument.SelectSingleNode(
+                                        Convert.ToInt32(xmlDocument.SelectSingleNode(
                                             "/root/movie/@tomatoMeter")
-                                                   .InnerText,
+                                                                   .InnerText),
                                     t_Image =
                                         xmlDocument.SelectSingleNode(
                                             "/root/movie/@tomatoImage")
@@ -345,7 +345,7 @@ namespace NextFlicksMVC4.OMBD
 
         [DisplayName("Rotten Tomatoes Meter")]
         [ProtoMember(7)]
-        public string t_Meter { get; set; }
+        public int t_Meter { get; set; }
         [DisplayName("Rotten Tomatoes Image")]
         [ProtoMember(8)]
         public string t_Image { get; set; }

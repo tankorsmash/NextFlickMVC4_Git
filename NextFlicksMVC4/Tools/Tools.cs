@@ -252,7 +252,7 @@ namespace NextFlicksMVC4
             if (sort.ToLower() == "t_meter") {
                 return
                     nit_list.Where(item => item.OmdbEntry != null)
-                            .OrderByDescending(item => StringToDouble(item.OmdbEntry.t_Meter))
+                            .OrderByDescending(item => item.OmdbEntry.t_Meter)
                             .ToList();
             }
             return nit_list;

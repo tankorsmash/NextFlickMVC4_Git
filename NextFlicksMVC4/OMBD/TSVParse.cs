@@ -136,7 +136,7 @@ namespace NextFlicksMVC4.OMBD
                                  t_Image = (match == null? "N/A" :match.t_Image),
                                  t_Consensus = (match == null ? "N/A": match.t_Consensus),
                                  t_Fresh = (match == null ? 0 : match.t_Fresh),
-                                 t_Meter = (match == null ? "N/A": match.t_Meter),
+                                 t_Meter = (match == null ? 0: match.t_Meter),
                                  t_Rating = (match == null ? "N/A": match.t_Rating),
                                  t_Reviews = (match == null ? "N/A": match.t_Reviews),
                                  t_Rotten = (match == null ? 0 : match.t_Rotten),
