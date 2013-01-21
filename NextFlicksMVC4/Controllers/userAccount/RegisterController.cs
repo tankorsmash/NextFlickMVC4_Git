@@ -1,6 +1,9 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
+using System.Web.Security;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.Models.userAccount;
+using WebMatrix.WebData;
 
 namespace NextFlicksMVC4.Controllers.userAccount
 {
@@ -28,17 +31,21 @@ namespace NextFlicksMVC4.Controllers.userAccount
             ///
             if (ModelState.IsValid)
             {
-
+                WebSecurity.CreateUserAndAccount(user.Username, user.password, propertyValues: new { username = user.Username, firstName = user.firstName, lastName = user.lastName, email = user.email });
+                string username = user.Username;
+                Roles.AddUserToRole(username, "User");
                 ViewBag.Title = "Success!";
-                Users newUser = new Users();
-                newUser.Username = user.Username;
-                newUser.firstName = user.firstName;
-                newUser.lastName = user.lastName;
-                newUser.email = user.email;
+
+                //Users newUser = new Users();
+                //newUser.Username = user.Username;
+                //newUser.firstName = user.firstName;
+                //newUser.lastName = user.lastName;
+                //newUser.email = user.email;
                 //newUser.password = newUser.SetPassword(user.password);
-                newUser.password = newUser.SetHash((user.password));
-                _userDb.Users.Add(newUser);
-                _userDb.SaveChanges();
+               // newUser.password = newUser.SetHash((user.password));
+                //var userData = new {{"firstName", user.firstName},{"lastName", user.lastName}, {"email", user.email}};
+                // _userDb.Users.Add(newUser);
+                //_userDb.SaveChanges();
                 ViewBag.Message = "You have succesfully been registered!";
                 return View("../Home/Index");
             }

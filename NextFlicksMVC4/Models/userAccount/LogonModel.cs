@@ -12,5 +12,8 @@ namespace NextFlicksMVC4.Models.userAccount
         [DataType(DataType.Password)]
         public String Password { get; set; }
 
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+
     }
 }

@@ -28,11 +28,12 @@ namespace NextFlicksMVC4.Models.userAccount
         [Display(Name = "Email")]
         public String email { get; set; }
         
+        /* edit out password as SimpleMembershipPorvider puts it in another table
         [Required]
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
         public String password { get; set; }
-
+        */
         
         /* edit out admin flag as I am using simple role providers now
         public int admin { get; set; }
@@ -49,6 +50,7 @@ namespace NextFlicksMVC4.Models.userAccount
         [Display(Name = "Last Name")]
         public String lastName { get; set; }
 
+        /* edit out all my password hashing as SimpleMembershipProvider does it for me
         //try the bcrpyt version of encrypting the passwords
         const String ConstantSalt = "fg809rTyu099#!"; //use this to salt password hashes
         

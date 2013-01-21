@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using NextFlicksMVC4;
 using NextFlicksMVC4.DatabaseClasses;
 using NextFlicksMVC4.Models;
@@ -20,6 +21,7 @@ using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 using LumenWorks.Framework.IO.Csv;
 using ProtoBuf;
+using WebMatrix.WebData;
 using Ionic.Zip;
 
 namespace NextFlicksMVC4.Controllers
@@ -464,20 +466,49 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult DetailsTag(int movie_ID = 0)
         {
             MovieDbContext db = new MovieDbContext();
-
+            
             Movie movie = db.Movies.Find(movie_ID);
             if (movie == null)
             {
                 return HttpNotFound();
             }
 
-            MovieTagViewModel tags = new MovieTagViewModel();
-            tags.movie = movie;
-            tags.genre_strings = new List<string>();
-            tags.Tags = new List<string>();
-            foreach (Genre genre in db.Genres.ToList()) { tags.genre_strings.Add(genre.genre_string);}
-            foreach(MovieTags tag in db.Tags){tags.Tags.Add(tag.Tag);}
-            return View(tags);
+            MovieTagViewModel movieTagViewModel = new MovieTagViewModel();
+            movieTagViewModel.movie = movie;
+            movieTagViewModel.genre_strings = new List<string>();
+            movieTagViewModel.Tags = new List<string>();
+           /* var tagResults = from tags in db.Tags
+                             where tags.movie_ID == movie_ID*/
+            foreach (Genre genre in db.Genres.ToList()) { movieTagViewModel.genre_strings.Add(genre.genre_string);}
+            foreach(MovieTags tag in db.Tags){movieTagViewModel.Tags.Add(tag.Tag);}
+            return View(movieTagViewModel);
+        }
+
+        [HttpPost]
+        public ActionResult DetailsTag(int movie_ID, List<string> tags )
+        {
+            if (ModelState.IsValid)
+            {
+                MovieDbContext db = new MovieDbContext();
+                Movie taggedMovie = db.Movies.Find(movie_ID);
+                //break the tags down by comma delimeter
+                string[] seperatedtags = tags[0].Split(',');
+                foreach (string tag in seperatedtags)
+                {
+                    MovieTags newTag = new MovieTags()
+                    {
+                        Tag = tag,
+                        movie_ID = taggedMovie.movie_ID,
+                        userID = WebSecurity.CurrentUserId
+                    };
+                    db.Tags.Add(newTag);
+                    //db.Movies.Add(movie);
+                    db.SaveChanges();
+                    //return RedirectToAction("Index");
+                }
+                RedirectToAction("DetailsTag", movie_ID);
+            }
+            return View();
         }
 
         public ActionResult Details(int movie_ID = 0)
@@ -499,7 +530,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Regen()
         {
             //finds the file dump from the TSV to OmdbEntry read and adds it to the db
-            Tools.RebuildOmdbsFromProtobufDump(@"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP");
+            Tools.RebuildOmdbsFromProtobufDump(@"\OMBD\omdb.DUMP");
 
             return View();
         }
@@ -517,10 +548,10 @@ namespace NextFlicksMVC4.Controllers
             
             //read the Omdb.txt file and turn the resulting objects into a protobuf dump
             // to be read by the Tools.RebuildOmdbsFromProtobufDump method
-            string entryDumpPath = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdbASD.DUMP";
-            string imdbPath = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
+            string entryDumpPath = @"omdbASD.DUMP";
+            string imdbPath = @"omdb.txt";
             string tomPath =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt";
+                @"tomatoes.txt";
 
             Tools.SerializeOmdbTsv(
                 entryDumpPath,
@@ -681,8 +712,6 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Zip()
         {
             Omdb.DownloadOmdbZipAndExtract(@"omdb.zip");
-
-
             return View();
         }
 
@@ -701,23 +730,20 @@ namespace NextFlicksMVC4.Controllers
             //build a genres txt file for all the genres in the NFPOX
             //ASSUMES GENRES.NFPOX IS THERE
             PopulateGenres.PopulateGenresTable();
-
+            
             //parse the lines into a Title then Movie object, along with boxart data and genre
             Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
 
-            //download the omdbapi 
+            //download the omdbapi
             Omdb.DownloadOmdbZipAndExtract(@"omdb.zip");
 
             //parse it for omdbentrys, serialize it to file
-            Tools.SerializeOmdbTsv(
-                @"\OMBD\omdb.DUMP",
-                @"\OMDB\omdb.txt",
-                @"\OMDB\tomatoes.txt");
+            Tools.SerializeOmdbTsv(@"omdb.DUMP", @"omdb.txt", @"tomatoes.txt");
 
             //deserialize the file, turn it into omdb
             //  can't remember if it does it here or not, but marry the omdbs and movie
-            Tools.RebuildOmdbsFromProtobufDump(
-                @"\OMBD\omdb.DUMP");
+            Tools.RebuildOmdbsFromProtobufDump(@"omdb.DUMP");
+
             Tools.MarryMovieToOmdb(db);
 
 
