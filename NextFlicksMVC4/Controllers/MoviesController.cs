@@ -513,7 +513,9 @@ namespace NextFlicksMVC4.Controllers
 
             var start = Tools.WriteTimeStamp();
 
-            MovieDbContext db = new MovieDbContext();                        //read the Omdb.txt file and turn the resulting objects into a protobuf dump
+            MovieDbContext db = new MovieDbContext();
+            
+            //read the Omdb.txt file and turn the resulting objects into a protobuf dump
             // to be read by the Tools.RebuildOmdbsFromProtobufDump method
             string entryDumpPath = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdbASD.DUMP";
             string imdbPath = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
