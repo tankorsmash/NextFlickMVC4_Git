@@ -477,13 +477,15 @@ namespace NextFlicksMVC4.Controllers
                 return HttpNotFound();
             }
 
-            MovieTagViewModel tags = new MovieTagViewModel();
-            tags.movie = movie;
-            tags.genre_strings = new List<string>();
-            tags.Tags = new List<string>();
-            foreach (Genre genre in db.Genres.ToList()) { tags.genre_strings.Add(genre.genre_string);}
-            foreach(MovieTags tag in db.Tags){tags.Tags.Add(tag.Tag);}
-            return View(tags);
+            MovieTagViewModel movieTagViewModel = new MovieTagViewModel();
+            movieTagViewModel.movie = movie;
+            movieTagViewModel.genre_strings = new List<string>();
+            movieTagViewModel.Tags = new List<string>();
+            var tagResults = from tags in db.Tags
+                             where tags.movie_ID == movie_ID
+            foreach (Genre genre in db.Genres.ToList()) { movieTagViewModel.genre_strings.Add(genre.genre_string);}
+            foreach(MovieTags tag in db.Tags){movieTagViewModel.Tags.Add(tag.Tag);}
+            return View(movieTagViewModel);
         }
 
         [HttpPost]

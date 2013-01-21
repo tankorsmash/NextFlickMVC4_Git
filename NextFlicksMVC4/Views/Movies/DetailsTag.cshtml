@@ -68,32 +68,33 @@
             @Html.DisplayFor(model => model.movie.is_movie)
         </div>
 
-
         <div class="display-label">
             @Html.DisplayNameFor(model => model.movie.maturity_rating)
         </div>
-        <div class="display-field">
-            @Html.DisplayFor(model => model.movie.maturity_rating)
-        </div>
-        @*TODO: get the editor field to allow users to add Tags, need to make a viewmodel for movies with tags + genres me thinks *@
+      <div class="display-field">
+          @Html.DisplayFor(model => model.movie.maturity_rating)
+      </div>
+      <div class="display-label">
+          @Html.DisplayNameFor(model => model.genre_strings)
+      </div>
+      <div class="display-field">
+          @Html.DisplayFor(model => model.genre_strings)
+      </div>
+
         <div class="display-label">
             @Html.DisplayNameFor(model => model.Tags)
-        
         </div>
         <div class="display-field"> @Html.DisplayFor(model => model.Tags)</div>
         <div class="display-field">
             @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
             {
-                <p>@Html.TextBoxFor((model => model.Tags))</p>
+                 <h4>Seperate tags by comma</h4>
+                <p>
+                    Html.TextBox("tags", value:"")
+                </p>
                 <p><input type="submit" value="Add Tags" /></p>
             }
-            else
-            {
-                <p> nope!</p>
-            }
             
-            
-                 
         </div>
         
     </fieldset>
