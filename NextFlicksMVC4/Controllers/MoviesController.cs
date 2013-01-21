@@ -477,8 +477,8 @@ namespace NextFlicksMVC4.Controllers
             movieTagViewModel.movie = movie;
             movieTagViewModel.genre_strings = new List<string>();
             movieTagViewModel.Tags = new List<string>();
-            var tagResults = from tags in db.Tags
-                             where tags.movie_ID == movie_ID
+           /* var tagResults = from tags in db.Tags
+                             where tags.movie_ID == movie_ID*/
             foreach (Genre genre in db.Genres.ToList()) { movieTagViewModel.genre_strings.Add(genre.genre_string);}
             foreach(MovieTags tag in db.Tags){movieTagViewModel.Tags.Add(tag.Tag);}
             return View(movieTagViewModel);
@@ -491,7 +491,9 @@ namespace NextFlicksMVC4.Controllers
             {
                 MovieDbContext db = new MovieDbContext();
                 Movie taggedMovie = db.Movies.Find(movie_ID);
-                foreach (string tag in tags)
+                //break the tags down by comma delimeter
+                string[] seperatedtags = tags[0].Split(',');
+                foreach (string tag in seperatedtags)
                 {
                     MovieTags newTag = new MovieTags()
                     {
@@ -502,8 +504,9 @@ namespace NextFlicksMVC4.Controllers
                     db.Tags.Add(newTag);
                     //db.Movies.Add(movie);
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    //return RedirectToAction("Index");
                 }
+                RedirectToAction("DetailsTag", movie_ID);
             }
             return View();
         }
@@ -527,7 +530,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Regen()
         {
             //finds the file dump from the TSV to OmdbEntry read and adds it to the db
-            Tools.RebuildOmdbsFromProtobufDump(@"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP");
+            Tools.RebuildOmdbsFromProtobufDump(@"\OMBD\omdb.DUMP");
 
             return View();
         }
@@ -545,10 +548,10 @@ namespace NextFlicksMVC4.Controllers
             
             //read the Omdb.txt file and turn the resulting objects into a protobuf dump
             // to be read by the Tools.RebuildOmdbsFromProtobufDump method
-            string entryDumpPath = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdbASD.DUMP";
-            string imdbPath = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
+            string entryDumpPath = @"omdbASD.DUMP";
+            string imdbPath = @"omdb.txt";
             string tomPath =
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt";
+                @"tomatoes.txt";
 
             Tools.SerializeOmdbTsv(
                 entryDumpPath,
@@ -709,8 +712,6 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Zip()
         {
             Omdb.DownloadOmdbZipAndExtract(@"omdb.zip");
-
-
             return View();
         }
 
@@ -721,32 +722,57 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
             //retrieve API .POX
-            var data = OAuth1a.GetNextflixCatalogDataString( "catalog/titles/streaming", "", outputPath: netflixPosFilepath);
+            Tools.TraceLine("Start Join Lines");
+            Tools.WriteTimeStamp();
+            //var data = OAuth1a.GetNextflixCatalogDataString( "catalog/titles/streaming", "", outputPath: netflixPosFilepath);
 
             //join the lines that don't match <catalog to the ones above it
-            Tools.JoinLines(netflixPosFilepath);
+            //Tools.JoinLines(netflixPosFilepath);
+            Tools.TraceLine("End Join Lines");
+            Tools.WriteTimeStamp();
 
             //build a genres txt file for all the genres in the NFPOX
             //ASSUMES GENRES.NFPOX IS THERE
+            Tools.TraceLine("Start Populate genres Table");
+            Tools.WriteTimeStamp();
             PopulateGenres.PopulateGenresTable();
-
+            Tools.TraceLine("End Populate genres table");
+            Tools.WriteTimeStamp();
+            
             //parse the lines into a Title then Movie object, along with boxart data and genre
+            Tools.TraceLine("Start Build Movies Box art genres tables");
+            Tools.WriteTimeStamp();
             Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
+            Tools.TraceLine("End Build Movies Box art genres tables");
+            Tools.WriteTimeStamp();
 
-            //download the omdbapi 
+            //download the omdbapi
+            Tools.TraceLine("Start omdb DL");
+            Tools.WriteTimeStamp();
             Omdb.DownloadOmdbZipAndExtract(@"omdb.zip");
+            Tools.TraceLine("End omdb DL");
+            Tools.WriteTimeStamp();
 
             //parse it for omdbentrys, serialize it to file
-            Tools.SerializeOmdbTsv(
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP",
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt",
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt");
+            Tools.TraceLine("Start Serialize OMDB TSV");
+            Tools.WriteTimeStamp();
+            Tools.SerializeOmdbTsv(@"OMBD\omdb.DUMP", @"\OMDB\omdb.txt", @"\OMDB\tomatoes.txt");
+            Tools.TraceLine("End Serialize OMDB TSV");
+            Tools.WriteTimeStamp();
 
             //deserialize the file, turn it into omdb
             //  can't remember if it does it here or not, but marry the omdbs and movie
-            Tools.RebuildOmdbsFromProtobufDump(
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP");
+            Tools.TraceLine("Start Rebvuild OMDBs From protobuf");
+            Tools.WriteTimeStamp();
+            Tools.RebuildOmdbsFromProtobufDump(@"\OMBD\omdb.DUMP");
+             Tools.TraceLine("End Rebvuild OMDBs From protobuf");
+            Tools.WriteTimeStamp();
+
+             Tools.TraceLine("Start Marry Movies to Omdb");
+            Tools.WriteTimeStamp();
             Tools.MarryMovieToOmdb(db);
+            Tools.TraceLine("Start Marry Movies to Omdb");
+            Tools.WriteTimeStamp();
 
 
             return View();
