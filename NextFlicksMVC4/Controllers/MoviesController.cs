@@ -491,6 +491,34 @@ namespace NextFlicksMVC4.Controllers
         }
 
         /// <summary>
+        /// Combines /tsv /regen and /merge all together
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Mutagen()
+        {
+            MovieDbContext db = new MovieDbContext();                        //read the Omdb.txt file and turn the resulting objects into a protobuf dump
+            // to be read by the Tools.RebuildOmdbsFromProtobufDump method
+            string entryDumpPath = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdbASD.DUMP";
+            string imdbPath = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt";
+            string tomPath =
+                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt";
+
+            Tools.SerializeOmdbTsv(
+                entryDumpPath,
+                imdbPath,
+                tomPath);
+            //finds the file dump from the TSV to OmdbEntry read and adds it to the db
+            Tools.RebuildOmdbsFromProtobufDump(entryDumpPath);
+
+
+            //loop over all the movies in Movies and find an omdb entry for it
+            Tools.MarryMovieToOmdb(db);
+
+            return View();
+
+        }
+
+        /// <summary>
         /// Reads the OMDB API data txts and dumps the list of OMBD Entrys to file, use Movies/Regen to rebuild them
         /// </summary>
         /// <returns></returns>
