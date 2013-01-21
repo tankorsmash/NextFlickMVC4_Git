@@ -37,11 +37,11 @@ namespace NextFlicksMVC4.Tests
             Title title = new Title
                               {
                                   TitleString = "Test Title",
-                                  ReleaseYear = "2009",
-                                  RuntimeInSeconds = "3600",
+                                  ReleaseYear = 2009,
+                                  RuntimeInSeconds = 3600,
                                   AvgRating = "3",
                                   WhichSeason = "0",
-                                  MaturityLevel = "100",
+                                  MaturityLevel =200,
                                   TvRating = "not set",
                                   LinkToPage = "www.netflix.com/test",
                                   IsMovie = "true"
@@ -52,12 +52,12 @@ namespace NextFlicksMVC4.Tests
             Movie expected = new Movie
                                  {
                                      short_title = "Test Title",
-                                     year = "2009",
-                                     runtime = new TimeSpan(0,0,3600),
+                                     year = 2009,
+                                     runtime = 3600,
                                      avg_rating = "3",
                                      is_movie = true,
                                      current_season = "0",
-                                     maturity_rating = "100",
+                                     maturity_rating = 100,
                                      movie_ID = 0,
                                      tv_rating= "not set",
                                      web_page = "www.netflix.com/test",

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -42,7 +43,7 @@ namespace NextFlicksMVC4.NetFlixAPI
                               {
                                   short_title = title.TitleString,
                                   year = title.ReleaseYear,
-                                  runtime =  DisplayTools.SecondsToTimeSpan(title.RuntimeInSeconds),
+                                  runtime =  title.RuntimeInSeconds,
                                   avg_rating = title.AvgRating,
                                   tv_rating = title.TvRating,
                                   web_page = title.LinkToPage,
@@ -170,14 +171,26 @@ namespace NextFlicksMVC4.NetFlixAPI
             //find the year released
             var release_node = catalog_title.SelectSingleNode("release_year");
             var year = release_node.InnerText;
-            createdTitle.ReleaseYear = year;
+
+            if (year != "") {
+                createdTitle.ReleaseYear = Convert.ToInt32(year);
+            }
+            else if (year == "") {
+                createdTitle.ReleaseYear = 0;
+            }
 
             //find the runtime
             var runtime_node = catalog_title.SelectSingleNode("link/delivery_formats/availability/runtime");
             if (runtime_node != null)
             {
                 var runtime = runtime_node.InnerText;
-                createdTitle.RuntimeInSeconds = runtime;
+                try {
+                    createdTitle.RuntimeInSeconds = Convert.ToInt32(runtime);
+                }
+                catch (Exception ex) {
+                    createdTitle.RuntimeInSeconds = 0;
+                    Tools.TraceLine("error, could not convert runtime from string {0}", ex);
+                }
                 //var msg = String.Format("\tRuntime found {0}", runtime);
                 //Trace.WriteLine(msg);
             }
@@ -204,7 +217,13 @@ namespace NextFlicksMVC4.NetFlixAPI
                 //if maturity_level is a number, assign it to Title and remove it
                 //waste mat_level
                 genre_list.Remove(maturity_level);
-                createdTitle.MaturityLevel = maturity_level;
+                try {
+                    createdTitle.MaturityLevel = Convert.ToInt32(maturity_level);
+                }
+                catch (Exception ex) {
+                    createdTitle.MaturityLevel = 200;
+                    Tools.TraceLine("Could not convert maturity string to int {0}", ex);
+                }
             }
 
             //now we join the genre_list with commas and assign it to Title

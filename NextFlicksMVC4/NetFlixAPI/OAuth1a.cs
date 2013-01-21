@@ -81,6 +81,9 @@ namespace NextFlicksMVC4.NetFlixAPI
             //get the URL to send, now we need to create ethe request
             HttpWebRequest web = (HttpWebRequest)WebRequest.Create(toSend);
             web.KeepAlive = true;
+            //adding gzip
+            web.AutomaticDecompression = DecompressionMethods.GZip |
+                                         DecompressionMethods.Deflate;
 
 
             Trace.WriteLine("Starting GetResponse with\n{0}", toSend);
@@ -104,17 +107,20 @@ namespace NextFlicksMVC4.NetFlixAPI
             int line_limit = 10000000;
             int line_count = 0;
 
-            StreamWriter file = new StreamWriter(outputPath, append:true);
-            while ((line = objReader.ReadLine()) != null && !(line_count >line_limit))
-            {
-                file.WriteLine(line);
-                line_count += 1;
-                string msg = String.Format("Line number {0} written",
-                                           line_count.ToString());
-                Trace.WriteLine(msg);
+            Tools.WriteTimeStamp("Starting to write");
+            using (StreamWriter file = new StreamWriter(outputPath, append: true)) {
+                while ((line = objReader.ReadLine()) != null && !(line_count >line_limit))
+                {
+                    file.WriteLine(line);
+                    line_count += 1;
+                    //string msg = String.Format("Line number {0} written",
+                    //                           line_count.ToString());
+                    //Trace.WriteLine(msg);
 
+                }
+                file.Close();
             }
-            file.Close();
+            Tools.WriteTimeStamp();
             Trace.WriteLine("Successfully wrote and closed to {0}", outputPath);
             return outputPath;
             //}

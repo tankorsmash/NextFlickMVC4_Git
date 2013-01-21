@@ -7,8 +7,8 @@ namespace NextFlicksMVC4.NetFlixAPI
 
         //Primary Data
         public string TitleString = "not set";
-        public string ReleaseYear = "not set";
-        public string RuntimeInSeconds = "not set";
+        public int ReleaseYear = 0;
+        public int RuntimeInSeconds = 0;
         public List<Genre> ListGenres = new List<Genre>();
         public string Genres = "not set";
 
@@ -22,7 +22,7 @@ namespace NextFlicksMVC4.NetFlixAPI
         public string TvRating = "not set";
         public string AvgRating = "not set";
         public string Awards = "not set";
-        public string MaturityLevel = "not set";
+        public int MaturityLevel = 200 ;
 
         //Format Data
         public string IsMovie = "not set";

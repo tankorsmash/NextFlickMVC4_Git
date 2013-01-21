@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
-using DotNetOpenAuth;
 using System.ComponentModel.DataAnnotations.Schema;
 using NextFlicksMVC4.Models.userAccount;
 using NextFlicksMVC4.Tracking;
@@ -19,10 +18,10 @@ namespace NextFlicksMVC4.Models
         public string short_title { get; set; }
 
         [DisplayName("Year Release")]
-        public string year { get; set; }
+        public int year { get; set; }
 
         [DisplayName("Runtime")]
-        public TimeSpan runtime { get; set; }
+        public int runtime { get; set; }
 
         [DisplayName("Netflix Rating")]
         public string avg_rating { get; set; }
@@ -42,7 +41,7 @@ namespace NextFlicksMVC4.Models
 
 
         [DisplayName("Maturity Rating")]
-        public string maturity_rating { get; set; }
+        public int maturity_rating { get; set; }
 
         ///commented this out because I have to make a separate look up for genres now
         //[DisplayName("Genres")]
