@@ -228,26 +228,40 @@ namespace NextFlicksMVC4.Controllers
                 where
                     //title
                 nit.Movie.short_title.StartsWith("")
-                      //runtime
-                      && nit.Movie.runtime > 0
-                      && nit.Movie.runtime < 100000
-                      //year
-                      && nit.Movie.year >= 0
-                      && nit.Movie.year <= 3000
-                      //maturity rating
-                      && nit.Movie.maturity_rating >= 0
-                      && nit.Movie.maturity_rating <= 200
-                      //genre
-                      && nit.Genres.Any(item => item.StartsWith(""))
+                    //runtime
+                && nit.Movie.runtime > 0
+                && nit.Movie.runtime < 100000
+                    //year
+                && nit.Movie.year >= 0
+                && nit.Movie.year <= 3000
+                    //maturity rating
+                && nit.Movie.maturity_rating >= 0
+                && nit.Movie.maturity_rating <= 200
+                    //genre
+                && nit.Genres.Any(item => item.StartsWith(""))
 
-                      //RT meter
+                      ////Rotten Tomatoes Meter
                       //&& nit.OmdbEntry.t_Meter >= 0
                       //&& nit.OmdbEntry.t_Meter <= 200
+
+                      ////Rotten Tomatoes Fresh
+                      //&& nit.OmdbEntry.t_Fresh >= 0
+                      //&& nit.OmdbEntry.t_Fresh <= 200000
+
+                      //Rotten Tomatoes Rotten
+                      //&& nit.OmdbEntry.t_Rotten >= 0
+                      //&& nit.OmdbEntry.t_Rotten <= 200000
+
                 select nit;
 
-            var nit_list = res.ToArray();
+            try
+            {
+                var nit_list = res.ToArray();
+            }
+            catch (System.Data.EntityCommandExecutionException ex) { Tools.TraceLine("{0}", ex.GetBaseException().Message);}
 
             Tools.TraceLine("items in nit list {0}", res.Count());
+
             var end = Tools.WriteTimeStamp("end");
             Tools.TraceLine((end-start).ToString());
 
