@@ -483,14 +483,14 @@ namespace NextFlicksMVC4
                     db.MovieToGenres.Add(movieToGenre);
                     //db.SaveChanges();
 
-                    var save_msg =
-                        String.Format(
-                            "done adding MtG mtg_id = {0}\n movie_id = {1}\n genre_id = {2}",
-                            movieToGenre.movie_to_genre_ID,
-                            movieToGenre.movie_ID,
-                            movieToGenre.genre_ID);
+                    //var save_msg =
+                    //    String.Format(
+                    //        "done adding MtG mtg_id = {0}\n movie_id = {1}\n genre_id = {2}",
+                    //        movieToGenre.movie_to_genre_ID,
+                    //        movieToGenre.movie_ID,
+                    //        movieToGenre.genre_ID);
 
-                    Trace.WriteLine(save_msg);
+                    //Trace.WriteLine(save_msg);
                 }
 
                 //if at a certain amount of adds, save changes, to avoid memory error hopefully

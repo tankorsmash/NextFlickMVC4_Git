@@ -140,8 +140,13 @@ namespace NextFlicksMVC4.OMBD
                 float.TryParse(tomReader["Rating"], out t_rating);
                 omdbEntry.t_Rating = t_rating;
 
-                omdbEntry.t_Meter = Convert.ToInt32(tomReader["Meter"]);
-                omdbEntry.t_Reviews = Convert.ToInt32(tomReader["Reviews"]);
+                int t_meter;
+                int.TryParse(tomReader["Meter"], out t_meter);
+                omdbEntry.t_Meter = t_meter;
+
+                int t_reviews;
+                int.TryParse(tomReader["Reviews"], out t_reviews);
+                omdbEntry.t_Reviews = t_reviews;
 
                 //might be "n/a" or ""  so I've got to account for that
                 int t_fresh;

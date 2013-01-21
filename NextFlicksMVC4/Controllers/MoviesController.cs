@@ -496,6 +496,9 @@ namespace NextFlicksMVC4.Controllers
         /// <returns></returns>
         public ActionResult Mutagen()
         {
+
+            var start = Tools.WriteTimeStamp();
+
             MovieDbContext db = new MovieDbContext();                        //read the Omdb.txt file and turn the resulting objects into a protobuf dump
             // to be read by the Tools.RebuildOmdbsFromProtobufDump method
             string entryDumpPath = @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdbASD.DUMP";
@@ -513,6 +516,9 @@ namespace NextFlicksMVC4.Controllers
 
             //loop over all the movies in Movies and find an omdb entry for it
             Tools.MarryMovieToOmdb(db);
+
+            var end = Tools.WriteTimeStamp();
+            Tools.TraceLine("It took {0}", end- start);
 
             return View();
 
