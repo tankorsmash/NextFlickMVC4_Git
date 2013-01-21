@@ -722,57 +722,29 @@ namespace NextFlicksMVC4.Controllers
             MovieDbContext db = new MovieDbContext();
 
             //retrieve API .POX
-            Tools.TraceLine("Start Join Lines");
-            Tools.WriteTimeStamp();
-            //var data = OAuth1a.GetNextflixCatalogDataString( "catalog/titles/streaming", "", outputPath: netflixPosFilepath);
+            var data = OAuth1a.GetNextflixCatalogDataString( "catalog/titles/streaming", "", outputPath: netflixPosFilepath);
 
             //join the lines that don't match <catalog to the ones above it
-            //Tools.JoinLines(netflixPosFilepath);
-            Tools.TraceLine("End Join Lines");
-            Tools.WriteTimeStamp();
+            Tools.JoinLines(netflixPosFilepath);
 
             //build a genres txt file for all the genres in the NFPOX
             //ASSUMES GENRES.NFPOX IS THERE
-            Tools.TraceLine("Start Populate genres Table");
-            Tools.WriteTimeStamp();
             PopulateGenres.PopulateGenresTable();
-            Tools.TraceLine("End Populate genres table");
-            Tools.WriteTimeStamp();
             
             //parse the lines into a Title then Movie object, along with boxart data and genre
-            Tools.TraceLine("Start Build Movies Box art genres tables");
-            Tools.WriteTimeStamp();
             Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
-            Tools.TraceLine("End Build Movies Box art genres tables");
-            Tools.WriteTimeStamp();
 
             //download the omdbapi
-            Tools.TraceLine("Start omdb DL");
-            Tools.WriteTimeStamp();
             Omdb.DownloadOmdbZipAndExtract(@"omdb.zip");
-            Tools.TraceLine("End omdb DL");
-            Tools.WriteTimeStamp();
 
             //parse it for omdbentrys, serialize it to file
-            Tools.TraceLine("Start Serialize OMDB TSV");
-            Tools.WriteTimeStamp();
-            Tools.SerializeOmdbTsv(@"OMBD\omdb.DUMP", @"\OMDB\omdb.txt", @"\OMDB\tomatoes.txt");
-            Tools.TraceLine("End Serialize OMDB TSV");
-            Tools.WriteTimeStamp();
+            Tools.SerializeOmdbTsv(@"omdb.DUMP", @"omdb.txt", @"tomatoes.txt");
 
             //deserialize the file, turn it into omdb
             //  can't remember if it does it here or not, but marry the omdbs and movie
-            Tools.TraceLine("Start Rebvuild OMDBs From protobuf");
-            Tools.WriteTimeStamp();
-            Tools.RebuildOmdbsFromProtobufDump(@"\OMBD\omdb.DUMP");
-             Tools.TraceLine("End Rebvuild OMDBs From protobuf");
-            Tools.WriteTimeStamp();
+            Tools.RebuildOmdbsFromProtobufDump(@"omdb.DUMP");
 
-             Tools.TraceLine("Start Marry Movies to Omdb");
-            Tools.WriteTimeStamp();
             Tools.MarryMovieToOmdb(db);
-            Tools.TraceLine("Start Marry Movies to Omdb");
-            Tools.WriteTimeStamp();
 
 
             return View();
