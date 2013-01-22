@@ -251,6 +251,7 @@
     <Compile Include="OMBD\OMDB.cs" />
     <Compile Include="OMBD\TSVParse.cs" />
     <Compile Include="Tools\Tools.cs" />
+    <Compile Include="Tools\UserInput.cs" />
     <Compile Include="Tracking\TrackingCreate.cs" />
     <Compile Include="Tests\TestMoviesController.cs" />
     <Compile Include="DatabaseClasses\ModelBuilder.cs" />
@@ -544,7 +545,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>54584</DevelopmentServerPort>
+          <DevelopmentServerPort>51948</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
