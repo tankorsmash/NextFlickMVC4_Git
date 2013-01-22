@@ -314,7 +314,7 @@ namespace NextFlicksMVC4
             //create a new string based on the params given in the arguments
             string msg = String.Format(msg_string, vals);
             //send the message to Stdout
-            TraceLine(msg);
+            Trace.WriteLine(msg);
         }
 
         /// <summary>

@@ -84,40 +84,42 @@ namespace NextFlicksMVC4.OMBD
         public static List<OmdbEntry> ParseTSVforOmdbData(string imdb_filepath,
                                                           string tom_filepath)
         {
+            Tools.TraceLine("In ParseTSVforOmdbData");
 
             //TODO: make sure the files exist
             string full_i_path = Path.GetFullPath(imdb_filepath);
             string full_t_path = Path.GetFullPath(tom_filepath);
             Tools.TraceLine(
-                "Absolute IMDB path: {0}\nAbsolute Tomatoes path: {1}",
+                "  Absolute IMDB path: {0}\n  Absolute Tomatoes path: {1}",
                 full_i_path, full_t_path);
 
-            var start_time = Tools.WriteTimeStamp("Parsing the TSV");
+            var start_time = Tools.WriteTimeStamp("  Parsing the TSV");
 
 
 
             List<OmdbEntry> complete_list = new List<OmdbEntry>();
 
-            Tools.WriteTimeStamp("imdb start");
+            Tools.WriteTimeStamp("  imdb start");
             var imdb_entries = ParseTSVforImdbData(imdb_filepath);
-            Tools.WriteTimeStamp("tomatoes start");
+            Tools.WriteTimeStamp("  tomatoes start");
             var tom_entries = ParseTSVforTomatoesData(tom_filepath);
 
-            Tools.TraceLine("Starting to merge entries");
-            Tools.WriteTimeStamp("merge start");
+            Tools.TraceLine("  Starting to merge entries");
+            Tools.WriteTimeStamp("  merge start");
             //combine the two lists
             complete_list = MergeTwoOmdbEntryLists(imdb_entries, tom_entries);
-            Tools.WriteTimeStamp("merge end");
+            Tools.WriteTimeStamp("  merge end");
 
             //save to file so I don't  have to keep recreating objects
 
-            var complete_time = Tools.WriteTimeStamp("done merging at");
+            var complete_time = Tools.WriteTimeStamp("  done merging at");
             var duration = complete_time - start_time;
-            var duration_msg = string.Format("Took {0} to complete", duration);
+            var duration_msg = string.Format("  Took {0} to complete", duration);
             Tools.TraceLine(duration_msg);
 
 
-            return complete_list;
+            Tools.TraceLine("Out ParseTSVforOmdbData");
+             return complete_list;
 
         }
 
@@ -200,28 +202,31 @@ namespace NextFlicksMVC4.OMBD
         /// <returns></returns>
         public static List<OmdbEntry> ParseTSVforImdbData(string filepath )
         {
+            Tools.TraceLine("In ParseTSVforImdbData");
 
-            Tools.TraceLine("Start Parse for Imdb");
+            Tools.TraceLine(" Start Parse for Imdb");
 
             using (
                 CsvReader csvReader = new CsvReader(new StreamReader(filepath),
                                                     true, '\t', '~', '`', '~',
-                                                    ValueTrimmingOptions.None)) 
+                                                    ValueTrimmingOptions.None))
             {
-            List<OmdbEntry> omdbEntry_list;
-            omdbEntry_list = new List<OmdbEntry>();
+                List<OmdbEntry> omdbEntry_list;
+                omdbEntry_list = new List<OmdbEntry>();
 
                 int count = 0;
                 //loop over all the rows until fail, adding the created entry to list
-                while (csvReader.ReadNextRecord()) {
-                    var entry = Omdb.CreateOmdbEntryFromTsvRecord(imdbReader:csvReader);
+                while (csvReader.ReadNextRecord())
+                {
+                    var entry = Omdb.CreateOmdbEntryFromTsvRecord(imdbReader: csvReader);
                     omdbEntry_list.Add(entry);
                     //Tools.TraceLine(entry.title);
                     //Tools.TraceLine(count.ToString());
                     count++;
                 }
 
-                Tools.TraceLine("Done Parsing for Imdb");
+                Tools.TraceLine(" Done Parsing for Imdb");
+                Tools.TraceLine("out ParseTSVforImdbData");
                 return omdbEntry_list;
             }
         }

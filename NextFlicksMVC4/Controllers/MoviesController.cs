@@ -413,11 +413,14 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Full()
         {
+            Tools.TraceLine("In Full");
             //create a genres table in the DB
             PopulateGenres.PopulateGenresTable();
 
 
             Tools.BuildMoviesBoxartGenresTables(@"C:\fixedAPI.NFPOX");
+
+            Tools.TraceLine("Out Full");
 
             return View();
         }
@@ -545,6 +548,7 @@ namespace NextFlicksMVC4.Controllers
         /// <returns></returns>
         public ActionResult Mutagen()
         {
+            Tools.TraceLine("In Mutagen");
 
             var start = Tools.WriteTimeStamp();
 
@@ -569,7 +573,9 @@ namespace NextFlicksMVC4.Controllers
             Tools.MarryMovieToOmdb(db);
 
             var end = Tools.WriteTimeStamp();
-            Tools.TraceLine("It took {0}", end- start);
+            Tools.TraceLine("Mutagen took {0}", end- start);
+
+            Tools.TraceLine("Out Mutagen");
 
             return View();
 
