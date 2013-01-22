@@ -769,6 +769,8 @@ namespace NextFlicksMVC4
         public static IQueryable<NfImdbRtViewModel> GetFullDbQuery(MovieDbContext db)
         {
 
+
+
             TraceLine("In GetFullDbQuery");
 //pulls all the mtgs and joins the genre_strings to the appropriate movie_id
             // so the end result is something like {terminator's movie_id : ["action", "drama"]}
@@ -802,6 +804,7 @@ namespace NextFlicksMVC4
                                Movie = movie,
                                Boxarts = boxart,
                                Genres = grp,
+                               //OmdbEntry = (mov_omdb_match == null) ? mov_omdb_match.movie_ID= movie.movie_ID: mov_omdb_match
                                OmdbEntry = mov_omdb_match
                            };
 

@@ -258,7 +258,8 @@ namespace NextFlicksMVC4.Controllers
 
             try
             {
-                var nit_list = res.ToArray();
+                //var nit_list = res.toarray();
+                var asd = 0;
             }
             catch (System.Data.EntityCommandExecutionException ex) {
                 Tools.TraceLine(
