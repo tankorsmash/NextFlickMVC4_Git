@@ -241,10 +241,6 @@
     <Compile Include="Controllers\userAccount\RegisterController.cs" />
     <Compile Include="Controllers\userAccount\UserController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
-    <Compile Include="Migrations\201301191833364_RemovedExtraPasswordField.cs" />
-    <Compile Include="Migrations\201301191833364_RemovedExtraPasswordField.Designer.cs">
-      <DependentUpon>201301191833364_RemovedExtraPasswordField.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\userAccount\LogonModel.cs" />
     <Compile Include="Models\userAccount\Users.cs" />
@@ -522,11 +518,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\User\Seed.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201301191833364_RemovedExtraPasswordField.resx">
-      <DependentUpon>201301191833364_RemovedExtraPasswordField.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

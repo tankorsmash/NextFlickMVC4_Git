@@ -260,7 +260,11 @@ namespace NextFlicksMVC4.Controllers
             {
                 var nit_list = res.ToArray();
             }
-            catch (System.Data.EntityCommandExecutionException ex) { Tools.TraceLine("{0}", ex.GetBaseException().Message);}
+            catch (System.Data.EntityCommandExecutionException ex) {
+                Tools.TraceLine(
+                    "The ToArray() call probably timed out, it happens on first call to db a lot, I don't know why:\n***{0}",
+                    ex.GetBaseException().Message);
+            }
 
             Tools.TraceLine("items in nit list {0}", res.Count());
 
