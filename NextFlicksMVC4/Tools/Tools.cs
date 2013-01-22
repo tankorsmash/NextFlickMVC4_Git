@@ -588,17 +588,19 @@ namespace NextFlicksMVC4
 
         public static void SerializeOmdbTsv(string entryDumpPath, string imdbPath, string tomPath)
         {
-//TODO:Make these paths more general
+
+            Tools.TraceLine("In SerializeOmdbTsv");
 
             var complete_list_of_entries =
                 TSVParse.ParseTSVforOmdbData(imdb_filepath: imdbPath,
                                              tom_filepath: tomPath);
 
-            WriteTimeStamp("Starting to serialize list");
+            WriteTimeStamp("  Starting to serialize list");
             using (var file = File.Create(entryDumpPath)) {
                 Serializer.Serialize(file, complete_list_of_entries);
             }
-            WriteTimeStamp("Done serializing list");
+            WriteTimeStamp("  Done serializing list");
+            Tools.TraceLine("Out SerializeOmdbTsv");
         }
 
         /// <summary>
@@ -611,9 +613,11 @@ namespace NextFlicksMVC4
                                      string start_string = "<catalog",
                                      bool skip_default_xml = true)
         {
+            Tools.TraceLine("In JoinLines");
+
 
             //read the file into a list of lines
-            WriteTimeStamp("Reading file");
+            WriteTimeStamp("  Reading file");
             List<string> lines = new List<string>();
             using (StreamReader reader = new StreamReader(filepath)) {
                 string line;
@@ -624,7 +628,7 @@ namespace NextFlicksMVC4
 
             //remove the lines that start with the lines below
             if (skip_default_xml) {
-                WriteTimeStamp("removing default xml");
+                WriteTimeStamp("  removing default xml");
                 lines =
                     lines.Where(
                         line =>
@@ -637,7 +641,7 @@ namespace NextFlicksMVC4
             List<string> fixed_lines = new List<string>();
 
             //find all lines that don't star with <catalog
-            WriteTimeStamp("removing lines that don't match the string");
+            WriteTimeStamp("  removing lines that don't match the string");
             foreach (string line in lines) {
                 if (line.StartsWith(start_string) != true) {
                     TraceLine(line);
@@ -662,12 +666,13 @@ namespace NextFlicksMVC4
             }
 
             //write file from fixed_lines
-            WriteTimeStamp("writing fixed file");
+            WriteTimeStamp("  writing fixed file");
             using (StreamWriter writer = new StreamWriter(filepath)) {
                 foreach (string fixedLine in fixed_lines) {
                     writer.WriteLine(fixedLine);
                 }
             }
+            Tools.TraceLine("Out PopulateGenresTable");
         }
 
         public static void BuildMoviesBoxartGenresTables(string filepath)

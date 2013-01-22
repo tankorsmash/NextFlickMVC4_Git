@@ -63,6 +63,8 @@ namespace NextFlicksMVC4.NetFlixAPI
 
         public static void PopulateGenresTable()
         {
+            Tools.TraceLine("In PopulateGenresTable");
+
             var db = new MovieDbContext();
 
             //if genre table is not empty, its probably full and don't do anything
@@ -91,20 +93,22 @@ namespace NextFlicksMVC4.NetFlixAPI
             }
 
             //add to and save table
-            Trace.WriteLine("starting to add genres");
+            Trace.WriteLine(" starting to add genres to the database");
             foreach (Genre genre in genres)
             {
                 db.Genres.Add(genre);
             }
 
 
-            Trace.WriteLine("starting to save genre table");
+            Trace.WriteLine("  starting to savechanges() ");
             try {
                 db.SaveChanges();
             }
             catch (System.Data.Entity.Infrastructure.DbUpdateException ex) {
-                Tools.TraceLine("caught error while saving Genres Table. It probably already exists:\n***{0}", ex.Message);
+                Tools.TraceLine("  caught error while saving Genres Table. It probably already exists:\n***{0}", ex.Message);
             }
+
+            Tools.TraceLine("Out PopulateGenresTable");
         }
     }
 }
