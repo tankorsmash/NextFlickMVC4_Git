@@ -76,7 +76,7 @@ namespace NextFlicksMVC4
 
             string to_write = String.Format("{0}: {1}", msg,
                                             time.ToShortTimeString());
-            Trace.WriteLine(to_write);
+            TraceLine(to_write);
 
             return time;
         }
@@ -137,16 +137,16 @@ namespace NextFlicksMVC4
             bool verbose = false)
         {
             if (verbose == true)
-                Trace.WriteLine("Starting to filter...");
+                TraceLine("Starting to filter...");
 
             //year released
             if (verbose == true)
-                Trace.WriteLine("\tYear Start");
+                TraceLine("\tYear Start");
             movie_list =
                 movie_list.Where(item => item.year >= year_start)
                           .ToList();
             if (verbose == true)
-                Trace.WriteLine("\tYear End");
+                TraceLine("\tYear End");
             movie_list =
                 movie_list.Where(item => item.year <= year_end).ToList();
 
@@ -154,7 +154,7 @@ namespace NextFlicksMVC4
             if (title != "")
             {
                 if (verbose == true)
-                    Trace.WriteLine("\tTitle");
+                    TraceLine("\tTitle");
                 movie_list =
                     movie_list.Where(
                         item => item.short_title.ToLower().Contains(title))
@@ -168,13 +168,13 @@ namespace NextFlicksMVC4
             if (runtime_start != 0 || runtime_end != 9999999)
             {
                 if (verbose == true)
-                    Trace.WriteLine("\tRuntime Start");
+                    TraceLine("\tRuntime Start");
                 movie_list =
                     movie_list.Where(
                         item => item.runtime >= runtime_start)
                               .ToList();
                 if (verbose == true)
-                    Trace.WriteLine("\tRuntime End");
+                    TraceLine("\tRuntime End");
                 movie_list =
                     movie_list.Where(
                         item => item.runtime <= runtime_end)
@@ -185,14 +185,14 @@ namespace NextFlicksMVC4
             if (mpaa_start != 0 || mpaa_end != 200)
             {
                 if (verbose == true)
-                    Trace.WriteLine("\tMPAA Start");
+                    TraceLine("\tMPAA Start");
                 movie_list =
                     movie_list.Where(
                         item =>
                         item.maturity_rating >=
                         mpaa_start).ToList();
                 if (verbose == true)
-                    Trace.WriteLine("\tMPAA End");
+                    TraceLine("\tMPAA End");
                 movie_list =
                     movie_list.Where(
                         item =>
@@ -204,7 +204,7 @@ namespace NextFlicksMVC4
             if (genre != "")
             {
                 if (verbose == true)
-                    Trace.WriteLine("\tGenres");
+                    TraceLine("\tGenres");
                 movie_list = ReduceMovieListToMatchingGenres(db, movie_list,
                                                              genre);
             }
@@ -213,7 +213,7 @@ namespace NextFlicksMVC4
             if (is_movie != null)
             {
                 if (verbose == true)
-                    Trace.WriteLine("\tIs Movie");
+                    TraceLine("\tIs Movie");
                 movie_list =
                     movie_list.Where(item => item.is_movie == is_movie).ToList();
             }
@@ -221,7 +221,7 @@ namespace NextFlicksMVC4
 
             //pass the movie_list through a function to marry them to genres and boxarts
             if (verbose == true)
-                Trace.WriteLine("\tCreating MtGVM from a range in movies_list");
+                TraceLine("\tCreating MtGVM from a range in movies_list");
             if (start > movie_list.Count)
             {
                 start = movie_list.Count - 1;
@@ -314,7 +314,7 @@ namespace NextFlicksMVC4
             //create a new string based on the params given in the arguments
             string msg = String.Format(msg_string, vals);
             //send the message to Stdout
-            Trace.WriteLine(msg);
+            TraceLine(msg);
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace NextFlicksMVC4
             }
 
             catch (Exception ex) {
-                //Trace.WriteLine(
+                //TraceLine(
                 //    String.Format(
                 //        "maturity rating exception, probably not set:\r{0}",
                 //        ex.Message));
@@ -354,16 +354,16 @@ namespace NextFlicksMVC4
                                                                   string genre)
         {
             //gets the movie_ids that match 'genre'
-            Trace.WriteLine("\t\tFind movies that match genre_string");
+            TraceLine("\t\tFind movies that match genre_string");
             var movie_ids_for_genres = GetMovieIdsMatchingGenres(db, genre);
 
             //execute the find movie_id finding by calling the list
-            Trace.WriteLine("\t\tList the movies that match genre_string");
+            TraceLine("\t\tList the movies that match genre_string");
             var movie_ids_for_genres_list = movie_ids_for_genres.ToList();
 
-            Trace.WriteLine("\t\tFind moves that match movie_id");
+            TraceLine("\t\tFind moves that match movie_id");
 
-            Trace.WriteLine("\t\tmovie_list to Array");
+            TraceLine("\t\tmovie_list to Array");
             var movie_array = movie_list.ToArray();
 
 
@@ -373,7 +373,7 @@ namespace NextFlicksMVC4
                     item => movie_ids_for_genres_list.Contains(item.movie_ID));
 
 
-            Trace.WriteLine("\t\tTo List");
+            TraceLine("\t\tTo List");
             movie_list = movie_iqry.ToList();
             //movie_list = movie_array.ToList();
             return movie_list;
@@ -458,6 +458,8 @@ namespace NextFlicksMVC4
         /// <param name="db"></param>
         public static void AddBoxartsAndMovieToGenreData(Dictionary<Movie, Title> dictOfMoviesTitles, MovieDbContext db)
         {
+            TraceLine("In AddBoxartsAndMovieToGenreData");
+
             //get a list of ints that we can test against to save progress of adding to db
             List<int> checkpoints = ProgressList.CreateListOfCheckpointInts(dictOfMoviesTitles.Count, 55);
             
@@ -490,7 +492,7 @@ namespace NextFlicksMVC4
                     //        movieToGenre.movie_ID,
                     //        movieToGenre.genre_ID);
 
-                    //Trace.WriteLine(save_msg);
+                    //TraceLine(save_msg);
                 }
 
                 //if at a certain amount of adds, save changes, to avoid memory error hopefully
@@ -499,18 +501,20 @@ namespace NextFlicksMVC4
                     db.SaveChanges();
 
                     string msg =
-                        String.Format("Just saved changes at checkpoint {0}", index);
-                    Trace.WriteLine(msg);
+                        String.Format("  Just saved changes at checkpoint {0}", index);
+                    TraceLine(msg);
                 }
 
                 //incrememt index
                 index ++;
 
             }
-            Trace.WriteLine("saving final boxarts and genres");
+            TraceLine("  saving final boxarts and genres");
             db.SaveChanges();
-            Trace.WriteLine("\t\tdone saving boxarts and genres");
+            TraceLine("\t\tdone saving boxarts and genres");
             db.Configuration.AutoDetectChangesEnabled = true;
+
+            TraceLine("Out AddBoxartsAndMovieToGenreData");
         }
 
         //from a movie.movie_ID, find the matching omdbEntry
@@ -524,6 +528,7 @@ namespace NextFlicksMVC4
 
         public static void RebuildOmdbsFromProtobufDump(string entryDumpPath)
         {
+            TraceLine("In RebuildOmdbsFromProtobufDump");
 //rebuild the serialized list of List<omdbentryies>
 
             //deserialize the list of omdbentries saved the the file
@@ -569,15 +574,16 @@ namespace NextFlicksMVC4
                 }
                 index++;
                 //int remaining = count - complete_list.IndexOf(omdbEntry);
-                //Trace.WriteLine(remaining);
+                //TraceLine(remaining);
             }
 
-            Trace.WriteLine("saving changes");
+            TraceLine("  saving changes");
             db.Configuration.AutoDetectChangesEnabled = true;
             db.SaveChanges();
 
 
-            WriteTimeStamp("Done saving changes");
+            WriteTimeStamp("  Done saving changes");
+            TraceLine("Out RebuildOmdbsFromProtobufDump");
         }
 
         public static void SerializeOmdbTsv(string entryDumpPath, string imdbPath, string tomPath)
@@ -666,10 +672,12 @@ namespace NextFlicksMVC4
 
         public static void BuildMoviesBoxartGenresTables(string filepath)
         {
-            Trace.WriteLine("starting Full Action");
+            TraceLine("In BuildMoviesBoxartGenresTables");
+
+            TraceLine("  starting Full Action");
             string msg = DateTime.Now.ToShortTimeString();
             var start_time = DateTime.Now;
-            Trace.WriteLine(msg);
+            TraceLine(msg);
             MovieDbContext db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = false;
 
@@ -681,14 +689,14 @@ namespace NextFlicksMVC4
             string data;
             int count = 0;
             using (StreamReader reader = new StreamReader(filepath)) {
-                Trace.WriteLine("Starting to read");
+                TraceLine("  Starting to read");
 
                 data = reader.ReadLine();
                 try {
                     while (data != null) {
                         if (!data.StartsWith("<catalog_title>")) {
-                            Trace.WriteLine(
-                                "Invalid line of XML, probably CDATA or something\n***{0}", data);
+                            TraceLine(
+                                "  Invalid line of XML, probably CDATA or something\n***{0}", data);
                         }
                         else {
                             //parse line for a title, which is what NF returns
@@ -708,55 +716,59 @@ namespace NextFlicksMVC4
                             //    String.Format(
                             //        "Added item {0} to database, moving to next one",
                             //        count.ToString());
-                            //Trace.WriteLine(msg);
+                            //TraceLine(msg);
                             count += 1;
                         }
                         data = reader.ReadLine();
                     }
 
                     //save the movies added to db
-                    Trace.WriteLine("Saving Movies");
+                    TraceLine("  Saving Movies");
                     db.SaveChanges();
                     db.Configuration.AutoDetectChangesEnabled = true;
                 }
 
                 catch (XmlException ex) {
-                    Trace.WriteLine(
-                        "Done parsing the XML because of something happened. Probably the end of file:");
-                    Trace.WriteLine(ex.Message);
+                    TraceLine(
+                        "  Done parsing the XML because of something happened. Probably the end of file:");
+                    TraceLine(ex.Message);
                     msg =
                         String.Format(
-                            "Failed around item {0} to database",
+                            " Failed around item {0} to database",
                             count.ToString());
-                    Trace.WriteLine(msg);
+                    TraceLine(msg);
                 }
 
                 db.SaveChanges();
-                Trace.WriteLine("Adding Boxart and Genre");
+                TraceLine("  Adding Boxart and Genre");
                 //add boxart and genre data to db before saving the movie 
                 AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
 
 
-                Trace.WriteLine("Saving Changes any untracked ones");
+                TraceLine("  Saving Changes any untracked ones");
                 db.SaveChanges();
-                Trace.WriteLine(
-                    "Done Saving! Check out Movies/index for a table of the stuff");
+                TraceLine(
+                    "  Done Saving! Check out Movies/index for a table of the stuff");
             }
 
 
-            var end_time = WriteTimeStamp("Done everything");
+            var end_time = WriteTimeStamp(    "  Done everything");
 
             TimeSpan span = end_time - start_time;
-            Trace.WriteLine("It took this long:");
-            Trace.WriteLine(span);
+            TraceLine("  It took this long:");
+            TraceLine(span.ToString());
+
+            TraceLine("Out BuildMoviesBoxartGenresTables");
         }
 
         public static IQueryable<NfImdbRtViewModel> GetFullDbQuery(MovieDbContext db)
         {
+
+            TraceLine("In GetFullDbQuery");
 //pulls all the mtgs and joins the genre_strings to the appropriate movie_id
             // so the end result is something like {terminator's movie_id : ["action", "drama"]}
             // but is a IGrouping, so it handles a bit weird.
-            TraceLine("Group the genres by movie ID");
+            TraceLine("  Group the genres by movie ID");
             var movieID_genreString_grouping = from mtg in db.MovieToGenres
                                                join genre in db.Genres on
                                                    mtg.genre_ID equals
@@ -766,7 +778,7 @@ namespace NextFlicksMVC4
 
 
             //create the list of NITVMs
-            TraceLine("Build the query for all the movies in the DB");
+            TraceLine("  Build the query for all the movies in the DB");
             var nitvmQuery =
                 //left outer join so that all movies get selected even if there's no omdb match
                 from movie in db.Movies
@@ -788,6 +800,7 @@ namespace NextFlicksMVC4
                                OmdbEntry = mov_omdb_match
                            };
 
+            TraceLine("Out GetFullDbQuery");
             return nitvmQuery;
         }
 
@@ -795,6 +808,7 @@ namespace NextFlicksMVC4
         {
 //get list of movies
             //var movie_queryable = db.Movies.AsQueryable();
+            TraceLine("In MarryMovieToOmdb");
 
             //TODO: match better, curr. only finds 6k movies but there should be closer to 56k
 
@@ -808,7 +822,7 @@ namespace NextFlicksMVC4
             //pseudo code for what I want
             //where omdb.title == movie.short_title && omdb.year == movie.year select new {omdb_id, movie_id}
 
-            TraceLine("Starting LINQ query");
+            TraceLine("  Starting LINQ query to marry movies to omdb");
 
             var query = from movie in db.Movies
                         join omdbEntry in db.Omdb on
@@ -817,31 +831,35 @@ namespace NextFlicksMVC4
                             new {name = omdbEntry.title, year = omdbEntry.year}
                         select new {movie = movie, omdbEntry = omdbEntry};
 
-            TraceLine("Done LINQ query");
-            TraceLine("turning results into a list");
+            TraceLine("  Done LINQ query");
+            TraceLine("  turning results into a list");
             var resultList = query.ToList();
-            TraceLine("done turning results into a list, found {0} movies",
+            TraceLine("  done turning results into a list, found {0} movies",
                             resultList.Count);
 
             //update movie_id for each of the matched omdbs
 
-            Trace.WriteLine("Looping through pairs");
+            TraceLine("  Looping through pairs");
             foreach (var pair in resultList) {
                 OmdbEntry omdb = pair.omdbEntry;
                 omdb.movie_ID = pair.movie.movie_ID;
 
-                //Tools.TraceLine("m: {0} ID: {2}\no: {1}", pair.movie.short_title,
+                //Tools.TraceLine("  m: {0} ID: {2}\no: {1}", pair.movie.short_title,
                 //                omdb.title, pair.movie.movie_ID);
 
                 ////might not be needed since its being tracked along the same context
                 //db.Entry(omdb).State = EntityState.Modified;
             }
 
-            Trace.WriteLine("done looping");
+            TraceLine("  done looping");
 
-            Trace.WriteLine("starting to save changes");
+            TraceLine("  starting to save changes");
             db.SaveChanges();
-            Trace.WriteLine("done saving changes");
+            TraceLine("  done saving changes");
+
+            TraceLine("Out MarryMovieToOmdb");
+
+
         }
     }
 

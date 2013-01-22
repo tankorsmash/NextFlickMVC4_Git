@@ -13,9 +13,8 @@ namespace NextFlicksMVC4.OMBD
     {
 
 
-        public static void DownloadOmdbZip(string url = @"http://www.beforethecode.net/projects/OMDb/download.aspx?e=tankorsmash@gmail.com" , string outputPath = @"omdb.zip")
+        public static void DownloadOmdbZip(string url = @"http://www.beforethecode.net/projects/OMDb/download.aspx?e=tankorsmash@gmail.com", string outputPath = @"omdb.zip")
         {
-
             //doesn't work
             //Tools.TraceLine("start download:\n{0}", url);
             //using (WebClient client = new WebClient()) {
@@ -50,7 +49,7 @@ namespace NextFlicksMVC4.OMBD
 
 
             //write the file from the response
-            Tools.WriteTimeStamp("Starting to write");
+            Tools.WriteTimeStamp("Starting to write file from the respone data");
             using (StreamWriter file = new StreamWriter(outputPath))
             {
                 while ((line = responseReader.ReadLine()) != null && !(line_count > line_limit))
@@ -86,7 +85,16 @@ namespace NextFlicksMVC4.OMBD
                                                           string tom_filepath)
         {
 
-            var start_time = Tools.WriteTimeStamp("Parsing operation star");
+            //TODO: make sure the files exist
+            string full_i_path = Path.GetFullPath(imdb_filepath);
+            string full_t_path = Path.GetFullPath(tom_filepath);
+            Tools.TraceLine(
+                "Absolute IMDB path: {0}\nAbsolute Tomatoes path: {1}",
+                full_i_path, full_t_path);
+
+            var start_time = Tools.WriteTimeStamp("Parsing the TSV");
+
+
 
             List<OmdbEntry> complete_list = new List<OmdbEntry>();
 
