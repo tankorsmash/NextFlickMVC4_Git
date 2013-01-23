@@ -474,7 +474,7 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult DetailsTag(int movie_ID = 0)
         {
             MovieDbContext db = new MovieDbContext();
-            
+
             Movie movie = db.Movies.Find(movie_ID);
             if (movie == null)
             {
@@ -485,22 +485,45 @@ namespace NextFlicksMVC4.Controllers
             movieTagViewModel.movie = movie;
             movieTagViewModel.genre_strings = new List<string>();
             movieTagViewModel.Tags = new List<string>();
-           /* var tagResults = from tags in db.Tags
-                             where tags.movie_ID == movie_ID*/
-            foreach (Genre genre in db.Genres.ToList()) { movieTagViewModel.genre_strings.Add(genre.genre_string);}
-            foreach(MovieTags tag in db.Tags){movieTagViewModel.Tags.Add(tag.Tag);}
+            /* var tagResults = from tags in db.Tags
+                              where tags.movie_ID == movie_ID*/
+            //foreach (Genre genre in db.Genres.ToList()) { movieTagViewModel.genre_strings.Add(genre.genre_string);}
+            //foreach(MovieTags tag in db.Tags){movieTagViewModel.Tags.Add(tag.Tag);}
+
+            var movieGenres = from mtg in db.MovieToGenres
+                              join genre in db.Genres
+                                  on mtg.genre_ID equals genre.genre_ID
+                              group genre.genre_string by mtg.movie_ID
+                                  into gs
+                                  where gs.Key == movie_ID
+                                  select gs;
+            movieTagViewModel.genre_strings = movieGenres.First().ToList();
+            /*var movieGenres = from mtg in db.MovieToGenres
+                              where mtg.movie_ID == movie_ID
+                              join genre in db.Genres on
+                                  mtg.genre_ID equals genre.genre_ID
+                              group genre.genre_string by mtg.movie_ID;
+            var selectedGenres = movieGenres.ToList();*/
+
+            var movieTags = from tag in db.Tags
+                            where tag.movie_ID == movie_ID
+                            select tag.Tag;
+            movieTagViewModel.Tags = movieTags.ToList();
+
             return View(movieTagViewModel);
         }
 
         [HttpPost]
-        public ActionResult DetailsTag(int movie_ID, List<string> tags )
+        public ActionResult DetailsTag(int movie_ID, List<string> tags)
         {
             if (ModelState.IsValid)
             {
                 MovieDbContext db = new MovieDbContext();
                 Movie taggedMovie = db.Movies.Find(movie_ID);
                 //break the tags down by comma delimeter
-                string[] seperatedtags = tags[0].Split(',');
+                List<String> seperatedtags = UserInput.DeliminateStrings(tags);
+                seperatedtags = UserInput.StripWhiteSpace(seperatedtags);
+                seperatedtags = UserInput.SanitizeSpecialCharacters(seperatedtags);
                 foreach (string tag in seperatedtags)
                 {
                     MovieTags newTag = new MovieTags()
@@ -514,9 +537,9 @@ namespace NextFlicksMVC4.Controllers
                     db.SaveChanges();
                     //return RedirectToAction("Index");
                 }
-                RedirectToAction("DetailsTag", movie_ID);
+                return RedirectToAction("DetailsTag", movie_ID);
             }
-            return View();
+            return RedirectToAction("DetailsTag", movie_ID);
         }
 
         public ActionResult Details(int movie_ID = 0)

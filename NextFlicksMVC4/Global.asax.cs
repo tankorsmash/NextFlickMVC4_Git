@@ -37,6 +37,7 @@ namespace NextFlicksMVC4
             AuthConfig.RegisterAuth();
 
             
+
         }
 
         //from http://blog.davebouwman.com/2011/04/21/custom-404-pages-for-asp-net-mvc-3/
