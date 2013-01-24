@@ -30,6 +30,7 @@ namespace NextFlicksMVC4
             //enable Simple Membership Provider database
             GlobalFilters.Filters.Add(new InitializeSimpleMembershipAttribute());
             //end simple role membership init
+            
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);

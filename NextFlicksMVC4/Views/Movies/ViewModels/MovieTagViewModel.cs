@@ -18,8 +18,17 @@ namespace NextFlicksMVC4.Views.Movies.ViewModels
 
         public BoxArt Boxart { get; set; }
 
+//        [DisplayName("Tags")]
+//        [DataType("CommaList")]
+//        public List<String> Tags { get; set; }
+        
         [DisplayName("Tags")]
-        [DataType("CommaList")]
-        public List<String> Tags { get; set; }
+        public List<MovieTags> Tags { get; set;}
+
+        [DisplayName("Movie Tagged By")]
+        public Dictionary<int, List<String>> TaggedBy { get; set; }
+
+        [DisplayName("Anonymous")]
+        public bool Anon { get; set; }
     }
 }

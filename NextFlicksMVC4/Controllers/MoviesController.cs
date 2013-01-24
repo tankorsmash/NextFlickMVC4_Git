@@ -484,11 +484,10 @@ namespace NextFlicksMVC4.Controllers
             MovieTagViewModel movieTagViewModel = new MovieTagViewModel();
             movieTagViewModel.movie = movie;
             movieTagViewModel.genre_strings = new List<string>();
-            movieTagViewModel.Tags = new List<string>();
-            /* var tagResults = from tags in db.Tags
-                              where tags.movie_ID == movie_ID*/
-            //foreach (Genre genre in db.Genres.ToList()) { movieTagViewModel.genre_strings.Add(genre.genre_string);}
-            //foreach(MovieTags tag in db.Tags){movieTagViewModel.Tags.Add(tag.Tag);}
+            movieTagViewModel.Tags = new List<MovieTags>();
+            movieTagViewModel.Anon = false;
+            movieTagViewModel.TaggedBy = new Dictionary<int, List<string>>();
+           
 
             var movieGenres = from mtg in db.MovieToGenres
                               join genre in db.Genres
@@ -498,17 +497,24 @@ namespace NextFlicksMVC4.Controllers
                                   where gs.Key == movie_ID
                                   select gs;
             movieTagViewModel.genre_strings = movieGenres.First().ToList();
-            /*var movieGenres = from mtg in db.MovieToGenres
-                              where mtg.movie_ID == movie_ID
-                              join genre in db.Genres on
-                                  mtg.genre_ID equals genre.genre_ID
-                              group genre.genre_string by mtg.movie_ID;
-            var selectedGenres = movieGenres.ToList();*/
-
+            
             var movieTags = from tag in db.Tags
                             where tag.movie_ID == movie_ID
-                            select tag.Tag;
+                            select tag;
             movieTagViewModel.Tags = movieTags.ToList();
+
+           /* var movieTaggedBy = from tag in db.Tags
+                                from user in db.Users
+                                where tag.userID == user.userID
+                                select user.Username;*/
+            var movieTaggedBy = from tag in db.Tags
+                                join user in db.Users
+                                    on tag.userID equals user.userID
+                                group user.Username by tag.TagId
+                                into tGroup
+                                select tGroup;
+            var tagList = movieTaggedBy.ToList();
+           
 
             return View(movieTagViewModel);
         }

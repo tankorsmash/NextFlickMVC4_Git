@@ -133,6 +133,7 @@ namespace NextFlicksMVC4.Models
         [Key]
         public int TagId { get; set; }
         public string Tag { get; set; }
+        public bool Anon { get; set; }
         public virtual int userID { get; set; }
         public virtual int movie_ID { get; set; }
     }
