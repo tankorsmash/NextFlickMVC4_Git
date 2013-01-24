@@ -784,6 +784,11 @@ namespace NextFlicksMVC4
                                                    mtg.movie_ID;
 
 
+            //a default empty element
+            OmdbEntry defaultOmdbEntry = new OmdbEntry
+                                             {
+                                             };
+
             //create the list of NITVMs
             TraceLine("  Build the query for all the movies in the DB");
             var nitvmQuery =

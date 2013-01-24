@@ -220,9 +220,12 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult testsort()
         {
 
+
             var start = Tools.WriteTimeStamp("start");
 
             var db = new MovieDbContext();
+
+            //get a full query with all data in db
             var total_qry = Tools.GetFullDbQuery(db);
 
             var res =
@@ -256,23 +259,28 @@ namespace NextFlicksMVC4.Controllers
 
                 select nit;
 
+            IEnumerable<NfImdbRtViewModel> nit_list;
             try
             {
-                //var nit_list = res.toarray();
+                nit_list = res.Take(25).ToArray();
                 var asd = 0;
+                Tools.TraceLine("items in nit list {0}", res.Count());
+
+                var end = Tools.WriteTimeStamp("end");
+                Tools.TraceLine((end - start).ToString());
+
+                return View("Genres", nit_list);
             }
+
             catch (System.Data.EntityCommandExecutionException ex) {
                 Tools.TraceLine(
-                    "The ToArray() call probably timed out, it happens on first call to db a lot, I don't know why:\n***{0}",
+                    "The ToArray() call probably timed out, it happens on first call to db a lot, I don't know why:\n  ***{0}",
                     ex.GetBaseException().Message);
+
+                return View();
             }
 
-            Tools.TraceLine("items in nit list {0}", res.Count());
 
-            var end = Tools.WriteTimeStamp("end");
-            Tools.TraceLine((end-start).ToString());
-
-            return View();
 
         }
 

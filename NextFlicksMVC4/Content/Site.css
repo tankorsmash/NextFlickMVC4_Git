@@ -20,13 +20,10 @@ div.title_entry {
     position: relative;
     display: block;
     width: 300px;
-    height: 3pc;
+    height: 12em;
 }
-/* .title_entry > * {
-    position: relative;
-} */
 
-.column_title {
+.NIT_entry {
     float: left;
     padding: 5px;
 }
@@ -38,7 +35,7 @@ div.title_entry {
 
 .title_entry .title_title {
     position: absolute;
-    left: 55px;
+    left: 8em;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -52,7 +49,7 @@ div.title_entry {
 }
        .title_entry .title_runtime {
     position: absolute;
-    left: 55px;
+    left: 10em;
            top: 15px;
 }
 
@@ -66,6 +63,10 @@ div.title_entry {
     position: absolute;
     left: 53px;
     top: 30px;
+}
+
+.title_entry .title_genres {
+    
 }
 /* non-customized stuff layout, I think
  * ----------------------------------------------------------*/
