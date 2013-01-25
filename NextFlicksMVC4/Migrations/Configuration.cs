@@ -18,7 +18,7 @@ namespace NextFlicksMVC4.Migrations
 
         protected override void Seed(NextFlicksMVC4.Models.MovieDbContext context)
         {
-           /* WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "userID", "Username",
+           /* WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "UserID", "Username",
                                                      autoCreateTables: true);
             if (!Roles.RoleExists("Admin"))
                 Roles.CreateRole("Admin");

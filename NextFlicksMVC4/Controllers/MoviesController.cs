@@ -9,9 +9,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
 using NextFlicksMVC4;
 using NextFlicksMVC4.DatabaseClasses;
 using NextFlicksMVC4.Models;
+using NextFlicksMVC4.Models.userAccount;
 using NextFlicksMVC4.NetFlixAPI;
 using System.Timers;
 using NextFlicksMVC4.Helpers;
@@ -471,6 +473,7 @@ namespace NextFlicksMVC4.Controllers
 
         //
         // GET: /Movies/Details/5
+
         public ActionResult DetailsTag(int movie_ID = 0)
         {
             MovieDbContext db = new MovieDbContext();
@@ -484,9 +487,9 @@ namespace NextFlicksMVC4.Controllers
             MovieTagViewModel movieTagViewModel = new MovieTagViewModel();
             movieTagViewModel.movie = movie;
             movieTagViewModel.genre_strings = new List<string>();
-            movieTagViewModel.Tags = new List<MovieTags>();
+           // movieTagViewModel.Tags = new List<String>();
+            movieTagViewModel.TagAndCount = new Dictionary<String,int>();
             movieTagViewModel.Anon = false;
-            movieTagViewModel.TaggedBy = new Dictionary<int, List<string>>();
            
 
             var movieGenres = from mtg in db.MovieToGenres
@@ -497,55 +500,130 @@ namespace NextFlicksMVC4.Controllers
                                   where gs.Key == movie_ID
                                   select gs;
             movieTagViewModel.genre_strings = movieGenres.First().ToList();
+
+            var tagsForMovie = from MtT in db.UserToMovieToTags
+                            where MtT.movie_ID == movie_ID
+                            select MtT.TagId;
+            var tagStrings = from tag in db.MovieTags
+                             from tag_id in tagsForMovie
+                             where tag.TagId == tag_id
+                             select tag.Name;
+
+            //if i actually don't set this part of the model and only use the part where i send
+            // the count over with the tag as the key will that work?
+            var movieTags = tagStrings.ToList();
+
+            foreach (string tag in movieTags)
+            {
+                //select * from MtUtT where MtUtT.tag.id == TagsForMovie.tagID
+                //select * from 
+                var tagCount = from tagString in db.MovieTags
+                               where tagString.Name == tag
+                               from MtT in db.UserToMovieToTags
+                               where MtT.TagId == tagString.TagId
+                               select MtT.TagId;
+                               /*
+                               from tagString in tagStrings
+                               from MtT in tagsForMovie
+                               where tagString == tag
+                               select MtT;
+                    /*
+                                from MtT in db.UserToMovieToTags
+                               from tag_id in tagsForMovie
+                               from tagString in tagStrings
+                               //where tag_id == MtT.TagId
+                               where tagString == tag
+                               group tag_id by MtT.TagId;
+                               //into gs;
+                               //select MtT.TagId;*/
+                if (!movieTagViewModel.TagAndCount.ContainsKey(tag))
+                {
+                    movieTagViewModel.TagAndCount.Add(tag, tagCount.Count());
+                }
+            }
             
-            var movieTags = from tag in db.Tags
+            foreach (KeyValuePair<string, int> kvp in movieTagViewModel.TagAndCount)
+            {
+                Tools.TraceLine(kvp.ToString(), kvp.Value.ToString());
+            }
+           // movieTagViewModel.TagAndCount = tagCount.Count();
+
+            
+            /*var movieTags = from tag in db.MovieTags
                             where tag.movie_ID == movie_ID
                             select tag;
-            movieTagViewModel.Tags = movieTags.ToList();
+            movieTagViewModel.Tags = movieTags.ToList();*/
 
-           /* var movieTaggedBy = from tag in db.Tags
-                                from user in db.Users
-                                where tag.userID == user.userID
-                                select user.Username;*/
-            var movieTaggedBy = from tag in db.Tags
+         /* var movieTaggedBy = from tag in db.MovieTags
                                 join user in db.Users
                                     on tag.userID equals user.userID
                                 group user.Username by tag.TagId
                                 into tGroup
                                 select tGroup;
-            var tagList = movieTaggedBy.ToList();
+            var tagList = movieTaggedBy.ToList();*/
            
 
-            return View(movieTagViewModel);
+            return View(movieTagViewModel); 
         }
 
         [HttpPost]
-        public ActionResult DetailsTag(int movie_ID, List<string> tags)
+        public ActionResult DetailsTag(int movie_ID, List<string> tags, bool Anon)
         {
             if (ModelState.IsValid)
             {
                 MovieDbContext db = new MovieDbContext();
                 Movie taggedMovie = db.Movies.Find(movie_ID);
+                MovieTag newTag = new MovieTag();
+
                 //break the tags down by comma delimeter
                 List<String> seperatedtags = UserInput.DeliminateStrings(tags);
                 seperatedtags = UserInput.StripWhiteSpace(seperatedtags);
                 seperatedtags = UserInput.SanitizeSpecialCharacters(seperatedtags);
+                
                 foreach (string tag in seperatedtags)
                 {
-                    MovieTags newTag = new MovieTags()
+                    var tagExists = db.MovieTags.First(t => t.Name == tag);
+                    if (tagExists == null)
                     {
-                        Tag = tag,
-                        movie_ID = taggedMovie.movie_ID,
-                        userID = WebSecurity.CurrentUserId
-                    };
-                    db.Tags.Add(newTag);
-                    //db.Movies.Add(movie);
+                        //tag doesn't exist, so create it
+                        newTag = new MovieTag();
+                        newTag.Name = tag;
+                        db.MovieTags.Add(newTag);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        //otherwise slecte the MovieTag where the names match and use that.
+                        newTag = db.MovieTags.First(t => t.Name == tag);
+                    }
+
+                    UserToMovieToTags UtMtT = new UserToMovieToTags();
+                    UtMtT.TagId = newTag.TagId;
+                    UtMtT.UserID = WebSecurity.CurrentUserId;
+                    UtMtT.movie_ID = movie_ID;
+
+                    db.UserToMovieToTags.Add(UtMtT);
                     db.SaveChanges();
-                    //return RedirectToAction("Index");
+
+                    UtMtTisAnon anon = new UtMtTisAnon();
+                    anon.UtMtT_ID = UtMtT.UtMtY_ID;
+                    anon.IsAnon = Anon;
+
+                    db.UtMtTisAnon.Add(anon);
+                    db.SaveChanges();
+                    /* MovieTag newTag = new MovieTag();
+                    {
+
+                        Tag = tag;
+                         movie_ID = taggedMovie.movie_ID,
+                        userID = WebSecurity.CurrentUserId
+                    }; 
+                    db.Tags.Add(newTag);
+                    db.SaveChanges(); */
                 }
-                return RedirectToAction("DetailsTag", movie_ID);
+                return RedirectToAction("DetailsTag", "Movies", movie_ID);
             }
-            return RedirectToAction("DetailsTag", movie_ID);
+            return RedirectToAction("DetailsTag", "Movies", movie_ID); 
         }
 
         public ActionResult Details(int movie_ID = 0)

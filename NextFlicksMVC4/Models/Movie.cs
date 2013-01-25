@@ -128,15 +128,31 @@ namespace NextFlicksMVC4.Models
 
     }
 
-    public class MovieTags
+    public class MovieTag
     {
         [Key]
         public int TagId { get; set; }
-        public string Tag { get; set; }
-        public bool Anon { get; set; }
-        public virtual int userID { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class UserToMovieToTags
+    {
+        [Key]
+        public int UtMtY_ID { get; set; }
+        public virtual int UserID { get; set; }
+        public virtual int TagId { get; set; }
         public virtual int movie_ID { get; set; }
     }
+
+    public  class  UtMtTisAnon
+    {
+        [Key]
+        public int UtMtTiA_ID { get; set; }
+        public virtual int UtMtT_ID { get; set; }
+        public bool IsAnon { get; set; }
+
+    }
+   
 
     public class MovieDbContext : DbContext
     {
@@ -145,7 +161,9 @@ namespace NextFlicksMVC4.Models
         public DbSet<Genre> Genres { get; set; }
         public DbSet<MovieToGenre> MovieToGenres { get; set; }
         public DbSet<OMBD.OmdbEntry> Omdb { get; set; }
-        public DbSet<MovieTags> Tags { get; set; }
+        public DbSet<MovieTag> MovieTags { get; set; }
+        public DbSet<UserToMovieToTags> UserToMovieToTags { get; set; }
+        public DbSet<UtMtTisAnon> UtMtTisAnon { get; set; }
         public DbSet<Users> Users { get; set; }
         public DbSet<UserLog> UserLogs { get; set; }
     }

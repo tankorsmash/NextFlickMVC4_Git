@@ -240,10 +240,15 @@
     <Compile Include="Controllers\userAccount\LogonController.cs" />
     <Compile Include="Controllers\userAccount\RegisterController.cs" />
     <Compile Include="Controllers\userAccount\UserController.cs" />
+    <Compile Include="DatabaseClasses\DataSet1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSet1.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Filters\TrackingFilter.cs" />
-    <Compile Include="Migrations\201301232044339_addedTagsAnon.cs" />
-    <Compile Include="Migrations\201301232044339_addedTagsAnon.Designer.cs">
-      <DependentUpon>201301232044339_addedTagsAnon.cs</DependentUpon>
+    <Compile Include="Migrations\201301241949040_ChangedSomeModels.cs" />
+    <Compile Include="Migrations\201301241949040_ChangedSomeModels.Designer.cs">
+      <DependentUpon>201301241949040_ChangedSomeModels.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\userAccount\LogonModel.cs" />
@@ -399,6 +404,17 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <None Include="DatabaseClasses\DataSet1.xsc">
+      <DependentUpon>DataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="DatabaseClasses\DataSet1.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSet1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DatabaseClasses\DataSet1.xss">
+      <DependentUpon>DataSet1.xsd</DependentUpon>
+    </None>
     <None Include="Views\Shared\_Layout.cshtml.old" />
     <Content Include="Views\Web.config" />
     <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\README_ENU.txt" />
@@ -537,8 +553,8 @@
     <Content Include="Views\User\Seed.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201301232044339_addedTagsAnon.resx">
-      <DependentUpon>201301232044339_addedTagsAnon.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201301241949040_ChangedSomeModels.resx">
+      <DependentUpon>201301241949040_ChangedSomeModels.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

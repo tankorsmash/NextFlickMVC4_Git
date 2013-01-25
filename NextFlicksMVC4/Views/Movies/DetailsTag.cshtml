@@ -90,25 +90,31 @@
       </div>
 
       <div class="display-label">
-          @Html.DisplayNameFor(model => model.Tags)
+          @Html.DisplayNameFor(model => model.TagAndCount)
       </div>
-      @foreach (MovieTags tag in Model.Tags)
+      <div class="display-field">
+          @foreach (KeyValuePair<string, int> kvp in Model.TagAndCount)
+          {
+              <p class="tooltip" title="@kvp.Value.ToString()" style="background-color: #ffffff; width: auto; float: left; clear: both" > @kvp.Key </p>
+          }
+      </div>
+      @*foreach (String tag in Model.Tags)
       {
-          <p class="tooltip" id="@tag.TagId" title="tooltip Test" style="background-color: #ffffff; width: auto" > @tag.Tag </p>
+          <p class="tooltip" title="@Model.TagAndCount[tag].ToString()" style="background-color: #ffffff; width: auto" > @tag </p>
       }
         @*<div class="display-field"> @Html.DisplayFor(model => model.Tags)</div>*@
-        <div class="display-field">
+        <div class="display-field" style="clear: both">
             @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
             {
                  <h6>Seperate tags by comma</h6>
                 <p>
-                    @Html.TextBox("tags", value:"") @Html.CheckBoxFor(model => model.Anon)Anonymous?
+                @Html.TextBox("tags", value: "") @Html.CheckBoxFor(model => model.Anon)Anonymous?
                 </p>
                 <p><input type="submit" value="Add Tags" /></p>
             }
             
         </div>
-        
+       
     </fieldset>
 }
 <p>
