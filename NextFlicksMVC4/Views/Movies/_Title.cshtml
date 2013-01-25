@@ -6,28 +6,48 @@
 Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  *@
 <div id=@Html.DisplayFor(model => model.Movie.movie_ID) class="NIT_entry">
     <div class="title_images">
-        
         <div class="title_boxart">
             <img src=@Html.DisplayFor(model => model.Boxarts.boxart_150) />
-        </div></div>
-    <div  class="title_entry">
+        </div>
+    </div>
+    
+    <div class="title_entry_top">
+        
         <div class="title_title">
             @Html.DisplayFor(model => model.Movie.short_title)
         </div>
+        <div class="title_webpage">
+            <a href=@Html.DisplayFor(model => model.Movie.web_page) >Movie Page</a>
+        </div>
+
+    </div>        
+    <div class="title_entry_middle">
+    <div  class="title_entry_left">
         <div class="title_year">
             @Html.DisplayFor(model => model.Movie.year)
         </div>
         <div class="title_runtime">
             @Html.DisplayFor(model => model.Movie.runtime)
         </div>
+
+    </div>
+    <div class="title_entry_right">
+        
+
         <div class="title_rating">
             @Html.DisplayFor(model => model.Movie.tv_rating)
         </div>
-        <div class="title_webpage">
-            <a href=@Html.DisplayFor(model => model.Movie.web_page) >Movie Page</a>
+        <div class="title_tmeter">
+            @Html.DisplayFor(model => model.OmdbEntry.t_Meter)
         </div>
-@*        <div class="title_genres">
-           @Html.DisplayFor(model => model.Genres) 
-        </div>*@
+    </div> 
     </div>
+    
+    <div class="title_entry_bottom">
+        
+        <div class="title_genres">
+           @Html.DisplayFor(model => model.Genres) 
+        </div>
+    </div>
+
 </div>

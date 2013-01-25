@@ -16,56 +16,51 @@ font-weight: bold;
     
 }
 
-div.title_entry {
-    position: relative;
-    display: block;
-    width: 300px;
-    height: 12em;
-}
-
+/* _Title.cshtml */
 .NIT_entry {
     float: left;
-    padding: 5px;
+    padding-left: 1em;
+    padding-right: 1em;
+                                     
+    width: 10em;
+    height: 400px;
 }
 
-.title_entry .title_boxart {
-    position: absolute;
-    left: 0;
+div.title_entry_middle {
+
+    height: 2.5pc;
 }
 
-.title_entry .title_title {
-    position: absolute;
-    left: 8em;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    width: 65%;
-                 
+div.title_entry_left {
+    display: inline-block;
+    width: 50%;
+    float: left;
+    height: inherit;
 }
 
-.title_entry .title_year {
-    position: absolute;
-    right: 15px;
-}
-       .title_entry .title_runtime {
-    position: absolute;
-    left: 10em;
-           top: 15px;
+div.title_entry_right {
+
+    height: inherit;
+    width: 50%;
+    float: right;
 }
 
-.title_entry .title_rating {
-    position: absolute;
-    right: 15px;
-    top: 15px;
+div.title_entry_top {
+    
 }
 
-.title_entry .title_webpage {
-    position: absolute;
-    left: 53px;
-    top: 30px;
+div.title_entry_bottom {
+    float: none;
+    display: block;
 }
 
-.title_entry .title_genres {
+.title_title {
+    word-wrap: break-word;
+}
+
+
+
+.title_entry_left .title_genres {
     
 }
 /* non-customized stuff layout, I think
