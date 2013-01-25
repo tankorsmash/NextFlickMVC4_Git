@@ -255,6 +255,7 @@
     <Compile Include="Models\userAccount\Users.cs" />
     <Compile Include="OMBD\OMDB.cs" />
     <Compile Include="OMBD\TSVParse.cs" />
+    <Compile Include="Tools\PopulateFullView.cs" />
     <Compile Include="Tools\Tools.cs" />
     <Compile Include="Tools\UserInput.cs" />
     <Compile Include="Tracking\TrackingCreate.cs" />
@@ -275,10 +276,10 @@
     <Compile Include="Tests\CustomConstraint.cs" />
     <Compile Include="Tracking\Tracking.cs" />
     <Compile Include="Views\DisplayTools.cs" />
-    <Compile Include="Views\Movies\ViewModels\MovieTagViewModel.cs" />
+    <Compile Include="Views\Movies\ViewModels\TagViewModel.cs" />
     <Compile Include="Views\Movies\ViewModels\MovieToGenreViewModel.cs" />
     <Compile Include="Views\Movies\ViewModels\MovieWithGenreViewModel.cs" />
-    <Compile Include="Views\Movies\ViewModels\NfImdbRtViewModel.cs" />
+    <Compile Include="Views\Movies\ViewModels\FullViewModel.cs" />
     <Compile Include="Views\Tools\MovieWithGenres.cs" />
   </ItemGroup>
   <ItemGroup>

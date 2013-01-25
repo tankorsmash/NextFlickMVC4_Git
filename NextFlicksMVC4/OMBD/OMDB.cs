@@ -288,11 +288,11 @@ namespace NextFlicksMVC4.OMBD
             }
         }
 
-        public static List<NfImdbRtViewModel> MatchListOfMwgvmWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list,
+        public static List<FullViewModel> MatchListOfMwgvmWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list,
                                                                              MovieDbContext db)
         {
             //create complete view models based on MwGs
-            List<NfImdbRtViewModel> completeVm_list = new List<NfImdbRtViewModel>();
+            List<FullViewModel> completeVm_list = new List<FullViewModel>();
             foreach (MovieWithGenreViewModel movieWithGenreViewModel in MwG_list) {
                 //find the omdbEntry for the mwgvm that matches the title and year
                 //TODO: fix omdb matching, for episodes
@@ -303,7 +303,7 @@ namespace NextFlicksMVC4.OMBD
                         item.year == movieWithGenreViewModel.movie.year);
 
                 //create a NITViewModel from the MwGVM and OmdbEntry
-                var created_vm = new NfImdbRtViewModel
+                var created_vm = new FullViewModel
                                      {
                                          Movie =
                                              movieWithGenreViewModel.movie,

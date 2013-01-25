@@ -30,7 +30,8 @@ namespace NextFlicksMVC4.Controllers
 {
     public class MoviesController : Controller
     {
-
+        #region hide this
+       
         //Creates a cookie
         public ActionResult Cookies()
         {
@@ -278,27 +279,24 @@ namespace NextFlicksMVC4.Controllers
 
         }
 
+        #endregion
 
-
-    public ActionResult DetailsNit()
+        public ActionResult DetailsNit()
         {
             //create a VM
             MovieDbContext movieDb = new MovieDbContext();
             List<Movie> movie_list = movieDb.Movies.Take(1).ToList();
 
-
-
             var MwG_list = Tools.FilterMovies(movieDb, movie_list);
-            //NfImdbRtViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
+            //FullViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
 
             var NitVm = MwG_list.First();
 
             return View(NitVm);
-
-
         }
 
-
+        #region hide some more
+        
         public ActionResult Year(int year_start = 2001, int year_end = 2002, int start = 0, int count = 25, bool is_movie = true)
         {
             MovieDbContext db = new MovieDbContext();
@@ -470,11 +468,11 @@ namespace NextFlicksMVC4.Controllers
 
             return View(movies.ToList());
         }
-
+        #endregion
         //
         // GET: /Movies/Details/5
 
-        public ActionResult DetailsTag(int movie_ID = 0)
+     /*   public ActionResult DetailsTag(int movie_ID = 0)
         {
             MovieDbContext db = new MovieDbContext();
 
@@ -484,12 +482,12 @@ namespace NextFlicksMVC4.Controllers
                 return HttpNotFound();
             }
 
-            MovieTagViewModel movieTagViewModel = new MovieTagViewModel();
-            movieTagViewModel.movie = movie;
-            movieTagViewModel.genre_strings = new List<string>();
-           // movieTagViewModel.Tags = new List<String>();
-            movieTagViewModel.TagAndCount = new Dictionary<String,int>();
-            movieTagViewModel.Anon = false;
+            TagViewModel tagViewModel = new TagViewModel();
+            tagViewModel.movie = movie;
+            tagViewModel.genre_strings = new List<string>();
+           // TagViewModel.Tags = new List<String>();
+            tagViewModel.TagAndCount = new Dictionary<String,int>();
+            tagViewModel.Anon = false;
            
 
             var movieGenres = from mtg in db.MovieToGenres
@@ -499,7 +497,7 @@ namespace NextFlicksMVC4.Controllers
                                   into gs
                                   where gs.Key == movie_ID
                                   select gs;
-            movieTagViewModel.genre_strings = movieGenres.First().ToList();
+            tagViewModel.genre_strings = movieGenres.First().ToList();
 
             var tagsForMovie = from MtT in db.UserToMovieToTags
                             where MtT.movie_ID == movie_ID
@@ -522,49 +520,20 @@ namespace NextFlicksMVC4.Controllers
                                from MtT in db.UserToMovieToTags
                                where MtT.TagId == tagString.TagId
                                select MtT.TagId;
-                               /*
-                               from tagString in tagStrings
-                               from MtT in tagsForMovie
-                               where tagString == tag
-                               select MtT;
-                    /*
-                                from MtT in db.UserToMovieToTags
-                               from tag_id in tagsForMovie
-                               from tagString in tagStrings
-                               //where tag_id == MtT.TagId
-                               where tagString == tag
-                               group tag_id by MtT.TagId;
-                               //into gs;
-                               //select MtT.TagId;*/
-                if (!movieTagViewModel.TagAndCount.ContainsKey(tag))
+                               
+                if (!tagViewModel.TagAndCount.ContainsKey(tag))
                 {
-                    movieTagViewModel.TagAndCount.Add(tag, tagCount.Count());
+                    tagViewModel.TagAndCount.Add(tag, tagCount.Count());
                 }
             }
             
-            foreach (KeyValuePair<string, int> kvp in movieTagViewModel.TagAndCount)
+            foreach (KeyValuePair<string, int> kvp in tagViewModel.TagAndCount)
             {
                 Tools.TraceLine(kvp.ToString(), kvp.Value.ToString());
             }
-           // movieTagViewModel.TagAndCount = tagCount.Count();
-
-            
-            /*var movieTags = from tag in db.MovieTags
-                            where tag.movie_ID == movie_ID
-                            select tag;
-            movieTagViewModel.Tags = movieTags.ToList();*/
-
-         /* var movieTaggedBy = from tag in db.MovieTags
-                                join user in db.Users
-                                    on tag.userID equals user.userID
-                                group user.Username by tag.TagId
-                                into tGroup
-                                select tGroup;
-            var tagList = movieTaggedBy.ToList();*/
            
-
-            return View(movieTagViewModel); 
-        }
+            return View(tagViewModel); 
+        }*/
 
         [HttpPost]
         public ActionResult DetailsTag(int movie_ID, List<string> tags, bool Anon)
@@ -629,15 +598,24 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Details(int movie_ID = 0)
         {
             MovieDbContext db = new MovieDbContext();
+            FullViewModel fullView = new FullViewModel();
 
             Movie movie = db.Movies.Find(movie_ID);
             if (movie == null)
             {
                 return HttpNotFound();
             }
-            return View(movie);
-        }
 
+            fullView.Movie = movie;
+            fullView.Genres = PopulateFullView.Genres(movie_ID);
+            fullView.Boxarts = PopulateFullView.BoxArts(movie_ID);
+            fullView.OmdbEntry = PopulateFullView.Omdb(movie_ID);
+            fullView.Tags = PopulateFullView.TagsAndCount(movie_ID);
+            
+            return View(fullView);
+        }
+        #region hide this stuff for now
+        
         /// <summary>
         /// Rebuild the serialized list of OmdbEntrys that were created in Movies/TSV, and adds them to the database
         /// </summary>
@@ -803,7 +781,7 @@ namespace NextFlicksMVC4.Controllers
         //    MovieDbContext db = new MovieDbContext();
 
         //    ////has never worked, but shows the idea
-        //    //var result_list = db.Database.SqlQuery<NfImdbRtViewModel>(
+        //    //var result_list = db.Database.SqlQuery<FullViewModel>(
         //    //"SELECT        Movies.short_title, OmdbEntries.t_Meter" +
         //    //"FROM            OmdbEntries INNER JOIN" +
         //    //"Movies ON OmdbEntries.movie_ID = Movies.movie_ID" +
@@ -882,5 +860,5 @@ namespace NextFlicksMVC4.Controllers
 
         }
     }
-
+        #endregion
 }

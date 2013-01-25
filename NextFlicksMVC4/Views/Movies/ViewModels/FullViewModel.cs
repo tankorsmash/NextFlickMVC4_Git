@@ -6,7 +6,7 @@ using NextFlicksMVC4.Models;
 
 namespace NextFlicksMVC4.Views.Movies.ViewModels
 {
-    public class NfImdbRtViewModel
+    public class FullViewModel
     {
         //public MovieWithGenreViewModel MovieWithGenre { get; set; }
 
@@ -17,5 +17,7 @@ namespace NextFlicksMVC4.Views.Movies.ViewModels
         public BoxArt Boxarts { get; set; }
 
         public OMBD.OmdbEntry OmdbEntry { get; set; }
+
+        public TagViewModel Tags { get; set; }
     }
 }

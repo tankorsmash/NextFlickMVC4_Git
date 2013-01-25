@@ -117,7 +117,7 @@ namespace NextFlicksMVC4
         /// <param name="count">Limits the amount of movies returned -at the very end- of the function instead of the start</param>
         /// <param name="verbose"> whether or not to print output trace lines</param>
         /// <returns></returns>
-        public static List<NfImdbRtViewModel> FilterMovies(
+        public static List<FullViewModel> FilterMovies(
             MovieDbContext db,
             List<Movie> movie_list,
             int year_start = 1914,
@@ -282,15 +282,15 @@ namespace NextFlicksMVC4
         /// </summary>
         /// <param name="MwG_list"></param>
         /// <returns>List of NitVMs</returns>
-        public static List<NfImdbRtViewModel> MatchMwGVMsWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list)
+        public static List<FullViewModel> MatchMwGVMsWithOmdbEntrys(List<MovieWithGenreViewModel> MwG_list)
         {
-            List<NfImdbRtViewModel> nit_list = new List<NfImdbRtViewModel>();
+            List<FullViewModel> nit_list = new List<FullViewModel>();
             foreach (var MwGVM in MwG_list) {
                 //find the matching omdb entry based on the MwGVM's movie_ID
                 OmdbEntry omdbEntry =
                     MatchMovieIdToOmdbEntry(MwGVM.movie.movie_ID);
                 //create the NitVM based on the new omdb entry
-                NfImdbRtViewModel nitvm = new NfImdbRtViewModel
+                FullViewModel nitvm = new FullViewModel
                                               {
                                                   Boxarts = MwGVM .boxart,
                                                   Genres = MwGVM .genre_strings,
@@ -766,7 +766,7 @@ namespace NextFlicksMVC4
             TraceLine("Out BuildMoviesBoxartGenresTables");
         }
 
-        public static IQueryable<NfImdbRtViewModel> GetFullDbQuery(MovieDbContext db)
+        public static IQueryable<FullViewModel> GetFullDbQuery(MovieDbContext db)
         {
 
 
@@ -799,7 +799,7 @@ namespace NextFlicksMVC4
                 from grp in movieID_genreString_grouping
                 where grp.Key == movie.movie_ID
                 //create the NITVM
-                select new NfImdbRtViewModel
+                select new FullViewModel
                            {
                                Movie = movie,
                                Boxarts = boxart,

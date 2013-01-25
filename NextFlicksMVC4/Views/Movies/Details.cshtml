@@ -1,166 +1,44 @@
-﻿@model NextFlicksMVC4.Models.Movie
+﻿@model NextFlicksMVC4.Views.Movies.ViewModels.FullViewModel
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Complete Details";
 }
 
-<h2>Details</h2>
+<h2>@ViewBag.Title</h2>
 
 <fieldset>
-    <legend>Movie</legend>
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.short_title)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.short_title)
-    </div>
+    sing reflection to loop over properties. Is hard code
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.year)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.year)
-    </div>
+    @foreach (var property in ViewData.ModelMetadata.Properties)
+    {
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.runtime)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.runtime)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.avg_rating)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.avg_rating)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.tv_rating)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.tv_rating)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.web_page)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.web_page)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.current_season)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.current_season)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.is_movie)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.is_movie)
-    </div>
-
-@*    <div class="display-label">
-         @Html.DisplayNameFor(model => model.genres)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.genres)
-    </div>*@
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.maturity_rating)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.maturity_rating)
-    </div>
-    @*TODO: get the editor field to allow users to add Tags, need to make a viewmodel for movies with tags + genres me thinks *@
-      <div class="editor-field">
-            @Html.EditorFor(model => model.short_title)
-            @Html.ValidationMessageFor(model => model.short_title)
+        <div class="editor-line">
+            <div class="display-label">@(property.DisplayName ?? property.PropertyName)</div>
+            <div class="display-field">@Html.Display(property.PropertyName)</div>
         </div>
-
-    @*   <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_38)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_38)
-    </div>
-
+    }
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_64)
+        @Html.DisplayNameFor(model => model.Tags.TagAndCount)
     </div>
     <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_64)
+        @foreach (KeyValuePair<string, int> kvp in Model.Tags.TagAndCount)
+        {
+            <p class="tooltip" title="@kvp.Value.ToString()" style="background-color: #ffffff; width: auto; float: left; clear: both" > @kvp.Key </p>
+        }
     </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_110)
+    <div class="display-field" style="clear: both">
+        @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
+        {
+            <h6>Seperate tags by comma</h6>
+            <p>
+                @Html.TextBox("tags", value: "") @Html.CheckBoxFor(model => model.Tags.Anon)Anonymous?
+            </p>
+            <p><input type="submit" value="Add Tags" /></p>
+        }
+            
     </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_110)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_124)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_124)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_150)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_150)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_166)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_166)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_88)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_88)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_197)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_197)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_176)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_176)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_284)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_284)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.boxart_210)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.boxart_210)
-    </div>*@
 </fieldset>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.movie_ID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @*@Html.ActionLink("Edit", "Edit", new { id=Model.movie_ID }) |
+    @Html.ActionLink("Back to List", "Index")*@
 </p>

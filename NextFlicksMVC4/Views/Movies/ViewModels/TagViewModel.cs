@@ -9,9 +9,9 @@ using NextFlicksMVC4.Models.userAccount;
 
 namespace NextFlicksMVC4.Views.Movies.ViewModels
 {
-    public class MovieTagViewModel
+    public class TagViewModel
     {
-        public Movie movie { get; set; }
+      /*  public Movie movie { get; set; }
 
         [DisplayName("List of Genres")]
         [DataType("CommaList")]
@@ -27,7 +27,6 @@ namespace NextFlicksMVC4.Views.Movies.ViewModels
         //This one keeps the tag as the key and the count of how many times the tagis used in the value
         [DisplayName("Tags")]
         public Dictionary<String, int> TagAndCount { get; set; }
-
 
         [DisplayName("Anonymous")]
         public bool Anon { get; set; }
