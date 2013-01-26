@@ -19,11 +19,38 @@ font-weight: bold;
 /* _Title.cshtml */
 .NIT_entry {
     float: left;
-    padding-left: 1em;
-    padding-right: 1em;
-                                     
-    width: 10em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 1em;
+
+    background-color: #ff0000;
+    background-color: rgba(255, 0, 0, 0.37);
+    box-shadow: -5px 5px 15px #333333;           
+    width: 155px;
     height: 400px;
+}
+
+div.title_entry_top {
+    
+}
+
+.title_images {
+    overflow: hidden;
+    padding: 10px;
+}
+
+.title_boxart {
+    width: inherit;
+    height: inherit;
+    overflow: hidden;
+    padding: 0;
+    border-radius: 8px;
+}
+
+
+.title_title {
+    word-wrap: break-word;
+    font-weight: bold;
 }
 
 div.title_entry_middle {
@@ -45,19 +72,17 @@ div.title_entry_right {
     float: right;
 }
 
-div.title_entry_top {
-    
-}
-
 div.title_entry_bottom {
     float: none;
     display: block;
 }
 
-.title_title {
-    word-wrap: break-word;
-}
 
+
+img.rt_rotten {
+    height: 16px;
+    width: 16px;
+}
 
 
 .title_entry_left .title_genres {

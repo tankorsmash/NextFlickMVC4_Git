@@ -7,7 +7,8 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
 <div id=@Html.DisplayFor(model => model.Movie.movie_ID) class="NIT_entry">
     <div class="title_images">
         <div class="title_boxart">
-            <img src=@Html.DisplayFor(model => model.Boxarts.boxart_150) />
+            <a href=@Html.DisplayFor(model => model.Movie.web_page) >
+            <img src=@Html.DisplayFor(model => model.Boxarts.boxart_150) /></a>
         </div>
     </div>
     
@@ -17,7 +18,8 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
             @Html.DisplayFor(model => model.Movie.short_title)
         </div>
         <div class="title_webpage">
-            <a href=@Html.DisplayFor(model => model.Movie.web_page) >Movie Page</a>
+@*            <a href=@Html.DisplayFor(model => model.Movie.web_page) >More Details</a> *@
+                @Html.ActionLink("More Details", "DetailsNit", "Movies", new { Model.Movie.movie_ID }, null)
         </div>
 
     </div>        
@@ -38,7 +40,15 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
             @Html.DisplayFor(model => model.Movie.tv_rating)
         </div>
         <div class="title_tmeter">
-            @Html.DisplayFor(model => model.OmdbEntry.t_Meter)
+            @Html.DisplayFor(model => model.OmdbEntry.t_Meter)    
+            @if (Model.OmdbEntry != null) {
+                if (Model.OmdbEntry.t_Meter > 50) {
+                     <img class="rt_rotten" src="../../Content/Images/fresh.png"/>
+                 }
+                if (Model.OmdbEntry.t_Meter < 50) {
+                     <img class="rt_rotten" src="../../Content/Images/rotten.png"/>
+                 }
+            }
         </div>
     </div> 
     </div>
@@ -46,8 +56,8 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
     <div class="title_entry_bottom">
         
         <div class="title_genres">
-           @Html.DisplayFor(model => model.Genres) 
-        </div>
+           @Html.DisplayFor(model => model.Genres)        </div>
+           
     </div>
 
 </div>
