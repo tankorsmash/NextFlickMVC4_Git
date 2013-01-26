@@ -24,14 +24,32 @@ font-weight: bold;
     margin-top: 1em;
 
     background-color: #ff0000;
-    background-color: rgba(255, 0, 0, 0.37);
+    background-color: rgb(185, 9, 11);
     box-shadow: -5px 5px 15px #333333;           
     width: 155px;
     height: 400px;
+
+    border-style: solid;
+    border-color: #ff0000;
+    border-color: rgba(255, 0, 0, 0.37);
+
+    color: white;
+    text-shadow: 2px 2px black;
+
+}
+
+.NIT_entry:hover {
+    border-style: solid;
+    border-color: black;
+    background-color: rgba(255, 0, 0, 0.37);
 }
 
 div.title_entry_top {
     
+}
+
+.title_details {
+    text-shadow: none;
 }
 
 .title_images {
@@ -47,9 +65,17 @@ div.title_entry_top {
     border-radius: 8px;
 }
 
+.title_webpage:hover {
+
+    display: none;
+}
+
 
 .title_title {
-    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    
     font-weight: bold;
 }
 
@@ -85,8 +111,8 @@ img.rt_rotten {
 }
 
 
-.title_entry_left .title_genres {
-    
+.title_genres {
+    border-top: 2px dotted #ffffff;
 }
 /* non-customized stuff layout, I think
  * ----------------------------------------------------------*/
