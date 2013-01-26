@@ -30,7 +30,6 @@ namespace NextFlicksMVC4.Controllers
 {
     public class MoviesController : Controller
     {
-        #region hide this
        
         //Creates a cookie
         public ActionResult Cookies()
@@ -279,7 +278,6 @@ namespace NextFlicksMVC4.Controllers
 
         }
 
-        #endregion
 
         public ActionResult DetailsNit()
         {
@@ -295,7 +293,6 @@ namespace NextFlicksMVC4.Controllers
             return View(NitVm);
         }
 
-        #region hide some more
         
         public ActionResult Year(int year_start = 2001, int year_end = 2002, int start = 0, int count = 25, bool is_movie = true)
         {
@@ -468,7 +465,6 @@ namespace NextFlicksMVC4.Controllers
 
             return View(movies.ToList());
         }
-        #endregion
         //
         // GET: /Movies/Details/5
 
@@ -614,7 +610,59 @@ namespace NextFlicksMVC4.Controllers
             
             return View(fullView);
         }
-        #region hide this stuff for now
+
+        [HttpPost]
+        public ActionResult Details(int movie_ID, List<String> tags, bool anon)
+        {
+            if (ModelState.IsValid)
+            {
+                MovieDbContext db = new MovieDbContext();
+                Movie taggedMovie = db.Movies.Find(movie_ID);
+                MovieTag newTag = new MovieTag();
+
+                //break the tags down by comma delimeter
+                List<String> seperatedtags = UserInput.DeliminateStrings(tags);
+                seperatedtags = UserInput.StripWhiteSpace(seperatedtags);
+                seperatedtags = UserInput.SanitizeSpecialCharacters(seperatedtags);
+
+                foreach (string tag in seperatedtags)
+                {
+                    var tagExists = db.MovieTags.FirstOrDefault(t => t.Name == tag);
+                    if (tagExists == null)
+                    {
+                        //tag doesn't exist, so create it
+                        newTag.Name = tag;
+                        db.MovieTags.Add(newTag);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        //otherwise slecte the MovieTag where the names match and use that.
+                        newTag = db.MovieTags.First(t => t.Name == tag);
+                    }
+
+                    UserToMovieToTags UtMtT = new UserToMovieToTags();
+                    UtMtT.TagId = newTag.TagId;
+                    UtMtT.UserID = WebSecurity.CurrentUserId;
+                    UtMtT.movie_ID = movie_ID;
+
+                    db.UserToMovieToTags.Add(UtMtT);
+                    db.SaveChanges();
+
+                    UtMtTisAnon anonTags = new UtMtTisAnon();
+                    anonTags.UtMtT_ID = UtMtT.UtMtY_ID;
+                    anonTags.IsAnon = anon;
+
+                    db.UtMtTisAnon.Add(anonTags);
+                    db.SaveChanges();
+                  }
+                return RedirectToAction("DetailsTag", "Movies", movie_ID);
+                //return View(fullView);
+            }
+            return RedirectToAction("DetailsTag", "Movies", movie_ID); 
+            //return View(fullView);
+        }
+
         
         /// <summary>
         /// Rebuild the serialized list of OmdbEntrys that were created in Movies/TSV, and adds them to the database
@@ -860,5 +908,4 @@ namespace NextFlicksMVC4.Controllers
 
         }
     }
-        #endregion
 }

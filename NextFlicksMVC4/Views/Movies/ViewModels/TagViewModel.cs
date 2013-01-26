@@ -28,7 +28,7 @@ namespace NextFlicksMVC4.Views.Movies.ViewModels
         [DisplayName("Tags")]
         public Dictionary<String, int> TagAndCount { get; set; }
 
-        [DisplayName("Anonymous")]
-        public bool Anon { get; set; }
+        /*[DisplayName("Anonymous")]
+        public bool Anon { get; set; }*/
     }
 }

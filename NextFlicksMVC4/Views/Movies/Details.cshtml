@@ -5,39 +5,41 @@
 }
 
 <h2>@ViewBag.Title</h2>
+@using (Html.BeginForm())
+{
+    <fieldset>
+        using reflection to loop over properties. Is hard code
 
-<fieldset>
-    sing reflection to loop over properties. Is hard code
+        @foreach (var property in ViewData.ModelMetadata.Properties)
+        {
 
-    @foreach (var property in ViewData.ModelMetadata.Properties)
-    {
-
-        <div class="editor-line">
-            <div class="display-label">@(property.DisplayName ?? property.PropertyName)</div>
-            <div class="display-field">@Html.Display(property.PropertyName)</div>
+            <div class="editor-line">
+                <div class="display-label">@(property.DisplayName ?? property.PropertyName)</div>
+                <div class="display-field">@Html.Display(property.PropertyName)</div>
+            </div>
+        }
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.Tags.TagAndCount)
         </div>
-    }
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.Tags.TagAndCount)
-    </div>
-    <div class="display-field">
-        @foreach (KeyValuePair<string, int> kvp in Model.Tags.TagAndCount)
-        {
-            <p class="tooltip" title="@kvp.Value.ToString()" style="background-color: #ffffff; width: auto; float: left; clear: both" > @kvp.Key </p>
-        }
-    </div>
-    <div class="display-field" style="clear: both">
-        @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
-        {
-            <h6>Seperate tags by comma</h6>
-            <p>
-                @Html.TextBox("tags", value: "") @Html.CheckBoxFor(model => model.Tags.Anon)Anonymous?
-            </p>
-            <p><input type="submit" value="Add Tags" /></p>
-        }
+        <div class="display-field">
+            @foreach (KeyValuePair<string, int> kvp in Model.Tags.TagAndCount)
+            {
+                <p class="tooltip" title="@kvp.Value.ToString()" style="background-color: #ffffff; width: auto; float: left; clear: both" > @kvp.Key </p>
+            }
+        </div>
+        <div class="display-field" style="clear: both">
+            @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
+            {
+                <h6>Seperate tags by comma</h6>
+                <p>
+                    @Html.TextBox("tags", value: "") @Html.CheckBox("anon", false)Anonymous?
+                </p>
+                <p><input type="submit" value="Add Tags" /></p>
+            }
             
-    </div>
-</fieldset>
+        </div>
+    </fieldset>
+}
 <p>
     @*@Html.ActionLink("Edit", "Edit", new { id=Model.movie_ID }) |
     @Html.ActionLink("Back to List", "Index")*@
