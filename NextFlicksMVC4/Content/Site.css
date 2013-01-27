@@ -27,7 +27,7 @@ font-weight: bold;
     background-color: rgb(185, 9, 11);
     box-shadow: -5px 5px 15px #333333;           
     width: 155px;
-    height: 400px;
+    height: 410px;
 
     border-style: solid;
     border-color: #ff0000;
@@ -63,7 +63,6 @@ div.title_entry_top {
 
 
 .title_entry_text {
-    background-color: rgb(185, 9, 11);
 border-width: 5px;
 border-radius: 7px;
 margin-left: 5px;
@@ -113,6 +112,8 @@ div.title_entry_right {
 div.title_entry_bottom {
     float: none;
     display: block;
+
+    margin-top: .5em;
 }
 
 
@@ -125,6 +126,8 @@ img.rt_rotten {
 
 .title_genres {
     border-top: 2px dotted #ffffff;
+
+    padding-top: .5em;
 }
 /* non-customized stuff layout, I think
  * ----------------------------------------------------------*/
