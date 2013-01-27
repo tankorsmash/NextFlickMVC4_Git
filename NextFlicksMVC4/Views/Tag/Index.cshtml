@@ -1,0 +1,35 @@
+﻿@model NextFlicksMVC4.Models.TagModels.TagDetailViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+
+<table>
+    <tr>
+        <th>
+            @Html.DisplayFor(model => model.TagName)
+            <br />
+        </th>
+        <th></th>
+    </tr>
+
+<tr>
+@foreach (var item in Model.TaggedByUsers)
+{
+    <td>
+    @item.Username
+    </td>
+}
+</tr>
+<tr>
+@foreach (var movie in Model.TaggedMovies)
+{
+    <td>
+    @movie.short_title
+    </td> 
+}
+</tr>
+</table>
