@@ -6,6 +6,7 @@ using System.Web;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
+using NextFlicksMVC4.Models.TagModels;
 
 namespace NextFlicksMVC4
 {
@@ -60,10 +61,10 @@ namespace NextFlicksMVC4
             return boxArts;
         }
 
-        public static TagViewModel TagsAndCount(int movieID)
+        public static TagCountViewModel TagsAndCount(int movieID)
         {
             MovieDbContext db = new MovieDbContext();
-            TagViewModel tagView = new TagViewModel(){ TagAndCount = new Dictionary<string, int>()};
+            TagCountViewModel tagView = new TagCountViewModel(){ TagAndCount = new Dictionary<string, int>()};
 
             //find the ids of the tags related to the movie
             var tagsForMovie = from MtT in db.UserToMovieToTags

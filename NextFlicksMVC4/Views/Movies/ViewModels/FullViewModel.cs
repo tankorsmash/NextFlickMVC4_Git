@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using NextFlicksMVC4.Models;
+using NextFlicksMVC4.Models.TagModels;
 
 namespace NextFlicksMVC4.Views.Movies.ViewModels
 {
@@ -18,6 +19,6 @@ namespace NextFlicksMVC4.Views.Movies.ViewModels
 
         public OMBD.OmdbEntry OmdbEntry { get; set; }
 
-        public TagViewModel Tags { get; set; }
+        public TagCountViewModel Tags { get; set; }
     }
 }
