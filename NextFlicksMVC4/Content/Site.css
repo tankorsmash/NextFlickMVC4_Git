@@ -48,10 +48,6 @@ div.title_entry_top {
     
 }
 
-.title_details {
-    text-shadow: none;
-}
-
 .title_images {
     overflow: hidden;
     padding: 10px;
@@ -64,6 +60,22 @@ div.title_entry_top {
     padding: 0;
     border-radius: 8px;
 }
+
+
+.title_entry_text {
+    background-color: rgb(185, 9, 11);
+border-width: 5px;
+border-radius: 7px;
+margin-left: 5px;
+margin-right: 5px;
+padding: 0 5px 0 5px;
+height: 40%;
+}
+
+.title_details {
+    text-shadow: none;
+}
+
 
 .title_webpage:hover {
 
