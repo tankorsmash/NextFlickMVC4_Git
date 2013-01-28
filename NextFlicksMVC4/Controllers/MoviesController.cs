@@ -321,14 +321,14 @@ namespace NextFlicksMVC4.Controllers
                 Tools.TraceLine("  Retrieving paginated results");
                 int movies_to_skip = movie_count*(page-1);
 
-                //needed to sort the stuff before I could skip, so I chose alphabetically
+                //needed to sort the stuff before I could skip, so I chose alphabetically, then changed to ID for a bit of speed
                 // it can be changed at any time, once we get some feedback.
                 IEnumerable<NfImdbRtViewModel> nit_list =
-                    //res.OrderBy(nit => nit.Movie.short_title)
-                    //   .Skip(movies_to_skip)
-                    res
+                    res.OrderBy(nit => nit.Movie.movie_ID)
+                       .Skip(movies_to_skip)
                        .Take(movie_count)
                        .ToArray();
+
 
 
                 var end = Tools.WriteTimeStamp("end");

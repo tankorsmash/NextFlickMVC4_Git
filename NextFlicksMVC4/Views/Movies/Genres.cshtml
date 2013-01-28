@@ -159,15 +159,7 @@ else {
         @Html.Partial("_Title", item)
 }
 
-
-@*@{List<MoviesController.MovieWithGenreViewModel> title_list = Model.ToList();} 
-    @{
-        for (int i = 0; i < title_list.Count; i += 3) {
-            <div class="row_title" >
-                    @{ Html.RenderPartial("_Title", title_list[i]); }
-                    @{ Html.RenderPartial("_Title", title_list[i+1]); }
-                    @{ Html.RenderPartial("_Title", title_list[i+2]); }
-            </div>
-
-        }
-    }*@
+<!-- pagination stuff --!>
+    @* has to be based on the current page to show the selected page, then the number of pages
+    based on the total results value. The tricky part will be when we resend the current page 
+    with the current params... *@
