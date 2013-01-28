@@ -217,14 +217,14 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        public ActionResult testsort(string movie_title = "", string genre_select = "", int page = 1)
+        public ActionResult testsort(string movie_title = "", string genre_select = "0", int page = 1)
         {
 
 
             var start = Tools.WriteTimeStamp("start");
 
             //if the titles are default print default message, otherwise print variables
-            if (movie_title != "" || genre_select != "")
+            if (movie_title != "" || genre_select != "0")
             {
                 Tools.TraceLine("testsorting with title: {0}, genre: {1}", movie_title, genre_select);
             }
@@ -276,8 +276,14 @@ namespace NextFlicksMVC4.Controllers
                     //maturity rating
                 && nit.Movie.maturity_rating >= 0
                 && nit.Movie.maturity_rating <= 200
-                    //genre
-                && nit.Genres.Any(item => item.StartsWith(genre_select))
+                    //genre 
+
+                select nit;
+                    
+            if (genre_select != "0") {
+                res = res.Where(nit => nit.Genres.Any(item => item == genre_select));
+                
+            }
                 //&& nit.Genres.Any(item => item == genre_select)
 
                       ////Rotten Tomatoes Meter
@@ -292,7 +298,6 @@ namespace NextFlicksMVC4.Controllers
                       //&& nit.OmdbEntry.t_Rotten >= 0
                       //&& nit.OmdbEntry.t_Rotten <= 200000
 
-                select nit;
 
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try {

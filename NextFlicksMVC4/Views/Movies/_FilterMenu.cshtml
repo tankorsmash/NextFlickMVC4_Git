@@ -8,6 +8,7 @@
     <!-- need genre, RT meter, year -->
 
         <select name="genre_select" >
+        <option value="0">All Genres</option>
             @{
                 foreach (KeyValuePair<string,int> kvp in (SortedDictionary<string,int>)ViewBag.genre_dict )
                 {
