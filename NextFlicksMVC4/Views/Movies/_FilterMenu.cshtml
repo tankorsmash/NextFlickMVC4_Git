@@ -1,16 +1,23 @@
 ﻿        
 <div class="filter_area">
-@Html.TextBox("term")
+    
+    <form name="search_form">
 
-<!-- need genre, RT meter, year -->
+    @Html.TextBox("title")
 
-    <select name="genre_select" multiple="multiple">
-    @{
-     foreach (KeyValuePair<string,int> kvp in (SortedDictionary<string,int>)ViewBag.genre_dict )
-    {
-        <option value=@kvp.Value > @kvp.Key </option>
-    } 
-    }
-    </select>
+    <!-- need genre, RT meter, year -->
+
+        <select name="genre_select" multiple="multiple">
+            @{
+                foreach (KeyValuePair<string,int> kvp in (SortedDictionary<string,int>)ViewBag.genre_dict )
+                {
+                    <option value=@kvp.Value > @kvp.Key </option>
+                } 
+            }
+        </select>
+    
+    <input type="submit" value="Search"/>
+
+    </form>
 
 </div>

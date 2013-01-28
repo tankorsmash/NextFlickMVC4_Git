@@ -217,7 +217,7 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        public ActionResult testsort()
+        public ActionResult testsort(string title = "", params string[] genre_select)
         {
 
 
@@ -251,7 +251,7 @@ namespace NextFlicksMVC4.Controllers
                 from nit in total_qry
                 where
                     //title
-                nit.Movie.short_title.StartsWith("")
+                nit.Movie.short_title.Contains(title)
                     //runtime
                 && nit.Movie.runtime > 0
                 && nit.Movie.runtime < 100000
