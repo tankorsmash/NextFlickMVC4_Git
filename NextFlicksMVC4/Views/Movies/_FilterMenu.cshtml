@@ -3,15 +3,15 @@
     
     <form name="search_form">
 
-    @Html.TextBox("title")
+    @Html.TextBox("movie_title", "Enter a title")
 
     <!-- need genre, RT meter, year -->
 
-        <select name="genre_select" multiple="multiple">
+        <select name="genre_select" >
             @{
                 foreach (KeyValuePair<string,int> kvp in (SortedDictionary<string,int>)ViewBag.genre_dict )
                 {
-                    <option value=@kvp.Value > @kvp.Key </option>
+                    <option value="@kvp.Key" > @kvp.Key </option>
                 } 
             }
         </select>
@@ -21,3 +21,5 @@
     </form>
 
 </div>
+
+

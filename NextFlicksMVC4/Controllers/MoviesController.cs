@@ -217,7 +217,7 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        public ActionResult testsort(string title = "", params string[] genre_select)
+        public ActionResult testsort(string movie_title = "", string genre_select = "")
         {
 
 
@@ -240,6 +240,12 @@ namespace NextFlicksMVC4.Controllers
             ViewBag.msl = msl;
 
 
+            //make sure the title isn't the default text set in the _FilterMenu
+            if (movie_title == "Enter a title") {
+                movie_title = "";
+            }
+
+
             //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
 
 
@@ -251,7 +257,7 @@ namespace NextFlicksMVC4.Controllers
                 from nit in total_qry
                 where
                     //title
-                nit.Movie.short_title.Contains(title)
+                nit.Movie.short_title.Contains(movie_title)
                     //runtime
                 && nit.Movie.runtime > 0
                 && nit.Movie.runtime < 100000
@@ -262,7 +268,8 @@ namespace NextFlicksMVC4.Controllers
                 && nit.Movie.maturity_rating >= 0
                 && nit.Movie.maturity_rating <= 200
                     //genre
-                && nit.Genres.Any(item => item.StartsWith(""))
+                && nit.Genres.Any(item => item.StartsWith(genre_select))
+                //&& nit.Genres.Any(item => item == genre_select)
 
                       ////Rotten Tomatoes Meter
                       //&& nit.OmdbEntry.t_Meter >= 0
