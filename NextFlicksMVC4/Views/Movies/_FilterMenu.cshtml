@@ -1,7 +1,16 @@
-﻿
+﻿        
 <div class="filter_area">
 @Html.TextBox("term")
 
 <!-- need genre, RT meter, year -->
+
+    <select name="genre_select" multiple="multiple">
+    @{
+     foreach (KeyValuePair<string,int> kvp in (SortedDictionary<string,int>)ViewBag.genre_dict )
+    {
+        <option value=@kvp.Value > @kvp.Key </option>
+    } 
+    }
+    </select>
 
 </div>

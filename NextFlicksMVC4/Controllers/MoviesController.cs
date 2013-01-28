@@ -231,8 +231,15 @@ namespace NextFlicksMVC4.Controllers
             Dictionary<string, int> genre_dict =
                 db.Genres.Distinct().ToDictionary(gen => gen.genre_string,
                                        gen => gen.genre_ID);
+            //sort the dictionary, automatically does it by key, seems like
+            SortedDictionary<string, int> sortedDictionary = new SortedDictionary<string, int>(genre_dict);
+
             //Assign it to a ViewBag, so the Filtermenu can use it
-            ViewBag.genre_dict = genre_dict;
+            ViewBag.genre_dict = sortedDictionary;
+            MultiSelectList msl = new MultiSelectList(ViewBag.genre_dict);
+            ViewBag.msl = msl;
+
+
             //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
 
 
