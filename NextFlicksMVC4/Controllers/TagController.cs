@@ -51,7 +51,7 @@ namespace NextFlicksMVC4.Controllers
                          where movie.movie_ID == movieID
                          select movie;
 
-            return movies.ToList();
+            return movies.Distinct().ToList();
 
         }
 
@@ -59,35 +59,58 @@ namespace NextFlicksMVC4.Controllers
         {
             MovieDbContext db = new MovieDbContext();
             Dictionary<Users, int> returnDict = new Dictionary<Users,int>();
-
+            /*
             var tagToUser = from user in db.Users
                             from tag in db.UserToMovieToTags
                             where tag.TagId == tagID
-                            select user;
-           // foreach (Users user in tagToUser)
-            ///{
-                //count the number of times a tag id shows up in the UserToMovieToTags table
-            var TagCount = from tag in db.UserToMovieToTags
-                           where tag.TagId == tagID
-                           from userID in tagToUser
-                           where userID.userID == tag.UserID
-                           select tag.TagId;
-            var count =  TagCount.Count();
-                var userCount = from tag in db.UserToMovieToTags
-                                where tag.TagId == tagID
-                                from userID in tagToUser
-                                where userID.userID == tag.UserID
-                                //select userID.Username; 
-                               group tag.TagId by userID into grouping
-                               select grouping;
-                     
-            //}
-                foreach (var item in userCount)
-                {
-                    //var tempDict = item.ToDictionary();
-                }
-                
-            return null;
+                            group tag.TagId by user into grouping
+                            select new
+                            {
+                                user = grouping.Key,
+                                count = grouping.Count()
+                            };
+                            //select user;
+
+            return tagToUser.ToDictionary(kvp => kvp.Key, kvp => kvp.Value as int);
+            */
+            /* try somthing liek this
+              var tags = from tags in db.UserToMoviesToTags
+                         Where tag.tagID == tagID
+                         select tag;
+                         
+              var users = from users in db.Users
+                           where user.TagId == TagID
+                           from tag in tags
+                          select users;
+             */
+
+            var tagRows = from rows in db.UserToMovieToTags
+                          where rows.TagId == tagID
+                          select rows;
+
+            var userRows = from userRow in db.UserToMovieToTags
+                           where userRow.TagId == tagID
+                           from user in db.Users
+                           where user.userID == userRow.UserID
+                           group userRow.TagId by user into grouping
+                           select grouping;
+            foreach(IGrouping<Users,int> result in userRows)
+            {
+                returnDict.Add(result.Key, result.Count());
+            }
+            /*var userRows = from userRow in db.UserToMovieToTags
+                           where userRow.TagId == tagID
+                           group userRow.TagId by userRow.UserID into grouping
+                           select grouping;
+
+            foreach (IGrouping<int, int> result in userRows)
+            {
+                var selectUser = from user in db.Users
+                                 where user.userID == result.Key
+                                 select user;
+                returnDict.Add(selectUser.First() , result.Count());
+            }*/
+            return returnDict;
         }
     }
 }

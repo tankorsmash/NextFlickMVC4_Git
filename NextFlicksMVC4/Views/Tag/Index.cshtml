@@ -20,8 +20,9 @@
 @foreach (var item in Model.TaggedByUsers)
 {
     <td>
-    @item.Username
+    @item.Key.Username
     </td>
+    <td>@item.Value</td>
 }
 </tr>
 <tr>
