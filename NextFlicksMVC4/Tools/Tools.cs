@@ -800,15 +800,22 @@ namespace NextFlicksMVC4
                 //match the boxarts
                 from boxart in db.BoxArts
                 where movie.movie_ID == boxart.movie_ID
-                //match the genres
+                //match the genres string
                 from grp in movieID_genreString_grouping
                 where grp.Key == movie.movie_ID
+                //match the genre id
+
+
+
                 //create the NITVM
                 select new NfImdbRtViewModel
                            {
                                Movie = movie,
                                Boxarts = boxart,
                                Genres = grp,
+                               Genre_IDs = (List<int>)(from mtg in db.MovieToGenres
+                                           where mtg.movie_ID == movie.movie_ID
+                                           select mtg.genre_ID),
                                //OmdbEntry = (mov_omdb_match == null) ? mov_omdb_match.movie_ID= movie.movie_ID: mov_omdb_match
                                OmdbEntry = mov_omdb_match
                            };

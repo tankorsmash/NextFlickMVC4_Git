@@ -16,6 +16,8 @@ namespace NextFlicksMVC4.Views.Movies.ViewModels
         [DataType("CommaList")]
         public IEnumerable<string> Genres { get; set; }
 
+        public List<int> Genre_IDs { get; set; } 
+
         public BoxArt Boxarts { get; set; }
 
         public OMBD.OmdbEntry OmdbEntry { get; set; }

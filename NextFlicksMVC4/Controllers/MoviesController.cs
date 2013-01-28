@@ -307,8 +307,8 @@ namespace NextFlicksMVC4.Controllers
                 //limit the amount of movies per page, and then multiply it by the current page
                 //page 1 = 0-27, then 28- 55 or something. Math's not my forte
                 Tools.TraceLine("  Retrieving paginated results");
-                int movies_to_show = movie_count*page;
-                IEnumerable<NfImdbRtViewModel> nit_list = res.Take(movies_to_show).ToArray();
+                int movies_to_skip = movie_count*(page-1);
+                IEnumerable<NfImdbRtViewModel> nit_list = res.OrderBy(nit => nit.Movie.short_title).Skip(movies_to_skip).Take(movie_count).ToArray();
 
 
                 var end = Tools.WriteTimeStamp("end");
