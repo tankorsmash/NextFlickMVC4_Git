@@ -217,11 +217,20 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        public ActionResult testsort(string movie_title = "", string genre_select = "")
+        public ActionResult testsort(string movie_title = "", string genre_select = "", int page = 1)
         {
 
 
             var start = Tools.WriteTimeStamp("start");
+
+            //if the titles are default print default message, otherwise print variables
+            if (movie_title != "" || genre_select != "")
+            {
+                Tools.TraceLine("testsorting with title: {0}, genre: {1}", movie_title, genre_select);
+            }
+            else { Tools.TraceLine("testsorting with blank title and genre");}
+
+            int movie_count = 28;
 
             var db = new MovieDbContext();
 
@@ -285,13 +294,22 @@ namespace NextFlicksMVC4.Controllers
 
                 select nit;
 
-            IEnumerable<NfImdbRtViewModel> nit_list;
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
-            try
-            {
-                nit_list = res.Take(25).ToArray();
-                var asd = 0;
-                Tools.TraceLine("items in nit list {0}", res.Count());
+            try {
+
+                Tools.TraceLine(" Counting all possible results, before pagination");
+                //count all the movies possible
+                int totalMovies = res.Count();
+                //set it to the viewbag so the view can display it
+                ViewBag.TotalMovies = totalMovies;
+                Tools.TraceLine("  total possible results {0}", totalMovies);
+
+                //limit the amount of movies per page, and then multiply it by the current page
+                //page 1 = 0-27, then 28- 55 or something. Math's not my forte
+                Tools.TraceLine("  Retrieving paginated results");
+                int movies_to_show = movie_count*page;
+                IEnumerable<NfImdbRtViewModel> nit_list = res.Take(movies_to_show).ToArray();
+
 
                 var end = Tools.WriteTimeStamp("end");
                 Tools.TraceLine((end - start).ToString());
@@ -304,7 +322,7 @@ namespace NextFlicksMVC4.Controllers
                     "The ToArray() call probably timed out, it happens on first call to db a lot, I don't know why:\n  ***{0}",
                     ex.GetBaseException().Message);
 
-                return View();
+                return View("Error");
             }
 
 
