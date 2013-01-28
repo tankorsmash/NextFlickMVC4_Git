@@ -237,11 +237,14 @@ namespace NextFlicksMVC4.Controllers
             //create a Dict<string,int> for all genre_string and ids, so that they 
             // can be enumerated in the filtermenu. So the user can select which genres 
             // they want to look for
+            var dict_start = Tools.WriteTimeStamp("  Start dict make");
             Dictionary<string, int> genre_dict =
                 db.Genres.Distinct().ToDictionary(gen => gen.genre_string,
                                        gen => gen.genre_ID);
             //sort the dictionary, automatically does it by key, seems like
             SortedDictionary<string, int> sortedDictionary = new SortedDictionary<string, int>(genre_dict);
+            var dict_end = Tools.WriteTimeStamp("  End dict make");
+            Tools.TraceLine("dict took {0}", dict_end - dict_start);
 
             //Assign it to a ViewBag, so the Filtermenu can use it
             ViewBag.genre_dict = sortedDictionary;
@@ -261,7 +264,8 @@ namespace NextFlicksMVC4.Controllers
             //get a full query with all data in db
             var total_qry = Tools.GetFullDbQuery(db);
 
-            //filters the movie quickly
+            //filters the movie quickly enough
+            // basic stuff, hard coded for now, except for the title
             var res =
                 from nit in total_qry
                 where
@@ -280,9 +284,9 @@ namespace NextFlicksMVC4.Controllers
 
                 select nit;
                     
+            //if the genre isn't default, filter more
             if (genre_select != "0") {
                 res = res.Where(nit => nit.Genres.Any(item => item == genre_select));
-                
             }
                 //&& nit.Genres.Any(item => item == genre_select)
 
@@ -303,17 +307,28 @@ namespace NextFlicksMVC4.Controllers
             try {
 
                 Tools.TraceLine(" Counting all possible results, before pagination");
+                var count_start = Tools.WriteTimeStamp("  count start");
                 //count all the movies possible
                 int totalMovies = res.Count();
                 //set it to the viewbag so the view can display it
                 ViewBag.TotalMovies = totalMovies;
                 Tools.TraceLine("  total possible results {0}", totalMovies);
+                var count_end = Tools.WriteTimeStamp(  "count_start end");
+                Tools.TraceLine("  counting took {0}", count_end - count_start);
 
                 //limit the amount of movies per page, and then multiply it by the current page
                 //page 1 = 0-27, then 28- 55 or something. Math's not my forte
                 Tools.TraceLine("  Retrieving paginated results");
                 int movies_to_skip = movie_count*(page-1);
-                IEnumerable<NfImdbRtViewModel> nit_list = res.OrderBy(nit => nit.Movie.short_title).Skip(movies_to_skip).Take(movie_count).ToArray();
+
+                //needed to sort the stuff before I could skip, so I chose alphabetically
+                // it can be changed at any time, once we get some feedback.
+                IEnumerable<NfImdbRtViewModel> nit_list =
+                    //res.OrderBy(nit => nit.Movie.short_title)
+                    //   .Skip(movies_to_skip)
+                    res
+                       .Take(movie_count)
+                       .ToArray();
 
 
                 var end = Tools.WriteTimeStamp("end");
