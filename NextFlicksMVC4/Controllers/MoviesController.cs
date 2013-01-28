@@ -225,9 +225,21 @@ namespace NextFlicksMVC4.Controllers
 
             var db = new MovieDbContext();
 
+            //create a Dict<string,int> for all genre_string and ids, so that they 
+            // can be enumerated in the filtermenu. So the user can select which genres 
+            // they want to look for
+            Dictionary<string, int> genre_dict =
+                db.Genres.Distinct().ToDictionary(gen => gen.genre_string,
+                                       gen => gen.genre_ID);
+            //Assign it to a ViewBag, so the Filtermenu can use it
+            ViewBag.genre_dict = genre_dict;
+            //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
+
+
             //get a full query with all data in db
             var total_qry = Tools.GetFullDbQuery(db);
 
+            //filters the movie quickly
             var res =
                 from nit in total_qry
                 where
@@ -260,6 +272,7 @@ namespace NextFlicksMVC4.Controllers
                 select nit;
 
             IEnumerable<NfImdbRtViewModel> nit_list;
+            //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
             {
                 nit_list = res.Take(25).ToArray();
