@@ -766,16 +766,26 @@ namespace NextFlicksMVC4
             TraceLine("Out BuildMoviesBoxartGenresTables");
         }
 
+<<<<<<< HEAD
         public static IQueryable<FullViewModel> GetFullDbQuery(MovieDbContext db)
+=======
+        public static IQueryable<NfImdbRtViewModel> GetFullDbQuery(MovieDbContext db, bool verbose = false)
+>>>>>>> basebuilding
         {
 
 
 
-            TraceLine("In GetFullDbQuery");
-//pulls all the mtgs and joins the genre_strings to the appropriate movie_id
+            if (verbose)
+            {
+                TraceLine("In GetFullDbQuery");
+            }
+            //pulls all the mtgs and joins the genre_strings to the appropriate movie_id
             // so the end result is something like {terminator's movie_id : ["action", "drama"]}
             // but is a IGrouping, so it handles a bit weird.
-            TraceLine("  Group the genres by movie ID");
+            if (verbose)
+            {
+                TraceLine("  Group the genres by movie ID");
+            }
             var movieID_genreString_grouping = from mtg in db.MovieToGenres
                                                join genre in db.Genres on
                                                    mtg.genre_ID equals
@@ -784,8 +794,16 @@ namespace NextFlicksMVC4
                                                    mtg.movie_ID;
 
 
+            //a default empty element
+            OmdbEntry defaultOmdbEntry = new OmdbEntry
+                                             {
+                                             };
+
             //create the list of NITVMs
-            TraceLine("  Build the query for all the movies in the DB");
+            if (verbose)
+            {
+                TraceLine("  Build the query for all the movies in the DB");
+            }
             var nitvmQuery =
                 //left outer join so that all movies get selected even if there's no omdb match
                 from movie in db.Movies
@@ -795,20 +813,30 @@ namespace NextFlicksMVC4
                 //match the boxarts
                 from boxart in db.BoxArts
                 where movie.movie_ID == boxart.movie_ID
-                //match the genres
+                //match the genres string
                 from grp in movieID_genreString_grouping
                 where grp.Key == movie.movie_ID
+                //match the genre id
+
+
+
                 //create the NITVM
                 select new FullViewModel
                            {
                                Movie = movie,
                                Boxarts = boxart,
                                Genres = grp,
+                               Genre_IDs = (List<int>)(from mtg in db.MovieToGenres
+                                                       where mtg.movie_ID == movie.movie_ID
+                                                       select mtg.genre_ID),
                                //OmdbEntry = (mov_omdb_match == null) ? mov_omdb_match.movie_ID= movie.movie_ID: mov_omdb_match
                                OmdbEntry = mov_omdb_match
                            };
 
-            TraceLine("Out GetFullDbQuery");
+            if (verbose)
+            {
+                TraceLine("Out GetFullDbQuery");
+            }
             return nitvmQuery;
         }
 

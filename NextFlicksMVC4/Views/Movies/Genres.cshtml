@@ -7,7 +7,7 @@
 }
 
 @if (ViewBag.filtered == true) {
-    <h1>The View bag was filtered</h1>
+    <h5>The View bag was filtered in the Tracking attribute</h5>
 }
 
 <script>
@@ -27,12 +27,20 @@
 </script>    
     <h1>@ViewBag.Title</h1>
 
-    <div id="slider" style="width: 100px"></div>
 
 
+@{
+    //a little tricky to read, if the condition is true, then after ? is the value. Else its the one after ":"
+    // if movie_title = "enter a title", tits is "all movies", else it's the param value
+    string tits = @Request.Params["movie_title"] == "Enter a title" ? "all movies" : @Request.Params["movie_title"];
+    string ass = @Request.Params["genre_select"] == "0" ? "all genres" : @Request.Params["genre_select"];
+}
 
 <h2>
-    Currently showing @Model.ToList().Count Titles out of @ViewBag.TotalMovies</h2>
+    Currently showing @Model.ToList().Count titles out of a possible @ViewBag.TotalMovies titles
+
+    filtering @tits in @ass 
+    </h2>
     
 @if (ViewBag.Start != null && ViewBag.Count != null) {
     <h3>
@@ -58,7 +66,10 @@
 
 </div>
 
-@{ int show_table = 1; }
+
+@Html.Partial("_FilterMenu")
+
+@{ int show_table = 0; }
 
 @if (show_table == 1) {
     <table>
@@ -156,15 +167,7 @@ else {
         @Html.Partial("_Title", item)
 }
 
-
-@*@{List<MoviesController.MovieWithGenreViewModel> title_list = Model.ToList();} 
-    @{
-        for (int i = 0; i < title_list.Count; i += 3) {
-            <div class="row_title" >
-                    @{ Html.RenderPartial("_Title", title_list[i]); }
-                    @{ Html.RenderPartial("_Title", title_list[i+1]); }
-                    @{ Html.RenderPartial("_Title", title_list[i+2]); }
-            </div>
-
-        }
-    }*@
+<!-- pagination stuff --!>
+    @* has to be based on the current page to show the selected page, then the number of pages
+    based on the total results value. The tricky part will be when we resend the current page 
+    with the current params... *@

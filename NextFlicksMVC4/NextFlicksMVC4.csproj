@@ -277,6 +277,11 @@
     <Compile Include="Views\Tools\MovieWithGenres.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Images\fresh.png" />
+    <Content Include="Content\Images\rotten.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\oldbackups.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -399,6 +404,8 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Runtime.cshtml" />
+    <Content Include="Views\Movies\_FilterMenu.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml.old" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Tag\Index.cshtml" />
@@ -552,8 +559,8 @@
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>51948</DevelopmentServerPort>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>6421</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

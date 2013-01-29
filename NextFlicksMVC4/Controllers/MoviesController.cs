@@ -219,19 +219,60 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        public ActionResult testsort()
+        public ActionResult testsort(string movie_title = "", string genre_select = "0", int page = 1)
         {
+
 
             var start = Tools.WriteTimeStamp("start");
 
+            //if the titles are default print default message, otherwise print variables
+            if (movie_title != "" || genre_select != "0")
+            {
+                Tools.TraceLine("testsorting with title: {0}, genre: {1}", movie_title, genre_select);
+            }
+            else { Tools.TraceLine("testsorting with blank title and genre");}
+
+            int movie_count = 28;
+
             var db = new MovieDbContext();
+
+            //create a Dict<string,int> for all genre_string and ids, so that they 
+            // can be enumerated in the filtermenu. So the user can select which genres 
+            // they want to look for
+            var dict_start = Tools.WriteTimeStamp("  Start dict make");
+            Dictionary<string, int> genre_dict =
+                db.Genres.Distinct().ToDictionary(gen => gen.genre_string,
+                                       gen => gen.genre_ID);
+            //sort the dictionary, automatically does it by key, seems like
+            SortedDictionary<string, int> sortedDictionary = new SortedDictionary<string, int>(genre_dict);
+            var dict_end = Tools.WriteTimeStamp("  End dict make");
+            Tools.TraceLine("dict took {0}", dict_end - dict_start);
+
+            //Assign it to a ViewBag, so the Filtermenu can use it
+            ViewBag.genre_dict = sortedDictionary;
+            MultiSelectList msl = new MultiSelectList(ViewBag.genre_dict);
+            ViewBag.msl = msl;
+
+
+            //make sure the title isn't the default text set in the _FilterMenu
+            if (movie_title == "Enter a title") {
+                movie_title = "";
+            }
+
+
+            //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
+
+
+            //get a full query with all data in db
             var total_qry = Tools.GetFullDbQuery(db);
 
+            //filters the movie quickly enough
+            // basic stuff, hard coded for now, except for the title
             var res =
                 from nit in total_qry
                 where
                     //title
-                nit.Movie.short_title.StartsWith("")
+                nit.Movie.short_title.Contains(movie_title)
                     //runtime
                 && nit.Movie.runtime > 0
                 && nit.Movie.runtime < 100000
@@ -241,8 +282,15 @@ namespace NextFlicksMVC4.Controllers
                     //maturity rating
                 && nit.Movie.maturity_rating >= 0
                 && nit.Movie.maturity_rating <= 200
-                    //genre
-                && nit.Genres.Any(item => item.StartsWith(""))
+                    //genre 
+
+                select nit;
+                    
+            //if the genre isn't default, filter more
+            if (genre_select != "0") {
+                res = res.Where(nit => nit.Genres.Any(item => item == genre_select));
+            }
+                //&& nit.Genres.Any(item => item == genre_select)
 
                       ////Rotten Tomatoes Meter
                       //&& nit.OmdbEntry.t_Meter >= 0
@@ -256,25 +304,50 @@ namespace NextFlicksMVC4.Controllers
                       //&& nit.OmdbEntry.t_Rotten >= 0
                       //&& nit.OmdbEntry.t_Rotten <= 200000
 
-                select nit;
 
-            try
-            {
-                //var nit_list = res.toarray();
-                var asd = 0;
+            //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
+            try {
+
+                Tools.TraceLine(" Counting all possible results, before pagination");
+                var count_start = Tools.WriteTimeStamp("  count start");
+                //count all the movies possible
+                int totalMovies = res.Count();
+                //set it to the viewbag so the view can display it
+                ViewBag.TotalMovies = totalMovies;
+                Tools.TraceLine("  total possible results {0}", totalMovies);
+                var count_end = Tools.WriteTimeStamp(  "count_start end");
+                Tools.TraceLine("  counting took {0}", count_end - count_start);
+
+                //limit the amount of movies per page, and then multiply it by the current page
+                //page 1 = 0-27, then 28- 55 or something. Math's not my forte
+                Tools.TraceLine("  Retrieving paginated results");
+                int movies_to_skip = movie_count*(page-1);
+
+                //needed to sort the stuff before I could skip, so I chose alphabetically, then changed to ID for a bit of speed
+                // it can be changed at any time, once we get some feedback.
+                IEnumerable<NfImdbRtViewModel> nit_list =
+                    res.OrderBy(nit => nit.Movie.movie_ID)
+                       .Skip(movies_to_skip)
+                       .Take(movie_count)
+                       .ToArray();
+
+
+
+                var end = Tools.WriteTimeStamp("end");
+                Tools.TraceLine((end - start).ToString());
+
+                return View("Genres", nit_list);
             }
+
             catch (System.Data.EntityCommandExecutionException ex) {
                 Tools.TraceLine(
-                    "The ToArray() call probably timed out, it happens on first call to db a lot, I don't know why:\n***{0}",
+                    "The ToArray() call probably timed out, it happens on first call to db a lot, I don't know why:\n  ***{0}",
                     ex.GetBaseException().Message);
+
+                return View("Error");
             }
 
-            Tools.TraceLine("items in nit list {0}", res.Count());
 
-            var end = Tools.WriteTimeStamp("end");
-            Tools.TraceLine((end-start).ToString());
-
-            return View();
 
         }
 

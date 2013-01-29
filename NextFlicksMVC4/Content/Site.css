@@ -16,56 +16,118 @@ font-weight: bold;
     
 }
 
-div.title_entry {
-    position: relative;
-    display: block;
-    width: 300px;
-    height: 3pc;
-}
-/* .title_entry > * {
-    position: relative;
-} */
-
-.column_title {
+/* _Title.cshtml */
+.NIT_entry {
     float: left;
-    padding: 5px;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 1em;
+
+    background-color: #ff0000;
+    background-color: rgb(185, 9, 11);
+    box-shadow: -5px 5px 15px #333333;           
+    width: 155px;
+    height: 410px;
+
+    border-style: solid;
+    border-color: #ff0000;
+    border-color: rgba(255, 0, 0, 0.37);
+
+    color: white;
+    text-shadow: 2px 2px black;
+
 }
 
-.title_entry .title_boxart {
-    position: absolute;
-    left: 0;
+.NIT_entry:hover {
+    border-style: solid;
+    border-color: black;
+    background-color: rgba(255, 0, 0, 0.37);
 }
 
-.title_entry .title_title {
-    position: absolute;
-    left: 55px;
+div.title_entry_top {
+    
+}
+
+.title_images {
+    overflow: hidden;
+    padding: 10px;
+}
+
+.title_boxart {
+    width: inherit;
+    height: inherit;
+    overflow: hidden;
+    padding: 0;
+    border-radius: 8px;
+}
+
+
+.title_entry_text {
+border-width: 5px;
+border-radius: 7px;
+margin-left: 5px;
+margin-right: 5px;
+padding: 0 5px 0 5px;
+height: 40%;
+}
+
+.title_details {
+    text-shadow: none;
+}
+
+
+.title_webpage:hover {
+
+    display: none;
+}
+
+
+.title_title {
+    white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
-    width: 65%;
-                 
+    
+    font-weight: bold;
 }
 
-.title_entry .title_year {
-    position: absolute;
-    right: 15px;
-}
-       .title_entry .title_runtime {
-    position: absolute;
-    left: 55px;
-           top: 15px;
+div.title_entry_middle {
+
+    height: 2.5pc;
 }
 
-.title_entry .title_rating {
-    position: absolute;
-    right: 15px;
-    top: 15px;
+div.title_entry_left {
+    display: inline-block;
+    width: 50%;
+    float: left;
+    height: inherit;
 }
 
-.title_entry .title_webpage {
-    position: absolute;
-    left: 53px;
-    top: 30px;
+div.title_entry_right {
+
+    height: inherit;
+    width: 50%;
+    float: right;
+}
+
+div.title_entry_bottom {
+    float: none;
+    display: block;
+
+    margin-top: .5em;
+}
+
+
+
+img.rt_rotten {
+    height: 16px;
+    width: 16px;
+}
+
+
+.title_genres {
+    border-top: 2px dotted #ffffff;
+
+    padding-top: .5em;
 }
 /* non-customized stuff layout, I think
  * ----------------------------------------------------------*/
@@ -179,7 +241,7 @@ h5, h6 {
 }
 
 #body {
-    background-color: #efeeef;
+    background-color: rgb(232, 177, 177);
     clear: both;
     padding-bottom: 35px;
 }

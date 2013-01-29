@@ -21,6 +21,7 @@ namespace NextFlicksMVC4.Models
         public int year { get; set; }
 
         [DisplayName("Runtime")]
+        [DataType("Runtime")]
         public int runtime { get; set; }
 
         [DisplayName("Netflix Rating")]

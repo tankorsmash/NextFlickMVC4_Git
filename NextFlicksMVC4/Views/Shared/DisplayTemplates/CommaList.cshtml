@@ -1,2 +1,2 @@
-﻿@model List<String>
-@string.Join(", ", Model)
+﻿@model IEnumerable<string>
+@string.Join(", ", Model.Take(3).ToList())

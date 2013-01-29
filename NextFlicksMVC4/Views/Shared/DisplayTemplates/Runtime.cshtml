@@ -1,0 +1,6 @@
+﻿
+@model int
+@{
+    var runtime = new TimeSpan(0, 0, Model);
+    @String.Format("{0} mins",Math.Round(runtime.TotalMinutes, 0))
+}
