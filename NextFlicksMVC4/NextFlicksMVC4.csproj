@@ -260,6 +260,7 @@
     <Compile Include="OMBD\OMDB.cs" />
     <Compile Include="OMBD\TSVParse.cs" />
     <Compile Include="Tools\PopulateFullView.cs" />
+    <Compile Include="Tools\SeedDB.cs" />
     <Compile Include="Tools\Tools.cs" />
     <Compile Include="Tools\UserInput.cs" />
     <Compile Include="Tracking\TrackingCreate.cs" />
@@ -409,6 +410,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml.old" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Tag\Index.cshtml" />

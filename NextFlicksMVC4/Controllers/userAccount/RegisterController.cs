@@ -34,19 +34,20 @@ namespace NextFlicksMVC4.Controllers.userAccount
             {
                 if (WebSecurity.UserExists(user.Username))
                 {
-                    ViewBag.Message = "Username already exists, please try another one";
+                    ModelState.AddModelError("Username", "User Name has already been chosen, please try another.");
                     TempData["validReCaptcha"] = "true";
-                    return RedirectToAction("Index", "Register", user);
+                    return View(user);
+                    
                 }
                 WebSecurity.CreateUserAndAccount(
                     user.Username, user.password,
                     propertyValues: new { username = user.Username, 
                         firstName = user.firstName, 
-                        lastName = user.lastName, email = user.email},
-                    requireConfirmationToken: true);
+                        lastName = user.lastName, email = user.email});
                 
                 string username = user.Username;
                 Roles.AddUserToRole(username, "User");
+                WebSecurity.Login(username, user.password, persistCookie: false);
                 ViewBag.Title = "Success!";
                 ViewBag.Message = "You have succesfully been registered!";
                

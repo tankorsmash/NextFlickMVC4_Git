@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Diagnostics;
+using System.Web.Security;
 using NextFlicksMVC4.Controllers;
 using NextFlicksMVC4.Filters;
 using WebMatrix.WebData;
@@ -29,7 +30,7 @@ namespace NextFlicksMVC4
 
             //enable Simple Membership Provider database
             GlobalFilters.Filters.Add(new InitializeSimpleMembershipAttribute());
-            //end simple role membership init
+           //end simple role membership init
             
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

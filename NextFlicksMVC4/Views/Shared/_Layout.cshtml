@@ -26,9 +26,16 @@
                     <p class="site-title">@Html.ActionLink("NextFlicks", "Index", "Movies")</p>
                 </div>
                 <div class="float-right">
-                  @*  <section id="login">
-                        @Html.Partial("_LoginPartial")
-                    </section>*@
+                      <p>
+                          @if(WebSecurity.IsAuthenticated){
+                            @:Welcome, @WebSecurity.CurrentUserName |
+                            @:<a href="@Href("~/Logoff")">Log out</a></>
+                          }
+                          else{
+                            @:<a href="@Href("~/Logon")">Log in</a> |
+                            @:<a href="@Href("~/Register")">Register</a>
+                          }
+                      </p>
                     <nav>
                         <ul id="menu">
                             <li>@Html.ActionLink("Movies", "Index", "Movies")</li>
@@ -54,11 +61,7 @@
                 </div>
                 
             </div>
-            <div class="content-wrapper">
-                <div class ="float-right">
-                @Html.ActionLink("Logon","Index","User")
-                </div>
-            </div>
+            
         </footer>
 
 @*        @Scripts.Render("~/bundles/jquery")
