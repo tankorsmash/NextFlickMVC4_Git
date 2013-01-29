@@ -1,71 +1,88 @@
-﻿@model NextFlicksMVC4.Models.userAccount.Users.RegistrationViewModel
+﻿@using Microsoft.Web.Helpers
+@model NextFlicksMVC4.Models.userAccount.Users.RegistrationViewModel
 
 @{
     ViewBag.Title = "Register an Account";
+    
 }
 
 <h2>Register an Account</h2>
-
-@using (Html.BeginForm()) {
-    @Html.ValidationSummary(true)
-
-    <fieldset>
-        <legend>RegistrationViewModel</legend>
-        
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Username)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Username)
-            @Html.ValidationMessageFor(model => model.Username)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.firstName)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.firstName)
-            @Html.ValidationMessageFor(model => model.firstName)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.lastName)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.lastName)
-            @Html.ValidationMessageFor(model => model.lastName)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.email)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.email)
-            @Html.ValidationMessageFor(model => model.email)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.password)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.password)
-            @Html.ValidationMessageFor(model => model.password)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.comparePassword)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.comparePassword)
-            @Html.ValidationMessageFor(model => model.comparePassword)
-        </div>
-
-        <p>
-            <input type="submit" value="Create" />
-        </p>
-    </fieldset>
+@if (TempData["validReCaptcha"] == null || TempData["validRecaptcha"].ToString() == "false")
+{
+    if (ReCaptcha.PrivateKey != "")
+    {
+        <p>Please fill out the recaptcha before registering to make sure you are not a bot!</p>
+        <form action="~/Register/submitCap"method="POST">
+            @ReCaptcha.GetHtml(theme: "red")
+            <input type="submit" value="Submit Data"/>
+        </form>
+    }
 }
 
+else
+{
+
+using (Html.BeginForm())
+ {
+     @Html.ValidationSummary(true)
+
+     <fieldset>
+         <legend>RegistrationViewModel</legend>
+        
+         <div class="editor-label">
+             @Html.LabelFor(model => model.Username)
+         </div>
+         <div class="editor-field">
+             @Html.EditorFor(model => model.Username)
+             @Html.ValidationMessageFor(model => model.Username)
+         </div>
+
+         <div class="editor-label">
+             @Html.LabelFor(model => model.firstName)
+         </div>
+         <div class="editor-field">
+             @Html.EditorFor(model => model.firstName)
+             @Html.ValidationMessageFor(model => model.firstName)
+         </div>
+
+         <div class="editor-label">
+             @Html.LabelFor(model => model.lastName)
+         </div>
+         <div class="editor-field">
+             @Html.EditorFor(model => model.lastName)
+             @Html.ValidationMessageFor(model => model.lastName)
+         </div>
+
+         <div class="editor-label">
+             @Html.LabelFor(model => model.email)
+         </div>
+         <div class="editor-field">
+             @Html.EditorFor(model => model.email)
+             @Html.ValidationMessageFor(model => model.email)
+         </div>
+
+         <div class="editor-label">
+             @Html.LabelFor(model => model.password)
+         </div>
+         <div class="editor-field">
+             @Html.EditorFor(model => model.password)
+             @Html.ValidationMessageFor(model => model.password)
+         </div>
+
+         <div class="editor-label">
+             @Html.LabelFor(model => model.comparePassword)
+         </div>
+         <div class="editor-field">
+             @Html.EditorFor(model => model.comparePassword)
+             @Html.ValidationMessageFor(model => model.comparePassword)
+         </div>
+       
+         <p>
+             <input type="submit" value="Create" />
+         </p>
+     </fieldset>
+ }
+}
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
