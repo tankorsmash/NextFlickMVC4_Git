@@ -766,11 +766,7 @@ namespace NextFlicksMVC4
             TraceLine("Out BuildMoviesBoxartGenresTables");
         }
 
-<<<<<<< HEAD
-        public static IQueryable<FullViewModel> GetFullDbQuery(MovieDbContext db)
-=======
-        public static IQueryable<NfImdbRtViewModel> GetFullDbQuery(MovieDbContext db, bool verbose = false)
->>>>>>> basebuilding
+        public static IQueryable<FullViewModel> GetFullDbQuery(MovieDbContext db, bool verbose = false)
         {
 
 
