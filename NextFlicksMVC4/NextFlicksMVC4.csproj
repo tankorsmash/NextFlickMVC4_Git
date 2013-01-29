@@ -243,10 +243,6 @@
     <Compile Include="Controllers\userAccount\RegisterController.cs" />
     <Compile Include="Controllers\userAccount\UserController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
-    <Compile Include="Migrations\201301261759139_test.cs" />
-    <Compile Include="Migrations\201301261759139_test.Designer.cs">
-      <DependentUpon>201301261759139_test.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\TagModels\TagDetailViewModel.cs" />
     <Compile Include="Models\userAccount\LogonModel.cs" />
@@ -540,11 +536,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\User\Seed.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201301261759139_test.resx">
-      <DependentUpon>201301261759139_test.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

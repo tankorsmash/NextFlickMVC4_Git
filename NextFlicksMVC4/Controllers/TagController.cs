@@ -23,7 +23,8 @@ namespace NextFlicksMVC4.Controllers
             var tagID = from tag in db.MovieTags
                         where tag.Name == tagName
                         select tag.TagId;
-            if (tagID == null)
+            //thjis checks to see if it can return any result and if it cannot return 404
+            if (!tagID.Any())
                 return HttpNotFound();
 
             int t_ID = tagID.First();

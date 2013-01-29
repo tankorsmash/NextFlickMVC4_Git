@@ -29,7 +29,7 @@
 @foreach (var movie in Model.TaggedMovies)
 {
     <td>
-    @movie.short_title
+        <a href="~/Movies/Details?movie_ID=@movie.movie_ID">@movie.short_title</a>
     </td> 
 }
 </tr>
