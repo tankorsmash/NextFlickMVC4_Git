@@ -29,10 +29,18 @@
 
 
 
-
+@{
+    //a little tricky to read, if the condition is true, then after ? is the value. Else its the one after ":"
+    // if movie_title = "enter a title", tits is "all movies", else it's the param value
+    string tits = @Request.Params["movie_title"] == "Enter a title" ? "all movies" : @Request.Params["movie_title"];
+    string ass = @Request.Params["genre_select"] == "0" ? "all genres" : @Request.Params["genre_select"];
+}
 
 <h2>
-    Currently showing @Model.ToList().Count Titles out of a possible @ViewBag.TotalMovies</h2>
+    Currently showing @Model.ToList().Count titles out of a possible @ViewBag.TotalMovies titles
+
+    filtering @tits in @ass 
+    </h2>
     
 @if (ViewBag.Start != null && ViewBag.Count != null) {
     <h3>
