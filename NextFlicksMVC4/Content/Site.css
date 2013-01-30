@@ -16,7 +16,32 @@ font-weight: bold;
     
 }
 
-/* _Title.cshtml */
+
+/* Details page start*/
+
+.details_images {
+   float: left;
+    width: 285px;
+}
+
+.details_content {
+    margin-left: 3em;
+    float: left;
+}
+
+.details_header {
+    font-size: 200%;
+}
+
+
+.details_rotten {
+    float: left;
+}
+
+
+/* Details page end */
+
+/* _Title.cshtml, which is the guts of the results page in Genres.cshtml*/
 .NIT_entry {
     float: left;
     margin-left: 1em;

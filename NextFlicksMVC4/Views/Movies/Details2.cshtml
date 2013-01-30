@@ -1,0 +1,52 @@
+﻿@model NextFlicksMVC4.Views.Movies.ViewModels.FullViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="details_page">
+    <div class="details_images">
+        <div class="details_boxart">
+            <a class="details_webpage" href=@Html.DisplayFor(model => model.Movie.web_page) >
+                <img src=@Html.DisplayFor(model => model.Boxarts.boxart_284) />
+            </a>
+        </div>
+    </div>  
+    <div class="details_content">
+        <div class="details_header">
+            <span class="details_title">@Html.DisplayFor(model => model.Movie.short_title)</span>
+            <span class="details_year">(@Html.DisplayFor(model => model.Movie.year))</span>
+        </div>
+        
+        <div class="details_ratings">
+            <div class="details_rotten">
+                <span class="details_rotten_meter">Meter: @Html.DisplayFor(model => model.OmdbEntry.t_Meter)</span>
+                <span class="details_rotten_fresh">Fresh: @Html.DisplayFor(model => model.OmdbEntry.t_Fresh)</span>
+                <span class="details_rotten_rotten">Rotten: @Html.DisplayFor(model => model.OmdbEntry.t_Rotten)</span>
+            </div>
+            <div class="details_imdb">
+                <span class="details_imdb_rating"> IMDB Rating: @Html.DisplayFor(model => model.OmdbEntry.i_Rating)</span>
+            </div>
+        </div>
+        
+        <div class="details_links">
+            <span class="details_links_netflix">
+                <a href="@Html.DisplayFor(model => model.Movie.web_page)">Netflix page</a>
+            </span>
+            <span class="details_links_imdb">
+                <a href="@Html.DisplayFor(model => model.OmdbEntry.i_ID)">IMDB page</a>
+            </span>
+        </div>
+        
+        <div class="details_summary">
+            <p class="details_summary_text">Summary goes here, once we sort that out</p>
+        </div>
+        
+        <div class="details_genres_container">
+            <div class="details_genres">@Html.DisplayFor(model => model.Genres)</div>
+        </div>
+        
+        <div class="details_tags_container">
+            <div class="details_tags">@Html.DisplayFor(model => model.Tags)</div>
+        </div>
+    </div>
+</div>

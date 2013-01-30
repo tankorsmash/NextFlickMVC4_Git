@@ -681,12 +681,13 @@ namespace NextFlicksMVC4.Controllers
             fullView.OmdbEntry = PopulateFullView.Omdb(movie_ID);
             fullView.Tags = PopulateFullView.TagsAndCount(movie_ID);
             
-            return View(fullView);
+            return View("Details2", fullView);
         }
 
         [HttpPost]
         public ActionResult Details(int movie_ID, List<String> tags, bool anon)
         {
+
             if (ModelState.IsValid)
             {
                 MovieDbContext db = new MovieDbContext();
