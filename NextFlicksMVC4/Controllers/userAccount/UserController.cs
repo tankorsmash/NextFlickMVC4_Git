@@ -16,7 +16,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
         private FormsIdentity TicketId;// use this to get the user identity.
         private FormsAuthenticationTicket ticket; //use this ot pull acopy of the ticket 
         
-        /*
+        
         public ViewResult Seed()
         {
             Users user = new Users();
@@ -42,7 +42,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
                 Roles.AddUserToRole("Admin", "Admin");
             ViewBag.Message = " Admin Accout Seeded";
             return View();
-        }*/
+        }
         // GET: /User/
         [Authorize(Roles="Admin")]
         public ViewResult Index(string returnUrl)

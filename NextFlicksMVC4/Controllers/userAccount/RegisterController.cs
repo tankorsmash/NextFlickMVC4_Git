@@ -14,7 +14,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
     public class RegisterController : Controller
     {
         //Users.UserDbContext _userDb = new Users.UserDbContext();
-        MovieDbContext _userDb = new MovieDbContext();
+        private MovieDbContext _userDb = new MovieDbContext();
         //
         // GET: /Register/
         public ActionResult Index()
@@ -27,47 +27,43 @@ namespace NextFlicksMVC4.Controllers.userAccount
         {
             if (user == null)
             {
-               return RedirectToAction("Index");
+                return View();
             }
-
-            if (ModelState.IsValid)
+            if (ReCaptcha.Validate(privateKey: "6LdcQtwSAAAAACJPzqNPEoWp37-M-aUZi-6FgZNn"))
             {
-                if (WebSecurity.UserExists(user.Username))
+                if (ModelState.IsValid)
                 {
-                    ModelState.AddModelError("Username", "User Name has already been chosen, please try another.");
-                    TempData["validReCaptcha"] = "true";
-                    return View(user);
-                    
+                    if (WebSecurity.UserExists(user.Username))
+                    {
+                        ModelState.AddModelError("Username", "User Name has already been chosen, please try another.");
+                        TempData["validReCaptcha"] = "true";
+                        return View(user);
+
+                    }
+                    WebSecurity.CreateUserAndAccount(
+                        user.Username, user.password,
+                        propertyValues: new
+                            {
+                                username = user.Username,
+                                firstName = user.firstName,
+                                lastName = user.lastName,
+                                email = user.email
+                            });
+
+                    string username = user.Username;
+                    Roles.AddUserToRole(username, "User");
+                    WebSecurity.Login(username, user.password, persistCookie: false);
+                    ViewBag.Title = "Success!";
+                    ViewBag.Message = "You have succesfully been registered!";
+
+                    return RedirectToAction("Index", "Home");
                 }
-                WebSecurity.CreateUserAndAccount(
-                    user.Username, user.password,
-                    propertyValues: new { username = user.Username, 
-                        firstName = user.firstName, 
-                        lastName = user.lastName, email = user.email});
-                
-                string username = user.Username;
-                Roles.AddUserToRole(username, "User");
-                WebSecurity.Login(username, user.password, persistCookie: false);
-                ViewBag.Title = "Success!";
-                ViewBag.Message = "You have succesfully been registered!";
-               
-                return View("../Home/Index");
+                ViewBag.Title = "FAILED!";
+                return View(user);
             }
-            ViewBag.Title = "FAILED!";
+            //Else: recaptcha failed!
             return View(user);
         }
 
-       
-        [HttpPost]
-        public ActionResult SubmitCap()
-        {
-            if (ReCaptcha.Validate(privateKey: "6LdcQtwSAAAAACJPzqNPEoWp37-M-aUZi-6FgZNn"))
-            {
-                TempData["validReCaptcha"] = "true";
-                return RedirectToAction("Index", "Register");
-            }
-            TempData["validReCaptcha"] = "false";
-            return RedirectToAction("Index", "Register");
-        }
     }
 }

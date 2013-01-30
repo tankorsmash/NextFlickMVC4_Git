@@ -7,22 +7,9 @@
 }
 
 <h2>Register an Account</h2>
-@if (TempData["validReCaptcha"] == null || TempData["validRecaptcha"].ToString() == "false")
-{
-    if (ReCaptcha.PrivateKey != "")
-    {
-        <p>Please fill out the recaptcha before registering to make sure you are not a bot!</p>
-        <form action="~/Register/submitCap"method="POST">
-            @ReCaptcha.GetHtml(theme: "red")
-            <input type="submit" value="Submit Data"/>
-        </form>
-    }
-}
 
-else
-{
 
-using (Html.BeginForm())
+@using (Html.BeginForm())
  {
      @Html.ValidationSummary(true)
 
@@ -76,13 +63,15 @@ using (Html.BeginForm())
              @Html.EditorFor(model => model.comparePassword)
              @Html.ValidationMessageFor(model => model.comparePassword)
          </div>
-       
+         <div>
+              @ReCaptcha.GetHtml(theme: "red")
+         </div>
          <p>
              <input type="submit" value="Create" />
          </p>
      </fieldset>
  }
-}
+
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
