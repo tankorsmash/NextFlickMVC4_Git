@@ -36,7 +36,6 @@ namespace NextFlicksMVC4.Controllers.userAccount
                     if (WebSecurity.UserExists(user.Username))
                     {
                         ModelState.AddModelError("Username", "User Name has already been chosen, please try another.");
-                        TempData["validReCaptcha"] = "true";
                         return View(user);
 
                     }
@@ -45,8 +44,6 @@ namespace NextFlicksMVC4.Controllers.userAccount
                         propertyValues: new
                             {
                                 username = user.Username,
-                                firstName = user.firstName,
-                                lastName = user.lastName,
                                 email = user.email
                             });
 

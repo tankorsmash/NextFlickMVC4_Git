@@ -77,23 +77,19 @@ namespace NextFlicksMVC4
                              where tag.TagId == tag_id
                              select tag.Name;
 
-            var movieTags = tagStrings.ToList();
+            var tagCounts = from tagString in db.MovieTags
+                            where tagStrings.Contains(tagString.Name)
+                            from MtT in db.UserToMovieToTags
+                            where MtT.TagId == tagString.TagId
+                            group MtT.TagId by tagString.Name
+                            into grouping
+                            select grouping;
 
-            foreach (string tag in movieTags)
+            foreach (IGrouping<string, int> result in tagCounts)
             {
-                //count the number of times a tag id shows up in the UserToMovieToTags table
-               var tagCount = from tagString in db.MovieTags
-                               where tagString.Name == tag
-                               from MtT in db.UserToMovieToTags
-                               where MtT.TagId == tagString.TagId
-                               select MtT.TagId;
-
-                //make sure we havent used the tag string as a key already as we only need each tag + count 1 time
-                if (!tagView.TagAndCount.ContainsKey(tag))
-                {
-                    tagView.TagAndCount.Add(tag, tagCount.Count());
-                }
+                tagView.TagAndCount.Add(result.Key, result.Count());
             }
+            
 
             return tagView; 
         }

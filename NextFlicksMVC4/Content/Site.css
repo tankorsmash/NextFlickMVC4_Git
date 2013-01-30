@@ -244,6 +244,7 @@ h5, h6 {
     background-color: rgb(199, 179, 179);
     clear: both;
     padding-bottom: 35px;
+    border: solid 2px black;
 }
 
     .main-content {
@@ -900,3 +901,63 @@ tr.pager td {
             margin: 0;
         }
 }
+
+
+/* top tab menu CSS */
+
+
+#tabmenu {
+    font-size: 1.3em;
+    font-weight: 600;
+    text-align: right;
+	color: #333;
+	/*border-bottom: 1px solid black;*/
+	margin: 12px 0px 0px 0px;
+	padding: 0px;
+	z-index: 0;
+	padding-left: 10px }
+
+	#tabmenu li {
+		display: inline;
+		overflow: hidden;
+		list-style-type: none; }
+
+	#tabmenu a, a.active {
+		color: #333;
+	    background: #fff;
+	    /* font: bold 1em "Trebuchet MS", Arial, sans-serif; */
+		border: 2px solid black;
+		padding: 2px 5px 0px 5px;
+		margin: 0;
+		text-decoration: none; }
+
+	#tabmenu a.active 
+	{
+	    color: #333;
+		background: rgb(199, 179, 179);
+	    border-bottom: 3px solid rgb(199, 179, 179); }
+
+	#tabmenu a:hover {
+		color: #333;
+		background: rgb(199, 179, 179) }
+
+	#tabmenu a:visited {
+		color: #333; }
+
+	#tabmenu a.active:hover {
+		background: rgb(199, 179, 179);
+		color: #fff; }
+
+	#content {/*font: 0.9em/1.3em "bitstream vera sans", verdana, sans-serif;*/
+		text-align: justify;
+		background: #ABAD85;
+		padding: 20px;
+		border: 1px solid black;
+		border-top: none;
+		z-index: 2;	}
+
+	#content a {
+		text-decoration: none;
+		color: #E8E9BE; }
+
+	#content a:hover { background: #898B5E; }

@@ -3,8 +3,8 @@
 @{
     ViewBag.Title = "Complete Details";
 }
-
 <h2>@ViewBag.Title</h2>
+
 @using (Html.BeginForm())
 {
     <fieldset>
@@ -24,11 +24,11 @@
         <div class="display-field">
             @foreach (KeyValuePair<string, int> kvp in Model.Tags.TagAndCount)
             {
-                <p class="tooltip" title="@kvp.Value.ToString()" style="background-color: #ffffff; width: auto; float: left; clear: both" > @kvp.Key </p>
+                <a href="~/Tag?tagName=@kvp.Key" class="tag" title="Tagged @kvp.Value.ToString() times. Click for more info."> @kvp.Key </a>
             }
         </div>
         <div class="display-field" style="clear: both">
-            @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
+            @if(WebSecurity.IsAuthenticated)
             {
                 <h6>Seperate tags by comma</h6>
                 <p>

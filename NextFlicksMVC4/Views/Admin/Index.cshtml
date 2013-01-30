@@ -68,7 +68,7 @@ ManageRoles.cshtml in the .\Admin Folder
           <label for="selectUserName">Users:</label>
           <select name="selectUserName">
             @foreach(var row in db.Users) {
-              <option>@row.email</option>
+              <option>@row.Username</option>
             }
           </select>
           &nbsp;
