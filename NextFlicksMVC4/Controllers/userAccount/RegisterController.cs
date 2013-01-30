@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Web.Security;
+using Microsoft.Web.Helpers;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.Models.userAccount;
 using WebMatrix.WebData;
@@ -12,7 +14,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
     public class RegisterController : Controller
     {
         //Users.UserDbContext _userDb = new Users.UserDbContext();
-        MovieDbContext _userDb = new MovieDbContext();
+        private MovieDbContext _userDb = new MovieDbContext();
         //
         // GET: /Register/
         public ActionResult Index()
@@ -23,33 +25,43 @@ namespace NextFlicksMVC4.Controllers.userAccount
         [HttpPost]
         public ActionResult Index(Users.RegistrationViewModel user)
         {
-            ///
-            /// This is where we check to make sure the modelmatches what we wrote in RegsirationViewModel
-            /// and if it does we need to convert it back to the Users model so we can enter a new user into the database.
-            /// Probbaly not the most ideal way of doing this, but a straight cast did not work.
-            /// Also find another way of verifying of user is active: I.E: send out email with link to click to activate useraccount
-            ///
-            if (ModelState.IsValid)
+            if (user == null)
             {
-                WebSecurity.CreateUserAndAccount(user.Username, user.password, propertyValues: new { username = user.Username, firstName = user.firstName, lastName = user.lastName, email = user.email });
-                string username = user.Username;
-                Roles.AddUserToRole(username, "User");
-                ViewBag.Title = "Success!";
-
-                //Users newUser = new Users();
-                //newUser.Username = user.Username;
-                //newUser.firstName = user.firstName;
-                //newUser.lastName = user.lastName;
-                //newUser.email = user.email;
-                //newUser.password = newUser.SetPassword(user.password);
-               // newUser.password = newUser.SetHash((user.password));
-                //var userData = new {{"firstName", user.firstName},{"lastName", user.lastName}, {"email", user.email}};
-                // _userDb.Users.Add(newUser);
-                //_userDb.SaveChanges();
-                ViewBag.Message = "You have succesfully been registered!";
-                return View("../Home/Index");
+                return View();
             }
-            ViewBag.Title = "FAILED!";
+            if (ReCaptcha.Validate(privateKey: "6LdcQtwSAAAAACJPzqNPEoWp37-M-aUZi-6FgZNn"))
+            {
+                if (ModelState.IsValid)
+                {
+                    if (WebSecurity.UserExists(user.Username))
+                    {
+                        ModelState.AddModelError("Username", "User Name has already been chosen, please try another.");
+                        TempData["validReCaptcha"] = "true";
+                        return View(user);
+
+                    }
+                    WebSecurity.CreateUserAndAccount(
+                        user.Username, user.password,
+                        propertyValues: new
+                            {
+                                username = user.Username,
+                                firstName = user.firstName,
+                                lastName = user.lastName,
+                                email = user.email
+                            });
+
+                    string username = user.Username;
+                    Roles.AddUserToRole(username, "User");
+                    WebSecurity.Login(username, user.password, persistCookie: false);
+                    ViewBag.Title = "Success!";
+                    ViewBag.Message = "You have succesfully been registered!";
+
+                    return RedirectToAction("Index", "Home");
+                }
+                ViewBag.Title = "FAILED!";
+                return View(user);
+            }
+            //Else: recaptcha failed!
             return View(user);
         }
 

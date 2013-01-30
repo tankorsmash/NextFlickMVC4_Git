@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace NextFlicksMVC4.Controllers.Admin
 {
+    [Authorize(Roles="Admin")]
     public class AdminController : Controller
     {
         //
