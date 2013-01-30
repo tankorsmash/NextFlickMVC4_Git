@@ -7,7 +7,7 @@
 }
 
 <h2>Register an Account</h2>
-@if (TempData["validReCaptcha"] == null || TempData["validRecaptcha"].ToString() == "false")
+@*if (TempData["validReCaptcha"] == null || TempData["validRecaptcha"].ToString() == "false")
 {
     if (ReCaptcha.PrivateKey != "")
     {
@@ -20,10 +20,9 @@
 }
 
 else
-{
+{*@
 
-using (Html.BeginForm())
- {
+@using (Html.BeginForm()){
      @Html.ValidationSummary(true)
 
      <fieldset>
@@ -76,13 +75,19 @@ using (Html.BeginForm())
              @Html.EditorFor(model => model.comparePassword)
              @Html.ValidationMessageFor(model => model.comparePassword)
          </div>
-       
+        <div>
+            @if (ReCaptcha.PrivateKey != "")
+            {
+                @ReCaptcha.GetHtml(theme: "red") if (ViewBag.ReCaptchaError != null)
+                                                 {<p>@ViewBag.ReCaptchaError</p>}
+            }
+        </div> 
          <p>
              <input type="submit" value="Create" />
          </p>
      </fieldset>
- }
-}
+    }
+
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
