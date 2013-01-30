@@ -1,5 +1,5 @@
 ﻿@using NextFlicksMVC4.Models
-ManageRoles.cshtml in the .\Admin Folder
+<link href="/Content/vertical_menu.css" rel="stylesheet" type="text/css"/>
 @{
   
   var roleName = "";
@@ -51,54 +51,80 @@ ManageRoles.cshtml in the .\Admin Folder
     } // if(buttonDeleteUseFromRole)
   }
 }
- 
-      <h1>Manage Roles</h1>
-      <form method="post">
+<div class="content-Wrapper main-content clear-fix">
+    <div id='vertical_menu' class="float-left">
+        <ul>
+            <li><a href='#'><span>Home</span></a></li>
+            <li class='has-sub '><a href='#'><span>Products</span></a>
+                <ul>
+                    <li class='has-sub '><a href='#'><span>Product 1</span></a>
+                        <ul>
+                            <li><a href='#'><span>Sub Product</span></a></li>
+                            <li><a href='#'><span>Sub Product</span></a></li>
+                        </ul>
+                    </li>
+                    <li class='has-sub '><a href='#'><span>Product 2</span></a>
+                        <ul>
+                            <li><a href='#'><span>Sub Product</span></a></li>
+                            <li><a href='#'><span>Sub Product</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><a href='#'><span>About</span></a></li>
+            <li><a href='#'><span>Contact</span></a></li>
+        </ul>
+    </div>
+    <div class="float-right">
+        <h1>Manage Roles</h1>
+        <form method="post">
        
-        <fieldset>
-          <label for="textRoleName">Role name:</label><br/>
-          <input type="text" value="" name="textRoleName" /> &nbsp;
-          <input type="submit" value="Create Role" name="buttonCreateRole" />
-          <input type="submit" value="Delete Role" name="buttonDeleteRole" />
-        </fieldset>
+            <fieldset>
+                <label for="textRoleName">Role name:</label><br/>
+                <input type="text" value="" name="textRoleName" /> &nbsp;
+                <input type="submit" value="Create Role" name="buttonCreateRole" />
+                <input type="submit" value="Delete Role" name="buttonDeleteRole" />
+            </fieldset>
        
-        <p></p>
+            <p></p>
  
-        <fieldset>
-          <label for="selectUserName">Users:</label>
-          <select name="selectUserName">
-            @foreach(var row in db.Users) {
-              <option>@row.Username</option>
-            }
-          </select>
-          &nbsp;
-          <label for="selectRoleName">Roles:</label>
-          <select name="selectRoleName">
-            @foreach(var r in Roles.GetAllRoles())
-            {
-              <option>@r</option>
-            }
-          </select>
-          &nbsp;
-          <input type="submit" value="Add User to Role" name="buttonAddUserToRole" />
-          <input type="submit" value="Delete User from Role" name="buttonDeleteUserFromRole" />
-        </fieldset>
+            <fieldset>
+                <label for="selectUserName">Users:</label>
+                <select name="selectUserName">
+                    @foreach(var row in db.Users) {
+                        <option>@row.Username</option>
+                    }
+                </select>
+                &nbsp;
+                <label for="selectRoleName">Roles:</label>
+                <select name="selectRoleName">
+                    @foreach(var r in Roles.GetAllRoles())
+                    {
+                        <option>@r</option>
+                    }
+                </select>
+                &nbsp;
+                <input type="submit" value="Add User to Role" name="buttonAddUserToRole" />
+                <input type="submit" value="Delete User from Role" name="buttonDeleteUserFromRole" />
+            </fieldset>
      
          
-      <h2>Roles</h2>   
-          <ul>
-          @foreach(var r in Roles.GetAllRoles())
-          {
-            <li>@r</li>
+            <h2>Roles</h2>   
             <ul>
-            @foreach(var u in Roles.GetUsersInRole(r))
-            {
-              <li>@u</li>
-            }
+                @foreach(var r in Roles.GetAllRoles())
+                {
+                    <li>@r</li>
+                    <ul>
+                        @foreach(var u in Roles.GetUsersInRole(r))
+                        {
+                            <li>@u</li>
+                        }
+                    </ul>
+                }
             </ul>
-          }
-          </ul>
-        <p><a href="@Href("~/Home")">Return to home page</a></p>
+            <p><a href="@Href("~/Home")">Return to home page</a></p>
      
-      </form>
+        </form>
+        </div>
+</div>
    
