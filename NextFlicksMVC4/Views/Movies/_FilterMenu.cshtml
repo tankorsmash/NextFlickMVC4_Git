@@ -1,0 +1,26 @@
+﻿        
+<div class="filter_area">
+    
+    <form name="search_form">
+
+    @Html.TextBox("movie_title", "Enter a title")
+
+    <!-- need genre, RT meter, year -->
+
+        <select name="genre_select" >
+        <option value="0">All Genres</option>
+            @{
+                foreach (KeyValuePair<string,int> kvp in (SortedDictionary<string,int>)ViewBag.genre_dict )
+                {
+                    <option value="@kvp.Key" > @kvp.Key </option>
+                } 
+            }
+        </select>
+    
+    <input type="submit" value="Search"/>
+
+    </form>
+
+</div>
+
+

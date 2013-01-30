@@ -15,6 +15,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
     {
         MovieDbContext _userDb = new MovieDbContext();
 
+
         public ActionResult Index()
         {
             return View();
@@ -26,6 +27,9 @@ namespace NextFlicksMVC4.Controllers.userAccount
             if (user == null)
                 return View();
 
+            {
+                return View();
+            }
             if (ReCaptcha.Validate(privateKey: "6LdcQtwSAAAAACJPzqNPEoWp37-M-aUZi-6FgZNn"))
             {
                 if (ModelState.IsValid)
@@ -40,10 +44,9 @@ namespace NextFlicksMVC4.Controllers.userAccount
                         propertyValues: new
                         {
                             username = user.Username,
-                            firstName = user.firstName,
-                            lastName = user.lastName,
                             email = user.email
                         });
+                            
 
                     string username = user.Username;
                     Roles.AddUserToRole(username, "User");
@@ -51,15 +54,14 @@ namespace NextFlicksMVC4.Controllers.userAccount
                     ViewBag.Title = "Success!";
                     ViewBag.Message = "You have succesfully been registered!";
 
-                    return View("../Home/Index");
+                    return RedirectToAction("Index", "Home");
                 }
                 ViewBag.Title = "FAILED!";
                 return View(user);
             }
-            ViewBag.ReCaptchaError = "Recaptcha Failed, Please Try Again.";
             return View(user);
         }
 
-       
+   
     }
 }

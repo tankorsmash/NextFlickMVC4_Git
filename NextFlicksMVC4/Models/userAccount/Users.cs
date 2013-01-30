@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Mvc;
+using DataAnnotationsExtensions;
 using DevOne.Security.Cryptography.BCrypt;
 
 namespace NextFlicksMVC4.Models.userAccount
@@ -17,6 +18,7 @@ namespace NextFlicksMVC4.Models.userAccount
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int userID { get; set; }
+        
         [Required]
         [StringLength(15, MinimumLength = 3)]
         [Display(Name = "User Name")]
@@ -26,77 +28,9 @@ namespace NextFlicksMVC4.Models.userAccount
 
         [Required]
         [Display(Name = "Email")]
+        [Email]
         public String email { get; set; }
         
-        /* edit out password as SimpleMembershipPorvider puts it in another table
-        [Required]
-        [Display(Name = "Password")]
-        [DataType(DataType.Password)]
-        public String password { get; set; }
-        */
-        
-        /* edit out admin flag as I am using simple role providers now
-        public int admin { get; set; }
-        */
-        
-
-        [Required]
-        [StringLength(15, MinimumLength = 3)]
-        [Display(Name = "First Name")]
-        public String firstName { get; set; }
-
-        [Required]
-        [StringLength(15, MinimumLength = 3)]
-        [Display(Name = "Last Name")]
-        public String lastName { get; set; }
-
-        /* edit out all my password hashing as SimpleMembershipProvider does it for me
-        //try the bcrpyt version of encrypting the passwords
-        const String ConstantSalt = "fg809rTyu099#!"; //use this to salt password hashes
-        
-        public String SetHash(string password)
-        {
-
-            String mySalt = BCryptHelper.GenerateSalt(10);
-            String firstSalt = password + ConstantSalt;
-            String myHash = BCryptHelper.HashPassword(firstSalt, mySalt);
-            return myHash;
-        }
-        public bool CheckHash(string maybePwd, string dbPwd)
-        {
-            String maybeSalt = maybePwd + ConstantSalt;
-            return BCryptHelper.CheckPassword(maybeSalt, dbPwd);
-        }
-
-
-        //old method of hashing passwords
-        public String SetPassword(string pwd)
-        {
-            string password = GetHashedPassword(pwd);
-            return password;
-        }
-        
-
-        private String GetHashedPassword(string pwd)
-        {
-            using (var sha = SHA256.Create())
-            {
-                var computedHash = sha.ComputeHash(Encoding.Unicode.GetBytes(pwd + ConstantSalt));
-                return Convert.ToBase64String(computedHash);
-            }
-        }
-
-        public bool ValidatePassword(string maybePwd)
-        {
-            if (password == null)
-                return true;
-            return password == GetHashedPassword(maybePwd);
-        }
-
-     /*   public class UserDbContext : DbContext
-        {
-            public DbSet<Users> Users { get; set; }
-        } */
 
         public class RegistrationViewModel
         {
@@ -114,17 +48,8 @@ namespace NextFlicksMVC4.Models.userAccount
             public String Username { get; set; }
 
             [Required]
-            [StringLength(15, MinimumLength = 3)]
-            [Display(Name = "First Name")]
-            public String firstName { get; set; }
-
-            [Required]
-            [StringLength(15, MinimumLength = 3)]
-            [Display(Name = "Last Name")]
-            public String lastName { get; set; }
-
-            [Required]
             [Display(Name = "Email")]
+            [Email]
             public String email { get; set; }
 
             [Required]

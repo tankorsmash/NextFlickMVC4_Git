@@ -43,6 +43,9 @@
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="DataAnnotationsExtensions">
+      <HintPath>..\packages\DataAnnotationsExtensions.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="DevOne.Security.Cryptography.BCrypt">
       <HintPath>..\packages\BCrypt.1.0.0.0\lib\DevOne.Security.Cryptography.BCrypt.dll</HintPath>
     </Reference>
@@ -253,6 +256,10 @@
     <Compile Include="Controllers\userAccount\RegisterController.cs" />
     <Compile Include="Controllers\userAccount\UserController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
+    <Compile Include="Migrations\201301301611509_test.cs" />
+    <Compile Include="Migrations\201301301611509_test.Designer.cs">
+      <DependentUpon>201301301611509_test.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\TagModels\TagDetailViewModel.cs" />
     <Compile Include="Models\userAccount\LogonModel.cs" />
@@ -287,6 +294,11 @@
     <Compile Include="Views\Tools\MovieWithGenres.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Images\fresh.png" />
+    <Content Include="Content\Images\rotten.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\oldbackups.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -347,6 +359,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
+    <Content Include="Content\vertical_menu.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
@@ -409,7 +422,10 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Runtime.cshtml" />
+    <Content Include="Views\Movies\_FilterMenu.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Home\Feedback.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml.old" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Tag\Index.cshtml" />
@@ -548,6 +564,11 @@
   <ItemGroup>
     <Content Include="Views\User\Seed.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201301301611509_test.resx">
+      <DependentUpon>201301301611509_test.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -563,8 +584,8 @@
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>51948</DevelopmentServerPort>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>6421</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

@@ -60,31 +60,7 @@ namespace NextFlicksMVC4.Controllers
         {
             MovieDbContext db = new MovieDbContext();
             Dictionary<Users, int> returnDict = new Dictionary<Users,int>();
-            /*
-            var tagToUser = from user in db.Users
-                            from tag in db.UserToMovieToTags
-                            where tag.TagId == tagID
-                            group tag.TagId by user into grouping
-                            select new
-                            {
-                                user = grouping.Key,
-                                count = grouping.Count()
-                            };
-                            //select user;
-
-            return tagToUser.ToDictionary(kvp => kvp.Key, kvp => kvp.Value as int);
-            */
-            /* try somthing liek this
-              var tags = from tags in db.UserToMoviesToTags
-                         Where tag.tagID == tagID
-                         select tag;
-                         
-              var users = from users in db.Users
-                           where user.TagId == TagID
-                           from tag in tags
-                          select users;
-             */
-
+           
             var tagRows = from rows in db.UserToMovieToTags
                           where rows.TagId == tagID
                           select rows;
@@ -99,18 +75,7 @@ namespace NextFlicksMVC4.Controllers
             {
                 returnDict.Add(result.Key, result.Count());
             }
-            /*var userRows = from userRow in db.UserToMovieToTags
-                           where userRow.TagId == tagID
-                           group userRow.TagId by userRow.UserID into grouping
-                           select grouping;
-
-            foreach (IGrouping<int, int> result in userRows)
-            {
-                var selectUser = from user in db.Users
-                                 where user.userID == result.Key
-                                 select user;
-                returnDict.Add(selectUser.First() , result.Count());
-            }*/
+           
             return returnDict;
         }
     }

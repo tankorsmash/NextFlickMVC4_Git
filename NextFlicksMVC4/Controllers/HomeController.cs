@@ -36,5 +36,10 @@ namespace NextFlicksMVC4.Controllers
 
             return View();
         }
+
+        public ActionResult Feedback()
+        {
+            return View();
+        }
     }
 }
