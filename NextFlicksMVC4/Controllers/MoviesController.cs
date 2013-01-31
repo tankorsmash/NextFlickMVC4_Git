@@ -221,7 +221,7 @@ namespace NextFlicksMVC4.Controllers
         //}
 
 
-        public ActionResult testsort(string movie_title = "", string genre_select = "0", int page = 1)
+        public ActionResult Index(string movie_title = "", string genre_select = "0", int page = 1)
         {
 
 
@@ -337,8 +337,16 @@ namespace NextFlicksMVC4.Controllers
                 //       .Skip(movies_to_skip)
                 //       .Take(movie_count)
                 //       .ToArray();
+
+
+                ///the Orderby didn't work,so I changed tactics a bit. Hacky as fuck
+                //to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
+                if (totalMovies < movie_count) {
+                    movie_count = totalMovies;
+                }
                 
-                //the Orderby didn't work,so I changed tactics a bit. Hacky as fuck
+                //take all the pages up to and including the ones you'll show 
+                // on page, then only take the last set of movies you'll show
                 IEnumerable<FullViewModel> nit_list =
                     res.Take(movies_to_skip + movie_count)
                        .ToList().GetRange(movies_to_skip, movie_count);
