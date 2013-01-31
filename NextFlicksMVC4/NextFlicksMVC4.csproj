@@ -456,7 +456,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Movies\Index.cshtml" />
+    <Content Include="Views\Movies\oldIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Movies\Create.cshtml" />
@@ -477,7 +477,7 @@
     <Content Include="Views\Movies\_Title.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Movies\Year.cshtml" />
+    <Content Include="Views\Movies\oldYear.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Movies\Filter.cshtml" />
