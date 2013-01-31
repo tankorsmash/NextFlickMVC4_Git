@@ -6,9 +6,11 @@ using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Xml;
 using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
 using NextFlicksMVC4;
 using NextFlicksMVC4.DatabaseClasses;
@@ -284,7 +286,8 @@ namespace NextFlicksMVC4.Controllers
                 && nit.Movie.maturity_rating <= 200
                     //genre 
 
-                select nit;
+
+                select nit ;
                     
             //if the genre isn't default, filter more
             if (genre_select != "0") {
@@ -315,21 +318,33 @@ namespace NextFlicksMVC4.Controllers
                 //set it to the viewbag so the view can display it
                 ViewBag.TotalMovies = totalMovies;
                 Tools.TraceLine("  total possible results {0}", totalMovies);
-                var count_end = Tools.WriteTimeStamp(  "count_start end");
+                var count_end = Tools.WriteTimeStamp("count_start end");
                 Tools.TraceLine("  counting took {0}", count_end - count_start);
+
+
+                var page_start = Tools.WriteTimeStamp();
 
                 //limit the amount of movies per page, and then multiply it by the current page
                 //page 1 = 0-27, then 28- 55 or something. Math's not my forte
                 Tools.TraceLine("  Retrieving paginated results");
+
                 int movies_to_skip = movie_count*(page-1);
 
                 //needed to sort the stuff before I could skip, so I chose alphabetically, then changed to ID for a bit of speed
                 // it can be changed at any time, once we get some feedback.
+                //IEnumerable<FullViewModel> nit_list =
+                //    res.OrderBy(nit => nit.Movie.movie_ID)
+                //       .Skip(movies_to_skip)
+                //       .Take(movie_count)
+                //       .ToArray();
+                
+                //the Orderby didn't work,so I changed tactics a bit. Hacky as fuck
                 IEnumerable<FullViewModel> nit_list =
-                    res.OrderBy(nit => nit.Movie.movie_ID)
-                       .Skip(movies_to_skip)
-                       .Take(movie_count)
-                       .ToArray();
+                    res.Take(movies_to_skip + movie_count)
+                       .ToList().GetRange(movies_to_skip, movie_count);
+
+                var page_end = Tools.WriteTimeStamp();
+                Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
 
 
 
@@ -680,7 +695,12 @@ namespace NextFlicksMVC4.Controllers
             fullView.Boxarts = PopulateFullView.BoxArts(movie_ID);
             fullView.OmdbEntry = PopulateFullView.Omdb(movie_ID);
             fullView.Tags = PopulateFullView.TagsAndCount(movie_ID);
-            
+            //added the plot to the fullView too, needs the whole movie, for the title and year
+            fullView.Plot = PopulateFullView.Plot(movie);
+
+
+
+
             return View("Details2", fullView);
         }
 

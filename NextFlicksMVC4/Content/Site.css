@@ -27,6 +27,7 @@ font-weight: bold;
 .details_content {
     margin-left: 3em;
     float: left;
+    width: 50%;
 }
 
 .details_header {
