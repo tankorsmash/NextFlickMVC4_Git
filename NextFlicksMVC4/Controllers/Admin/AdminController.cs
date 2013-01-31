@@ -17,5 +17,25 @@ namespace NextFlicksMVC4.Controllers.Admin
             return View();
         }
 
+        public ActionResult Roles()
+        {
+            return View();
+        }
+
+        public ActionResult Users()
+        {
+            return View();
+        }
+
+        public ActionResult Tags()
+        {
+            return View();
+        }
+
+        public ActionResult Movies()
+        {
+            return View();
+        }
+
     }
 }

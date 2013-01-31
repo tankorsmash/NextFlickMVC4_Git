@@ -1,3 +1,24 @@
+/*--------ADMIN PAGE LAYOUT for divs ---------------------------------------------------------------------*/
+
+#mainbar {
+    width: 75%;
+    float: right;
+}
+#sidebar 
+{
+    margin-left: 0;
+    width: 25%;
+    float: left;
+}
+
+.content-wrapper
+{
+    margin: 0 auto;
+    max-width: 95%;
+}
+
+
+/*-----VERTICAL MENY BELOW HERE----------------------------------------------------------------------------*/
 /* Starter CSS for Flyout Menu */
 #vertical_menu {
   padding: 0;

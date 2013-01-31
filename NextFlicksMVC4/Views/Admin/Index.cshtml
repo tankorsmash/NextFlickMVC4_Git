@@ -1,5 +1,5 @@
 ﻿@using NextFlicksMVC4.Models
-<link href="/Content/vertical_menu.css" rel="stylesheet" type="text/css"/>
+<link href="/Content/admin.css" rel="stylesheet" type="text/css"/>
 @{
   
   var roleName = "";
@@ -51,31 +51,17 @@
     } // if(buttonDeleteUseFromRole)
   }
 }
-<div class="content-Wrapper main-content clear-fix">
-    <div id='vertical_menu' class="float-left">
-        <ul>
-            <li><a href='#'><span>Home</span></a></li>
-            <li class='has-sub '><a href='#'><span>Products</span></a>
-                <ul>
-                    <li class='has-sub '><a href='#'><span>Product 1</span></a>
-                        <ul>
-                            <li><a href='#'><span>Sub Product</span></a></li>
-                            <li><a href='#'><span>Sub Product</span></a></li>
-                        </ul>
-                    </li>
-                    <li class='has-sub '><a href='#'><span>Product 2</span></a>
-                        <ul>
-                            <li><a href='#'><span>Sub Product</span></a></li>
-                            <li><a href='#'><span>Sub Product</span></a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li><a href='#'><span>About</span></a></li>
-            <li><a href='#'><span>Contact</span></a></li>
-        </ul>
+    <div id="sidebar">
+        <div id='vertical_menu' class="float-left">
+            <ul>
+                <li><a href='#'><span>Roles</span></a></li>
+                <li class='has-sub '><a href='#'><span>Users</span></a>
+                <li><a href='#'><span>Movies</span></a></li>
+                <li><a href='#'><span>Tags</span></a></li>
+            </ul>
+        </div>
     </div>
-    <div class="float-right">
+    <div id="mainbar">
         <h1>Manage Roles</h1>
         <form method="post">
        
@@ -125,6 +111,5 @@
             <p><a href="@Href("~/Home")">Return to home page</a></p>
      
         </form>
-        </div>
 </div>
    
