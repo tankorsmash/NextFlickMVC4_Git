@@ -158,10 +158,10 @@
         #vertical_menu ul ul li ul li:hover {
           background: #b7b7b7; }
   
-  #vertical_menu .has-sub {
+  #vertical_menu .active {
     position: relative; }
    
-    #vertical_menu .has-sub:after, #vertical_menu .has-sub > ul > .has-sub:hover:after {
+    #vertical_menu .active:after, #vertical_menu .has-sub > ul > .has-sub:hover:after {
       content: '';
       display: block;
       width: 10px;
@@ -176,5 +176,5 @@
       -ms-transform: rotate(360deg);
       -webkit-transform: rotate(360deg);
       transform: rotate(360deg); }
-    #vertical_menu .has-sub > ul > .has-sub:after, #vertical_menu .has-sub:hover:after {
+    #vertical_menu .active > ul > .has-sub:after, #vertical_menu .has-sub:hover:after {
       background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAJCAMAAAA8eE0hAAAAUVBMVEX////d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3e3t729vbx8fHq6urd3d3z8/Pj4+Pv7+/h4eHm5ub09PTn5+f19fXt7e3g4ODi4uLUsVdlAAAAC3RSTlMAM2YekAmlPHuEAwArv7wAAAA/SURBVHheY2Dl5mdigABGKV5BNnYok4dHQpKFGcrkEefj5gAzQUBABM7kFYQyRcX4mUBMkEpOLrA2IWGwfgYAn0UDZszv8IwAAAAASUVORK5CYII=); }

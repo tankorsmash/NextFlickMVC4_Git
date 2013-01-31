@@ -422,6 +422,7 @@
     <Content Include="Views\Movies\_FilterMenu.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Home\Feedback.cshtml" />
+    <Content Include="Views\Admin\adminMenu.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml.old" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Tag\Index.cshtml" />
