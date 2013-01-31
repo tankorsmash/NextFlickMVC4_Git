@@ -34,10 +34,12 @@
     // if movie_title = "enter a title", tits is "all movies", else it's the param value
     string tits = @Request.Params["movie_title"] == "Enter a title" ? "all movies" : @Request.Params["movie_title"];
     string ass = @Request.Params["genre_select"] == "0" ? "all genres" : @Request.Params["genre_select"];
+    int movie_count = Model.ToList().Count;
+    int total_movies = ViewBag.TotalMovies;
 }
 
 <h2>
-    Currently showing @Model.ToList().Count titles out of a possible @ViewBag.TotalMovies titles
+    Currently showing @movie_count titles out of a possible @total_movies titles
 
     filtering @tits in @ass 
     </h2>
@@ -79,4 +81,37 @@
 <!-- pagination stuff --!>
     @* has to be based on the current page to show the selected page, then the number of pages
     based on the total results value. The tricky part will be when we resend the current page 
-    with the current params... *@
+    with the current params... 
+    
+    //divide totalmovies by movies shown and that's the amount of pages needed
+    
+    //for each page, make a clickable link
+    
+    
+    
+    *@
+    
+@{
+    int pages = total_movies/movie_count;
+    int remaining_movies = total_movies%movie_count;
+    //increment pages by one, since there'll be movies left over most of the time 
+    if (remaining_movies != 0) {
+        pages++;
+    }
+
+    var movie_title = Request.Params["movie_title"];
+    var genre_select = Request.Params["genre_select"]; 
+
+}
+
+<div class="pagination_container">
+ @for (int i = 1; i < pages; i++) {
+ 
+     <div class="pagination_page">
+           @Html.ActionLink(i.ToString(), "Index", new { page = i, movie_title = movie_title, genre_select = genre_select }, null)
+    
+</div>
+    
+ }
+
+</div>
