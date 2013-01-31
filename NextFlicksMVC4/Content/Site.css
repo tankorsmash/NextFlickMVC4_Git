@@ -16,7 +16,45 @@ font-weight: bold;
     
 }
 
-/* _Title.cshtml */
+
+/* Details page start*/
+
+.details_images {
+   float: left;
+    width: 285px;
+}
+
+.details_content {
+    margin-left: 3em;
+    float: left;
+    width: 50%;
+}
+
+.details_header {
+    font-size: 200%;
+}
+
+
+.details_rotten {
+    float: left;
+}
+
+
+/* Details page end */
+
+/* Results.cshtml, the main page of the site */
+
+.pagination_container {
+    clear: left;
+    padding-top: 3em;
+}
+
+.pagination_page {
+    float: left;
+}
+
+
+/* _Title.cshtml, which is the guts of the results page in Genres.cshtml*/
 .NIT_entry {
     float: left;
     margin-left: 1em;
@@ -59,8 +97,11 @@ div.title_entry_top {
     overflow: hidden;
     padding: 0;
     border-radius: 8px;
-}
 
+
+
+
+}
 
 .title_entry_text {
 border-width: 5px;

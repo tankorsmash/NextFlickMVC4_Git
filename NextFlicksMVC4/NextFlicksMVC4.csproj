@@ -317,15 +317,12 @@
     <Content Include="Content\themes\base\jquery.ui.core.css" />
     <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
     <Content Include="Content\themes\base\jquery.ui.dialog.css" />
-    <Content Include="Content\themes\base\jquery.ui.menu.css" />
     <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
     <Content Include="Content\themes\base\jquery.ui.resizable.css" />
     <Content Include="Content\themes\base\jquery.ui.selectable.css" />
     <Content Include="Content\themes\base\jquery.ui.slider.css" />
-    <Content Include="Content\themes\base\jquery.ui.spinner.css" />
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
-    <Content Include="Content\themes\base\jquery.ui.tooltip.css" />
     <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -346,28 +343,20 @@
     <Content Include="Content\themes\base\minified\jquery.ui.core.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.datepicker.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.dialog.min.css" />
-    <Content Include="Content\themes\base\minified\jquery.ui.menu.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.progressbar.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.resizable.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.selectable.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
-    <Content Include="Content\themes\base\minified\jquery.ui.spinner.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
-    <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
     <Content Include="Content\admin.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
-    <Content Include="Scripts\jquery-1.7.2-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.7.2.js" />
-    <Content Include="Scripts\jquery-1.7.2.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.20.js" />
     <Content Include="Scripts\jquery-ui-1.8.20.min.js" />
-    <Content Include="Scripts\jquery-ui-1.9.2.js" />
-    <Content Include="Scripts\jquery-ui-1.9.2.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
@@ -424,6 +413,8 @@
     <Content Include="Views\Home\Feedback.cshtml" />
     <Content Include="Views\Admin\adminMenu.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml.old" />
+    <Content Include="Views\Movies\Details2.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\ImdbID.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Tag\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\README_ENU.txt" />
@@ -483,7 +474,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Movies\Index.cshtml" />
+    <Content Include="Views\Movies\oldIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Movies\Create.cshtml" />
@@ -504,7 +495,7 @@
     <Content Include="Views\Movies\_Title.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Movies\Year.cshtml" />
+    <Content Include="Views\Movies\oldYear.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Movies\Filter.cshtml" />
@@ -525,7 +516,7 @@
     <Content Include="Views\Movies\Title.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Movies\Genres.cshtml" />
+    <Content Include="Views\Movies\Results.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\DisplayTemplates\CommaList.cshtml" />
