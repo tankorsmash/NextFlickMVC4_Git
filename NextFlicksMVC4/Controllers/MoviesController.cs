@@ -130,6 +130,32 @@ namespace NextFlicksMVC4.Controllers
         //    return View("FilterHandler");
         //}
 
+
+        public ActionResult tagsearch(string term="scary")
+        {
+            MovieDbContext db = new MovieDbContext();
+    
+           //validate tag
+            if (term == "") {
+                term = "scary";
+            }
+
+            //get the tag id for the term
+            var tag_res = from tag in db.MovieTags
+                      where tag.Name == term
+                      select tag.TagId;
+            int tag_id = tag_res.FirstOrDefault();
+
+            //find the movies that are tagged with tag_id
+            var movie_res = from umt in db.UserToMovieToTags
+                            where umt.TagId == tag_id
+                            select umt.movie_ID;
+            List<int> movie_ids = movie_res.ToList();
+
+
+
+        }
+
         /// <summary>
         /// Sloppy return random set of movies. redirects to Index with a random start and count of 10
         /// </summary>
