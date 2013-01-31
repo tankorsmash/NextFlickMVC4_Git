@@ -351,7 +351,7 @@ namespace NextFlicksMVC4.Controllers
                 var end = Tools.WriteTimeStamp("end");
                 Tools.TraceLine((end - start).ToString());
 
-                return View("Genres", nit_list);
+                return View("Results", nit_list);
             }
 
             catch (System.Data.EntityCommandExecutionException ex) {
