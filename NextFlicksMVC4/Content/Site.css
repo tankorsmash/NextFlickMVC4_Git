@@ -42,6 +42,18 @@ font-weight: bold;
 
 /* Details page end */
 
+/* Results.cshtml, the main page of the site */
+
+.pagination_container {
+    clear: left;
+    padding-top: 3em;
+}
+
+.pagination_page {
+    float: left;
+}
+
+
 /* _Title.cshtml, which is the guts of the results page in Genres.cshtml*/
 .NIT_entry {
     float: left;
