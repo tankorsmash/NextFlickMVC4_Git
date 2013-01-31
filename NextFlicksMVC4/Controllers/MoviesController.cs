@@ -152,6 +152,7 @@ namespace NextFlicksMVC4.Controllers
                             select umt.movie_ID;
             List<int> movie_ids = movie_res.ToList();
 
+            return View();
 
 
         }
@@ -714,6 +715,7 @@ namespace NextFlicksMVC4.Controllers
             return RedirectToAction("DetailsTag", "Movies", movie_ID); 
         }
 
+        [HttpGet]
         public ActionResult Details(int movie_ID = 0)
         {
             MovieDbContext db = new MovieDbContext();
@@ -743,8 +745,13 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Details(int movie_ID, List<String> tags, bool anon)
         {
 
+            //if (true) {
             if (ModelState.IsValid)
             {
+
+                Tools.TraceLine("Looking to add the tags {0}, to movie id {1}",
+                                tags, movie_ID);
+
                 MovieDbContext db = new MovieDbContext();
                 Movie taggedMovie = db.Movies.Find(movie_ID);
                 MovieTag newTag = new MovieTag();
@@ -756,6 +763,9 @@ namespace NextFlicksMVC4.Controllers
 
                 foreach (string tag in seperatedtags)
                 {
+                    //JB note: not sure if FoD() here return null if there's nothing, 
+                    // I think it return a new Tag() empty which'll mean that 
+                    // it's never gonna hit null. Not sure though.
                     var tagExists = db.MovieTags.FirstOrDefault(t => t.Name == tag);
                     if (tagExists == null)
                     {
@@ -766,7 +776,7 @@ namespace NextFlicksMVC4.Controllers
                     }
                     else
                     {
-                        //otherwise slecte the MovieTag where the names match and use that.
+                        //otherwise select the MovieTag where the names match and use that.
                         newTag = db.MovieTags.First(t => t.Name == tag);
                     }
 
@@ -784,6 +794,8 @@ namespace NextFlicksMVC4.Controllers
 
                     db.UtMtTisAnon.Add(anonTags);
                     db.SaveChanges();
+                    
+                    Tools.TraceLine("added tag {0} to movie_id {1}", UtMtT.TagId, movie_ID);
                   }
                 return RedirectToAction("DetailsTag", "Movies", movie_ID);
                 //return View(fullView);
