@@ -358,6 +358,7 @@ namespace NextFlicksMVC4.OMBD
         public string i_Votes { get; set; }
         [DisplayName("IMDB ID")]
         [ProtoMember(6)]
+        [DataType("ImdbId")]
         public string i_ID { get; set; }
 
         [DisplayName("Rotten Tomatoes Meter")]

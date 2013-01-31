@@ -1,0 +1,119 @@
+﻿@using System.Web.Mvc.Html
+@model IEnumerable<NextFlicksMVC4.Views.Movies.ViewModels.FullViewModel>
+@*@model IEnumerable<NextFlicksMVC4.Views.Movies.ViewModels.MovieWithGenreViewModel>*@
+                                                            
+@{
+    ViewBag.Title = "Genres ripoff of index";
+}
+
+@if (ViewBag.filtered == true) {
+    <h5>The View bag was filtered in the Tracking attribute</h5>
+}
+
+<script>
+    $(document).ready(function () {
+        $("div#action_params").ready(function () {
+            $("div#action_params").dialog({
+                position: {
+                    my: "center",
+                    at: "top"
+                }
+            });
+        });
+        $("#slider").ready(function () {
+            $("#slider").slider();
+        });
+    });
+</script>    
+    <h1>@ViewBag.Title</h1>
+
+
+
+@{
+    //a little tricky to read, if the condition is true, then after ? is the value. Else its the one after ":"
+    // if movie_title = "enter a title", tits is "all movies", else it's the param value
+    string tits = @Request.Params["movie_title"] == "Enter a title" ? "all movies" : @Request.Params["movie_title"];
+    string ass = @Request.Params["genre_select"] == "0" ? "all genres" : @Request.Params["genre_select"];
+    int movie_count = Model.ToList().Count;
+    int total_movies = ViewBag.TotalMovies;
+}
+
+<h2>
+    Currently showing @movie_count titles out of a possible @total_movies titles
+
+    filtering @tits in @ass 
+    </h2>
+    
+@if (ViewBag.Start != null && ViewBag.Count != null) {
+    <h3>
+        Items @ViewBag.Start through
+        @{ ViewBag.section = ViewBag.Start + ViewBag.Count - 1; }
+        @ViewBag.section
+    </h3>
+}
+
+@if (ViewBag.SearchTerm != null )
+{
+    <h4>
+        You searched for "@ViewBag.SearchTerm"</h4>
+}
+
+@*<div id="action_params" style="background-color: lightblue" title="This Action's Params">
+@if (ViewBag.Params != null) {
+    <p>Here are the possible params to the controller:</p>
+    foreach (string param in ViewBag.Params) {
+        <p>@param</p>
+    }
+}
+
+</div>*@
+
+
+@Html.Partial("_FilterMenu")
+
+
+
+<div class="nit_list">
+@foreach (var item in Model) {
+        @Html.Partial("_Title", item)
+}
+</div>
+
+<!-- pagination stuff --!>
+    @* has to be based on the current page to show the selected page, then the number of pages
+    based on the total results value. The tricky part will be when we resend the current page 
+    with the current params... 
+    
+    //divide totalmovies by movies shown and that's the amount of pages needed
+    
+    //for each page, make a clickable link
+    
+    
+    
+    *@
+    
+@{
+    int pages = total_movies/movie_count;
+    int remaining_movies = total_movies%movie_count;
+    //increment pages by one, since there'll be movies left over most of the time 
+    if (remaining_movies != 0) {
+        pages++;
+    }
+
+    var movie_title = Request.Params["movie_title"];
+    var genre_select = Request.Params["genre_select"]; 
+
+}
+
+<div class="pagination_container">
+
+ @for (int i = 1; i < pages; i++) {
+ 
+     <div class="pagination_page">
+           @Html.ActionLink(i.ToString(), "Index", new { page = i, movie_title = movie_title, genre_select = genre_select }, null)
+    
+</div>
+    
+ }
+
+</div>
