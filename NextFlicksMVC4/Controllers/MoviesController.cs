@@ -287,6 +287,7 @@ namespace NextFlicksMVC4.Controllers
                     //genre 
 
 
+
                 select nit ;
                     
             //if the genre isn't default, filter more
