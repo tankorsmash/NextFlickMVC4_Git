@@ -56,7 +56,7 @@
         You searched for "@ViewBag.SearchTerm"</h4>
 }
 
-<div id="action_params" style="background-color: lightblue" title="This Action's Params">
+@*<div id="action_params" style="background-color: lightblue" title="This Action's Params">
 @if (ViewBag.Params != null) {
     <p>Here are the possible params to the controller:</p>
     foreach (string param in ViewBag.Params) {
@@ -64,103 +64,12 @@
     }
 }
 
-</div>
+</div>*@
 
 
 @Html.Partial("_FilterMenu")
 
-@{ int show_table = 0; }
 
-@if (show_table == 1) {
-    <table>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Movie.short_title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Movie.year)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Movie.runtime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Movie.avg_rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Movie.tv_rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Movie.current_season)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Movie.is_movie)
-            </th>
-            @*        <th>
-            @Html.DisplayNameFor(model => model.movie.genres)
-        </th>*@
-            <th>
-                @Html.DisplayNameFor(model => model.Movie.maturity_rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genres)
-            </th>
-        </tr>
-        @foreach (var item in Model) {
-            <tr>
-                <td style="white-space: nowrap">
-                    @*<a href="@Html.DisplayFor(asd => item.web_page)">*@
-                    <img src=" @Html.DisplayFor(modelItem => item.Boxarts.boxart_38) " alt="BoxArt" style="vertical-align: middle; height: 60px"/>
-                    <span style="line-height: 60px">@Html.DisplayFor(modelItem => item.Movie.short_title)</span>
-                    @*</a>*@
-                    <span>@Html.ActionLink("details", "Details", new {movie_ID = item.Movie.movie_ID})</span>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Movie.year)
-                </td>
-                <td>
-                    @if (item.Movie.is_movie) {
-                        @Html.DisplayFor(modelItem => item.Movie.runtime)
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Movie.avg_rating)
-                    @Html.DisplayFor(modelItem => item.OmdbEntry.t_Meter)
-@*                    @NextFlicksMVC4.OMBD.Omdb.GetOmdbEntryForMovie(item.movie.short_title, item.movie.year).t_Rating
-*@                           
-                    
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Movie.tv_rating)
-                </td>
-                <td>
-                    @if (!(item.Movie.is_movie)) {
-                        @Html.DisplayFor(modelItem => item.Movie.current_season)
-                        ;
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Movie.is_movie)
-                </td>
-                @*            <td>
-                @Html.DisplayFor(modelItem => item.Movie.genres)
-            </td>*@
-                <td>
-                    @Html.DisplayFor(modelItem => item.Movie.maturity_rating)
-                </td>
-                <td>@Html.DisplayFor(modelItem => item.Genres)</td>
-                @*        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>*@
-            </tr>
-        }
-    </table>
-}
-
-else {
-    <p style="color: blue">table is hidden, showing partial _Titles instead</p>
-}
 
 
 @foreach (var item in Model) {
