@@ -150,18 +150,30 @@ namespace NextFlicksMVC4.Controllers
             var movie_res = from umt in db.UserToMovieToTags
                             where umt.TagId == tag_id
                             select umt.movie_ID;
-            List<int> movie_ids = movie_res.ToList();
+            //List<int> movie_ids = movie_res.ToList();
 
             //tODO: build a FullView for each of the movies in the movie_ids list,
             // should almost be done, but I can't quite add any tags to the db to test
             var res_db = Tools.GetFullDbQuery(db);
             var res = from nit in res_db
-                      from movie_id in movie_ids
+                      from movie_id in movie_res
                       where nit.Movie.movie_ID == movie_id
                       select nit;
-            var matched_list = res.ToList();
+            IEnumerable<FullViewModel> matched_list = res.ToList();
 
-            return View();
+
+            var sortedGenreDictionary = Tools.CreateSortedGenreDictionary(db);
+            //Assign it to a ViewBag, so the Filtermenu can use it
+            ViewBag.genre_dict = sortedGenreDictionary;
+
+            var sortedTagDictionary = Tools.CreateSortedTagDictionary(db);
+            //Assign it to a ViewBag, so the Filtermenu can use it
+            ViewBag.tag_dict = sortedTagDictionary;
+
+            //Viewbag assigning
+            ViewBag.TotalMovies = matched_list.Count();
+
+            return View("Results", matched_list);
 
 
         }
@@ -274,22 +286,12 @@ namespace NextFlicksMVC4.Controllers
 
             var db = new MovieDbContext();
 
-            //create a Dict<string,int> for all genre_string and ids, so that they 
-            // can be enumerated in the filtermenu. So the user can select which genres 
-            // they want to look for
-            var dict_start = Tools.WriteTimeStamp("  Start dict make");
-            Dictionary<string, int> genre_dict =
-                db.Genres.Distinct().ToDictionary(gen => gen.genre_string,
-                                       gen => gen.genre_ID);
-            //sort the dictionary, automatically does it by key, seems like
-            SortedDictionary<string, int> sortedDictionary = new SortedDictionary<string, int>(genre_dict);
-            var dict_end = Tools.WriteTimeStamp("  End dict make");
-            Tools.TraceLine("dict took {0}", dict_end - dict_start);
+            var sortedDictionary = Tools.CreateSortedGenreDictionary(db);
 
             //Assign it to a ViewBag, so the Filtermenu can use it
             ViewBag.genre_dict = sortedDictionary;
-            MultiSelectList msl = new MultiSelectList(ViewBag.genre_dict);
-            ViewBag.msl = msl;
+            //MultiSelectList msl = new MultiSelectList(ViewBag.genre_dict);
+            //ViewBag.msl = msl;
 
 
             //make sure the title isn't the default text set in the _FilterMenu
@@ -756,7 +758,7 @@ namespace NextFlicksMVC4.Controllers
             //if (true) {
 
                 Tools.TraceLine("Looking to add the tags {0}, to movie id {1}",
-                                tags, movie_ID);
+                                tags[0], movie_ID);
 
                 MovieDbContext db = new MovieDbContext();
                 Movie taggedMovie = db.Movies.Find(movie_ID);

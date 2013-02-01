@@ -589,7 +589,7 @@ namespace NextFlicksMVC4
         public static void SerializeOmdbTsv(string entryDumpPath, string imdbPath, string tomPath)
         {
 
-            Tools.TraceLine("In SerializeOmdbTsv");
+            TraceLine("In SerializeOmdbTsv");
 
             var complete_list_of_entries =
                 TSVParse.ParseTSVforOmdbData(imdb_filepath: imdbPath,
@@ -600,7 +600,7 @@ namespace NextFlicksMVC4
                 Serializer.Serialize(file, complete_list_of_entries);
             }
             WriteTimeStamp("  Done serializing list");
-            Tools.TraceLine("Out SerializeOmdbTsv");
+            TraceLine("Out SerializeOmdbTsv");
         }
 
         /// <summary>
@@ -613,7 +613,7 @@ namespace NextFlicksMVC4
                                      string start_string = "<catalog",
                                      bool skip_default_xml = true)
         {
-            Tools.TraceLine("In JoinLines");
+            TraceLine("In JoinLines");
 
 
             //read the file into a list of lines
@@ -672,7 +672,7 @@ namespace NextFlicksMVC4
                     writer.WriteLine(fixedLine);
                 }
             }
-            Tools.TraceLine("Out PopulateGenresTable");
+            TraceLine("Out PopulateGenresTable");
         }
 
         public static void BuildMoviesBoxartGenresTables(string filepath)
@@ -892,6 +892,41 @@ namespace NextFlicksMVC4
             TraceLine("Out MarryMovieToOmdb");
 
 
+        }
+
+        public static SortedDictionary<string, int> CreateSortedTagDictionary(MovieDbContext db)
+        {
+            //create a Dict<string,int> for all tag_string and ids, so that they 
+            // can be enumerated in the filtermenu. So the user can select which tags 
+            // they want to look for
+            var dict_start = WriteTimeStamp("  Start dict make");
+            Dictionary<string, int> tag_dict =
+                db.MovieTags.Distinct().ToDictionary(tag => tag.Name,
+                                                  tag => tag.TagId);
+            //sort the dictionary, automatically does it by key, seems like
+            SortedDictionary<string, int> sortedDictionary =
+                new SortedDictionary<string, int>(tag_dict);
+            var dict_end = WriteTimeStamp("  End dict make");
+            TraceLine("tag dict took {0}", dict_end - dict_start);
+            return sortedDictionary;
+        }
+
+
+        public static SortedDictionary<string, int> CreateSortedGenreDictionary(MovieDbContext db)
+        {
+//create a Dict<string,int> for all genre_string and ids, so that they 
+            // can be enumerated in the filtermenu. So the user can select which genres 
+            // they want to look for
+            var dict_start = WriteTimeStamp("  Start dict make");
+            Dictionary<string, int> genre_dict =
+                db.Genres.Distinct().ToDictionary(gen => gen.genre_string,
+                                                  gen => gen.genre_ID);
+            //sort the dictionary, automatically does it by key, seems like
+            SortedDictionary<string, int> sortedDictionary =
+                new SortedDictionary<string, int>(genre_dict);
+            var dict_end = WriteTimeStamp("  End dict make");
+            TraceLine("genre dict took {0}", dict_end - dict_start);
+            return sortedDictionary;
         }
     }
 

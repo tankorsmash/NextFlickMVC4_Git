@@ -1,26 +1,38 @@
 ﻿        
 <div class="filter_area">
     
-    <form name="search_form">
+    <form name="movie_search_form">
 
     @Html.TextBox("movie_title", "Enter a title")
 
     <!-- need genre, RT meter, year -->
-
-        <select name="genre_select" >
+    <select name="genre_select">
         <option value="0">All Genres</option>
-            @{
-                foreach (KeyValuePair<string,int> kvp in (SortedDictionary<string,int>)ViewBag.genre_dict )
-                {
-                    <option value="@kvp.Key" > @kvp.Key </option>
-                } 
-            }
-        </select>
-    
-    <input type="submit" value="Search"/>
-
+        @{
+            foreach (KeyValuePair<string, int> kvp in (SortedDictionary<string, int>)ViewBag.genre_dict)
+            {
+            <option value="@kvp.Key" >@kvp.Key </option>
+            } 
+        }
+    </select>
+    <input type="submit" value="Search Movies" />
     </form>
 
+    <form name="tag_search_form">
+
+    @Html.TextBox("tag_string", "Enter a tag")
+
+    <select name="tag_select">
+        <option value="0">All Tags</option>
+        @{
+            foreach (KeyValuePair<string, int> kvp in (SortedDictionary<string, int>)ViewBag.tag_dict)
+            {
+            <option value="@kvp.Key" >@kvp.Key </option>
+            } 
+        }
+    </select>
+    <input type="submit" value="Search Tags" />
+    </form>
 </div>
 
 
