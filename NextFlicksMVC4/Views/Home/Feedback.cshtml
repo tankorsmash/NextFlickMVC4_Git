@@ -23,10 +23,14 @@
             @Html.LabelFor(model => model.Message)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.Message)
+            @Html.TextBoxFor(model => model.Message, new {style = "height:100px"})
             @Html.ValidationMessageFor(model => model.Message)
         </div>
+        @if (!WebSecurity.IsAuthenticated)
+        {
+            ReCaptcha.GetHtml(theme: "red");
 
+        }
         <p>
             <input type="submit" value="Send" />
         </p>

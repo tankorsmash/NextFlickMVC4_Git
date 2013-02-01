@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Diagnostics;
+using Microsoft.Web.Helpers;
 using NextFlicksMVC4.Filters;
 using NextFlicksMVC4.Models;
 using WebMatrix.WebData;
@@ -61,20 +62,37 @@ namespace NextFlicksMVC4.Controllers
         [HttpPost]
         public ActionResult Feedback(FeedbackModel feedback)
         {
-            if (ModelState.IsValid)
-            {
-                string from = feedback.Email;
-                string to = "joshua.tilson@yahoo.com";
-                string subject = "Feedback from WATW";
-                string body = feedback.Message;
-                MailMessage message = new MailMessage(from, to, subject, body);
- 
-                SmtpClient client = new SmtpClient(host: "mail.wearethewatchers.com", port: 25);
-                client.Send(message);
+            bool validRecaptcha = false;
 
-                //TODO: http://stackoverflow.com/questions/10022498/setting-up-email-settings-in-appsettings-web-config
+            //check if user is logged in, if so set validRecaptcha to true as we don't want users having to use recap
+            if (WebSecurity.IsAuthenticated)
+            {
+                validRecaptcha = true;
             }
-            return View();
+                //else check the recap froma non logged in user and make sure it is ok before sending email.
+            else if (ReCaptcha.Validate(privateKey: "6LdcQtwSAAAAACJPzqNPEoWp37-M-aUZi-6FgZNn"))
+            {
+                validRecaptcha = true;
+            }
+
+            if(validRecaptcha)
+            {
+                if (ModelState.IsValid)
+                {
+                    string from = feedback.Email;
+                    string to = "feedback@wearethewatchers.com";
+                    string subject = "Feedback from WATW";
+                    string body = feedback.Message;
+                    MailMessage message = new MailMessage(from, to, subject, body);
+
+                    SmtpClient client = new SmtpClient();
+                    client.Send(message);
+
+                    //TODO: http://stackoverflow.com/questions/10022498/setting-up-email-settings-in-appsettings-web-config
+                }
+                return View();
+            }
+            return View(feedback);
         }
     }
 }
