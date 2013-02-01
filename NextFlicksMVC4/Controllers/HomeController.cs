@@ -4,7 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Diagnostics;
+using Microsoft.Web.Helpers;
 using NextFlicksMVC4.Filters;
+using NextFlicksMVC4.Models;
+using WebMatrix.WebData;
+using System.Web.Security;
+using System.Net.Mail;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -39,7 +44,55 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Feedback()
         {
-            return View();
+            MovieDbContext db = new MovieDbContext();
+            FeedbackModel feedback = new FeedbackModel();
+            
+
+            if (WebSecurity.IsAuthenticated)
+            {
+                int userID = WebSecurity.CurrentUserId;
+                var email = from user in db.Users
+                        where user.userID == userID
+                        select user.email;
+                feedback.Email = email.FirstOrDefault();
+            }
+            return View("Feedback", feedback);
+        }
+
+        [HttpPost]
+        public ActionResult Feedback(FeedbackModel feedback)
+        {
+            bool validRecaptcha = false;
+
+            //check if user is logged in, if so set validRecaptcha to true as we don't want users having to use recap
+            if (WebSecurity.IsAuthenticated)
+            {
+                validRecaptcha = true;
+            }
+                //else check the recap froma non logged in user and make sure it is ok before sending email.
+            else if (ReCaptcha.Validate(privateKey: "6LdcQtwSAAAAACJPzqNPEoWp37-M-aUZi-6FgZNn"))
+            {
+                validRecaptcha = true;
+            }
+
+            if(validRecaptcha)
+            {
+                if (ModelState.IsValid)
+                {
+                    string from = feedback.Email;
+                    string to = "feedback@wearethewatchers.com";
+                    string subject = "Feedback from WATW";
+                    string body = feedback.Message;
+                    MailMessage message = new MailMessage(from, to, subject, body);
+
+                    SmtpClient client = new SmtpClient();
+                    client.Send(message);
+
+                    //TODO: http://stackoverflow.com/questions/10022498/setting-up-email-settings-in-appsettings-web-config
+                }
+                return View();
+            }
+            return View(feedback);
         }
     }
 }
