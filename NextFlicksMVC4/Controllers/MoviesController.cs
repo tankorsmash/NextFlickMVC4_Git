@@ -746,7 +746,7 @@ namespace NextFlicksMVC4.Controllers
 
 
 
-            return View("Details2", fullView);
+            return View("Details", fullView);
         }
 
         [HttpPost]
@@ -754,8 +754,6 @@ namespace NextFlicksMVC4.Controllers
         {
 
             //if (true) {
-            if (ModelState.IsValid)
-            {
 
                 Tools.TraceLine("Looking to add the tags {0}, to movie id {1}",
                                 tags, movie_ID);
@@ -806,10 +804,6 @@ namespace NextFlicksMVC4.Controllers
                     Tools.TraceLine("added tag {0} to movie_id {1}", UtMtT.TagId, movie_ID);
                   }
                 return RedirectToAction("DetailsTag", "Movies", movie_ID);
-                //return View(fullView);
-            }
-            return RedirectToAction("DetailsTag", "Movies", movie_ID); 
-            //return View(fullView);
         }
 
         
