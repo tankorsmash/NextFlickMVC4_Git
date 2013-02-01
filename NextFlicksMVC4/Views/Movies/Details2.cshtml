@@ -47,6 +47,16 @@
         
         <div class="details_tags_container">
             <div class="details_tags">@Html.DisplayFor(model => model.Tags)</div>
+        </div>@*        <div class="display-field" style="clear: both">
+            @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
+            {
+                 <h6>Seperate tags by comma</h6>
+                <p>
+                @Html.TextBox("tags", value: "") @Html.CheckBoxFor(model => model.Anon)Anonymous?
+                </p>
+                <p><input type="submit" value="Add Tags" /></p>
+            }
+            
         </div>
-    </div>
+*@    </div>
 </div>

@@ -120,8 +120,16 @@ namespace NextFlicksMVC4
                 xDoc.LoadXml(respStream.ReadToEnd());
 
                 //get the plot for the story, and then assign it to the FullView
-                plot = xDoc.GetElementsByTagName("movie")[0].Attributes["plot"].Value;
-                Tools.TraceLine("The plot is: {0}", plot);
+                if (xDoc.InnerXml.Contains("Movie not") != true) {
+                    plot =
+                        xDoc.GetElementsByTagName("movie")[0].Attributes["plot"]
+                            .Value;
+                    Tools.TraceLine("The plot is: {0}", plot);
+                }
+                else {
+                    plot = @"N/A";
+                    Tools.TraceLine("The plot is: {0}", plot);
+                }
             }
             else {
                 plot = @"N/A";

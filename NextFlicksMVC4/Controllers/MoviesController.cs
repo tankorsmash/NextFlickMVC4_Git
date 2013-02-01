@@ -131,7 +131,7 @@ namespace NextFlicksMVC4.Controllers
         //}
 
 
-        public ActionResult tagsearch(string term="scary")
+        public ActionResult TagSearch(string term="scary")
         {
             MovieDbContext db = new MovieDbContext();
     
@@ -151,6 +151,15 @@ namespace NextFlicksMVC4.Controllers
                             where umt.TagId == tag_id
                             select umt.movie_ID;
             List<int> movie_ids = movie_res.ToList();
+
+            //tODO: build a FullView for each of the movies in the movie_ids list,
+            // should almost be done, but I can't quite add any tags to the db to test
+            var res_db = Tools.GetFullDbQuery(db);
+            var res = from nit in res_db
+                      from movie_id in movie_ids
+                      where nit.Movie.movie_ID == movie_id
+                      select nit;
+            var matched_list = res.ToList();
 
             return View();
 
@@ -442,48 +451,48 @@ namespace NextFlicksMVC4.Controllers
         //}
 
 
-        /// <summary>
-        /// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Genres(string genre = "action",
-                                   int count = 25,
-                                   int start = 0)
-        {
-            MovieDbContext db = new MovieDbContext();
+        ///// <summary>
+        ///// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
+        ///// </summary>
+        ///// <returns></returns>
+        //public ActionResult Genres(string genre = "action",
+        //                           int count = 25,
+        //                           int start = 0)
+        //{
+        //    MovieDbContext db = new MovieDbContext();
 
-            //make sure params are set, because "" is a valid parameter
-            if (genre == "")
-            {
-                genre = "nothing";
-            }
+        //    //make sure params are set, because "" is a valid parameter
+        //    if (genre == "")
+        //    {
+        //        genre = "nothing";
+        //    }
 
-            //get a movie list that matches genres
-            var movie_list = Tools.GetMoviesMatchingGenre(db, genre);
-            //creates the MwGVM for the movie list
-            var ranged_movie_list = movie_list.GetRange(start, count);
-            var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
+        //    //get a movie list that matches genres
+        //    var movie_list = Tools.GetMoviesMatchingGenre(db, genre);
+        //    //creates the MwGVM for the movie list
+        //    var ranged_movie_list = movie_list.GetRange(start, count);
+        //    var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
 
-            //to show a given view what the user searched for
-            ViewBag.SearchTerms = genre;
-            //relectively get the list of parameters for this method and pass them to the view
-            ViewBag.Params = Tools.GetAllParamNames("Genres");
+        //    //to show a given view what the user searched for
+        //    ViewBag.SearchTerms = genre;
+        //    //relectively get the list of parameters for this method and pass them to the view
+        //    ViewBag.Params = Tools.GetAllParamNames("Genres");
 
-            //if the count param is higher than the amount of MwG's in the list,
-            // make count the upper limit
-            if (count > MwG_list.Count)
-            {
-                count = MwG_list.Count;
-            }
+        //    //if the count param is higher than the amount of MwG's in the list,
+        //    // make count the upper limit
+        //    if (count > MwG_list.Count)
+        //    {
+        //        count = MwG_list.Count;
+        //    }
 
-            ViewBag.Count = count;
-            ViewBag.Start = start;
-            ViewBag.TotalMovies = movie_list.Count;
+        //    ViewBag.Count = count;
+        //    ViewBag.Start = start;
+        //    ViewBag.TotalMovies = movie_list.Count;
 
-            //var ret = MwG_list.GetRange(start, count);
-            return View(MwG_list);
+        //    //var ret = MwG_list.GetRange(start, count);
+        //    return View(MwG_list);
 
-        }
+        //}
 
         //-------------------------------------------------------
 
@@ -722,9 +731,8 @@ namespace NextFlicksMVC4.Controllers
             FullViewModel fullView = new FullViewModel();
 
             Movie movie = db.Movies.Find(movie_ID);
-            if (movie == null)
-            {
-                return HttpNotFound();
+            if (movie == null) {
+                return View("Error");
             }
 
             fullView.Movie = movie;

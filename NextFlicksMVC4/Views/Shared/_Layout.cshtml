@@ -53,7 +53,7 @@
                       </p>
                     <nav>
                         <ul id="tabmenu">
-                            <li>@Html.ActionLink("Movies", "TestSort", "Movies", null, new{ @class = movieMenuClass})</li>
+                            <li>@Html.ActionLink("Movies", "Index", "Movies", null, new{ @class = movieMenuClass})</li>
                             <li>@Html.ActionLink("Tags", "Index", "Tags")</li>
                             @if (WebSecurity.IsAuthenticated && Roles.IsUserInRole("Admin"))
                             {
