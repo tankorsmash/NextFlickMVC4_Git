@@ -150,7 +150,6 @@ namespace NextFlicksMVC4.Controllers
             var movie_res = from umt in db.UserToMovieToTags
                             where umt.TagId == tag_id
                             select umt.movie_ID;
-            //List<int> movie_ids = movie_res.ToList();
 
             //tODO: build a FullView for each of the movies in the movie_ids list,
             // should almost be done, but I can't quite add any tags to the db to test
@@ -162,15 +161,13 @@ namespace NextFlicksMVC4.Controllers
             IEnumerable<FullViewModel> matched_list = res.ToList();
 
 
-            var sortedGenreDictionary = Tools.CreateSortedGenreDictionary(db);
             //Assign it to a ViewBag, so the Filtermenu can use it
-            ViewBag.genre_dict = sortedGenreDictionary;
+            ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
 
-            var sortedTagDictionary = Tools.CreateSortedTagDictionary(db);
             //Assign it to a ViewBag, so the Filtermenu can use it
-            ViewBag.tag_dict = sortedTagDictionary;
+            ViewBag.tag_dict = Tools.CreateSortedTagDictionary(db);
 
-            //Viewbag assigning
+            //Count the total movies and add that to the Viewbag
             ViewBag.TotalMovies = matched_list.Count();
 
             return View("Results", matched_list);
@@ -276,22 +273,23 @@ namespace NextFlicksMVC4.Controllers
             var start = Tools.WriteTimeStamp("start");
 
             //if the titles are default print default message, otherwise print variables
-            if (movie_title != "" || genre_select != "0")
-            {
-                Tools.TraceLine("testsorting with title: {0}, genre: {1}", movie_title, genre_select);
+            if (movie_title != "" || genre_select != "0") {
+                Tools.TraceLine("testsorting with title: {0}, genre: {1}",
+                                movie_title, genre_select);
             }
-            else { Tools.TraceLine("testsorting with blank title and genre");}
+            else {
+                Tools.TraceLine("testsorting with blank title and genre");
+            }
 
             int movie_count = 28;
 
             var db = new MovieDbContext();
 
-            var sortedDictionary = Tools.CreateSortedGenreDictionary(db);
-
+            //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
             //Assign it to a ViewBag, so the Filtermenu can use it
-            ViewBag.genre_dict = sortedDictionary;
-            //MultiSelectList msl = new MultiSelectList(ViewBag.genre_dict);
-            //ViewBag.msl = msl;
+            ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
+            ViewBag.tag_dict = Tools.CreateSortedTagDictionary(db);
+
 
 
             //make sure the title isn't the default text set in the _FilterMenu
@@ -299,8 +297,6 @@ namespace NextFlicksMVC4.Controllers
                 movie_title = "";
             }
 
-
-            //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
 
 
             //get a full query with all data in db
@@ -313,26 +309,26 @@ namespace NextFlicksMVC4.Controllers
                 where
                     //title
                 nit.Movie.short_title.Contains(movie_title)
-                    //runtime
-                && nit.Movie.runtime > 0
-                && nit.Movie.runtime < 100000
-                    //year
-                && nit.Movie.year >= 0
-                && nit.Movie.year <= 3000
-                    //maturity rating
-                && nit.Movie.maturity_rating >= 0
-                && nit.Movie.maturity_rating <= 200
-                    //genre 
-
-
-
+                ///commented this out since our search is only dealing with titles at the moment
+                //    //runtime
+                //&& nit.Movie.runtime > 0
+                //&& nit.Movie.runtime < 100000
+                //    //year
+                //&& nit.Movie.year >= 0
+                //&& nit.Movie.year <= 3000
+                //    //maturity rating
+                //&& nit.Movie.maturity_rating >= 0
+                //&& nit.Movie.maturity_rating <= 200
+                //    //genre 
+ 
                 select nit ;
                     
-            //if the genre isn't default, filter more
+            //if the genre isn't the default value, filter the results even more
             if (genre_select != "0") {
                 res = res.Where(nit => nit.Genres.Any(item => item == genre_select));
             }
                 //&& nit.Genres.Any(item => item == genre_select)
+                ///commented this out since our search is only dealing with titles and genres at the moment
 
                       ////Rotten Tomatoes Meter
                       //&& nit.OmdbEntry.t_Meter >= 0
