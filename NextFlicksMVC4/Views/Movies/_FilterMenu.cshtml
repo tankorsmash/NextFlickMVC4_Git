@@ -17,12 +17,12 @@
     </select>
     <input type="submit" value="Search Movies" />
     </form>
-
+    <strong>or</strong>
     <form name="tag_search_form">
 
-    @Html.TextBox("tag_string", "Enter a tag")
-
-    <select name="tag_select">
+@*    @Html.TextBox("tag_string", "Enter a tag")
+*@
+    <select name="tag_string">
         <option value="0">All Tags</option>
         @{
             foreach (KeyValuePair<string, int> kvp in (SortedDictionary<string, int>)ViewBag.tag_dict)

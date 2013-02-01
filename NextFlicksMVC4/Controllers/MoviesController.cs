@@ -266,7 +266,9 @@ namespace NextFlicksMVC4.Controllers
         //}
 
 
-        public ActionResult Index(string movie_title = "", string genre_select = "0", int page = 1)
+        public ActionResult Index(string movie_title = "", string genre_select = "0",
+                                    string tag_string = "",
+                                    int page = 1)
         {
 
 
@@ -282,6 +284,7 @@ namespace NextFlicksMVC4.Controllers
             }
 
             int movie_count = 28;
+            int movies_to_skip = movie_count * (page - 1);
 
             var db = new MovieDbContext();
 
@@ -290,68 +293,45 @@ namespace NextFlicksMVC4.Controllers
             ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
             ViewBag.tag_dict = Tools.CreateSortedTagDictionary(db);
 
-
-
             //make sure the title isn't the default text set in the _FilterMenu
             if (movie_title == "Enter a title") {
                 movie_title = "";
             }
-
-
-
-            //get a full query with all data in db
-            var total_qry = Tools.GetFullDbQuery(db);
-
-            //filters the movie quickly enough
-            // basic stuff, hard coded for now, except for the title
-            var res =
-                from nit in total_qry
-                where
-                    //title
-                nit.Movie.short_title.Contains(movie_title)
-                ///commented this out since our search is only dealing with titles at the moment
-                //    //runtime
-                //&& nit.Movie.runtime > 0
-                //&& nit.Movie.runtime < 100000
-                //    //year
-                //&& nit.Movie.year >= 0
-                //&& nit.Movie.year <= 3000
-                //    //maturity rating
-                //&& nit.Movie.maturity_rating >= 0
-                //&& nit.Movie.maturity_rating <= 200
-                //    //genre 
- 
-                select nit ;
-                    
-            //if the genre isn't the default value, filter the results even more
-            if (genre_select != "0") {
-                res = res.Where(nit => nit.Genres.Any(item => item == genre_select));
+            if (tag_string == "Enter a tag") {
+                tag_string = "";
             }
-                //&& nit.Genres.Any(item => item == genre_select)
-                ///commented this out since our search is only dealing with titles and genres at the moment
 
-                      ////Rotten Tomatoes Meter
-                      //&& nit.OmdbEntry.t_Meter >= 0
-                      //&& nit.OmdbEntry.t_Meter <= 200
 
-                      ////Rotten Tomatoes Fresh
-                      //&& nit.OmdbEntry.t_Fresh >= 0
-                      //&& nit.OmdbEntry.t_Fresh <= 200000
+            IQueryable<FullViewModel> res;
+            //if the movie title isn't null, search movies
+            if (movie_title != "")
+            {
+                res = FilterMoviesAndGenres(movie_title, genre_select, db);
+            }
+            //if the tag string isn't empty, then search through tags
+            else if (tag_string != "")
+            {
+                res = FilterTags(tag_string, db);
+            }
 
-                      //Rotten Tomatoes Rotten
-                      //&& nit.OmdbEntry.t_Rotten >= 0
-                      //&& nit.OmdbEntry.t_Rotten <= 200000
+                //otherwise return the entire db
+            else {
+                res = Tools.GetFullDbQuery(db);
+            }
 
 
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
-            try {
+            try
+            {
 
                 Tools.TraceLine(" Counting all possible results, before pagination");
                 var count_start = Tools.WriteTimeStamp("  count start");
+
                 //count all the movies possible
                 int totalMovies = res.Count();
                 //set it to the viewbag so the view can display it
                 ViewBag.TotalMovies = totalMovies;
+
                 Tools.TraceLine("  total possible results {0}", totalMovies);
                 var count_end = Tools.WriteTimeStamp("count_start end");
                 Tools.TraceLine("  counting took {0}", count_end - count_start);
@@ -363,7 +343,6 @@ namespace NextFlicksMVC4.Controllers
                 //page 1 = 0-27, then 28- 55 or something. Math's not my forte
                 Tools.TraceLine("  Retrieving paginated results");
 
-                int movies_to_skip = movie_count*(page-1);
 
                 //needed to sort the stuff before I could skip, so I chose alphabetically, then changed to ID for a bit of speed
                 // it can be changed at any time, once we get some feedback.
@@ -374,12 +353,12 @@ namespace NextFlicksMVC4.Controllers
                 //       .ToArray();
 
 
-                ///the Orderby didn't work,so I changed tactics a bit. Hacky as fuck
                 //to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
-                if (totalMovies < movie_count) {
+                if (totalMovies < movie_count)
+                {
                     movie_count = totalMovies;
                 }
-                
+
                 //take all the pages up to and including the ones you'll show 
                 // on page, then only take the last set of movies you'll show
                 IEnumerable<FullViewModel> nit_list =
@@ -389,17 +368,16 @@ namespace NextFlicksMVC4.Controllers
                 var page_end = Tools.WriteTimeStamp();
                 Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
 
-
-
                 var end = Tools.WriteTimeStamp("end");
                 Tools.TraceLine((end - start).ToString());
 
                 return View("Results", nit_list);
             }
 
-            catch (System.Data.EntityCommandExecutionException ex) {
+            catch (System.Data.EntityCommandExecutionException ex)
+            {
                 Tools.TraceLine(
-                    "The ToArray() call probably timed out, it happens on first call to db a lot, I don't know why:\n  ***{0}",
+                    "The ToList() call probably timed out, it happens on first call to db a lot, I don't know why:\n  ***{0}",
                     ex.GetBaseException().Message);
 
                 return View("Error");
@@ -407,6 +385,55 @@ namespace NextFlicksMVC4.Controllers
 
 
 
+        }
+
+        public static IQueryable<FullViewModel> FilterTags(string tag_string,
+                                                           MovieDbContext db)
+        {
+
+            //find the tag id for the string
+            MovieTag searched_tag = db.MovieTags.First(tag => tag.Name == tag_string);
+
+            //find all movies tagged by this tag
+            var res = from umt in db.UserToMovieToTags
+                      where umt.TagId == searched_tag.TagId
+                      select umt.movie_ID;
+
+            var distinct_movie_ids_qry = res.Distinct();
+
+            //pull only the matching FullViews from  the db
+            var total_qry = Tools.GetFullDbQuery(db);
+            var taggedFullViews = from nit in total_qry
+                      from movie_id in distinct_movie_ids_qry
+                      where nit.Movie.movie_ID == movie_id
+                      select nit;
+
+            return taggedFullViews;
+
+        }
+
+        public static IQueryable<FullViewModel> FilterMoviesAndGenres(string movie_title,
+                                                       string genre_select,
+                                                       MovieDbContext db)
+        {
+
+
+
+            //get a full query with all data in db
+            var total_qry = Tools.GetFullDbQuery(db);
+
+            //filters the movie quickly enough
+            // basic stuff 
+            var res =
+                from nit in total_qry
+                where nit.Movie.short_title.Contains(movie_title)
+                select nit;
+
+            //if the genre isn't the default value, filter the results even more
+            if (genre_select != "0") {
+                res = res.Where(nit => nit.Genres.Any(item => item == genre_select));
+            }
+            return res;
         }
 
 

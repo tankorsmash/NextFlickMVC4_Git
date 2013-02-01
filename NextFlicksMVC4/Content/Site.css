@@ -98,9 +98,6 @@ div.title_entry_top {
     padding: 0;
     border-radius: 8px;
 
-
-
-
 }
 
 .title_entry_text {
@@ -170,6 +167,13 @@ img.rt_rotten {
 
     padding-top: .5em;
 }
+
+/* search bar, called _FilterMenu */
+.filter_area {
+    text-align: center;
+}
+
+
 /* non-customized stuff layout, I think
  * ----------------------------------------------------------*/
 
