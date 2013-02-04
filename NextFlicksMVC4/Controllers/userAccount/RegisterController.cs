@@ -41,10 +41,10 @@ namespace NextFlicksMVC4.Controllers.userAccount
                     }
                     WebSecurity.CreateUserAndAccount(
                         user.Username, user.password,
-                        propertyValues: new
+                        new
                         {
-                            username = user.Username,
-                            email = user.email
+                            user.Username,
+                            user.email
                         });
 
                     string username = user.Username;
@@ -53,7 +53,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
                     ViewBag.Title = "Success!";
                     ViewBag.Message = "You have succesfully been registered!";
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Movies");
                 }
                 ViewBag.Title = "FAILED!";
                 return View(user);

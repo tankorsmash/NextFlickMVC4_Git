@@ -34,8 +34,6 @@ namespace NextFlicksMVC4.Controllers.userAccount
                                                      new
                                                      {
                                                          Username = "Admin",
-                                                         firstName = "Admin",
-                                                         lastName = "Admin",
                                                          email = "Admin@phall.us"
                                                      });
             if (!Roles.GetRolesForUser("Admin").Contains("Admin"))
