@@ -1,36 +1,25 @@
-﻿@model NextFlicksMVC4.Models.TagModels.TagDetailViewModel
+﻿@model Dictionary<String, int>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "All tags added by Users";
 }
 
-<h2>Index</h2>
-
+<h2>Tag Index</h2>
 
 <table>
     <tr>
-        <th>
-            @Html.DisplayFor(model => model.TagName)
-            <br />
-        </th>
         <th></th>
     </tr>
 
-<tr>
-@foreach (var item in Model.TaggedByUsers)
-{
-    <td>
-    @item.Key.Username
-    </td>
-    <td>@item.Value</td>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+           <a href="~/Tag/Details?tagName=@item.Key">@item.Key</a>
+        </td>
+        <td>
+            @item.Value
+        </td>
+    </tr>
 }
-</tr>
-<tr>
-@foreach (var movie in Model.TaggedMovies)
-{
-    <td>
-        <a href="~/Movies/Details?movie_ID=@movie.movie_ID">@movie.short_title</a>
-    </td> 
-}
-</tr>
+
 </table>

@@ -14,7 +14,13 @@ namespace NextFlicksMVC4.Controllers
         //
         // GET: /Tags/
 
-        public ActionResult Index(string tagName)
+        public ActionResult Index()
+        {
+            var tags = TagsAndCounts();
+            return View(tags);
+        }
+
+        public ActionResult Details(string tagName)
         {
             MovieDbContext db = new MovieDbContext();
             TagDetailViewModel tagDetail = new TagDetailViewModel() { TagName = tagName };
@@ -77,6 +83,20 @@ namespace NextFlicksMVC4.Controllers
             }
            
             return returnDict;
+        }
+
+        private Dictionary<String, int> TagsAndCounts()
+        {
+            MovieDbContext db = new MovieDbContext();
+
+            var allTags = (from tagName in db.MovieTags
+                          from tagID in db.UserToMovieToTags
+                          where tagName.TagId == tagID.TagId
+                          group tagID.TagId by tagName.Name into grouping
+                          select grouping).ToDictionary(grp => grp.Key, grp => grp.Key.Count());
+
+            return allTags;
+
         }
     }
 }

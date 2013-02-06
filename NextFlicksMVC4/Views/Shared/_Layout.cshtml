@@ -38,7 +38,7 @@
         <header>
             <div class="content-wrapper">
                 <div class="float-left">
-                    <p class="site-title">@Html.ActionLink("We Are The Watchers.com", "Index", "Movies")</p>
+                    <p class="site-title">@Html.ActionLink("The Next Flick", "Index", "Movies")</p>
                 </div>
                 <div class="float-right">
                       <p style: align="left">
@@ -54,7 +54,7 @@
                     <nav>
                         <ul id="tabmenu">
                             <li>@Html.ActionLink("Movies", "Index", "Movies", null, new{ @class = movieMenuClass})</li>
-                            <li>@Html.ActionLink("Tags", "Index", "Tags")</li>
+                            <li>@Html.ActionLink("Tags", "Index", "Tag")</li>
                             @if (WebSecurity.IsAuthenticated && Roles.IsUserInRole("Admin"))
                             {
                                 <li> @Html.ActionLink("Admin", "Index", "Admin", null, new {@class = adminMenuClass} )</li>
@@ -74,7 +74,7 @@
         <footer>
             <div class="content-wrapper">
                 <div class="float-left">
-                    <p>&copy; @DateTime.Now.Year - We Are The Watchers</p>
+                    <p>&copy; @DateTime.Now.Year - The Next Flick</p>
                 </div>
                 <div class="float-right">
                     <p>@Html.ActionLink("About", "About", "Home")

@@ -24,7 +24,7 @@
         <div class="display-field">
             @foreach (KeyValuePair<string, int> kvp in Model.Tags.TagAndCount)
             {
-                <a href="~/Tag?tagName=@kvp.Key" class="tag" title="Tagged @kvp.Value.ToString() times. Click for more info."> @kvp.Key </a>
+                <a href="~/Tag/Details?tagName=@kvp.Key" class="tag" title="Tagged @kvp.Value.ToString() times. Click for more info."> @kvp.Key </a>
             }
         </div>
         <div class="display-field" style="clear: both">
