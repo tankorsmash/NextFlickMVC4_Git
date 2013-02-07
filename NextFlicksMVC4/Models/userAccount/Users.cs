@@ -28,7 +28,6 @@ namespace NextFlicksMVC4.Models.userAccount
 
         [Required]
         [Display(Name = "Email")]
-        [Email]
         public String email { get; set; }
         
 

@@ -6,6 +6,8 @@ using System.Web;
 using System.Text.RegularExpressions;
 using NextFlicksMVC4.Models;
 using System.Diagnostics;
+using System.Web.Http;
+using System.Web.Mvc;
 
 namespace NextFlicksMVC4.NetFlixAPI
 {
@@ -77,7 +79,7 @@ namespace NextFlicksMVC4.NetFlixAPI
             //}
 
             //returns a dict of id to genres
-            Dictionary<string, string> dict = NetFlixAPI.PopulateGenres.CreateDictofGenres(@"genres.NFPOX");
+            Dictionary<string, string> dict = NetFlixAPI.PopulateGenres.CreateDictofGenres(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/genres.NFPOX"));
             //create all the genre models
             List<Genre> genres = new List<Genre>();
             foreach (KeyValuePair<string, string> keyValuePair in dict)

@@ -574,7 +574,7 @@ namespace NextFlicksMVC4.Controllers
             PopulateGenres.PopulateGenresTable();
 
 
-            Tools.BuildMoviesBoxartGenresTables(@"C:\fixedAPI.NFPOX");
+            Tools.BuildMoviesBoxartGenresTables(Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
 
             Tools.TraceLine("Out Full");
 
@@ -588,7 +588,7 @@ namespace NextFlicksMVC4.Controllers
             var data =
                 OAuth1a.GetNextflixCatalogDataString(
                     "catalog/titles/streaming", term, max_results: "100",
-                    outputPath: @"C:/testtesttest.NFPOX");
+                    outputPath: Server.MapPath("~/dbfiles/testtesttest.NFPOX"));
             var titles =
                 NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
 
@@ -858,10 +858,10 @@ namespace NextFlicksMVC4.Controllers
             
             //read the Omdb.txt file and turn the resulting objects into a protobuf dump
             // to be read by the Tools.RebuildOmdbsFromProtobufDump method
-            string entryDumpPath = @"omdbASD.DUMP";
-            string imdbPath = @"omdb.txt";
+            string entryDumpPath = Server.MapPath("~/dbfiles/omdbASD.DUMP");
+            string imdbPath = Server.MapPath("~/dbfiles/omdb.txt");
             string tomPath =
-                @"tomatoes.txt";
+                Server.MapPath("~/dbfiles/tomatoes.txt");
 
             Tools.SerializeOmdbTsv(
                 entryDumpPath,
