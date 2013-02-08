@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "DbTools";
+    <link href="/Content/admin.css" rel="stylesheet" type="text/css"/>
+}
+
+
+<div id="sidebar">
+        <div id='vertical_menu' class="float-left">
+            <ul>
+                <li><a href='#'><span>Roles</span></a></li>
+                <li><a href='#'><span>Users</span></a>
+                <li><a href='#'><span>Movies</span></a></li>
+                <li><a href='#'><span>Tags</span></a></li>
+                <li><a href="#" class="active">Db Tools</a></li>
+            </ul>
+        </div>
+    </div>
+<div id="mainbar">
+    <h2>Database Toos</h2>
+    
+    <h3>@ViewBag.Message</h3>
+    @using (Html.BeginForm())
+    {
+         <input name="button" type="submit" value="Drop Tables"/>
+        <input name="button" type="submit" value="Create Tables"/>
+        <input name="button" type="submit" value="Drop And Create"/>
+        
+
+    }
+    
+</div>
