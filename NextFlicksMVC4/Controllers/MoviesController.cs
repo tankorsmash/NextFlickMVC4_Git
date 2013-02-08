@@ -306,7 +306,7 @@ namespace NextFlicksMVC4.Controllers
             //if the movie title isn't null, search movies
             if (movie_title != "")
             {
-                res = FilterMoviesAndGenres(movie_title, genre_select, db);
+                res = FilterMoviesAndGenres(movie_title, db, genre_select);
             }
             //if the tag string isn't empty, then search through tags
             else if (tag_string != "")
@@ -412,9 +412,10 @@ namespace NextFlicksMVC4.Controllers
 
         }
 
-        public static IQueryable<FullViewModel> FilterMoviesAndGenres(string movie_title,
-                                                       string genre_select,
-                                                       MovieDbContext db)
+        public static IQueryable<FullViewModel> FilterMoviesAndGenres(
+                                                    string movie_title,
+                                                    MovieDbContext db,
+                                                    string genre_select = "0")
         {
 
 
