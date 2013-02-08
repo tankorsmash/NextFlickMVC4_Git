@@ -29,7 +29,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
         [HttpPost]
         [AllowAnonymous]
         //[ValidateAntiForgeryToken]
-        public ActionResult Index(LogonModel model, string returnUrl)
+        public ActionResult Index(Users.LogonModel model, string returnUrl)
         {
              if (ModelState.IsValid && WebSecurity.Login(model.Username, model.Password, persistCookie: model.RememberMe))
             {

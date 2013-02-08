@@ -569,6 +569,7 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Full()
         {
+           // Database.SetInitializer(new DropCreateDatabaseIfModelChanges<MovieDbContext>());
             Tools.TraceLine("In Full");
             //create a genres table in the DB
             PopulateGenres.PopulateGenresTable();

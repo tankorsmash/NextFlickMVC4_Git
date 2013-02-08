@@ -12,6 +12,9 @@ using NextFlicksMVC4.Controllers;
 using NextFlicksMVC4.Filters;
 using WebMatrix.WebData;
 
+using NextFlicksMVC4.Models;
+using System.Data.Entity;
+
 namespace NextFlicksMVC4
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
@@ -24,6 +27,7 @@ namespace NextFlicksMVC4
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);
 
+           // Database.SetInitializer(new DropCreateDatabaseIfModelChanges<MovieDbContext>());
             //add custom filter
             //GlobalFilters.Filters.Add(new TrackingActionFilterAttribute());
             //end customization filter

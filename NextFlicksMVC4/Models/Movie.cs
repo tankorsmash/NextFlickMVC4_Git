@@ -157,6 +157,11 @@ namespace NextFlicksMVC4.Models
 
     public class MovieDbContext : DbContext
     {
+        public MovieDbContext() 
+            : base("MovieDbContext")
+        {
+        }
+        
         public DbSet<Movie> Movies { get; set; }
         public DbSet<BoxArt> BoxArts { get; set; }
         public DbSet<Genre> Genres { get; set; }
@@ -167,6 +172,8 @@ namespace NextFlicksMVC4.Models
         public DbSet<UtMtTisAnon> UtMtTisAnon { get; set; }
         public DbSet<Users> Users { get; set; }
         public DbSet<UserLog> UserLogs { get; set; }
+
+        
     }
 
 
