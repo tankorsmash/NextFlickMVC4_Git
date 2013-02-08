@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Diagnostics;
+using System.Web.Routing;
 using Microsoft.Web.Helpers;
 using NextFlicksMVC4.Filters;
 using NextFlicksMVC4.Models;
@@ -25,7 +26,9 @@ namespace NextFlicksMVC4.Controllers
 
             ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
 
-            return View();
+
+            //return View();
+            return RedirectToRoute( new {controller = "Movies", action = "Index"});
         }
 
         public ActionResult About()

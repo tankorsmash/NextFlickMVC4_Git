@@ -309,7 +309,7 @@ namespace NextFlicksMVC4.Controllers
                 res = FilterMoviesAndGenres(movie_title, db, genre_select);
             }
             //if the tag string isn't empty, then search through tags
-            else if (tag_string != "")
+            else if (tag_string != "0")
             {
                 res = FilterTags(tag_string, db);
             }
