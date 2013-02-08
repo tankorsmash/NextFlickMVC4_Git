@@ -20,6 +20,34 @@ namespace NextFlicksMVC4.Controllers.Admin
             return View();
         }
 
+        public ActionResult DbTools()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult DbTools(string button)
+        {
+            if (button == "Drop Tables")
+            {
+                DatabaseTools.DropTables();
+                ViewBag.Message = "Tables Dropped";
+            }
+            if (button == "Create Tables")
+            {
+                DatabaseTools.CreateTables();
+                ViewBag.Message = "Tables Created";
+            }
+            if (button == "Drop And Create")
+            {
+                DatabaseTools.DropAndCreate();
+                ViewBag.Message = "Tables dropped and Recreated";
+            }
+            return View();
+
+
+        }
+
         public ActionResult Roles()
         {
             return View();
@@ -52,7 +80,8 @@ namespace NextFlicksMVC4.Controllers.Admin
             Tools.TraceLine("Out Full");
 
             return View();
-        }        
+        }
+        
         /// <summary>
         /// Rebuild the serialized list of OmdbEntrys that were created in Movies/TSV, and adds them to the database
         /// </summary>
