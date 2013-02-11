@@ -115,21 +115,31 @@ namespace NextFlicksMVC4.NetFlixAPI
         public static List<Title> ParseXmlForCatalogTitles(string xml_from_request)
         {
             //Parse the plain old XML to pass to each method
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.LoadXml(xml_from_request);
-            XmlNodeList titles = xDoc.GetElementsByTagName("catalog_title");
+            try {
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(xml_from_request);
+                XmlNodeList titles = xDoc.GetElementsByTagName("catalog_title");
 
-            List<Title> titleList = new List<Title>();
+                List<Title> titleList = new List<Title>();
 
-            //For each title in the XML group, send to a file
-            foreach (XmlNode title in titles)
-            {
-                var created_title = CreateTitle(title);
-                titleList.Add(created_title);
+                //For each title in the XML group, send to a file
+                foreach (XmlNode title in titles) {
+                    var created_title = CreateTitle(title);
+                    titleList.Add(created_title);
 
+                    return titleList;
+                }
+
+                return null;
             }
 
-            return titleList;
+            catch (XmlException ex) {
+                Tools.TraceLine("current XML line failed to parse, skipping");
+
+                return null;
+            }
+
+
 
         }
 

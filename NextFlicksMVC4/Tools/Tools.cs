@@ -678,42 +678,40 @@ namespace NextFlicksMVC4
         public static void BuildMoviesBoxartGenresTables(string filepath)
         {
             TraceLine("In BuildMoviesBoxartGenresTables");
-
             TraceLine("  starting Full Action");
-            string msg = DateTime.Now.ToShortTimeString();
-            var start_time = DateTime.Now;
-            TraceLine(msg);
+
             MovieDbContext db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = false;
-
-
-            WriteTimeStamp("starting data read");
+            var start_time = WriteTimeStamp("starting data read");
 
             // Go line by line, and parse it for Movie files
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
-            string line;
             int count = 0;
             using (StreamReader reader = new StreamReader(filepath)) {
                 TraceLine("  Starting to read");
 
-                line = reader.ReadLine();
+                string line = reader.ReadLine();
                 line = line.Trim();
-                try {
+                //try {
                     while (line != null) {
                         if (!line.StartsWith("<catalog_title>")) {
                             TraceLine(
-                                "  Invalid line of XML, probably CDATA or something\n***{0}", line);
+                                "  Invalid line of XML, probably CDATA or something, make sure all the lines start with '<cata' \n{0}", line);
                         }
                         else {
                             //parse line for a title, which is what NF returns
                             List<Title> titles =
                                 Create.ParseXmlForCatalogTitles(line);
-                            Movie movie =
-                                Create.CreateMovie(titles[0]);
 
-                            //add to DB and dict
-                            dictOfMoviesTitles[movie] = titles[0];
-                            db.Movies.Add(movie);
+                            //if there was a title to parse add it to the db
+                            if (titles != null) {
+                                Movie movie =
+                                    Create.CreateMovie(titles[0]);
+
+                                //add to DB and dict
+                                dictOfMoviesTitles[movie] = titles[0];
+                                db.Movies.Add(movie);
+                            }
 
                             count += 1;
                         }
@@ -724,18 +722,15 @@ namespace NextFlicksMVC4
                     TraceLine("  Saving Movies");
                     db.SaveChanges();
                     db.Configuration.AutoDetectChangesEnabled = true;
-                }
+                //}
 
-                catch (XmlException ex) {
-                    TraceLine(
-                        "  Done parsing the XML because of something happened. Probably the end of file:");
-                    TraceLine(ex.Message);
-                    msg =
-                        String.Format(
-                            " Failed around item {0} to database",
-                            count.ToString());
-                    TraceLine(msg);
-                }
+                //catch (XmlException ex) {
+                //    TraceLine(
+                //        "  Done parsing the XML because of something happened. Probably the end of file:");
+                //    TraceLine(ex.Message);
+                //    TraceLine(" Failed around item {0} to database",
+                //              count.ToString());
+                //}
 
                 db.SaveChanges();
                 TraceLine("  Adding Boxart and Genre");
