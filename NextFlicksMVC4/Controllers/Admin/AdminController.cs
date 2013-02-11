@@ -52,7 +52,8 @@ namespace NextFlicksMVC4.Controllers.Admin
             Tools.TraceLine("Out Full");
 
             return View();
-        }        
+        }
+        
         /// <summary>
         /// Rebuild the serialized list of OmdbEntrys that were created in Movies/TSV, and adds them to the database
         /// </summary>

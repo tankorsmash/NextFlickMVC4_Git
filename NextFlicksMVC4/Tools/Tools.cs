@@ -691,40 +691,33 @@ namespace NextFlicksMVC4
 
             // Go line by line, and parse it for Movie files
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
-            string data;
+            string line;
             int count = 0;
             using (StreamReader reader = new StreamReader(filepath)) {
                 TraceLine("  Starting to read");
 
-                data = reader.ReadLine();
+                line = reader.ReadLine();
+                line = line.Trim();
                 try {
-                    while (data != null) {
-                        if (!data.StartsWith("<catalog_title>")) {
+                    while (line != null) {
+                        if (!line.StartsWith("<catalog_title>")) {
                             TraceLine(
-                                "  Invalid line of XML, probably CDATA or something\n***{0}", data);
+                                "  Invalid line of XML, probably CDATA or something\n***{0}", line);
                         }
                         else {
                             //parse line for a title, which is what NF returns
                             List<Title> titles =
-                                Create.ParseXmlForCatalogTitles(data);
+                                Create.ParseXmlForCatalogTitles(line);
                             Movie movie =
                                 Create.CreateMovie(titles[0]);
 
                             //add to DB and dict
-                            //listOfMovies.Add(movie);
                             dictOfMoviesTitles[movie] = titles[0];
                             db.Movies.Add(movie);
 
-
-                            //log adding data
-                            //msg =
-                            //    String.Format(
-                            //        "Added item {0} to database, moving to next one",
-                            //        count.ToString());
-                            //TraceLine(msg);
                             count += 1;
                         }
-                        data = reader.ReadLine();
+                        line = reader.ReadLine();
                     }
 
                     //save the movies added to db
