@@ -43,6 +43,11 @@ namespace NextFlicksMVC4.Controllers.Admin
                 DatabaseTools.DropAndCreate();
                 ViewBag.Message = "Tables dropped and Recreated";
             }
+            if (button == "Full")
+            {
+                DatabaseTools.Full();
+                ViewBag.Message = "Full Database Build complete";
+            }
             return View();
 
 
