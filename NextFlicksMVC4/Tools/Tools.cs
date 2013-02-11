@@ -464,7 +464,7 @@ namespace NextFlicksMVC4
             List<int> checkpoints = ProgressList.CreateListOfCheckpointInts(dictOfMoviesTitles.Count, 55);
             
             //MovieDbContext db = new MovieDbContext();
-            //db.Configuration.AutoDetectChangesEnabled = false;
+            db.Configuration.AutoDetectChangesEnabled = false;
 
             //loop over dict and make Boxart and Genre
             int index = 0;

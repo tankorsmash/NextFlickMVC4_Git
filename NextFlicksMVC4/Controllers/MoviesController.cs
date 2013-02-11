@@ -267,7 +267,7 @@ namespace NextFlicksMVC4.Controllers
 
 
         public ActionResult Index(string movie_title = "", string genre_select = "0",
-                                    string tag_string = "",
+                                    string tag_string = "0",
                                     int page = 1)
         {
 
@@ -298,7 +298,7 @@ namespace NextFlicksMVC4.Controllers
                 movie_title = "";
             }
             if (tag_string == "Enter a tag") {
-                tag_string = "";
+                tag_string = "0";
             }
 
 
