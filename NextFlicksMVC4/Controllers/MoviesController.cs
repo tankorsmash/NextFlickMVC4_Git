@@ -33,54 +33,54 @@ namespace NextFlicksMVC4.Controllers
     public class MoviesController : Controller
     {
        
-        //Creates a cookie
-        public ActionResult Cookies()
-        {
-            //create a cookie
-            var cookie_name = "TestCookie";
-            HttpCookie cookie = new HttpCookie(cookie_name);
-            cookie.Value = "Test Cookie Value";
+        ////Creates a cookie
+        //public ActionResult Cookies()
+        //{
+        //    //create a cookie
+        //    var cookie_name = "TestCookie";
+        //    HttpCookie cookie = new HttpCookie(cookie_name);
+        //    cookie.Value = "Test Cookie Value";
 
-            //add the cookie
-            Response.Cookies.Add(cookie);
-            Trace.WriteLine("Cookie Added");
+        //    //add the cookie
+        //    Response.Cookies.Add(cookie);
+        //    Trace.WriteLine("Cookie Added");
 
-            //test for the cookie creation, change ViewBag
-            if (Request.Cookies.Get(cookie_name) != null) {
-                ViewBag.cookies = true;
-            }
+        //    //test for the cookie creation, change ViewBag
+        //    if (Request.Cookies.Get(cookie_name) != null) {
+        //        ViewBag.cookies = true;
+        //    }
 
-            return View();
-        }
+        //    return View();
+        //}
 
-        //Expires a cookie
-        public ActionResult Jar()
-        {
-            var cookie_name = "TestCookie";
+        ////Expires a cookie
+        //public ActionResult Jar()
+        //{
+        //    var cookie_name = "TestCookie";
 
-            //if cookie exists, remove it
-            if (Request.Cookies.AllKeys.Contains(cookie_name)) {
-                //get the cookie from the request, expire the time so it gets 
-                // deleted
-                var cookie = Request.Cookies.Get(cookie_name);
-                cookie.Expires = DateTime.Now.AddDays(-1);
-                Response.Cookies.Add(cookie);
+        //    //if cookie exists, remove it
+        //    if (Request.Cookies.AllKeys.Contains(cookie_name)) {
+        //        //get the cookie from the request, expire the time so it gets 
+        //        // deleted
+        //        var cookie = Request.Cookies.Get(cookie_name);
+        //        cookie.Expires = DateTime.Now.AddDays(-1);
+        //        Response.Cookies.Add(cookie);
 
-                ViewBag.cookies = false;
+        //        ViewBag.cookies = false;
 
-                Trace.WriteLine("Cookie removed");
-            }
-
-
+        //        Trace.WriteLine("Cookie removed");
+        //    }
 
 
-            else {
-                Trace.WriteLine("Cookie didn't exist, no action");
-                ViewBag.cookies = true;
-            }
 
-            return View("Cookies");
-        }
+
+        //    else {
+        //        Trace.WriteLine("Cookie didn't exist, no action");
+        //        ViewBag.cookies = true;
+        //    }
+
+        //    return View("Cookies");
+        //}
 
 
         //[HttpGet]
@@ -568,20 +568,7 @@ namespace NextFlicksMVC4.Controllers
         //}
 
 
-        public ActionResult Full()
-        {
-           // Database.SetInitializer(new DropCreateDatabaseIfModelChanges<MovieDbContext>());
-            Tools.TraceLine("In Full");
-            //create a genres table in the DB
-            PopulateGenres.PopulateGenresTable();
 
-
-            Tools.BuildMoviesBoxartGenresTables(Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
-
-            Tools.TraceLine("Out Full");
-
-            return View();
-        }
 
         public ActionResult Api(string term = "Jim Carrey")
         {
@@ -833,74 +820,7 @@ namespace NextFlicksMVC4.Controllers
                 return RedirectToAction("DetailsTag", "Movies", movie_ID);
         }
 
-        
-        /// <summary>
-        /// Rebuild the serialized list of OmdbEntrys that were created in Movies/TSV, and adds them to the database
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Regen()
-        {
-            //finds the file dump from the TSV to OmdbEntry read and adds it to the db
-            Tools.RebuildOmdbsFromProtobufDump(@"\OMBD\omdb.DUMP");
 
-            return View();
-        }
-
-        /// <summary>
-        /// Combines /tsv /regen and /merge all together
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Mutagen()
-        {
-            Tools.TraceLine("In Mutagen");
-
-            var start = Tools.WriteTimeStamp();
-
-            MovieDbContext db = new MovieDbContext();
-            
-            //read the Omdb.txt file and turn the resulting objects into a protobuf dump
-            // to be read by the Tools.RebuildOmdbsFromProtobufDump method
-            string entryDumpPath = Server.MapPath("~/dbfiles/omdbASD.DUMP");
-            string imdbPath = Server.MapPath("~/dbfiles/omdb.txt");
-            string tomPath =
-                Server.MapPath("~/dbfiles/tomatoes.txt");
-
-            Tools.SerializeOmdbTsv(
-                entryDumpPath,
-                imdbPath,
-                tomPath);
-            //finds the file dump from the TSV to OmdbEntry read and adds it to the db
-            Tools.RebuildOmdbsFromProtobufDump(entryDumpPath);
-
-
-            //loop over all the movies in Movies and find an omdb entry for it
-            Tools.MarryMovieToOmdb(db);
-
-            var end = Tools.WriteTimeStamp();
-            Tools.TraceLine("Mutagen took {0}", end- start);
-
-            Tools.TraceLine("Out Mutagen");
-
-            return View();
-
-        }
-
-        /// <summary>
-        /// Reads the OMDB API data txts and dumps the list of OMBD Entrys to file, use Movies/Regen to rebuild them
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Tsv()
-        {
-            //read the Omdb.txt file and turn the resulting objects into a protobuf dump
-            // to be read by the Tools.RebuildOmdbsFromProtobufDump method
-            Tools.SerializeOmdbTsv(
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksMVC4\OMBD\omdb.DUMP",
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\omdb.txt",
-                @"C:\Users\Mark\Documents\Visual Studio 2010\Projects\NextFlicksMVC4\NextFlickMVC4_Git\NextFlicksTextFolder\OMDB\tomatoes.txt");
-
-
-            return View();
-        }
 
         //
         // GET: /Movies/Create
@@ -1023,59 +943,5 @@ namespace NextFlicksMVC4.Controllers
         //    return View();
         //}
 
-        public ActionResult Zip()
-        {
-            Omdb.DownloadOmdbZipAndExtract(@"omdb.zip");
-            return View();
-        }
-
-
-        public ActionResult FullDbBuild()
-        {
-            string netflixPosFilepath = @"catalogStreaming.NFPOX";
-            MovieDbContext db = new MovieDbContext();
-
-            //retrieve API .POX
-            var data = OAuth1a.GetNextflixCatalogDataString( "catalog/titles/streaming", "", outputPath: netflixPosFilepath);
-
-            //join the lines that don't match <catalog to the ones above it
-            Tools.JoinLines(netflixPosFilepath);
-
-            //build a genres txt file for all the genres in the NFPOX
-            //ASSUMES GENRES.NFPOX IS THERE
-            PopulateGenres.PopulateGenresTable();
-            
-            //parse the lines into a Title then Movie object, along with boxart data and genre
-            Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
-
-            //download the omdbapi
-            Omdb.DownloadOmdbZipAndExtract(@"omdb.zip");
-
-            //parse it for omdbentrys, serialize it to file
-            Tools.SerializeOmdbTsv(@"omdb.DUMP", @"omdb.txt", @"tomatoes.txt");
-
-            //deserialize the file, turn it into omdb
-            //  can't remember if it does it here or not, but marry the omdbs and movie
-            Tools.RebuildOmdbsFromProtobufDump(@"omdb.DUMP");
-
-            Tools.MarryMovieToOmdb(db);
-
-
-            return View();
-        }
-
-
-        //loop over all the movies in Movies and find an omdb entry for it
-        public ActionResult Merge()
-        {
-
-            MovieDbContext db = new MovieDbContext();
-
-            Tools.MarryMovieToOmdb(db);
-
-
-            return View();
-
-        }
     }
 }
