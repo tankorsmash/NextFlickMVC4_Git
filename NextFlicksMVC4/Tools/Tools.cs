@@ -713,7 +713,7 @@ namespace NextFlicksMVC4
                                 db.Movies.Add(movie);
                             }
                             else {
-                                TraceLine("Failed on line {0}\n{1}", count, line);
+                                TraceLine("  Failed on line {0}\n{1}", count, line);
                             }
 
                             count += 1;

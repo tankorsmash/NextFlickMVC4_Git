@@ -687,12 +687,12 @@ namespace NextFlicksMVC4.Controllers
                 Movie taggedMovie = db.Movies.Find(movie_ID);
                 MovieTag newTag = new MovieTag();
 
-                //break the tags down by comma delimeter
-                List<String> seperatedtags = UserInput.DeliminateStrings(tags);
-                seperatedtags = UserInput.StripWhiteSpace(seperatedtags);
-                seperatedtags = UserInput.SanitizeSpecialCharacters(seperatedtags);
+                //break the tags down by comma delimiter
+                List<String> separatedtags = UserInput.DeliminateStrings(tags);
+                separatedtags = UserInput.StripWhiteSpace(separatedtags);
+                separatedtags = UserInput.SanitizeSpecialCharacters(separatedtags);
                 
-                foreach (string tag in seperatedtags)
+                foreach (string tag in separatedtags)
                 {
                     var tagExists = db.MovieTags.First(t => t.Name == tag);
                     if (tagExists == null)
@@ -705,7 +705,7 @@ namespace NextFlicksMVC4.Controllers
                     }
                     else
                     {
-                        //otherwise slecte the MovieTag where the names match and use that.
+                        //otherwise select the MovieTag where the names match and use that.
                         newTag = db.MovieTags.First(t => t.Name == tag);
                     }
 
