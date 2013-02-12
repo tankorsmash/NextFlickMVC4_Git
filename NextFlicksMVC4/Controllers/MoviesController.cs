@@ -911,37 +911,5 @@ namespace NextFlicksMVC4.Controllers
             base.Dispose(disposing);
         }
 
-        ////sort movies by t_meter
-        //public ActionResult Sort()
-        //{
-
-        //    DateTime start = DateTime.Now;
-        //    MovieDbContext db = new MovieDbContext();
-
-        //    ////has never worked, but shows the idea
-        //    //var result_list = db.Database.SqlQuery<FullViewModel>(
-        //    //"SELECT        Movies.short_title, OmdbEntries.t_Meter" +
-        //    //"FROM            OmdbEntries INNER JOIN" +
-        //    //"Movies ON OmdbEntries.movie_ID = Movies.movie_ID" +
-        //    //"WHERE        (OmdbEntries.t_Meter <> 'n/a')" +
-        //    //"ORDER BY OmdbEntries.t_Meter DESC");
-
-        //    var result_list = db.Omdb.Where(omdb => omdb.movie_ID != 0).OrderByDescending(item => item.t_Meter);
-
-        //    var qwe = result_list.ToList();
-
-        //    Tools.TraceLine("count: {0}", qwe.Count);
-
-        //    Tools.TraceLine("Top t_meter movie: {0}", qwe.First().title);
-
-        //    DateTime end = DateTime.Now;
-
-        //    var span = end - start;
-
-        //    Tools.TraceLine("Took {0} seconds", span.TotalSeconds);
-
-        //    return View();
-        //}
-
     }
 }
