@@ -189,81 +189,6 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        //[TrackingActionFilter]
-        //public ActionResult oldTest(string title = "",
-        //                         int year_start = 1914,
-        //                         int year_end = 2012,
-        //                         int mpaa_start = 0,
-        //                         int mpaa_end = 200,
-
-        //                         bool? is_movie = null,
-
-        //                         int runtime_start = 0,
-        //                         int runtime_end = 9999999,
-        //                         string genre = "",
-        //                         int start = 0,
-        //                         int count = 25,
-        //                         string sort = "movie_ID")
-        //{
-        //    ViewBag.Params = Tools.GetAllParamNames("Test");
-
-
-        //    MovieDbContext db = new MovieDbContext();
-
-
-
-        //    var movie_list = db.Movies.ToList();
-
-        //    var nitlist = Tools.FilterMovies(db, movie_list,
-        //                                     title: title, is_movie: is_movie,
-        //                                     year_start: year_start,
-        //                                     year_end: year_end,
-        //                                     mpaa_start: mpaa_start,
-        //                                     mpaa_end: mpaa_end,
-        //                                     runtime_start: runtime_start,
-        //                                     runtime_end: runtime_end,
-        //                                     genre: genre,
-        //                                     start: start, count: count,
-        //                                     sort: sort);
-
-
-        //    ViewBag.Start = start;
-        //    ViewBag.Count = count;
-
-
-
-        //    return View("Genres", nitlist);
-        //}
-
-        //public ActionResult sort()
-        //{
-
-        //    MovieDbContext db = new MovieDbContext();
-
-        //    int count = 25;
-
-        //    var start = Tools.WriteTimeStamp("\n*** starting /sql ***");
-
-        //    //returns a IQueryable populated with all the entries in the movies/etc 
-        //    var nitvmQuery = Tools.GetFullDbQuery(db);
-
-
-        //    Tools.TraceLine("Ordering the movies and taking {0}", count);
-        //    //array instead list for performance
-        //    var nitvmArray =
-        //        nitvmQuery.OrderBy(item => item.OmdbEntry.t_Meter)
-        //                  .Take(count)
-        //                  .ToArray();
-
-
-        //    var done = Tools.WriteTimeStamp("done at");
-        //    Tools.TraceLine("took: {0}", done - start);
-        //    //Tools.TraceLine("amount of results {0}", res.Count);
-
-
-        //    return View();
-
-        //}
 
 
         public ActionResult Index(string movie_title = "", string genre_select = "0",
@@ -453,122 +378,6 @@ namespace NextFlicksMVC4.Controllers
         }
 
         
-        //public ActionResult oldYear(int year_start = 2001, int year_end = 2002, int start = 0, int count = 25, bool is_movie = true)
-        //{
-        //    MovieDbContext db = new MovieDbContext();
-        //    //returns all titles from year
-        //    string qry = "select * from Movies where (year between {0} and {1}) and (is_movie = {2}) order by year";
-        //    var res = db.Movies.SqlQuery(qry, year_start, year_end, is_movie);
-
-        //    List<Movie> movie_list = res.ToList();
-
-        //    ViewBag.TotalMovies = movie_list.Count - 1;
-        //    ViewBag.year_start = year_start;
-        //    ViewBag.year_end = year_end;
-        //    ViewBag.start = start;
-        //    ViewBag.count = count;
-
-        //    if (count > movie_list.Count)
-        //    {
-        //        count = movie_list.Count - 1;
-        //    }
-        //    var results = movie_list.GetRange(start, start + count);
-        //    return View("Index", results);
-        //}
-
-
-        ///// <summary>
-        ///// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
-        ///// </summary>
-        ///// <returns></returns>
-        //public ActionResult Genres(string genre = "action",
-        //                           int count = 25,
-        //                           int start = 0)
-        //{
-        //    MovieDbContext db = new MovieDbContext();
-
-        //    //make sure params are set, because "" is a valid parameter
-        //    if (genre == "")
-        //    {
-        //        genre = "nothing";
-        //    }
-
-        //    //get a movie list that matches genres
-        //    var movie_list = Tools.GetMoviesMatchingGenre(db, genre);
-        //    //creates the MwGVM for the movie list
-        //    var ranged_movie_list = movie_list.GetRange(start, count);
-        //    var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
-
-        //    //to show a given view what the user searched for
-        //    ViewBag.SearchTerms = genre;
-        //    //relectively get the list of parameters for this method and pass them to the view
-        //    ViewBag.Params = Tools.GetAllParamNames("Genres");
-
-        //    //if the count param is higher than the amount of MwG's in the list,
-        //    // make count the upper limit
-        //    if (count > MwG_list.Count)
-        //    {
-        //        count = MwG_list.Count;
-        //    }
-
-        //    ViewBag.Count = count;
-        //    ViewBag.Start = start;
-        //    ViewBag.TotalMovies = movie_list.Count;
-
-        //    //var ret = MwG_list.GetRange(start, count);
-        //    return View(MwG_list);
-
-        //}
-
-        //-------------------------------------------------------
-
-        //public ActionResult oldIndex(int start = 0, int count = 10)
-        //{
-        //    MovieDbContext db = new MovieDbContext();
-
-        //    //create a query string to full the proper count of movies from db
-        //    Trace.WriteLine("Creating a query string");
-
-        //    //select a range of items, with linq rather than with query
-        //    var fullList = db.Movies.OrderBy(item => item.movie_ID).Skip(start).Take(count).ToList();
-
-        //    //count the total movies in DB
-        //    Trace.WriteLine("Counting movies");
-        //    string count_qry = "select count(movie_id) from Movies";
-        //    var count_res = db.Database.SqlQuery<int>(count_qry);
-        //    int count_count = count_res.ElementAt(0);
-        //    ViewBag.TotalMovies = count_count;
-
-        //    //misc numbers
-        //    ViewBag.Start = start;
-        //    ViewBag.Count = count;
-
-        //    //Param names
-        //    Trace.WriteLine("getting param names");
-        //    ViewBag.Params = Tools.GetAllParamNames("Index");
-
-        //    //make sure there's not a outofbounds
-        //    if (count > fullList.Count)
-        //    {
-        //        count = fullList.Count;
-        //        Trace.WriteLine("had to shorten the returned results");
-        //    }
-
-        //    Trace.WriteLine("Get ranging");
-        //    var full_range = fullList.GetRange(0, count);
-
-
-        //    //turn all the movies into MovieWithGenresViewModel
-        //    var MwG_list = ModelBuilder.CreateListOfMwGVM(db, full_range);
-
-        //    IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
-
-        //    Trace.WriteLine("Returning View");
-        //    return View("Genres", MwG_ienum);
-        //}
-
-
-
 
         public ActionResult Api(string term = "Jim Carrey")
         {
@@ -824,7 +633,6 @@ namespace NextFlicksMVC4.Controllers
 
         //
         // GET: /Movies/Create
-
         public ActionResult Create()
         {
             return View();
@@ -832,7 +640,6 @@ namespace NextFlicksMVC4.Controllers
 
         //
         // POST: /Movies/Create
-
         [HttpPost]
         public ActionResult Create(Movie movie)
         {
