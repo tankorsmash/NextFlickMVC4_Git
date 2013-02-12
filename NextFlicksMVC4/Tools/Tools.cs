@@ -919,6 +919,56 @@ namespace NextFlicksMVC4
             TraceLine("genre dict took {0}", dict_end - dict_start);
             return sortedDictionary;
         }
+
+        public static IQueryable<FullViewModel> FilterTags(string tag_string,
+                                                           MovieDbContext db)
+        {
+
+            //find the tag id for the string
+            MovieTag searched_tag = db.MovieTags.First(tag => tag.Name == tag_string);
+
+            //find all movies tagged by this tag
+            var res = from umt in db.UserToMovieToTags
+                      where umt.TagId == searched_tag.TagId
+                      select umt.movie_ID;
+
+            var distinct_movie_ids_qry = res.Distinct();
+
+            //pull only the matching FullViews from  the db
+            var total_qry = GetFullDbQuery(db);
+            var taggedFullViews = from nit in total_qry
+                                  from movie_id in distinct_movie_ids_qry
+                                  where nit.Movie.movie_ID == movie_id
+                                  select nit;
+
+            return taggedFullViews;
+
+        }
+
+        public static IQueryable<FullViewModel> FilterMoviesAndGenres(
+            string movie_title,
+            MovieDbContext db,
+            string genre_select = "0")
+        {
+
+
+
+            //get a full query with all data in db
+            var total_qry = GetFullDbQuery(db);
+
+            //filters the movie quickly enough
+            // basic stuff 
+            var res =
+                from nit in total_qry
+                where nit.Movie.short_title.Contains(movie_title)
+                select nit;
+
+            //if the genre isn't the default value, filter the results even more
+            if (genre_select != "0") {
+                res = res.Where(nit => nit.Genres.Any(item => item == genre_select));
+            }
+            return res;
+        }
     }
 
 
