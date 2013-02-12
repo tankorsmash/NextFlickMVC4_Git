@@ -201,8 +201,6 @@ namespace NextFlicksMVC4.NetFlixAPI
                     createdTitle.RuntimeInSeconds = 0;
                     Tools.TraceLine("error, could not convert runtime from string {0}", ex);
                 }
-                //var msg = String.Format("\tRuntime found {0}", runtime);
-                //Trace.WriteLine(msg);
             }
 
             //TODO Genres, need to figure out best way to sort multiple vals

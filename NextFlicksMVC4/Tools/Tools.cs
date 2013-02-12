@@ -712,6 +712,9 @@ namespace NextFlicksMVC4
                                 dictOfMoviesTitles[movie] = titles[0];
                                 db.Movies.Add(movie);
                             }
+                            else {
+                                TraceLine("Failed on line {0}\n{1}", count, line);
+                            }
 
                             count += 1;
                         }
