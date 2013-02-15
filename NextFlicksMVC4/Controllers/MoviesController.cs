@@ -191,28 +191,37 @@ namespace NextFlicksMVC4.Controllers
 
 
 
+        /// <summary>
+        /// Main action for this controller. Offers searching by title, genre and tag
+        /// </summary>
+        /// <param name="movie_title">movie title to look for</param>
+        /// <param name="genre_select">selected genre to search for</param>
+        /// <param name="tag_string">selected tag to search for</param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         public ActionResult Index(string movie_title = "", string genre_select = "0",
                                     string tag_string = "0",
                                     int page = 1)
         {
 
 
-
-            var start = Tools.WriteTimeStamp("start");
-
-            //if the titles are default print default message, otherwise print variables
-            if (movie_title != "" || genre_select != "0") {
-                Tools.TraceLine("testsorting with title: {0}, genre: {1}",
-                                movie_title, genre_select);
-            }
-            else {
-                Tools.TraceLine("testsorting with blank title and genre");
-            }
-
             int movie_count = 28;
             int movies_to_skip = movie_count * (page - 1);
 
             var db = new MovieDbContext();
+            db.Configuration.AutoDetectChangesEnabled = true;
+
+            var start = Tools.WriteTimeStamp("start");
+
+            //if the titles are default, print default message, otherwise print variables
+            if (movie_title != "" || genre_select != "0") {
+                Tools.TraceLine("Sorting with title: {0}, genre: {1}",
+                                movie_title, genre_select);
+            }
+            else {
+                Tools.TraceLine("Sorting with blank title and genre");
+            }
+
 
             //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
             //Assign it to a ViewBag, so the Filtermenu can use it
@@ -240,7 +249,7 @@ namespace NextFlicksMVC4.Controllers
                 res = Tools.FilterTags(tag_string, db);
             }
 
-                //otherwise return the entire db
+                //otherwise return the entire db and return that
             else {
                 res = Tools.GetFullDbQuery(db);
             }
@@ -272,8 +281,8 @@ namespace NextFlicksMVC4.Controllers
 
                 //needed to sort the stuff before I could skip, so I chose alphabetically, then changed to ID for a bit of speed
                 // it can be changed at any time, once we get some feedback.
-                //IEnumerable<FullViewModel> nit_list =
-                //    res.OrderBy(nit => nit.Movie.movie_ID)
+                //IEnumerable<FullViewModel> nit_list = res
+                //    .OrderBy(nit => nit.Movie.movie_ID)
                 //       .Skip(movies_to_skip)
                 //       .Take(movie_count)
                 //       .ToArray();
@@ -284,6 +293,8 @@ namespace NextFlicksMVC4.Controllers
                 {
                     movie_count = totalMovies;
                 }
+
+                
 
                 //take all the pages up to and including the ones you'll show 
                 // on page, then only take the last set of movies you'll show
