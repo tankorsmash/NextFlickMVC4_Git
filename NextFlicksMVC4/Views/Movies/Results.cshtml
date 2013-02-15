@@ -39,9 +39,7 @@
 }
 
 <h2>
-    Currently showing @movie_count titles out of a possible @total_movies titles
-
-    filtering @tits in @ass 
+    @movie_count / @total_movies titles
     </h2>
     
 @if (ViewBag.Start != null && ViewBag.Count != null) {
@@ -79,7 +77,6 @@
 }
 </div>
 
-<!-- pagination stuff --!>
     @* has to be based on the current page to show the selected page, then the number of pages
     based on the total results value. The tricky part will be when we resend the current page 
     with the current params... 
@@ -91,7 +88,7 @@
     
     
     *@
-    
+
 @{
     int pages = total_movies/movie_count;
     int remaining_movies = total_movies%movie_count;
