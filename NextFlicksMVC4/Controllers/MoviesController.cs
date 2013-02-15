@@ -197,6 +197,7 @@ namespace NextFlicksMVC4.Controllers
         {
 
 
+
             var start = Tools.WriteTimeStamp("start");
 
             //if the titles are default print default message, otherwise print variables

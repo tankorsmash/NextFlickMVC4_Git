@@ -311,8 +311,9 @@ namespace NextFlicksMVC4
         /// <param name="vals"></param>
         public static void TraceLine(string msg_string, params object[] vals)
         {
+            string msg;
             //create a new string based on the params given in the arguments
-            string msg = String.Format(msg_string, vals);
+            msg = vals.Count() > 0 ? String.Format(msg_string, vals) : msg_string;
             //send the message to Stdout
             Trace.WriteLine(msg);
         }
