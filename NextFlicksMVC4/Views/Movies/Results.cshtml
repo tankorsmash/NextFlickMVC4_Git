@@ -3,7 +3,7 @@
 @*@model IEnumerable<NextFlicksMVC4.Views.Movies.ViewModels.MovieWithGenreViewModel>*@
                                                             
 @{
-    ViewBag.Title = "Results Page";
+    ViewBag.Title = "Results";
 }
 
 @*@if (ViewBag.filtered == true) {
@@ -25,8 +25,10 @@
         });
     });
 </script>    
-    <h1>@ViewBag.Title</h1>
 
+@*<div class="page_title">
+<h1>@ViewBag.Title</h1>
+</div>*@
 
 
 @{
@@ -38,10 +40,12 @@
     int total_movies = ViewBag.TotalMovies;
 }
 
-<h2>
-    @movie_count / @total_movies titles
-    </h2>
-    
+<div class="movie_fraction">
+    <p>
+        Showing @movie_count / @total_movies titles
+    </p>
+</div>
+
 @if (ViewBag.Start != null && ViewBag.Count != null) {
     <h3>
         Items @ViewBag.Start through
