@@ -277,48 +277,26 @@ namespace NextFlicksMVC4.Controllers
                 var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
 
                 Tools.TraceLine("  sorting movie ids");
-                var sorted = ids.OrderBy(movie_id => movie_id).Skip(movies_to_skip).Take(movie_count).ToArray();
+                var sorted_movie_ids = ids.OrderBy(movie_id => movie_id).Skip(movies_to_skip).Take(movie_count).ToArray();
 
-                int[] qwe = {1, 2, 3, 4, 5, 6};
-                Tools.TraceLine("  grabbing matching movies");
-                IEnumerable<FullViewModel> nit_list = new List<FullViewModel>();
-                //var ssqwe = (from movie_id in qwe
-                //                                 from nit in Tools.GetFullDbQuery(db)
-                //                                 where
-                //                                     movie_id ==
-                //                                     nit.Movie.movie_ID
-                //                                 select nit).Count();
-                nit_list =
+                Tools.TraceLine("  grabbing matched movies");
+                //take all the pages up to and including the ones you'll show 
+                // on page, then only take the last set of movies you'll show
+                IEnumerable<FullViewModel> nit_list =
                     Tools.GetFullDbQuery(db)
                          .Where(
-                             nit =>
-                             sorted.Any(mov_id => mov_id == nit.Movie.movie_ID)).ToList();
-
+                             fullViewModel =>
+                             sorted_movie_ids.Any(
+                                 movie_id =>
+                                 movie_id == fullViewModel.Movie.movie_ID))
+                         .ToList();
                 Tools.TraceLine("  done matching movies, returning");
-                //res.Where(nit => nit.Movie.movie_ID == )
-
-                //needed to sort the stuff before I could skip, so I chose alphabetically, then changed to ID for a bit of speed
-                // it can be changed at any time, once we get some feedback.
-                //IEnumerable<FullViewModel> nit_list = res
-                //    .OrderBy(nit => nit.Movie.movie_ID)
-                //       .Skip(movies_to_skip)
-                //       .Take(movie_count)
-                       //.ToArray();
-
 
                 //to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
                 if (totalMovies < movie_count)
                 {
                     movie_count = totalMovies;
                 }
-
-                
-
-                //take all the pages up to and including the ones you'll show 
-                // on page, then only take the last set of movies you'll show
-                //IEnumerable<FullViewModel> nit_list =
-                //    res.Take(movies_to_skip + movie_count)
-                //       .ToList().GetRange(movies_to_skip, movie_count);
 
                 var page_end = Tools.WriteTimeStamp();
                 Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
