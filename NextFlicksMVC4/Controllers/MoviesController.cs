@@ -239,17 +239,14 @@ namespace NextFlicksMVC4.Controllers
 
             IQueryable<FullViewModel> res;
             //if the movie title isn't null, search movies
-            if (movie_title != "")
-            {
+            if (movie_title != "") {
                 res = Tools.FilterMoviesAndGenres(movie_title, db, genre_select);
             }
             //if the tag string isn't empty, then search through tags
-            else if (tag_string != "0")
-            {
+            else if (tag_string != "0") {
                 res = Tools.FilterTags(tag_string, db);
             }
-
-                //otherwise return the entire db and return that
+            //otherwise return the entire db and return that
             else {
                 res = Tools.GetFullDbQuery(db);
             }
@@ -258,8 +255,7 @@ namespace NextFlicksMVC4.Controllers
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
             {
-
-                Tools.TraceLine(" Counting all possible results, before pagination");
+                Tools.TraceLine("  Counting all possible results, before pagination");
                 var count_start = Tools.WriteTimeStamp("  count start");
 
                 //count all the movies possible
@@ -268,7 +264,7 @@ namespace NextFlicksMVC4.Controllers
                 ViewBag.TotalMovies = totalMovies;
 
                 Tools.TraceLine("  total possible results {0}", totalMovies);
-                var count_end = Tools.WriteTimeStamp("count_start end");
+                var count_end = Tools.WriteTimeStamp("  count_start end");
                 Tools.TraceLine("  counting took {0}", count_end - count_start);
 
 
@@ -281,11 +277,11 @@ namespace NextFlicksMVC4.Controllers
 
                 //needed to sort the stuff before I could skip, so I chose alphabetically, then changed to ID for a bit of speed
                 // it can be changed at any time, once we get some feedback.
-                //IEnumerable<FullViewModel> nit_list = res
-                //    .OrderBy(nit => nit.Movie.movie_ID)
-                //       .Skip(movies_to_skip)
-                //       .Take(movie_count)
-                //       .ToArray();
+                IEnumerable<FullViewModel> nit_list = res
+                    .OrderBy(nit => nit.Movie.movie_ID)
+                       .Skip(movies_to_skip)
+                       .Take(movie_count)
+                       .ToArray();
 
 
                 //to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
@@ -298,9 +294,9 @@ namespace NextFlicksMVC4.Controllers
 
                 //take all the pages up to and including the ones you'll show 
                 // on page, then only take the last set of movies you'll show
-                IEnumerable<FullViewModel> nit_list =
-                    res.Take(movies_to_skip + movie_count)
-                       .ToList().GetRange(movies_to_skip, movie_count);
+                //IEnumerable<FullViewModel> nit_list =
+                //    res.Take(movies_to_skip + movie_count)
+                //       .ToList().GetRange(movies_to_skip, movie_count);
 
                 var page_end = Tools.WriteTimeStamp();
                 Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
@@ -319,8 +315,6 @@ namespace NextFlicksMVC4.Controllers
 
                 return View("Error");
             }
-
-
 
         }
 

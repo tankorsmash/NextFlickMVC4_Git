@@ -762,8 +762,6 @@ namespace NextFlicksMVC4
         public static IQueryable<FullViewModel> GetFullDbQuery(MovieDbContext db, bool verbose = false)
         {
 
-
-
             if (verbose)
             {
                 TraceLine("In GetFullDbQuery");
@@ -887,20 +885,27 @@ namespace NextFlicksMVC4
 
         }
 
-        public static SortedDictionary<string, int> CreateSortedTagDictionary(MovieDbContext db)
+        public static SortedDictionary<string, int> CreateSortedTagDictionary(MovieDbContext db, bool verbose=false)
         {
             //create a Dict<string,int> for all tag_string and ids, so that they 
             // can be enumerated in the filtermenu. So the user can select which tags 
             // they want to look for
-            var dict_start = WriteTimeStamp("  Start dict make");
+            DateTime dict_start = new DateTime();
+            if (verbose) {
+                dict_start = WriteTimeStamp("  Start dict make");
+            }
             Dictionary<string, int> tag_dict =
                 db.MovieTags.Distinct().ToDictionary(tag => tag.Name,
                                                   tag => tag.TagId);
             //sort the dictionary, automatically does it by key, seems like
             SortedDictionary<string, int> sortedDictionary =
                 new SortedDictionary<string, int>(tag_dict);
-            var dict_end = WriteTimeStamp("  End dict make");
-            TraceLine("tag dict took {0}", dict_end - dict_start);
+
+            DateTime dict_end;
+            if (verbose) {
+                dict_end = WriteTimeStamp("  End dict make");
+                TraceLine("tag dict took {0}", dict_end - dict_start);
+            }
             return sortedDictionary;
         }
 
@@ -910,15 +915,15 @@ namespace NextFlicksMVC4
 //create a Dict<string,int> for all genre_string and ids, so that they 
             // can be enumerated in the filtermenu. So the user can select which genres 
             // they want to look for
-            var dict_start = WriteTimeStamp("  Start dict make");
+            //var dict_start = WriteTimeStamp("  Start dict make");
             Dictionary<string, int> genre_dict =
                 db.Genres.Distinct().ToDictionary(gen => gen.genre_string,
                                                   gen => gen.genre_ID);
             //sort the dictionary, automatically does it by key, seems like
             SortedDictionary<string, int> sortedDictionary =
                 new SortedDictionary<string, int>(genre_dict);
-            var dict_end = WriteTimeStamp("  End dict make");
-            TraceLine("genre dict took {0}", dict_end - dict_start);
+            //var dict_end = WriteTimeStamp("  End dict make");
+            //TraceLine("genre dict took {0}", dict_end - dict_start);
             return sortedDictionary;
         }
 
