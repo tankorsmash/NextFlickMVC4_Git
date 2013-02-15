@@ -255,8 +255,8 @@ namespace NextFlicksMVC4.Controllers
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
             {
-                Tools.TraceLine("  Counting all possible results, before pagination");
-                var count_start = Tools.WriteTimeStamp("  count start");
+                //Tools.TraceLine("  Counting all possible results, before pagination");
+                //var count_start = Tools.WriteTimeStamp("  count start");
 
                 //count all the movies possible
                 int totalMovies = res.Count();
@@ -264,8 +264,8 @@ namespace NextFlicksMVC4.Controllers
                 ViewBag.TotalMovies = totalMovies;
 
                 Tools.TraceLine("  total possible results {0}", totalMovies);
-                var count_end = Tools.WriteTimeStamp("  count_start end");
-                Tools.TraceLine("  counting took {0}", count_end - count_start);
+                //var count_end = Tools.WriteTimeStamp("  count_start end");
+                //Tools.TraceLine("  counting took {0}", count_end - count_start);
 
 
                 var page_start = Tools.WriteTimeStamp();
@@ -274,14 +274,36 @@ namespace NextFlicksMVC4.Controllers
                 //page 1 = 0-27, then 28- 55 or something. Math's not my forte
                 Tools.TraceLine("  Retrieving paginated results");
 
+                var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
+
+                Tools.TraceLine("  sorting movie ids");
+                var sorted = ids.OrderBy(movie_id => movie_id).Skip(movies_to_skip).Take(movie_count).ToArray();
+
+                int[] qwe = {1, 2, 3, 4, 5, 6};
+                Tools.TraceLine("  grabbing matching movies");
+                IEnumerable<FullViewModel> nit_list = new List<FullViewModel>();
+                //var ssqwe = (from movie_id in qwe
+                //                                 from nit in Tools.GetFullDbQuery(db)
+                //                                 where
+                //                                     movie_id ==
+                //                                     nit.Movie.movie_ID
+                //                                 select nit).Count();
+                nit_list =
+                    Tools.GetFullDbQuery(db)
+                         .Where(
+                             nit =>
+                             sorted.Any(mov_id => mov_id == nit.Movie.movie_ID)).ToList();
+
+                Tools.TraceLine("  done matching movies, returning");
+                //res.Where(nit => nit.Movie.movie_ID == )
 
                 //needed to sort the stuff before I could skip, so I chose alphabetically, then changed to ID for a bit of speed
                 // it can be changed at any time, once we get some feedback.
-                IEnumerable<FullViewModel> nit_list = res
-                    .OrderBy(nit => nit.Movie.movie_ID)
-                       .Skip(movies_to_skip)
-                       .Take(movie_count)
-                       .ToArray();
+                //IEnumerable<FullViewModel> nit_list = res
+                //    .OrderBy(nit => nit.Movie.movie_ID)
+                //       .Skip(movies_to_skip)
+                //       .Take(movie_count)
+                       //.ToArray();
 
 
                 //to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
@@ -303,6 +325,7 @@ namespace NextFlicksMVC4.Controllers
 
                 var end = Tools.WriteTimeStamp("end");
                 Tools.TraceLine((end - start).ToString());
+                Tools.TraceLine("*********************");
 
                 return View("Results", nit_list);
             }
