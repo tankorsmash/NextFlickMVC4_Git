@@ -569,48 +569,7 @@ namespace NextFlicksMVC4.Controllers
 
 
 
-        public ActionResult Api(string term = "Jim Carrey")
-        {
-            MovieDbContext db = new MovieDbContext();
-            //grab new movies, turn one into a Movie and view it
-            var data =
-                OAuth1a.GetNextflixCatalogDataString(
-                    "catalog/titles/streaming", term, max_results: "100",
-                    outputPath: Server.MapPath("~/dbfiles/testtesttest.NFPOX"));
-            var titles =
-                NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
-
-            List<Movie> movies = new List<Movie>();
-
-            foreach (Title title in titles)
-            {
-                //create a  movie from the title, and add it to a list of movies and
-                // the database
-                Movie movie = NetFlixAPI.Create.CreateMovie(title);
-                movies.Add(movie);
-                db.Movies.Add(movie);
-
-                //create a boxart object from the movie and title object
-                BoxArt boxArt =
-                    NetFlixAPI.Create.CreateMovieBoxartFromTitle(movie, title);
-                db.BoxArts.Add(boxArt);
-
-                //for all the genres in a title, create the linking MtG 
-                // and then add that object to the db
-                foreach (Genre genre in title.ListGenres)
-                {
-                    MovieToGenre movieToGenre =
-                        NetFlixAPI.Create.CreateMovieMovieToGenre(movie,
-                                                                  genre);
-                    db.MovieToGenres.Add(movieToGenre);
-
-                }
-            }
-
-            db.SaveChanges();
-
-            return View(movies.ToList());
-        }
+       
         //
         // GET: /Movies/Details/5
 
@@ -677,7 +636,7 @@ namespace NextFlicksMVC4.Controllers
             return View(tagViewModel); 
         }*/
 
-        [HttpPost]
+       /* [HttpPost]
         public ActionResult DetailsTag(int movie_ID, List<string> tags, bool Anon)
         {
             if (ModelState.IsValid)
@@ -722,20 +681,20 @@ namespace NextFlicksMVC4.Controllers
 
                     db.UtMtTisAnon.Add(anon);
                     db.SaveChanges();
-                    /* MovieTag newTag = new MovieTag();
-                    {
-
-                        Tag = tag;
-                         movie_ID = taggedMovie.movie_ID,
-                        userID = WebSecurity.CurrentUserId
-                    }; 
-                    db.Tags.Add(newTag);
-                    db.SaveChanges(); */
+                    // MovieTag newTag = new MovieTag();
+                    //{
+        //
+          //              Tag = tag;
+            //             movie_ID = taggedMovie.movie_ID,
+              //          userID = WebSecurity.CurrentUserId
+                //    }; 
+                  //  db.Tags.Add(newTag);
+                    /s/db.SaveChanges(); 
                 }
                 return RedirectToAction("DetailsTag", "Movies", movie_ID);
             }
             return RedirectToAction("DetailsTag", "Movies", movie_ID); 
-        }
+        } */
 
         [HttpGet]
         public ActionResult Details(int movie_ID = 0)
@@ -785,6 +744,8 @@ namespace NextFlicksMVC4.Controllers
                     //JB note: not sure if FoD() here return null if there's nothing, 
                     // I think it return a new Tag() empty which'll mean that 
                     // it's never gonna hit null. Not sure though.
+                    //JT Note: I'm pretty damn sure I tested this and it works, however you 
+                    //are probably right and we shoudl switch it to somethign a little less error prone.
                     var tagExists = db.MovieTags.FirstOrDefault(t => t.Name == tag);
                     if (tagExists == null)
                     {
@@ -816,7 +777,7 @@ namespace NextFlicksMVC4.Controllers
                     
                     Tools.TraceLine("added tag {0} to movie_id {1}", UtMtT.TagId, movie_ID);
                   }
-                return RedirectToAction("DetailsTag", "Movies", movie_ID);
+                return View(movie_ID); 
         }
 
 

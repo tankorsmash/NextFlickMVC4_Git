@@ -43,6 +43,16 @@ namespace NextFlicksMVC4.Controllers.Admin
                 DatabaseTools.DropAndCreate();
                 ViewBag.Message = "Tables dropped and Recreated";
             }
+            if (button == "Full")
+            {
+                DatabaseTools.Full();
+                ViewBag.Message = "Full Db Created";
+            }
+            if (button == "Api")
+            {
+                DatabaseTools.Api();
+                ViewBag.Message = "Api Downloaded.";
+            }
             return View();
 
 
