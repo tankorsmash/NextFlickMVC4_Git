@@ -52,6 +52,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             {
                 DatabaseTools.Api();
                 ViewBag.Message = "Api Downloaded.";
+                ViewBag.Message = "Full Database Build complete";
             }
             return View();
 
