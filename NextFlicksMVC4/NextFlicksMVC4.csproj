@@ -172,6 +172,9 @@
     <Reference Include="protobuf-net">
       <HintPath>..\packages\protobuf-net.2.0.0.621\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.103.4\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
@@ -271,6 +274,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Admin\AdminController.cs" />
+    <Compile Include="Controllers\Admin\Tools\DatabaseTools.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MoviesController.cs" />
@@ -373,6 +377,10 @@
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\admin.css" />
+    <Content Include="dbfiles\createTables.sql" />
+    <Content Include="dbfiles\DropTables.sql" />
+    <Content Include="dbfiles\omdb.txt" />
+    <Content Include="dbfiles\tomatoes.txt" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
@@ -428,11 +436,13 @@
     <Content Include="Views\Admin\Tags.cshtml" />
     <Content Include="Views\Admin\Movies.cshtml" />
     <Content Include="Views\Home\Feedback.cshtml" />
+    <None Include="dbfiles\fixedAPI.NFPOX" />
+    <None Include="dbfiles\genres.NFPOX" />
     <None Include="SampleKey.snk" />
     <Content Include="Views\Account\ChangePasswordPartial.cshtml" />
     <Content Include="Views\Account\Password.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
-    <None Include="Views\Shared\_Layout.cshtml.old" />
+    <Content Include="Views\Admin\DbTools.cshtml" />
     <Content Include="Views\Movies\Details2.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\ImdbID.cshtml" />
     <Content Include="Views\Web.config" />
