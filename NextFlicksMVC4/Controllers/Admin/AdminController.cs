@@ -46,6 +46,12 @@ namespace NextFlicksMVC4.Controllers.Admin
             if (button == "Full")
             {
                 DatabaseTools.Full();
+                ViewBag.Message = "Full Db Created";
+            }
+            if (button == "Api")
+            {
+                DatabaseTools.Api();
+                ViewBag.Message = "Api Downloaded.";
                 ViewBag.Message = "Full Database Build complete";
             }
             return View();
