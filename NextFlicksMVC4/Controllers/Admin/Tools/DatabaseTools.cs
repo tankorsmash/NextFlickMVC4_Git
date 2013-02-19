@@ -121,11 +121,18 @@ namespace NextFlicksMVC4.Controllers.Admin
             MovieDbContext db = new MovieDbContext();
 
             //retrieve API .POX
-            var data = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", "", outputPath: netflixPosFilepath);
+            var netflixCatalog = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", "", outputPath: netflixPosFilepath);
+            var genresNFPOX = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/genres.NFPOX");
+            var omdbZIP = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.zip");
+            var omdbDUMP = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.DUMP");
+            var omdbTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.txt");
+            var tomatoesTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/tomatoes.txt");
 
             //join the lines that don't match <catalog to the ones above it
             Tools.JoinLines(netflixPosFilepath);
 
+            //Parse the netflix NFPOX and make sure the genres.nfpox exists and is up to dat
+            UpdateGenreList(genresNFPOX);
             //build a genres txt file for all the genres in the NFPOX
             //ASSUMES GENRES.NFPOX IS THERE
             PopulateGenres.PopulateGenresTable();
@@ -137,11 +144,11 @@ namespace NextFlicksMVC4.Controllers.Admin
             Omdb.DownloadOmdbZipAndExtract(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.zip"));
 
             //parse it for omdbentrys, serialize it to file
-            Tools.SerializeOmdbTsv(@"omdb.DUMP", @"omdb.txt", @"tomatoes.txt");
+            Tools.SerializeOmdbTsv(omdbDUMP, omdbTXT, tomatoesTXT);
 
             //deserialize the file, turn it into omdb
             //  can't remember if it does it here or not, but marry the omdbs and movie
-            Tools.RebuildOmdbsFromProtobufDump(@"omdb.DUMP");
+            Tools.RebuildOmdbsFromProtobufDump(omdbDUMP);
 
             Tools.MarryMovieToOmdb(db);
         }
