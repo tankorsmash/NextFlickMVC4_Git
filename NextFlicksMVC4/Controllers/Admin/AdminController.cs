@@ -66,10 +66,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             }
             if (button == "Full Update")
             {
-                DatabaseTools.Api();
-                DatabaseTools.UpdateGenreList(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
-                DatabaseTools.Full();
-                DatabaseTools.Mutagen();
+                DatabaseTools.FullDbBuild();
             }
             return View();
         }

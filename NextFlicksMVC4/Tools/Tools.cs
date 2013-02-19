@@ -666,7 +666,10 @@ namespace NextFlicksMVC4
                     fixed_lines.Add(line);
                 }
             }
-
+            //add the first two lines back to fixed lines and the last line so it is  avalid xml doc with root elements
+            fixed_lines.Insert(0, "<?xml version=\"1.0\" standalone=\"yes\"?>"); //<?xml  version= 1.0
+            fixed_lines.Insert(1, "<catalog_titles>"); // <catalog_titles>
+            fixed_lines.Insert(fixed_lines.Count, "</catalog_titles>"); // </catalog_titles>
             //write file from fixed_lines
             WriteTimeStamp("  writing fixed file");
             using (StreamWriter writer = new StreamWriter(filepath)) {
@@ -689,32 +692,44 @@ namespace NextFlicksMVC4
             // Go line by line, and parse it for Movie files
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
             int count = 0;
-            using (StreamReader reader = new StreamReader(filepath)) {
+            using (StreamReader reader = new StreamReader(filepath)) 
+            {
                 TraceLine("  Starting to read");
 
                 string line = reader.ReadLine();
                 line = line.Trim();
                 //try {
-                    while (line != null) {
-                        if (!line.StartsWith("<catalog_title>")) {
-                            TraceLine(
-                                "  Invalid line of XML, probably CDATA or something, make sure all the lines start with '<cata' \n{0}", line);
+                    while (line != null) 
+                    {
+                        if (!line.StartsWith("<catalog_title>")) 
+                        {
+                            TraceLine("  Invalid line of XML, probably CDATA or something, make sure all the lines start with '<cata' \n{0}", line);
                         }
-                        else {
+                        else 
+                        {
                             //parse line for a title, which is what NF returns
                             List<Title> titles =
                                 Create.ParseXmlForCatalogTitles(line);
 
                             //if there was a title to parse add it to the db
-                            if (titles != null) {
+                            if (titles != null) 
+                            {
                                 Movie movie =
                                     Create.CreateMovie(titles[0]);
-
-                                //add to DB and dict
-                                dictOfMoviesTitles[movie] = titles[0];
-                                db.Movies.Add(movie);
+                                //check to see if the movie already exists in the database so we don't try to add it again or
+                                //try to add box art etc to it again.
+                                var movieExists = from db_movie in db.Movies
+                                                  where db_movie.short_title == movie.short_title
+                                                  select db_movie;
+                                if(!movieExists.Any())
+                                {
+                                    //add to DB and dict
+                                    dictOfMoviesTitles[movie] = titles[0];
+                                    db.Movies.Add(movie);
+                                }
                             }
-                            else {
+                            else 
+                            {
                                 TraceLine("  Failed on line {0}\n{1}", count, line);
                             }
 

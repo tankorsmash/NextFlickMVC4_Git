@@ -132,7 +132,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             Tools.JoinLines(netflixPosFilepath);
 
             //Parse the netflix NFPOX and make sure the genres.nfpox exists and is up to dat
-            UpdateGenreList(genresNFPOX);
+            UpdateGenreList(netflixPosFilepath);
             //build a genres txt file for all the genres in the NFPOX
             //ASSUMES GENRES.NFPOX IS THERE
             PopulateGenres.PopulateGenresTable();
@@ -141,7 +141,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
 
             //download the omdbapi
-            Omdb.DownloadOmdbZipAndExtract(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.zip"));
+            Omdb.DownloadOmdbZipAndExtract(omdbZIP);
 
             //parse it for omdbentrys, serialize it to file
             Tools.SerializeOmdbTsv(omdbDUMP, omdbTXT, tomatoesTXT);
