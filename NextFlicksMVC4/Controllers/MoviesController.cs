@@ -284,7 +284,11 @@ namespace NextFlicksMVC4.Controllers
                 var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
 
                 Tools.TraceLine("  sorting movie ids");
-                var sorted_movie_ids = ids.OrderBy(movie_id => movie_id).Skip(movies_to_skip).Take(movie_count).ToArray();
+                var sorted_movie_ids =
+                    ids.OrderBy(movie_id => movie_id)
+                       .Skip(movies_to_skip)
+                       .Take(movie_count)
+                       .ToArray();
 
                 Tools.TraceLine("  grabbing matched movies");
                 //take all the pages up to and including the ones you'll show 
