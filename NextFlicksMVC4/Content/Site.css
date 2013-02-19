@@ -53,6 +53,12 @@ font-weight: bold;
     float: left;
 }
 
+.pagination_current_page {
+    float: left;
+    color: black;
+    background: darkred;   
+}
+
 
 /* _Title.cshtml, which is the guts of the results page in Genres.cshtml*/
 .NIT_entry {

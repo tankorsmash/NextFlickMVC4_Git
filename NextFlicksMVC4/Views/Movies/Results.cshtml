@@ -116,26 +116,38 @@
 <div class="pagination_container">
     
 
-    @{if (Convert.ToInt32(current_page) != 1)
-      {
+    @* the previous button *@
+    @{if (Convert.ToInt32(current_page) != 1) {
         <div class="pagination_prev">
-            @Html.ActionLink("click previous", "Index", new { page = Convert.ToInt32(current_page) - 1, movie_title = movie_title, genre_select = genre_select }, null)
+            @Html.ActionLink("PREV PAGE", "Index", new { page = Convert.ToInt32(current_page) - 1, movie_title = movie_title, genre_select = genre_select }, null)
         </div> 
-      }}
+      }
+      }
 
     @*have to add one to the pages val here, because the first page is '1', not '0', 
 can't explain the math properly, so it means I don't understand it yet
 
 there's this issue when you're on the final page that to total number of pages goes up, I'll have to work
 to undertand that*@
-    @for (int i = 1; i < pages+1 ; i++) {
- 
+    @for (int i = 1; i < pages + 1; i++)
+    {
+
+        if (i != Convert.ToInt32(current_page))
+        {
         <div class="pagination_page">
-            @Html.ActionLink((i).ToString(), "Index", new { page = i, movie_title = movie_title, genre_select = genre_select }, null) 
+            @Html.ActionLink((i).ToString(), "Index", new { page = i, movie_title = movie_title, genre_select = genre_select }, null)
         </div>
-    
+        }
+        else
+        { 
+        <span class="pagination_current_page">@i</span>   
+        }
+
     }
+    @* the next button *@
     @{if (Convert.ToInt32(current_page) < pages) {
-                                     <p>click next</p>
+        <div class="pagination_next">
+            @Html.ActionLink("NEXT PAGE", "Index", new { page = Convert.ToInt32(current_page) + 1, movie_title = movie_title, genre_select = genre_select }, null)
+        </div> 
     }}
 </div>
