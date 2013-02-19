@@ -526,7 +526,7 @@ namespace NextFlicksMVC4.Controllers
 
 
 
-            return View("Details", fullView);
+            return View("Details2", fullView);
         }
 
         [HttpPost]
