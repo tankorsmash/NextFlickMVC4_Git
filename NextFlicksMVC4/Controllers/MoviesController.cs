@@ -351,39 +351,40 @@ namespace NextFlicksMVC4.Controllers
                 OAuth1a.GetNextflixCatalogDataString(
                     "catalog/titles/streaming", term, max_results: "100",
                     outputPath: Server.MapPath("~/dbfiles/testtesttest.NFPOX"));
-            var titles =
-                NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
+            //var titles =
+            //    NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
 
-            List<Movie> movies = new List<Movie>();
+            //List<Movie> movies = new List<Movie>();
 
-            foreach (Title title in titles)
-            {
-                //create a  movie from the title, and add it to a list of movies and
-                // the database
-                Movie movie = NetFlixAPI.Create.CreateMovie(title);
-                movies.Add(movie);
-                db.Movies.Add(movie);
+            //foreach (Title title in titles)
+            //{
+            //    //create a  movie from the title, and add it to a list of movies and
+            //    // the database
+            //    Movie movie = NetFlixAPI.Create.CreateMovie(title);
+            //    movies.Add(movie);
+            //    db.Movies.Add(movie);
 
-                //create a boxart object from the movie and title object
-                BoxArt boxArt =
-                    NetFlixAPI.Create.CreateMovieBoxartFromTitle(movie, title);
-                db.BoxArts.Add(boxArt);
+            //    //create a boxart object from the movie and title object
+            //    BoxArt boxArt =
+            //        NetFlixAPI.Create.CreateMovieBoxartFromTitle(movie, title);
+            //    db.BoxArts.Add(boxArt);
 
-                //for all the genres in a title, create the linking MtG 
-                // and then add that object to the db
-                foreach (Genre genre in title.ListGenres)
-                {
-                    MovieToGenre movieToGenre =
-                        NetFlixAPI.Create.CreateMovieMovieToGenre(movie,
-                                                                  genre);
-                    db.MovieToGenres.Add(movieToGenre);
+            //    //for all the genres in a title, create the linking MtG 
+            //    // and then add that object to the db
+            //    foreach (Genre genre in title.ListGenres)
+            //    {
+            //        MovieToGenre movieToGenre =
+            //            NetFlixAPI.Create.CreateMovieMovieToGenre(movie,
+            //                                                      genre);
+            //        db.MovieToGenres.Add(movieToGenre);
 
-                }
-            }
+            //    }
+            //}
 
-            db.SaveChanges();
+            //db.SaveChanges();
 
-            return View(movies.ToList());
+            //return View(movies.ToList());
+            return View();
         }
         //
         // GET: /Movies/Details/5
