@@ -14,7 +14,7 @@ namespace NextFlicksMVC4.NetFlixAPI
     //parses a text file for id and genres, then fills a table with it
     public static class PopulateGenres
     {
-
+        
         /// <summary>
         /// return a dict of id to genre both strings.
         /// </summary>
@@ -90,7 +90,12 @@ namespace NextFlicksMVC4.NetFlixAPI
                 Genre genre = NetFlixAPI.PopulateGenres.CreateGenreModel(id,
                                                                          genre_string);
                 //add to list
-                genres.Add(genre);
+                var genreExists = from gen in db.Genres
+                                  where gen.genre_ID == genre.genre_ID
+                                  select gen;
+
+                if(!genreExists.Any())
+                    genres.Add(genre);
 
             }
 

@@ -52,7 +52,24 @@ namespace NextFlicksMVC4.Controllers.Admin
             {
                 DatabaseTools.Api();
                 ViewBag.Message = "Api Downloaded.";
-                ViewBag.Message = "Full Database Build complete";
+            }
+            if (button == "Get Genres From Netflix")
+            {
+                DatabaseTools.NetflixGenres();
+                ViewBag.Message = "Genres downloaded fron Netflix";
+            }
+            if (button == "Update Genres In DB")
+            {
+                DatabaseTools.UpdateGenreList(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
+                ViewBag.Message = "Update Genres List";
+
+            }
+            if (button == "Full Update")
+            {
+                DatabaseTools.Api();
+                DatabaseTools.UpdateGenreList(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
+                DatabaseTools.Full();
+                DatabaseTools.Mutagen();
             }
             return View();
 

@@ -246,16 +246,11 @@ namespace NextFlicksMVC4.NetFlixAPI
             var db = new MovieDbContext();
             foreach (string genre_string in genre_list)
             {
-                if (createdTitle.TitleString != "Three Sisters")
-                {
-                    //look in Genres Table for genre_String that matches and pull that out and add it to ListGenres
-                    string qry = "select * from Genres where genre_string = {0}";
-                    var res = db.Genres.SqlQuery(qry, genre_string);
-                    var selected_genre = res.ToList()[0];
-                    createdTitle.ListGenres.Add(selected_genre);
-                }
-             
-
+                //look in Genres Table for genre_String that matches and pull that out and add it to ListGenres
+                string qry = "select * from Genres where genre_string = {0}";
+                var res = db.Genres.SqlQuery(qry, genre_string);
+                var selected_genre = res.ToList()[0];
+                createdTitle.ListGenres.Add(selected_genre);
             }
             db.Dispose();
 

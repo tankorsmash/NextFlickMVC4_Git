@@ -437,7 +437,7 @@
     <Content Include="Views\Admin\Movies.cshtml" />
     <Content Include="Views\Home\Feedback.cshtml" />
     <None Include="dbfiles\fixedAPI.NFPOX" />
-    <None Include="dbfiles\genres.NFPOX" />
+    <None Include="dbfiles\genresOLD.NFPOX" />
     <None Include="SampleKey.snk" />
     <Content Include="Views\Account\ChangePasswordPartial.cshtml" />
     <Content Include="Views\Account\Password.cshtml" />
