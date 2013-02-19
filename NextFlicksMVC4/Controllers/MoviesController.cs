@@ -269,7 +269,8 @@ namespace NextFlicksMVC4.Controllers
                 int totalMovies = res.Count();
                 //set it to the viewbag so the view can display it
                 ViewBag.TotalMovies = totalMovies;
-
+                ViewBag.movies_per_page = 28;
+                 
                 Tools.TraceLine("  total possible results {0}", totalMovies);
                 //var count_end = Tools.WriteTimeStamp("  count_start end");
                 //Tools.TraceLine("  counting took {0}", count_end - count_start);

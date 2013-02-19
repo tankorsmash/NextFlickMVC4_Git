@@ -95,7 +95,7 @@
     *@
 
 @{
-    int pages = total_movies/movie_count;
+    int pages = total_movies/ViewBag.movies_per_page;
     int remaining_movies = total_movies%movie_count;
     //increment pages by one, since there'll be movies left over most of the time 
     if (remaining_movies != 0) {
