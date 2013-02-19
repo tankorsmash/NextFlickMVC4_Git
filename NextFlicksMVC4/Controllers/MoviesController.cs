@@ -211,6 +211,13 @@ namespace NextFlicksMVC4.Controllers
             var db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = true;
 
+            //make sure there's movies in the db
+            if (db.Movies.Count() < 1) {
+                Tools.TraceLine("ERROR: No movies in DB, have you ran Full yet?");
+                return View("Error");
+            }
+
+
             var start = Tools.WriteTimeStamp("start");
 
             //if the titles are default, print default message, otherwise print variables
