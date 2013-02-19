@@ -102,20 +102,26 @@
         pages++;
     }
 
-    var movie_title = Request.Params["movie_title"];
-    var genre_select = Request.Params["genre_select"]; 
+    string movie_title = Request.Params["movie_title"];
+    string genre_select = Request.Params["genre_select"];
+
+    string current_page = Request.Params["page"];
+    if (current_page == null) {
+        current_page = "1";
+    }
+    
 
 }
 
 <div class="pagination_container">
     
-    @{if (Convert.ToInt32(Request.Params["page"]) < pages) {
-                                     <p>click next</p>
-    }}
-    
-    @{if (Convert.ToInt32(Request.Params["page"]) != 1) {
-                                     <p>click previous</p>
-    }}
+
+    @{if (Convert.ToInt32(current_page) != 1)
+      {
+        <div class="pagination_prev">
+            @Html.ActionLink("click previous", "Index", new { page = Convert.ToInt32(current_page) - 1, movie_title = movie_title, genre_select = genre_select }, null)
+        </div> 
+      }}
 
     @*have to add one to the pages val here, because the first page is '1', not '0', 
 can't explain the math properly, so it means I don't understand it yet
@@ -129,5 +135,7 @@ to undertand that*@
         </div>
     
     }
-
+    @{if (Convert.ToInt32(current_page) < pages) {
+                                     <p>click next</p>
+    }}
 </div>

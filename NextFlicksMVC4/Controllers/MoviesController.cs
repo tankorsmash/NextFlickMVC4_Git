@@ -204,6 +204,10 @@ namespace NextFlicksMVC4.Controllers
                                     int page = 1)
         {
 
+            //if (Request.Params["page"] == null) {
+            //    Request.Params["page"] = "1";
+            //}
+
 
             int movie_count = 28;
             int movies_to_skip = movie_count * (page - 1);
