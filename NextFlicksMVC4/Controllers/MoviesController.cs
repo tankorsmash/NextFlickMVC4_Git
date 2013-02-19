@@ -343,14 +343,14 @@ namespace NextFlicksMVC4.Controllers
 
         
 
-        public ActionResult Api(string term = "Jim Carrey")
-        {
-            MovieDbContext db = new MovieDbContext();
-            //grab new movies, turn one into a Movie and view it
-            var data =
-                OAuth1a.GetNextflixCatalogDataString(
-                    "catalog/titles/streaming", term, max_results: "100",
-                    outputPath: Server.MapPath("~/dbfiles/testtesttest.NFPOX"));
+        //public ActionResult Api(string term = "Jim Carrey")
+        //{
+        //    MovieDbContext db = new MovieDbContext();
+        //    //grab new movies, turn one into a Movie and view it
+        //    var data =
+        //        OAuth1a.GetNextflixCatalogDataString(
+        //            "catalog/titles/streaming", term, max_results: "100",
+        //            outputPath: Server.MapPath("~/dbfiles/testtesttest.NFPOX"));
             //var titles =
             //    NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
 
@@ -384,8 +384,8 @@ namespace NextFlicksMVC4.Controllers
             //db.SaveChanges();
 
             //return View(movies.ToList());
-            return View();
-        }
+        //    return View();
+        //}
         //
         // GET: /Movies/Details/5
 
