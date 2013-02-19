@@ -3,7 +3,7 @@
 @*@model IEnumerable<NextFlicksMVC4.Views.Movies.ViewModels.MovieWithGenreViewModel>*@
                                                             
 @{
-    ViewBag.Title = "Results Page";
+    ViewBag.Title = "Results";
 }
 
 @*@if (ViewBag.filtered == true) {
@@ -25,8 +25,10 @@
         });
     });
 </script>    
-    <h1>@ViewBag.Title</h1>
 
+@*<div class="page_title">
+<h1>@ViewBag.Title</h1>
+</div>*@
 
 
 @{
@@ -38,12 +40,12 @@
     int total_movies = ViewBag.TotalMovies;
 }
 
-<h2>
-    Currently showing @movie_count titles out of a possible @total_movies titles
+<div class="movie_fraction">
+    <p>
+        Showing @movie_count / @total_movies titles
+    </p>
+</div>
 
-    filtering @tits in @ass 
-    </h2>
-    
 @if (ViewBag.Start != null && ViewBag.Count != null) {
     <h3>
         Items @ViewBag.Start through
@@ -79,7 +81,6 @@
 }
 </div>
 
-<!-- pagination stuff --!>
     @* has to be based on the current page to show the selected page, then the number of pages
     based on the total results value. The tricky part will be when we resend the current page 
     with the current params... 
@@ -91,7 +92,7 @@
     
     
     *@
-    
+
 @{
     int pages = total_movies/movie_count;
     int remaining_movies = total_movies%movie_count;

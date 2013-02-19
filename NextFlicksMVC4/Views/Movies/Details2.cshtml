@@ -2,6 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = Model.Movie.short_title;
 }
 <div class="details_page">
     <div class="details_images drop-shadow perspective">
@@ -47,7 +48,8 @@
         
         <div class="details_tags_container">
             <div class="details_tags">@Html.DisplayFor(model => model.Tags)</div>
-        </div>@*        <div class="display-field" style="clear: both">
+        </div>
+@*        <div class="display-field" style="clear: both">
             @if (Roles.IsUserInRole("User") || Roles.IsUserInRole("Admin"))
             {
                  <h6>Seperate tags by comma</h6>
