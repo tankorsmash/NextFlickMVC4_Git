@@ -1,62 +1,9 @@
 ﻿@model IEnumerable<NextFlicksMVC4.Models.Movie>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "API Call done";
 }
 
-<h2>Index</h2>
+<h2>Finished API Call</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.short_title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.year)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.runtime)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.avg_rating)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.tv_rating)
-        </th>
-
-        <th></th>
-    </tr>
-    @*                  @Console.WriteLine("lolololol {0}",Model.ToString())
-*@
-
-    @foreach (var item in Model)
-{
-    <tr>
-        <td>
-           <a href=@item.web_page> @Html.DisplayFor(modelItem => item.short_title)</a>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.year)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.runtime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.avg_rating)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.tv_rating)
-        </td>
-
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-        </td>
-    </tr>
-}
-
-</table>
+<p>The API call was successfully completed. It was not parsed or anything, beyond downloaded and saved</p>

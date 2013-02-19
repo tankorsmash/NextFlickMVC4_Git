@@ -189,104 +189,46 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        //[TrackingActionFilter]
-        //public ActionResult oldTest(string title = "",
-        //                         int year_start = 1914,
-        //                         int year_end = 2012,
-        //                         int mpaa_start = 0,
-        //                         int mpaa_end = 200,
-
-        //                         bool? is_movie = null,
-
-        //                         int runtime_start = 0,
-        //                         int runtime_end = 9999999,
-        //                         string genre = "",
-        //                         int start = 0,
-        //                         int count = 25,
-        //                         string sort = "movie_ID")
-        //{
-        //    ViewBag.Params = Tools.GetAllParamNames("Test");
 
 
-        //    MovieDbContext db = new MovieDbContext();
-
-
-
-        //    var movie_list = db.Movies.ToList();
-
-        //    var nitlist = Tools.FilterMovies(db, movie_list,
-        //                                     title: title, is_movie: is_movie,
-        //                                     year_start: year_start,
-        //                                     year_end: year_end,
-        //                                     mpaa_start: mpaa_start,
-        //                                     mpaa_end: mpaa_end,
-        //                                     runtime_start: runtime_start,
-        //                                     runtime_end: runtime_end,
-        //                                     genre: genre,
-        //                                     start: start, count: count,
-        //                                     sort: sort);
-
-
-        //    ViewBag.Start = start;
-        //    ViewBag.Count = count;
-
-
-
-        //    return View("Genres", nitlist);
-        //}
-
-        //public ActionResult sort()
-        //{
-
-        //    MovieDbContext db = new MovieDbContext();
-
-        //    int count = 25;
-
-        //    var start = Tools.WriteTimeStamp("\n*** starting /sql ***");
-
-        //    //returns a IQueryable populated with all the entries in the movies/etc 
-        //    var nitvmQuery = Tools.GetFullDbQuery(db);
-
-
-        //    Tools.TraceLine("Ordering the movies and taking {0}", count);
-        //    //array instead list for performance
-        //    var nitvmArray =
-        //        nitvmQuery.OrderBy(item => item.OmdbEntry.t_Meter)
-        //                  .Take(count)
-        //                  .ToArray();
-
-
-        //    var done = Tools.WriteTimeStamp("done at");
-        //    Tools.TraceLine("took: {0}", done - start);
-        //    //Tools.TraceLine("amount of results {0}", res.Count);
-
-
-        //    return View();
-
-        //}
-
-
+        /// <summary>
+        /// Main action for this controller. Offers searching by title, genre and tag
+        /// </summary>
+        /// <param name="movie_title">movie title to look for</param>
+        /// <param name="genre_select">selected genre to search for</param>
+        /// <param name="tag_string">selected tag to search for</param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         public ActionResult Index(string movie_title = "", string genre_select = "0",
                                     string tag_string = "0",
                                     int page = 1)
         {
 
 
-            var start = Tools.WriteTimeStamp("start");
-
-            //if the titles are default print default message, otherwise print variables
-            if (movie_title != "" || genre_select != "0") {
-                Tools.TraceLine("testsorting with title: {0}, genre: {1}",
-                                movie_title, genre_select);
-            }
-            else {
-                Tools.TraceLine("testsorting with blank title and genre");
-            }
-
             int movie_count = 28;
             int movies_to_skip = movie_count * (page - 1);
 
             var db = new MovieDbContext();
+            db.Configuration.AutoDetectChangesEnabled = true;
+
+            //make sure there's movies in the db
+            if (db.Movies.Count() < 1) {
+                Tools.TraceLine("ERROR: No movies in DB, have you ran Full yet?");
+                return View("Error");
+            }
+
+
+            var start = Tools.WriteTimeStamp("start");
+
+            //if the titles are default, print default message, otherwise print variables
+            if (movie_title != "" || genre_select != "0") {
+                Tools.TraceLine("Sorting with title: {0}, genre: {1}",
+                                movie_title, genre_select);
+            }
+            else {
+                Tools.TraceLine("Sorting with blank title and genre");
+            }
+
 
             //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
             //Assign it to a ViewBag, so the Filtermenu can use it
@@ -304,17 +246,14 @@ namespace NextFlicksMVC4.Controllers
 
             IQueryable<FullViewModel> res;
             //if the movie title isn't null, search movies
-            if (movie_title != "")
-            {
-                res = FilterMoviesAndGenres(movie_title, db, genre_select);
+            if (movie_title != "") {
+                res = Tools.FilterMoviesAndGenres(movie_title, db, genre_select);
             }
             //if the tag string isn't empty, then search through tags
-            else if (tag_string != "0")
-            {
-                res = FilterTags(tag_string, db);
+            else if (tag_string != "0") {
+                res = Tools.FilterTags(tag_string, db);
             }
-
-                //otherwise return the entire db
+            //otherwise return the entire db and return that
             else {
                 res = Tools.GetFullDbQuery(db);
             }
@@ -323,9 +262,8 @@ namespace NextFlicksMVC4.Controllers
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
             {
-
-                Tools.TraceLine(" Counting all possible results, before pagination");
-                var count_start = Tools.WriteTimeStamp("  count start");
+                //Tools.TraceLine("  Counting all possible results, before pagination");
+                //var count_start = Tools.WriteTimeStamp("  count start");
 
                 //count all the movies possible
                 int totalMovies = res.Count();
@@ -333,8 +271,8 @@ namespace NextFlicksMVC4.Controllers
                 ViewBag.TotalMovies = totalMovies;
 
                 Tools.TraceLine("  total possible results {0}", totalMovies);
-                var count_end = Tools.WriteTimeStamp("count_start end");
-                Tools.TraceLine("  counting took {0}", count_end - count_start);
+                //var count_end = Tools.WriteTimeStamp("  count_start end");
+                //Tools.TraceLine("  counting took {0}", count_end - count_start);
 
 
                 var page_start = Tools.WriteTimeStamp();
@@ -343,15 +281,23 @@ namespace NextFlicksMVC4.Controllers
                 //page 1 = 0-27, then 28- 55 or something. Math's not my forte
                 Tools.TraceLine("  Retrieving paginated results");
 
+                var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
 
-                //needed to sort the stuff before I could skip, so I chose alphabetically, then changed to ID for a bit of speed
-                // it can be changed at any time, once we get some feedback.
-                //IEnumerable<FullViewModel> nit_list =
-                //    res.OrderBy(nit => nit.Movie.movie_ID)
-                //       .Skip(movies_to_skip)
-                //       .Take(movie_count)
-                //       .ToArray();
+                Tools.TraceLine("  sorting movie ids");
+                var sorted_movie_ids = ids.OrderBy(movie_id => movie_id).Skip(movies_to_skip).Take(movie_count).ToArray();
 
+                Tools.TraceLine("  grabbing matched movies");
+                //take all the pages up to and including the ones you'll show 
+                // on page, then only take the last set of movies you'll show
+                IEnumerable<FullViewModel> nit_list =
+                    Tools.GetFullDbQuery(db)
+                         .Where(
+                             fullViewModel =>
+                             sorted_movie_ids.Any(
+                                 movie_id =>
+                                 movie_id == fullViewModel.Movie.movie_ID))
+                         .ToList();
+                Tools.TraceLine("  done matching movies, returning");
 
                 //to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
                 if (totalMovies < movie_count)
@@ -359,17 +305,12 @@ namespace NextFlicksMVC4.Controllers
                     movie_count = totalMovies;
                 }
 
-                //take all the pages up to and including the ones you'll show 
-                // on page, then only take the last set of movies you'll show
-                IEnumerable<FullViewModel> nit_list =
-                    res.Take(movies_to_skip + movie_count)
-                       .ToList().GetRange(movies_to_skip, movie_count);
-
                 var page_end = Tools.WriteTimeStamp();
                 Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
 
                 var end = Tools.WriteTimeStamp("end");
                 Tools.TraceLine((end - start).ToString());
+                Tools.TraceLine("*********************");
 
                 return View("Results", nit_list);
             }
@@ -383,58 +324,6 @@ namespace NextFlicksMVC4.Controllers
                 return View("Error");
             }
 
-
-
-        }
-
-        public static IQueryable<FullViewModel> FilterTags(string tag_string,
-                                                           MovieDbContext db)
-        {
-
-            //find the tag id for the string
-            MovieTag searched_tag = db.MovieTags.First(tag => tag.Name == tag_string);
-
-            //find all movies tagged by this tag
-            var res = from umt in db.UserToMovieToTags
-                      where umt.TagId == searched_tag.TagId
-                      select umt.movie_ID;
-
-            var distinct_movie_ids_qry = res.Distinct();
-
-            //pull only the matching FullViews from  the db
-            var total_qry = Tools.GetFullDbQuery(db);
-            var taggedFullViews = from nit in total_qry
-                      from movie_id in distinct_movie_ids_qry
-                      where nit.Movie.movie_ID == movie_id
-                      select nit;
-
-            return taggedFullViews;
-
-        }
-
-        public static IQueryable<FullViewModel> FilterMoviesAndGenres(
-                                                    string movie_title,
-                                                    MovieDbContext db,
-                                                    string genre_select = "0")
-        {
-
-
-
-            //get a full query with all data in db
-            var total_qry = Tools.GetFullDbQuery(db);
-
-            //filters the movie quickly enough
-            // basic stuff 
-            var res =
-                from nit in total_qry
-                where nit.Movie.short_title.Contains(movie_title)
-                select nit;
-
-            //if the genre isn't the default value, filter the results even more
-            if (genre_select != "0") {
-                res = res.Where(nit => nit.Genres.Any(item => item == genre_select));
-            }
-            return res;
         }
 
 
@@ -453,124 +342,50 @@ namespace NextFlicksMVC4.Controllers
         }
 
         
-        //public ActionResult oldYear(int year_start = 2001, int year_end = 2002, int start = 0, int count = 25, bool is_movie = true)
+
+        //public ActionResult Api(string term = "Jim Carrey")
         //{
         //    MovieDbContext db = new MovieDbContext();
-        //    //returns all titles from year
-        //    string qry = "select * from Movies where (year between {0} and {1}) and (is_movie = {2}) order by year";
-        //    var res = db.Movies.SqlQuery(qry, year_start, year_end, is_movie);
+        //    //grab new movies, turn one into a Movie and view it
+        //    var data =
+        //        OAuth1a.GetNextflixCatalogDataString(
+        //            "catalog/titles/streaming", term, max_results: "100",
+        //            outputPath: Server.MapPath("~/dbfiles/testtesttest.NFPOX"));
+            //var titles =
+            //    NetFlixAPI.Create.ParseXmlForCatalogTitles(data);
 
-        //    List<Movie> movie_list = res.ToList();
+            //List<Movie> movies = new List<Movie>();
 
-        //    ViewBag.TotalMovies = movie_list.Count - 1;
-        //    ViewBag.year_start = year_start;
-        //    ViewBag.year_end = year_end;
-        //    ViewBag.start = start;
-        //    ViewBag.count = count;
+            //foreach (Title title in titles)
+            //{
+            //    //create a  movie from the title, and add it to a list of movies and
+            //    // the database
+            //    Movie movie = NetFlixAPI.Create.CreateMovie(title);
+            //    movies.Add(movie);
+            //    db.Movies.Add(movie);
 
-        //    if (count > movie_list.Count)
-        //    {
-        //        count = movie_list.Count - 1;
-        //    }
-        //    var results = movie_list.GetRange(start, start + count);
-        //    return View("Index", results);
+            //    //create a boxart object from the movie and title object
+            //    BoxArt boxArt =
+            //        NetFlixAPI.Create.CreateMovieBoxartFromTitle(movie, title);
+            //    db.BoxArts.Add(boxArt);
+
+            //    //for all the genres in a title, create the linking MtG 
+            //    // and then add that object to the db
+            //    foreach (Genre genre in title.ListGenres)
+            //    {
+            //        MovieToGenre movieToGenre =
+            //            NetFlixAPI.Create.CreateMovieMovieToGenre(movie,
+            //                                                      genre);
+            //        db.MovieToGenres.Add(movieToGenre);
+
+            //    }
+            //}
+
+            //db.SaveChanges();
+
+            //return View(movies.ToList());
+        //    return View();
         //}
-
-
-        ///// <summary>
-        ///// go through db, find id of genre param, go through db again for all movie Ids that match to a genre_id
-        ///// </summary>
-        ///// <returns></returns>
-        //public ActionResult Genres(string genre = "action",
-        //                           int count = 25,
-        //                           int start = 0)
-        //{
-        //    MovieDbContext db = new MovieDbContext();
-
-        //    //make sure params are set, because "" is a valid parameter
-        //    if (genre == "")
-        //    {
-        //        genre = "nothing";
-        //    }
-
-        //    //get a movie list that matches genres
-        //    var movie_list = Tools.GetMoviesMatchingGenre(db, genre);
-        //    //creates the MwGVM for the movie list
-        //    var ranged_movie_list = movie_list.GetRange(start, count);
-        //    var MwG_list = ModelBuilder.CreateListOfMwGVM(db, ranged_movie_list);
-
-        //    //to show a given view what the user searched for
-        //    ViewBag.SearchTerms = genre;
-        //    //relectively get the list of parameters for this method and pass them to the view
-        //    ViewBag.Params = Tools.GetAllParamNames("Genres");
-
-        //    //if the count param is higher than the amount of MwG's in the list,
-        //    // make count the upper limit
-        //    if (count > MwG_list.Count)
-        //    {
-        //        count = MwG_list.Count;
-        //    }
-
-        //    ViewBag.Count = count;
-        //    ViewBag.Start = start;
-        //    ViewBag.TotalMovies = movie_list.Count;
-
-        //    //var ret = MwG_list.GetRange(start, count);
-        //    return View(MwG_list);
-
-        //}
-
-        //-------------------------------------------------------
-
-        //public ActionResult oldIndex(int start = 0, int count = 10)
-        //{
-        //    MovieDbContext db = new MovieDbContext();
-
-        //    //create a query string to full the proper count of movies from db
-        //    Trace.WriteLine("Creating a query string");
-
-        //    //select a range of items, with linq rather than with query
-        //    var fullList = db.Movies.OrderBy(item => item.movie_ID).Skip(start).Take(count).ToList();
-
-        //    //count the total movies in DB
-        //    Trace.WriteLine("Counting movies");
-        //    string count_qry = "select count(movie_id) from Movies";
-        //    var count_res = db.Database.SqlQuery<int>(count_qry);
-        //    int count_count = count_res.ElementAt(0);
-        //    ViewBag.TotalMovies = count_count;
-
-        //    //misc numbers
-        //    ViewBag.Start = start;
-        //    ViewBag.Count = count;
-
-        //    //Param names
-        //    Trace.WriteLine("getting param names");
-        //    ViewBag.Params = Tools.GetAllParamNames("Index");
-
-        //    //make sure there's not a outofbounds
-        //    if (count > fullList.Count)
-        //    {
-        //        count = fullList.Count;
-        //        Trace.WriteLine("had to shorten the returned results");
-        //    }
-
-        //    Trace.WriteLine("Get ranging");
-        //    var full_range = fullList.GetRange(0, count);
-
-
-        //    //turn all the movies into MovieWithGenresViewModel
-        //    var MwG_list = ModelBuilder.CreateListOfMwGVM(db, full_range);
-
-        //    IEnumerable<MovieWithGenreViewModel> MwG_ienum = MwG_list;
-
-        //    Trace.WriteLine("Returning View");
-        //    return View("Genres", MwG_ienum);
-        //}
-
-
-
-
-       
         //
         // GET: /Movies/Details/5
 
@@ -646,12 +461,12 @@ namespace NextFlicksMVC4.Controllers
                 Movie taggedMovie = db.Movies.Find(movie_ID);
                 MovieTag newTag = new MovieTag();
 
-                //break the tags down by comma delimeter
-                List<String> seperatedtags = UserInput.DeliminateStrings(tags);
-                seperatedtags = UserInput.StripWhiteSpace(seperatedtags);
-                seperatedtags = UserInput.SanitizeSpecialCharacters(seperatedtags);
+                //break the tags down by comma delimiter
+                List<String> separatedtags = UserInput.DeliminateStrings(tags);
+                separatedtags = UserInput.StripWhiteSpace(separatedtags);
+                separatedtags = UserInput.SanitizeSpecialCharacters(separatedtags);
                 
-                foreach (string tag in seperatedtags)
+                foreach (string tag in separatedtags)
                 {
                     var tagExists = db.MovieTags.First(t => t.Name == tag);
                     if (tagExists == null)
@@ -664,7 +479,7 @@ namespace NextFlicksMVC4.Controllers
                     }
                     else
                     {
-                        //otherwise slecte the MovieTag where the names match and use that.
+                        //otherwise select the MovieTag where the names match and use that.
                         newTag = db.MovieTags.First(t => t.Name == tag);
                     }
 
@@ -719,7 +534,7 @@ namespace NextFlicksMVC4.Controllers
 
 
 
-            return View("Details", fullView);
+            return View("Details2", fullView);
         }
 
         [HttpPost]
@@ -785,7 +600,6 @@ namespace NextFlicksMVC4.Controllers
 
         //
         // GET: /Movies/Create
-
         public ActionResult Create()
         {
             return View();
@@ -793,7 +607,6 @@ namespace NextFlicksMVC4.Controllers
 
         //
         // POST: /Movies/Create
-
         [HttpPost]
         public ActionResult Create(Movie movie)
         {
@@ -871,38 +684,6 @@ namespace NextFlicksMVC4.Controllers
             db.Dispose();
             base.Dispose(disposing);
         }
-
-        ////sort movies by t_meter
-        //public ActionResult Sort()
-        //{
-
-        //    DateTime start = DateTime.Now;
-        //    MovieDbContext db = new MovieDbContext();
-
-        //    ////has never worked, but shows the idea
-        //    //var result_list = db.Database.SqlQuery<FullViewModel>(
-        //    //"SELECT        Movies.short_title, OmdbEntries.t_Meter" +
-        //    //"FROM            OmdbEntries INNER JOIN" +
-        //    //"Movies ON OmdbEntries.movie_ID = Movies.movie_ID" +
-        //    //"WHERE        (OmdbEntries.t_Meter <> 'n/a')" +
-        //    //"ORDER BY OmdbEntries.t_Meter DESC");
-
-        //    var result_list = db.Omdb.Where(omdb => omdb.movie_ID != 0).OrderByDescending(item => item.t_Meter);
-
-        //    var qwe = result_list.ToList();
-
-        //    Tools.TraceLine("count: {0}", qwe.Count);
-
-        //    Tools.TraceLine("Top t_meter movie: {0}", qwe.First().title);
-
-        //    DateTime end = DateTime.Now;
-
-        //    var span = end - start;
-
-        //    Tools.TraceLine("Took {0} seconds", span.TotalSeconds);
-
-        //    return View();
-        //}
 
     }
 }

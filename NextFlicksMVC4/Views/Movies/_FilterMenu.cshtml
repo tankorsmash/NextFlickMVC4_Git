@@ -1,7 +1,7 @@
 ﻿        
 <div class="filter_area">
-    
-    <form name="movie_search_form">
+              <span>
+    <form style="float: left" name="movie_search_form">
 
     @Html.TextBox("movie_title", "Enter a title")
 
@@ -17,7 +17,7 @@
     </select>
     <input type="submit" value="Search Movies" />
     </form>
-    <strong>or</strong>
+    @*<strong>or</strong>*@
     <form name="tag_search_form">
 
 @*    @Html.TextBox("tag_string", "Enter a tag")
@@ -33,6 +33,7 @@
     </select>
     <input type="submit" value="Search Tags" />
     </form>
+    </span>
 </div>
 
 
