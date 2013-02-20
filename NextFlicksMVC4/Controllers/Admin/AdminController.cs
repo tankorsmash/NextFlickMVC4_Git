@@ -68,6 +68,10 @@ namespace NextFlicksMVC4.Controllers.Admin
             {
                 DatabaseTools.FullDbBuild();
             }
+            if (button == "Join Lines")
+            {
+                Tools.JoinLines(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
+            }
             return View();
         }
     }

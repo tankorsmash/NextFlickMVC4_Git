@@ -13,6 +13,7 @@ using NextFlicksMVC4.NetFlixAPI;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 using NextFlicksMVC4.OMBD;
 using ProtoBuf;
+using System.Text.RegularExpressions;
 
 namespace NextFlicksMVC4
 {
@@ -617,19 +618,30 @@ namespace NextFlicksMVC4
         {
             TraceLine("In JoinLines");
 
+            // try soem regex to match the lines that don't start with <catalog
+            Regex startsWith = new Regex(@"/^<catalog");
 
             //read the file into a list of lines
             WriteTimeStamp("  Reading file");
             List<string> lines = new List<string>();
-            using (StreamReader reader = new StreamReader(filepath)) {
+            using (StreamReader reader = new StreamReader(filepath)) 
+            {
                 string line;
-                while ((line = reader.ReadLine()) != null) {
+                while ((line = reader.ReadLine()) != null) 
+                {
+                    Match m = startsWith.Match(line);
+                    if (m.Success)
+                    {
+                        TraceLine("Foudna match");
+                    }
                     lines.Add(line);
                 }
             }
-
-            //remove the lines that start with the lines below
-            if (skip_default_xml) {
+            //MatchCollection NonMatchngLines = new MatchCollection();
+           
+                //remove the lines that start with the lines below
+            if (skip_default_xml) 
+            {
                 WriteTimeStamp("  removing default xml");
                 lines =
                     lines.Where(

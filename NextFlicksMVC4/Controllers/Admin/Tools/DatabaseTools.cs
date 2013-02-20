@@ -157,11 +157,8 @@ namespace NextFlicksMVC4.Controllers.Admin
         //loop over all the movies in Movies and find an omdb entry for it
         public static void Merge()
         {
-
             MovieDbContext db = new MovieDbContext();
-
             Tools.MarryMovieToOmdb(db);
-
         }
 
         public static void Api(string term = "Jim Carrey")
@@ -220,7 +217,6 @@ namespace NextFlicksMVC4.Controllers.Admin
         public static void UpdateGenreList(string filepath)
         {
             Tools.WriteTimeStamp("start update genres");
-            List<Tuple<int, string>> genre_ids_strings = new List<Tuple<int, string>>();
             Dictionary<int, string> genres = new Dictionary<int, string>();
             using (XmlReader xmlReader = XmlReader.Create(filepath))
             {
