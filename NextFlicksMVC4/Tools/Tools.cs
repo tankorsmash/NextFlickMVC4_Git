@@ -619,7 +619,7 @@ namespace NextFlicksMVC4
             TraceLine("In JoinLines");
 
             // try soem regex to match the lines that don't start with <catalog
-            Regex startsWith = new Regex(@"/^<catalog");
+            Regex startsWith = new Regex(@"^<catalog|^<?xml|^</catalog");
 
             //read the file into a list of lines
             WriteTimeStamp("  Reading file");
@@ -630,7 +630,7 @@ namespace NextFlicksMVC4
                 while ((line = reader.ReadLine()) != null) 
                 {
                     Match m = startsWith.Match(line);
-                    if (m.Success)
+                    if (!m.Success)
                     {
                         TraceLine("Foudna match");
                     }
