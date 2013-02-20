@@ -614,13 +614,70 @@ namespace NextFlicksMVC4
         /// <param name="skip_default_xml">whether or not to skip the fist two lines and the last one</param>
         public static void JoinLines(string filepath,
                                      string start_string = "<catalog",
-                                     bool skip_default_xml = true)
+                                     bool skip_default_xml = true, bool found_matching_lines = false )
         {
             TraceLine("In JoinLines");
+            //try my code here and comemnt out all the other stuff.
+            //Tankorsmash's code is great and works well if you are not on 32bit, with 2GB memory cap, I can't use this code.
+            //come up with a new function that checks each line to see if it matches the ^<catalog and if not join to the above line
+            Regex startsWith = new Regex(@"^<catalog|^<\?xml|^</cat");
 
-            // try soem regex to match the lines that don't start with <catalog
-            Regex startsWith = new Regex(@"^<catalog|^<?xml|^</catalog");
+            Regex startsWithCatalog = new Regex("^<catalog", RegexOptions.Singleline);
+            Regex startsWithXML = new Regex(@"^<\?xml", RegexOptions.Singleline);
+            Regex startsWithEndCataog = new Regex("^</catalog", RegexOptions.Singleline);
+            //keep a list of new lines that have been meregs. I think i can just cram em in at position 2 over and over again, not 
+            //sure the overall order of titles in the xml matters.
+            string combinedLines = " ";
+            
+            string lastline = ""; //for keepign track of the last line in case we need to merge the two
+            string line = "";
+            using (StreamReader reader = new StreamReader(filepath))
+            {
+                using (StreamWriter writer = new StreamWriter(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/temp.NFPOX")))
+                {
+                    while ((line = reader.ReadLine()) != null)
+                    {
 
+                        Match match = startsWith.Match(line.Trim());
+                        Match matchXML = startsWithXML.Match(line.Trim());
+                        Match matchEnd = startsWithEndCataog.Match(line.Trim());
+                        if (!match.Success)
+                        {
+                            found_matching_lines = true;
+                            combinedLines = lastline.Trim() + line.Trim();
+                            writer.WriteLine(combinedLines);
+                        }
+                        else
+                        {
+                            writer.WriteLine(line);
+                        }
+                        lastline = line;
+                    }
+                }
+            }
+
+            //change the files around, overwrite fixedAPI.nfpox so that we can go through the same process again if neccesary
+            //if not it will jsut write temp to fixedapi so we are good to go next step.
+            var fixedAPI = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX");
+            var temp = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/temp.NFPOX");
+            var backup = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/backup.NFPOX");
+            if (File.Exists(fixedAPI) && File.Exists(temp))
+            {
+                File.Replace(temp, fixedAPI, backup);
+                File.Delete(temp);
+
+            }
+            if (found_matching_lines)
+            {
+                JoinLines(fixedAPI);
+            }
+            else
+            {
+             
+            }
+
+
+            /*
             //read the file into a list of lines
             WriteTimeStamp("  Reading file");
             List<string> lines = new List<string>();
@@ -629,11 +686,6 @@ namespace NextFlicksMVC4
                 string line;
                 while ((line = reader.ReadLine()) != null) 
                 {
-                    Match m = startsWith.Match(line);
-                    if (!m.Success)
-                    {
-                        TraceLine("Foudna match");
-                    }
                     lines.Add(line);
                 }
             }
@@ -659,6 +711,12 @@ namespace NextFlicksMVC4
             foreach (string line in lines) {
                 if (line.StartsWith(start_string) != true) {
                     TraceLine(line);
+
+                    //set found_matching_lines to true because we found a matching line and should check 
+                    //another time to make sure there ar eno leftovers. Otherwise it will be false and the function will 
+                    //exit at the end.
+                    found_matching_lines = true; 
+
                     //System.Diagnostics.Debug.WriteLine(line);
 
                     //line above current line
@@ -678,6 +736,7 @@ namespace NextFlicksMVC4
                     fixed_lines.Add(line);
                 }
             }
+            
             //add the first two lines back to fixed lines and the last line so it is  avalid xml doc with root elements
             fixed_lines.Insert(0, "<?xml version=\"1.0\" standalone=\"yes\"?>"); //<?xml  version= 1.0
             fixed_lines.Insert(1, "<catalog_titles>"); // <catalog_titles>
@@ -689,7 +748,15 @@ namespace NextFlicksMVC4
                     writer.WriteLine(fixedLine);
                 }
             }
-            TraceLine("Out PopulateGenresTable");
+            if (found_matching_lines)
+            {
+                lines = new List<string>();
+                fixed_lines = new List<string>();
+                GC.Collect();
+                JoinLines(filepath);
+            }
+             * */
+            TraceLine("Out JoinLines");
         }
 
         public static void BuildMoviesBoxartGenresTables(string filepath)
