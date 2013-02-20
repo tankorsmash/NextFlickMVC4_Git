@@ -61,19 +61,18 @@ namespace NextFlicksMVC4.Tests
                                      movie_ID = 0,
                                      tv_rating= "not set",
                                      web_page = "www.netflix.com/test",
-
-
                                  };
 
-
-        
 
             Tools.TraceLine("result hash: {0}\nexpected hash: {1}", result.GetHashCode(), expected.GetHashCode());
             Assert.AreEqual(result, expected);
 
-            //to test equality rules
-            //Assert.AreEqual(new List<int>(new int[]{1}), new List<int>(new int[]{1}));
+        }
 
+        [Test]
+        public void Testasd()
+        {
+            
         }
 
 

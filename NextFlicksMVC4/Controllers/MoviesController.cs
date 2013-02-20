@@ -336,19 +336,19 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
-        public ActionResult DetailsNit()
-        {
-            //create a VM
-            MovieDbContext movieDb = new MovieDbContext();
-            List<Movie> movie_list = movieDb.Movies.Take(1).ToList();
+        //public ActionResult DetailsNit()
+        //{
+        //    //create a VM
+        //    MovieDbContext movieDb = new MovieDbContext();
+        //    List<Movie> movie_list = movieDb.Movies.Take(1).ToList();
 
-            var MwG_list = Tools.FilterMovies(movieDb, movie_list);
-            //FullViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
+        //    var MwG_list = Tools.FilterMovies(movieDb, movie_list);
+        //    //FullViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
 
-            var NitVm = MwG_list.First();
+        //    var NitVm = MwG_list.First();
 
-            return View(NitVm);
-        }
+        //    return View(NitVm);
+        //}
 
         
 

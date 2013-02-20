@@ -117,6 +117,7 @@ namespace NextFlicksMVC4
         /// <param name="count">Limits the amount of movies returned -at the very end- of the function instead of the start</param>
         /// <param name="verbose"> whether or not to print output trace lines</param>
         /// <returns></returns>
+        [Obsolete("don't use anymore", true)]
         public static List<FullViewModel> FilterMovies(
             MovieDbContext db,
             List<Movie> movie_list,
