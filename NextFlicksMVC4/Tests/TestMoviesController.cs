@@ -57,7 +57,7 @@ namespace NextFlicksMVC4.Tests
                                      avg_rating = "3",
                                      is_movie = true,
                                      current_season = "0",
-                                     maturity_rating = 100,
+                                     maturity_rating = 200,
                                      movie_ID = 0,
                                      tv_rating= "not set",
                                      web_page = "www.netflix.com/test",
@@ -68,6 +68,7 @@ namespace NextFlicksMVC4.Tests
 
         
 
+            Tools.TraceLine("result hash: {0}\nexpected hash: {1}", result.GetHashCode(), expected.GetHashCode());
             Assert.AreEqual(result, expected);
 
             //to test equality rules
