@@ -614,17 +614,17 @@ namespace NextFlicksMVC4
         /// <param name="skip_default_xml">whether or not to skip the fist two lines and the last one</param>
         public static void JoinLines(string filepath,
                                      string start_string = "<catalog",
-                                     bool skip_default_xml = true, bool found_matching_lines = false )
+                                     bool skip_default_xml = true, bool found_broken_lines = false )
         {
             TraceLine("In JoinLines");
             //try my code here and comemnt out all the other stuff.
             //Tankorsmash's code is great and works well if you are not on 32bit, with 2GB memory cap, I can't use this code.
             //come up with a new function that checks each line to see if it matches the ^<catalog and if not join to the above line
-            Regex startsWith = new Regex(@"^<catalog|^<\?xml|^</cat");
+            Regex startsWith = new Regex(@"^<catalog");
+            Regex endRoot = new Regex(@"^</catalog_titles>");
+            Regex endsWith = new Regex(@"title>$");
+            Regex startsWithXML = new Regex(@"^<\?xml");
 
-            Regex startsWithCatalog = new Regex("^<catalog", RegexOptions.Singleline);
-            Regex startsWithXML = new Regex(@"^<\?xml", RegexOptions.Singleline);
-            Regex startsWithEndCataog = new Regex("^</catalog", RegexOptions.Singleline);
             //keep a list of new lines that have been meregs. I think i can just cram em in at position 2 over and over again, not 
             //sure the overall order of titles in the xml matters.
             string combinedLines = " ";
@@ -640,16 +640,21 @@ namespace NextFlicksMVC4
 
                         Match match = startsWith.Match(line.Trim());
                         Match matchXML = startsWithXML.Match(line.Trim());
-                        Match matchEnd = startsWithEndCataog.Match(line.Trim());
-                        if (!match.Success)
-                        {
-                            found_matching_lines = true;
-                            combinedLines = lastline.Trim() + line.Trim();
-                            writer.WriteLine(combinedLines);
-                        }
-                        else
+                        Match matchEnd = endsWith.Match(line.Trim());
+                        Match matchRootEnd = endRoot.Match(line.Trim());
+                        if (matchXML.Success || matchRootEnd.Success)
                         {
                             writer.WriteLine(line);
+                        }
+                        else if (match.Success && matchEnd.Success)
+                        {
+                            writer.WriteLine(line);
+                        }
+                        else if (!match.Success)
+                        {
+                            found_broken_lines = true;
+                            combinedLines = lastline.Trim() + line.Trim();
+                            writer.WriteLine(combinedLines);
                         }
                         lastline = line;
                     }
@@ -667,7 +672,7 @@ namespace NextFlicksMVC4
                 File.Delete(temp);
 
             }
-            if (found_matching_lines)
+            if (found_broken_lines)
             {
                 JoinLines(fixedAPI);
             }
