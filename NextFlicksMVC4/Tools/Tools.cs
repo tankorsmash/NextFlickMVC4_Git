@@ -614,13 +614,18 @@ namespace NextFlicksMVC4
         /// <param name="skip_default_xml">whether or not to skip the fist two lines and the last one</param>
         public static void JoinLines(string filepath,
                                      string start_string = "<catalog",
-                                     bool skip_default_xml = true, bool found_broken_lines = false )
+                                     bool skip_default_xml = true)
         {
             TraceLine("In JoinLines");
+            //keep track of how many malformed lines I have found in a row, 1 = record the line to join the next line to
+            // 2 lines found means join lines, write file and recurse through again.
+            int brokenLinesFound = 0; 
+            bool found_broken_lines = false;
             //try my code here and comemnt out all the other stuff.
             //Tankorsmash's code is great and works well if you are not on 32bit, with 2GB memory cap, I can't use this code.
             //come up with a new function that checks each line to see if it matches the ^<catalog and if not join to the above line
-            Regex startsWith = new Regex(@"^<catalog");
+            Regex startsWith = new Regex(@"^<catalog_title");
+            Regex startRoot = new Regex(@"^<catalog_titles>");
             Regex endRoot = new Regex(@"^</catalog_titles>");
             Regex endsWith = new Regex(@"title>$");
             Regex startsWithXML = new Regex(@"^<\?xml");
@@ -630,6 +635,8 @@ namespace NextFlicksMVC4
             string combinedLines = " ";
             
             string lastline = ""; //for keepign track of the last line in case we need to merge the two
+            List<String> malformedLines = new List<string>(); //keep track of all malformed lines in a row and then add them together then write the line
+            string fixedLine = "";
             string line = "";
             using (StreamReader reader = new StreamReader(filepath))
             {
@@ -637,26 +644,41 @@ namespace NextFlicksMVC4
                 {
                     while ((line = reader.ReadLine()) != null)
                     {
+                        var trimmedLine = line.Trim();
 
-                        Match match = startsWith.Match(line.Trim());
-                        Match matchXML = startsWithXML.Match(line.Trim());
-                        Match matchEnd = endsWith.Match(line.Trim());
-                        Match matchRootEnd = endRoot.Match(line.Trim());
-                        if (matchXML.Success || matchRootEnd.Success)
+                        Match match = startsWith.Match(trimmedLine);
+                        Match matchXML = startsWithXML.Match(trimmedLine);
+                        Match matchEnd = endsWith.Match(trimmedLine);
+                        Match matchRootStart = startRoot.Match(trimmedLine);
+                        Match matchRootEnd = endRoot.Match(trimmedLine);
+
+                        if ((matchXML.Success || matchRootStart.Success || matchRootEnd.Success) ||
+                            (match.Success && matchEnd.Success))
                         {
+                            if(brokenLinesFound > 0)
+                            {
+                                brokenLinesFound = 0;
+                                for (int i = 0; i < malformedLines.Capacity; i++)
+                                {
+                                    fixedLine += malformedLines[i];
+                                }
+                                writer.WriteLine(fixedLine);
+                            }
                             writer.WriteLine(line);
                         }
-                        else if (match.Success && matchEnd.Success)
-                        {
-                            writer.WriteLine(line);
-                        }
+
                         else if (!match.Success)
                         {
+                            brokenLinesFound += 1;
                             found_broken_lines = true;
-                            combinedLines = lastline.Trim() + line.Trim();
-                            writer.WriteLine(combinedLines);
+
+                            if(brokenLinesFound > 0)
+                            {
+                                malformedLines.Add(trimmedLine);
+                            }
+                            
                         }
-                        lastline = line;
+                        
                     }
                 }
             }
@@ -676,12 +698,7 @@ namespace NextFlicksMVC4
             {
                 JoinLines(fixedAPI);
             }
-            else
-            {
-             
-            }
-
-
+           
             /*
             //read the file into a list of lines
             WriteTimeStamp("  Reading file");

@@ -83,7 +83,7 @@ namespace NextFlicksMVC4.NetFlixAPI
             web.KeepAlive = true;
             //adding gzip
             web.AutomaticDecompression = DecompressionMethods.GZip |
-                                         DecompressionMethods.Deflate;
+                                         DecompressionMethods.Deflate; 
 
 
             Trace.WriteLine("Starting GetResponse with\n{0}", toSend);
