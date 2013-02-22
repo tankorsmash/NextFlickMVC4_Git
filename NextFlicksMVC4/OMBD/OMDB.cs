@@ -326,7 +326,7 @@ namespace NextFlicksMVC4.OMBD
 
             //extract it
             using (ZipFile zip = new ZipFile(zipOutput)) {
-                zip.ExtractAll("OMDB");
+                zip.ExtractAll(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles"), ExtractExistingFileAction.OverwriteSilently);
             }
         }
     }

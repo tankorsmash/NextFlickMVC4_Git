@@ -72,6 +72,14 @@ namespace NextFlicksMVC4.Controllers.Admin
             {
                 Tools.JoinLines(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
             }
+            if (button == "omdb")
+            {
+                Omdb.DownloadOmdbZipAndExtract(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.zip"));
+            }
+            if (button == "hash")
+            {
+                DatabaseTools.RemoveDuplicateMovies();
+            }
             return View();
         }
     }

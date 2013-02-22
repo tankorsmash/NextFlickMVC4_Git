@@ -50,7 +50,19 @@ namespace NextFlicksMVC4.Models
 
         //[DisplayName("Boxart")]
         //public virtual int boxart_ID { get; set; }
-
+        public override int GetHashCode()
+        {
+            return (//this.movie_ID == movie.movie_ID &&
+                    this.short_title.GetHashCode() ^
+                    this.year.GetHashCode() ^
+                    this.runtime.GetHashCode() ^
+                    this.avg_rating.GetHashCode() ^
+                    this.tv_rating.GetHashCode() ^
+                    this.web_page.GetHashCode() ^
+                    this.current_season.GetHashCode() ^
+                    this.maturity_rating.GetHashCode()
+                   );
+        }
     }
 
     public class Genre

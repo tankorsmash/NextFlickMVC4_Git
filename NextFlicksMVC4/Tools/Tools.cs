@@ -619,7 +619,6 @@ namespace NextFlicksMVC4
             TraceLine("In JoinLines");
             //keep track of how many malformed lines I have found in a row, 1 = record the line to join the next line to
             // 2 lines found means join lines, write file and recurse through again.
-            int brokenLinesFound = 0; 
             bool found_broken_lines = false;
             //try my code here and comemnt out all the other stuff.
             //Tankorsmash's code is great and works well if you are not on 32bit, with 2GB memory cap, I can't use this code.
@@ -632,7 +631,7 @@ namespace NextFlicksMVC4
 
             //keep a list of new lines that have been meregs. I think i can just cram em in at position 2 over and over again, not 
             //sure the overall order of titles in the xml matters.
-            string combinedLines = " ";
+            string combinedLines = "";
             
             string lastline = ""; //for keepign track of the last line in case we need to merge the two
             List<String> malformedLines = new List<string>(); //keep track of all malformed lines in a row and then add them together then write the line
@@ -646,39 +645,35 @@ namespace NextFlicksMVC4
                     {
                         var trimmedLine = line.Trim();
 
-                        Match match = startsWith.Match(trimmedLine);
+                        Match matchStart = startsWith.Match(trimmedLine);
                         Match matchXML = startsWithXML.Match(trimmedLine);
                         Match matchEnd = endsWith.Match(trimmedLine);
                         Match matchRootStart = startRoot.Match(trimmedLine);
                         Match matchRootEnd = endRoot.Match(trimmedLine);
 
                         if ((matchXML.Success || matchRootStart.Success || matchRootEnd.Success) ||
-                            (match.Success && matchEnd.Success))
+                            (matchStart.Success && matchEnd.Success))
                         {
-                            if(brokenLinesFound > 0)
+                            if (malformedLines.Count > 0)
                             {
-                                brokenLinesFound = 0;
-                                for (int i = 0; i < malformedLines.Capacity; i++)
-                                {
-                                    fixedLine += malformedLines[i];
-                                }
-                                writer.WriteLine(fixedLine);
+                                var fixedXml = String.Join(String.Empty, malformedLines.ToArray());
+                                writer.WriteLine(fixedXml);
+                                malformedLines.Clear();
                             }
-                            writer.WriteLine(line);
+
+                            writer.WriteLine(trimmedLine);
+                            lastline = trimmedLine;
                         }
 
-                        else if (!match.Success)
+                        else //if (!matchStart.Success)
                         {
-                            brokenLinesFound += 1;
                             found_broken_lines = true;
+                            malformedLines.Add(trimmedLine);
+                            //combinedLines = lastline + trimmedLine;
+                            //writer.WriteLine(combinedLines);
+                            //lastline = ""; //do this so that we dont end up with some malformed aborted fetus of an xml code
 
-                            if(brokenLinesFound > 0)
-                            {
-                                malformedLines.Add(trimmedLine);
-                            }
-                            
                         }
-                        
                     }
                 }
             }
@@ -819,15 +814,15 @@ namespace NextFlicksMVC4
                                     Create.CreateMovie(titles[0]);
                                 //check to see if the movie already exists in the database so we don't try to add it again or
                                 //try to add box art etc to it again.
-                                var movieExists = from db_movie in db.Movies
+                               /* var movieExists = from db_movie in db.Movies
                                                   where db_movie.short_title == movie.short_title
-                                                  select db_movie;
-                                if(!movieExists.Any())
-                                {
+                                                  select db_movie; */
+                              //  if(!movieExists.Any())
+                               // {
                                     //add to DB and dict
                                     dictOfMoviesTitles[movie] = titles[0];
                                     db.Movies.Add(movie);
-                                }
+                                //}
                             }
                             else 
                             {

@@ -15,6 +15,11 @@ namespace NextFlicksMVC4.OMBD
 
         public static void DownloadOmdbZip(string url = @"http://www.beforethecode.net/projects/OMDb/download.aspx?e=tankorsmash@gmail.com", string outputPath = @"omdb.zip")
         {
+            Tools.TraceLine("start download:\n{0}", url);
+            using (WebClient client = new WebClient())
+            {
+                client.DownloadFile(url, outputPath);
+            }
             //doesn't work
             //Tools.TraceLine("start download:\n{0}", url);
             //using (WebClient client = new WebClient()) {
@@ -23,13 +28,14 @@ namespace NextFlicksMVC4.OMBD
             //}
             //Tools.TraceLine("done download");
 
+            /* tankorsmash code below
             Uri uri = new Uri(url);
 
             //download the omdbzip
             HttpWebRequest web = (HttpWebRequest)WebRequest.Create(uri);
             web.KeepAlive = true;
             web.AutomaticDecompression = DecompressionMethods.GZip |
-                                         DecompressionMethods.Deflate;
+                                         DecompressionMethods.Deflate; 
             //web.UserAgent = @"Mozilla/5.0 Windows NT 6.1 WOW64 AppleWebKit/537.11 KHTML, like Gecko Chrome/23.0.1271.97 Safari/537.11";
             web.UserAgent = @"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11";
 
@@ -63,7 +69,7 @@ namespace NextFlicksMVC4.OMBD
 
                 }
                 file.Close();
-            }
+            } */
             Tools.WriteTimeStamp();
             Tools.TraceLine("Successfully wrote and closed to {0}", outputPath);
 
