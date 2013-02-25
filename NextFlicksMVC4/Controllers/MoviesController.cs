@@ -205,8 +205,6 @@ namespace NextFlicksMVC4.Controllers
         {
 
 
-            int movie_count = 28;
-            int movies_to_skip = movie_count * (page - 1);
 
             var db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = true;
@@ -277,31 +275,9 @@ namespace NextFlicksMVC4.Controllers
                 //Tools.TraceLine("  counting took {0}", count_end - count_start);
 
 
+                int movie_count = 28;
                 var page_start = Tools.WriteTimeStamp();
-
-                Tools.TraceLine("  Retrieving paginated results");
-
-                var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
-
-                Tools.TraceLine("  sorting movie ids");
-                var sorted_movie_ids =
-                    ids.OrderBy(movie_id => movie_id)
-                       .Skip(movies_to_skip)
-                       .Take(movie_count)
-                       .ToArray();
-
-                Tools.TraceLine("  grabbing matched movies");
-                //take all the pages up to and including the ones you'll show 
-                // on page, then only take the last set of movies you'll show
-                IEnumerable<FullViewModel> nit_list =
-                    Tools.GetFullDbQuery(db)
-                         .Where(
-                             fullViewModel =>
-                             sorted_movie_ids.Any(
-                                 movie_id =>
-                                 movie_id == fullViewModel.Movie.movie_ID))
-                         .ToList();
-                Tools.TraceLine("  done matching movies, returning");
+                var nit_list = FindPageOfMovies(res, page, movie_count, db);
 
                 //to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
                 if (totalMovies < movie_count)
@@ -328,6 +304,38 @@ namespace NextFlicksMVC4.Controllers
                 return View("Error");
             }
 
+        }
+
+        private static IEnumerable<FullViewModel> FindPageOfMovies(IQueryable<FullViewModel> res,
+                                                    int page,
+                                                    int movie_count,
+                                                    MovieDbContext db )
+        {
+            Tools.TraceLine("  Retrieving paginated results");
+
+            int movies_to_skip = movie_count * (page - 1);
+            var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
+
+            Tools.TraceLine("  sorting movie ids");
+            var sorted_movie_ids =
+                ids.OrderBy(movie_id => movie_id)
+                   .Skip(movies_to_skip)
+                   .Take(movie_count)
+                   .ToArray();
+
+            Tools.TraceLine("  grabbing matched movies");
+            //take all the pages up to and including the ones you'll show 
+            // on page, then only take the last set of movies you'll show
+            IEnumerable<FullViewModel> nit_list =
+                Tools.GetFullDbQuery(db)
+                     .Where(
+                         fullViewModel =>
+                         sorted_movie_ids.Any(
+                             movie_id =>
+                             movie_id == fullViewModel.Movie.movie_ID))
+                     .ToList();
+            Tools.TraceLine("  done matching movies, returning");
+            return nit_list;
         }
 
 
