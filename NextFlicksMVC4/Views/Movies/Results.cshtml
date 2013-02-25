@@ -109,29 +109,21 @@
             @Html.ActionLink("PREV PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) - 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div> 
       }
-      }
-
-@*have to add one to the pages val here, because the first page is '1', not '0', 
-can't explain the math properly, so it means I don't understand it yet
-
-there's this issue when you're on the final page that to total number of pages goes up, I'll have to work
-to undertand that*@
-
+    }
+    @*have to add one to the pages val here, because the first page is '1', not '0', 
+    can't explain the math properly, so it means I don't understand it yet *@
     @for (int i = 1; i < ViewBag.pages + 1; i++)
     {
-
-        if (i != Convert.ToInt32(ViewBag.current_page))
-        {
+        if (i != Convert.ToInt32(ViewBag.current_page)) {
         <div class="pagination_page">
             @Html.ActionLink((i).ToString(), "Index", new { page = i, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div>
         }
-        else
-        { 
+        else { 
         <span class="pagination_current_page">@i</span>   
         }
-
     }
+
     @* the next button *@
     @{if (Convert.ToInt32(ViewBag.current_page) < ViewBag.pages) {
         <div class="pagination_next">
