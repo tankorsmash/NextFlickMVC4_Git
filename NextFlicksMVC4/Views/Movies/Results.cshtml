@@ -95,20 +95,7 @@
     *@
 
 @{
-    int pages = total_movies/ViewBag.movies_per_page;
-    int remaining_movies = total_movies%ViewBag.movies_per_page;
-    //increment pages by one, since there'll be movies left over most of the time 
-    if (remaining_movies != 0) {
-        pages++;
-    }
 
-    string movie_title = Request.Params["movie_title"];
-    string genre_select = Request.Params["genre_select"];
-
-    string current_page = Request.Params["page"];
-    if (current_page == null) {
-        current_page = "1";
-    }
     
 
 }
@@ -117,9 +104,9 @@
     
 
     @* the previous button *@
-    @{if (Convert.ToInt32(current_page) != 1) {
+    @{if (Convert.ToInt32(ViewBag.current_page) != 1) {
         <div class="pagination_prev">
-            @Html.ActionLink("PREV PAGE", "Index", new { page = Convert.ToInt32(current_page) - 1, movie_title = movie_title, genre_select = genre_select }, null)
+            @Html.ActionLink("PREV PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) - 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div> 
       }
       }
@@ -130,13 +117,13 @@ can't explain the math properly, so it means I don't understand it yet
 there's this issue when you're on the final page that to total number of pages goes up, I'll have to work
 to undertand that*@
 
-    @for (int i = 1; i < pages + 1; i++)
+    @for (int i = 1; i < ViewBag.pages + 1; i++)
     {
 
-        if (i != Convert.ToInt32(current_page))
+        if (i != Convert.ToInt32(ViewBag.current_page))
         {
         <div class="pagination_page">
-            @Html.ActionLink((i).ToString(), "Index", new { page = i, movie_title = movie_title, genre_select = genre_select }, null)
+            @Html.ActionLink((i).ToString(), "Index", new { page = i, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div>
         }
         else
@@ -146,9 +133,9 @@ to undertand that*@
 
     }
     @* the next button *@
-    @{if (Convert.ToInt32(current_page) < pages) {
+    @{if (Convert.ToInt32(ViewBag.current_page) < ViewBag.pages) {
         <div class="pagination_next">
-            @Html.ActionLink("NEXT PAGE", "Index", new { page = Convert.ToInt32(current_page) + 1, movie_title = movie_title, genre_select = genre_select }, null)
+            @Html.ActionLink("NEXT PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) + 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div> 
     }}
 </div>
