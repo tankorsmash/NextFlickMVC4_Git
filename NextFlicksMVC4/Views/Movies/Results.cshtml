@@ -114,11 +114,13 @@
     can't explain the math properly, so it means I don't understand it yet *@
     @for (int i = 1; i < ViewBag.pages + 1; i++)
     {
+        //if not the current page, print a link to the given page
         if (i != Convert.ToInt32(ViewBag.current_page)) {
         <div class="pagination_page">
             @Html.ActionLink((i).ToString(), "Index", new { page = i, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div>
         }
+        //it is the current page, so just write the non-link page
         else { 
         <span class="pagination_current_page">@i</span>   
         }
