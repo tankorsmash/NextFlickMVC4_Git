@@ -301,14 +301,14 @@ namespace NextFlicksMVC4.Controllers
             int max_number_of_pages_onscreen = 11;
             int current_try = 1;
             //make sure we don't go past page 0
-                //want to have a max of 5 pages before the current page
+            //want to have a max of 5 pages before the current page
             while (current_try <= max_number_of_pages_before_current) {
                 if (page_num > 0) {
                     ViewBag.set_of_pages.Add(page_num);
                     page_num--;
                     current_try++;
                 }
-                    //if the page is less or equal to 0, break out of the loop
+                //if the page is less or equal to 0, break out of the loop
                 else if (page_num <= 0)
                     break;
             }
@@ -318,10 +318,9 @@ namespace NextFlicksMVC4.Controllers
 
             //add the remaining set of pages
             int page_to_add = Convert.ToInt32(ViewBag.current_page) + 1;
-            while (ViewBag.set_of_pages.Count <= max_number_of_pages_onscreen) {
+            while (ViewBag.set_of_pages.Count < max_number_of_pages_onscreen) {
                 //if the next page to add is within the range of pages
-                if (page_to_add < ViewBag.pages)
-                {
+                if (page_to_add < ViewBag.pages) {
                     ViewBag.set_of_pages.Add(page_to_add);
                     page_to_add++;
                 }
@@ -330,9 +329,7 @@ namespace NextFlicksMVC4.Controllers
                 }
 
             }
-
-            Tools.TraceLine("done added pages to list");
-
+            //Tools.TraceLine("done added pages to list");
         }
 
         public void RaiseIfNoMoviesInDb(MovieDbContext db)
