@@ -542,6 +542,13 @@ namespace NextFlicksMVC4
             MovieDbContext db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = false;
 
+            List<int> omdbHashes = new List<int>();
+            foreach (OmdbEntry omdb in db.Omdb)
+            {
+                omdbHashes.Add(omdb.GetHashCode());
+            }
+            
+
             int count = complete_list.Count;
             const int quarter_1 = 50000;
             const int quarter_2 = 100000;
@@ -549,7 +556,14 @@ namespace NextFlicksMVC4
             const int quarter_4 = 200000;
             int index = 0;
             foreach (OmdbEntry omdbEntry in complete_list) {
-                db.Omdb.Add(omdbEntry);
+                if (omdbHashes.Contains(omdbEntry.GetHashCode()))
+                {
+                    omdbHashes.Remove(omdbEntry.GetHashCode());
+                }
+                else
+                {
+                    db.Omdb.Add(omdbEntry);
+                }
 
                 switch (index) {
                     case quarter_1:
