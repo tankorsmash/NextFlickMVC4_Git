@@ -482,9 +482,7 @@ namespace NextFlicksMVC4
                 //genres to database
                 foreach (Genre genre in title.ListGenres)
                 {
-                    MovieToGenre movieToGenre =
-                        Create.CreateMovieMovieToGenre(movie,
-                                                                  genre);
+                    MovieToGenre movieToGenre = Create.CreateMovieMovieToGenre(movie, genre);
                     db.MovieToGenres.Add(movieToGenre);
                     //db.SaveChanges();
 
@@ -783,7 +781,15 @@ namespace NextFlicksMVC4
 
             MovieDbContext db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = false;
+
             var start_time = WriteTimeStamp("starting data read");
+            List<int> dbHashes = new List<int>();//get alist of hashes for all movies in the db so we can make sure not to add a duplicate;
+            //int[] dbHashes = new int[db.Movies.Count()];
+
+            foreach (Movie dbMovie in db.Movies)
+            {
+                dbHashes.Add(dbMovie.GetHashCode());
+            }
 
             // Go line by line, and parse it for Movie files
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
@@ -812,17 +818,17 @@ namespace NextFlicksMVC4
                             {
                                 Movie movie =
                                     Create.CreateMovie(titles[0]);
-                                //check to see if the movie already exists in the database so we don't try to add it again or
-                                //try to add box art etc to it again.
-                               /* var movieExists = from db_movie in db.Movies
-                                                  where db_movie.short_title == movie.short_title
-                                                  select db_movie; */
-                              //  if(!movieExists.Any())
-                               // {
+                               
+                                if (dbHashes.Contains(movie.GetHashCode()))
+                                {
+                                    dbHashes.Remove(movie.GetHashCode());
+                                } 
+                                else
+                                {
                                     //add to DB and dict
                                     dictOfMoviesTitles[movie] = titles[0];
                                     db.Movies.Add(movie);
-                                //}
+                                }
                             }
                             else 
                             {

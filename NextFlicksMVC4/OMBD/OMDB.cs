@@ -391,5 +391,11 @@ namespace NextFlicksMVC4.OMBD
         [DisplayName("Rotten Tomatoes UserReviews")]
         [ProtoMember(16)]
         public int t_UserReviews { get; set; }
+
+        public override int GetHashCode()
+        {
+            return(this.title.GetHashCode() ^
+                this.year.GetHashCode());
+        }
     }
 }

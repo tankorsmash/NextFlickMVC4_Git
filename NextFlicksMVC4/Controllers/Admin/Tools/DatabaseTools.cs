@@ -270,7 +270,7 @@ namespace NextFlicksMVC4.Controllers.Admin
                 Tools.TraceLine(result.ToString());
             
             }*/
-           var test = db.Movies.Distinct(movie => movie.gethashcode().ToList);
+           //var test = db.Movies.Distinct(movie => movie.gethashcode().ToList);
             Tools.WriteTimeStamp("start Duplicate search");
         }
     }
