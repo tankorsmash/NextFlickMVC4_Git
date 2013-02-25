@@ -279,11 +279,12 @@ namespace NextFlicksMVC4.Controllers
                 var page_start = Tools.WriteTimeStamp();
                 var nit_list = FindPageOfMovies(res, page, movie_count, db);
 
-                //to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
-                if (totalMovies < movie_count)
-                {
-                    movie_count = totalMovies;
-                }
+                //doesn't seem needed at all, commented out for now
+                ////to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
+                //if (totalMovies < movie_count)
+                //{
+                //    movie_count = totalMovies;
+                //}
 
                 var page_end = Tools.WriteTimeStamp();
                 Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
