@@ -210,13 +210,7 @@ namespace NextFlicksMVC4.Controllers
             db.Configuration.AutoDetectChangesEnabled = true;
 
             //make sure there's movies in the db
-            // so if NOT any movies => movies == true, meaning any movie will == true, 
-            // so if it's false, the condition will be met
-            if (!db.Movies.Any()) {
-                Tools.TraceLine("ERROR: No movies in DB, have you ran Full yet?");
-                return View("Error");
-            }
-
+            RaiseIfNoMoviesInDb(db);
 
             var start = Tools.WriteTimeStamp("start");
 
@@ -297,6 +291,16 @@ namespace NextFlicksMVC4.Controllers
 
         }
 
+        public void RaiseIfNoMoviesInDb(MovieDbContext db)
+        {
+            // so if NOT any movies => movies == true, meaning any movie will == true, 
+            // so if it's false, the condition will be met
+            if (!db.Movies.Any()) {
+                Tools.TraceLine("ERROR: No movies in DB, have you ran Full yet?");
+                return;
+            }
+        }
+
         private static IEnumerable<FullViewModel> FindPageOfMovies(IQueryable<FullViewModel> res,
                                                     int page,
                                                     int movie_count,
@@ -309,6 +313,8 @@ namespace NextFlicksMVC4.Controllers
             var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
 
             Tools.TraceLine("  sorting movie ids");
+            //take all the movie_id up to and including the ones you'll show 
+            // on page, then only take the last set of movie_ids you'll show
             var sortedIds=
                 ids.OrderBy(movie_id => movie_id)
                    .Skip(movies_to_skip)
@@ -316,8 +322,6 @@ namespace NextFlicksMVC4.Controllers
                    .ToArray();
 
             Tools.TraceLine("  grabbing matched movies");
-            //take all the pages up to and including the ones you'll show 
-            // on page, then only take the last set of movies you'll show
             var nit_qry =
                 Tools.GetFullDbQuery(db)
                      .Where(
