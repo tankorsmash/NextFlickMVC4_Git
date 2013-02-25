@@ -283,7 +283,7 @@ namespace NextFlicksMVC4.Controllers
                                                     int page,
                                                     int movie_count,
                                                     MovieDbContext db,
-            bool verbose=false)
+                                                    bool verbose=false)
         {
             var page_start = Tools.WriteTimeStamp(writeTime:false);
             if (verbose) { Tools.TraceLine("  Retrieving paginated results"); }
