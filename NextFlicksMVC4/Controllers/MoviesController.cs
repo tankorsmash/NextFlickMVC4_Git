@@ -204,10 +204,6 @@ namespace NextFlicksMVC4.Controllers
                                     int page = 1)
         {
 
-            //if (Request.Params["page"] == null) {
-            //    Request.Params["page"] = "1";
-            //}
-
 
             int movie_count = 28;
             int movies_to_skip = movie_count * (page - 1);
@@ -216,7 +212,9 @@ namespace NextFlicksMVC4.Controllers
             db.Configuration.AutoDetectChangesEnabled = true;
 
             //make sure there's movies in the db
-            if (db.Movies.Count() < 1) {
+            // so if NOT any movies => movies == true, meaning any movie will == true, 
+            // so if it's false, the condition will be met
+            if (!db.Movies.Any()) {
                 Tools.TraceLine("ERROR: No movies in DB, have you ran Full yet?");
                 return View("Error");
             }
@@ -246,7 +244,6 @@ namespace NextFlicksMVC4.Controllers
             if (tag_string == "Enter a tag") {
                 tag_string = "0";
             }
-
 
             IQueryable<FullViewModel> res;
             //if the movie title isn't null, search movies
@@ -282,8 +279,6 @@ namespace NextFlicksMVC4.Controllers
 
                 var page_start = Tools.WriteTimeStamp();
 
-                //limit the amount of movies per page, and then multiply it by the current page
-                //page 1 = 0-27, then 28- 55 or something. Math's not my forte
                 Tools.TraceLine("  Retrieving paginated results");
 
                 var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
