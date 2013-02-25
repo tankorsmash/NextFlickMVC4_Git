@@ -255,23 +255,7 @@ namespace NextFlicksMVC4.Controllers
                 Tools.TraceLine("*********************");
 
                 //prepare certain variables for the pagination 
-                
-                ViewBag.pages = ViewBag.TotalMovies / ViewBag.movies_per_page;
-                ViewBag.remaining_movies = ViewBag.TotalMovies % ViewBag.movies_per_page;
-                //increment pages by one, since there'll be movies left over most of the time 
-                if (ViewBag.remaining_movies != 0)
-                {
-                    ViewBag.pages++;
-                }
-
-                ViewBag.movie_title = Request.Params["movie_title"];
-               ViewBag.genre_select = Request.Params["genre_select"];
-
-                ViewBag.current_page = Request.Params["page"];
-                if (ViewBag.current_page == null)
-                {
-                    ViewBag.current_page = "1";
-                }
+                PrepareIndexViewBagForPagination();
 
                 return View("Results", nit_list);
             }
@@ -285,6 +269,24 @@ namespace NextFlicksMVC4.Controllers
                 return View("Error");
             }
 
+        }
+
+        /// <summary>
+        /// Use this to set the proper ViewBag values for the Movies/Index.cshtml
+        /// </summary>
+        private void PrepareIndexViewBagForPagination()
+        {
+            ViewBag.pages = ViewBag.TotalMovies/ViewBag.movies_per_page;
+            ViewBag.remaining_movies = ViewBag.TotalMovies%ViewBag.movies_per_page;
+            //increment pages by one, since there'll be movies left over most of the time 
+            if (ViewBag.remaining_movies != 0) {
+                ViewBag.pages++;
+            }
+
+            //needed to create the pagelinks with the proper parameters
+            ViewBag.movie_title = Request.Params["movie_title"];
+            ViewBag.genre_select = Request.Params["genre_select"];
+            ViewBag.current_page = Request.Params["page"] ?? "1";
         }
 
         public void RaiseIfNoMoviesInDb(MovieDbContext db)
