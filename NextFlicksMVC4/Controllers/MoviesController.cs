@@ -296,8 +296,9 @@ namespace NextFlicksMVC4.Controllers
             // so if NOT any movies => movies == true, meaning any movie will == true, 
             // so if it's false, the condition will be met
             if (!db.Movies.Any()) {
-                Tools.TraceLine("ERROR: No movies in DB, have you ran Full yet?");
-                return;
+                Tools.TraceLine("ERROR: No movies in DB, have you ran Full yet? Throwing error now");
+                //TODO: use a different class of Exception, too broad
+                throw new Exception("ERROR: No movies in DB, have you ran Full yet?");
             }
         }
 
