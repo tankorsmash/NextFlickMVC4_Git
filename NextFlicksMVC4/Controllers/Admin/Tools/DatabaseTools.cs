@@ -47,8 +47,10 @@ namespace NextFlicksMVC4.Controllers.Admin
         {
             // Database.SetInitializer(new DropCreateDatabaseIfModelChanges<MovieDbContext>());
             Tools.TraceLine("In Full");
+
             //create a genres table in the DB
             PopulateGenres.PopulateGenresTable();
+
 
             Tools.BuildMoviesBoxartGenresTables(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
 
