@@ -301,10 +301,9 @@ namespace NextFlicksMVC4.Controllers
             int max_number_of_pages_onscreen = 11;
             int current_try = 1;
             //make sure we don't go past page 0
-            while (page_num < 0) {
                 //want to have a max of 5 pages before the current page
-                while (current_try <= max_number_of_pages_before_current)
-                {
+            while (current_try <= max_number_of_pages_before_current) {
+                if (page_num > 0) {
                     ViewBag.set_of_pages.Add(page_num);
                     page_num--;
                     current_try++;
@@ -317,9 +316,12 @@ namespace NextFlicksMVC4.Controllers
             //add the remaining set of pages
             int page_to_add = Convert.ToInt32(ViewBag.current_page) + 1;
             while (ViewBag.set_of_pages.Count <= max_number_of_pages_onscreen) {
-
-                ViewBag.set_of_pages.Add(page_to_add);
-                page_to_add++;
+                //if the next page to add is within the range of pages
+                if (page_to_add < ViewBag.pages)
+                {
+                    ViewBag.set_of_pages.Add(page_to_add);
+                    page_to_add++;
+                }
 
             }
 
