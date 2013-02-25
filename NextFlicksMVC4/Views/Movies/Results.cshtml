@@ -103,8 +103,13 @@
 <div class="pagination_container">
     
 
-    @* the previous button *@
     @{if (Convert.ToInt32(ViewBag.current_page) != 1) {
+    @* the first button *@
+        <div class="pagination_first">
+            @Html.ActionLink("FIRST PAGE", "Index", new { page = 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
+        </div> 
+
+    @* the previous button *@
         <div class="pagination_prev">
             @Html.ActionLink("PREV PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) - 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div> 
@@ -112,7 +117,7 @@
     }
     @*have to add one to the pages val here, because the first page is '1', not '0', 
     can't explain the math properly, so it means I don't understand it yet *@
-    @for (int i = 1; i < ViewBag.pages + 1; i++)
+    @foreach(int i in ViewBag.set_of_pages)
     {
         //if not the current page, print a link to the given page
         if (i != Convert.ToInt32(ViewBag.current_page)) {
@@ -126,10 +131,14 @@
         }
     }
 
-    @* the next button *@
     @{if (Convert.ToInt32(ViewBag.current_page) < ViewBag.pages) {
+    @* the next button *@
         <div class="pagination_next">
             @Html.ActionLink("NEXT PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) + 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
+        </div> 
+    @* the last button *@
+        <div class="pagination_next">
+            @Html.ActionLink("LAST PAGE", "Index", new { page = ViewBag.pages, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div> 
     }}
 </div>

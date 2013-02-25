@@ -308,6 +308,9 @@ namespace NextFlicksMVC4.Controllers
                     page_num--;
                     current_try++;
                 }
+                    //if the page is less or equal to 0, break out of the loop
+                else if (page_num <= 0)
+                    break;
             }
 
             //add the current page
@@ -321,6 +324,9 @@ namespace NextFlicksMVC4.Controllers
                 {
                     ViewBag.set_of_pages.Add(page_to_add);
                     page_to_add++;
+                }
+                else if (page_to_add >= ViewBag.pages) {
+                    break;
                 }
 
             }
