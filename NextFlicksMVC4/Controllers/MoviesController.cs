@@ -261,22 +261,14 @@ namespace NextFlicksMVC4.Controllers
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
             {
-                //Tools.TraceLine("  Counting all possible results, before pagination");
-                //var count_start = Tools.WriteTimeStamp("  count start");
-
                 //count all the movies possible
                 int totalMovies = res.Count();
                 //set it to the viewbag so the view can display it
                 ViewBag.TotalMovies = totalMovies;
                 ViewBag.movies_per_page = 28;
-                 
                 Tools.TraceLine("  total possible results {0}", totalMovies);
-                //var count_end = Tools.WriteTimeStamp("  count_start end");
-                //Tools.TraceLine("  counting took {0}", count_end - count_start);
-
 
                 int movie_count = 28;
-                var page_start = Tools.WriteTimeStamp();
                 var nit_list = FindPageOfMovies(res, page, movie_count, db);
 
                 //doesn't seem needed at all, commented out for now
@@ -286,8 +278,6 @@ namespace NextFlicksMVC4.Controllers
                 //    movie_count = totalMovies;
                 //}
 
-                var page_end = Tools.WriteTimeStamp();
-                Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
 
                 var end = Tools.WriteTimeStamp("end");
                 Tools.TraceLine((end - start).ToString());
@@ -312,13 +302,14 @@ namespace NextFlicksMVC4.Controllers
                                                     int movie_count,
                                                     MovieDbContext db )
         {
+            var page_start = Tools.WriteTimeStamp();
             Tools.TraceLine("  Retrieving paginated results");
 
             int movies_to_skip = movie_count * (page - 1);
             var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
 
             Tools.TraceLine("  sorting movie ids");
-            var sorted_movie_ids =
+            var sortedIds=
                 ids.OrderBy(movie_id => movie_id)
                    .Skip(movies_to_skip)
                    .Take(movie_count)
@@ -327,15 +318,16 @@ namespace NextFlicksMVC4.Controllers
             Tools.TraceLine("  grabbing matched movies");
             //take all the pages up to and including the ones you'll show 
             // on page, then only take the last set of movies you'll show
-            IEnumerable<FullViewModel> nit_list =
+            var nit_qry =
                 Tools.GetFullDbQuery(db)
                      .Where(
-                         fullViewModel =>
-                         sorted_movie_ids.Any(
-                             movie_id =>
-                             movie_id == fullViewModel.Movie.movie_ID))
-                     .ToList();
+                         viewModel =>
+                         sortedIds.Any(
+                             movie_id => movie_id == viewModel.Movie.movie_ID));
+            IEnumerable<FullViewModel> nit_list = nit_qry.ToList();
             Tools.TraceLine("  done matching movies, returning");
+            var page_end = Tools.WriteTimeStamp();
+            Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
             return nit_list;
         }
 
