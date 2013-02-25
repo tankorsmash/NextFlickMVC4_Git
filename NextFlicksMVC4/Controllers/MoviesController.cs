@@ -23,10 +23,7 @@ using System.Data.SqlClient;
 using NextFlicksMVC4.Filters;
 using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
-using LumenWorks.Framework.IO.Csv;
-using ProtoBuf;
 using WebMatrix.WebData;
-using Ionic.Zip;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -203,8 +200,7 @@ namespace NextFlicksMVC4.Controllers
                                     string tag_string = "0",
                                     int page = 1)
         {
-
-
+            var start = Tools.WriteTimeStamp(writeTime:false);
 
             var db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = true;
@@ -212,24 +208,8 @@ namespace NextFlicksMVC4.Controllers
             //make sure there's movies in the db
             RaiseIfNoMoviesInDb(db);
 
-            var start = Tools.WriteTimeStamp("start");
-
-            //if the titles are default, print default message, otherwise print variables
-            if (movie_title != "" || genre_select != "0") {
-                Tools.TraceLine("Sorting with title: {0}, genre: {1}",
-                                movie_title, genre_select);
-            }
-            else {
-                Tools.TraceLine("Sorting with blank title and genre");
-            }
-
-
-            //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
-            //Assign it to a ViewBag, so the Filtermenu can use it
-            ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
-            ViewBag.tag_dict = Tools.CreateSortedTagDictionary(db);
-
             //make sure the title isn't the default text set in the _FilterMenu
+            //TODO:make the default text in the search boxes a ViewBag value for easier editing
             if (movie_title == "Enter a title") {
                 movie_title = "";
             }
@@ -237,6 +217,12 @@ namespace NextFlicksMVC4.Controllers
                 tag_string = "0";
             }
 
+            //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
+            //Assign values to a ViewBag, so the Filtermenu can use them
+            ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
+            ViewBag.tag_dict = Tools.CreateSortedTagDictionary(db);
+
+            //choose which set of movies I want to filter down to
             IQueryable<FullViewModel> res;
             //if the movie title isn't null, search movies
             if (movie_title != "") {
@@ -251,7 +237,6 @@ namespace NextFlicksMVC4.Controllers
                 res = Tools.GetFullDbQuery(db);
             }
 
-
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
             {
@@ -260,21 +245,13 @@ namespace NextFlicksMVC4.Controllers
                 //set it to the viewbag so the view can display it
                 ViewBag.TotalMovies = totalMovies;
                 ViewBag.movies_per_page = 28;
-                Tools.TraceLine("  total possible results {0}", totalMovies);
+                Tools.TraceLine("  Found a total possible results of {0}", totalMovies);
 
                 int movie_count = 28;
                 var nit_list = FindPageOfMovies(res, page, movie_count, db);
 
-                //doesn't seem needed at all, commented out for now
-                ////to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
-                //if (totalMovies < movie_count)
-                //{
-                //    movie_count = totalMovies;
-                //}
-
-
-                var end = Tools.WriteTimeStamp("end");
-                Tools.TraceLine((end - start).ToString());
+                var end = Tools.WriteTimeStamp(writeTime:false);
+                Tools.TraceLine("Index took: {0} to complete",((end - start).ToString()));
                 Tools.TraceLine("*********************");
 
                 return View("Results", nit_list);
@@ -305,24 +282,25 @@ namespace NextFlicksMVC4.Controllers
         private static IEnumerable<FullViewModel> FindPageOfMovies(IQueryable<FullViewModel> res,
                                                     int page,
                                                     int movie_count,
-                                                    MovieDbContext db )
+                                                    MovieDbContext db,
+            bool verbose=false)
         {
-            var page_start = Tools.WriteTimeStamp();
-            Tools.TraceLine("  Retrieving paginated results");
+            var page_start = Tools.WriteTimeStamp(writeTime:false);
+            if (verbose) { Tools.TraceLine("  Retrieving paginated results"); }
 
             int movies_to_skip = movie_count * (page - 1);
             var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
 
-            Tools.TraceLine("  sorting movie ids");
+            if (verbose) { Tools.TraceLine("  sorting movie ids"); }
             //take all the movie_id up to and including the ones you'll show 
             // on page, then only take the last set of movie_ids you'll show
-            var sortedIds=
+            var sortedIds =
                 ids.OrderBy(movie_id => movie_id)
                    .Skip(movies_to_skip)
                    .Take(movie_count)
                    .ToArray();
 
-            Tools.TraceLine("  grabbing matched movies");
+            if (verbose) { Tools.TraceLine("  grabbing matched movies"); }
             var nit_qry =
                 Tools.GetFullDbQuery(db)
                      .Where(
@@ -330,9 +308,9 @@ namespace NextFlicksMVC4.Controllers
                          sortedIds.Any(
                              movie_id => movie_id == viewModel.Movie.movie_ID));
             IEnumerable<FullViewModel> nit_list = nit_qry.ToList();
-            Tools.TraceLine("  done matching movies, returning");
-            var page_end = Tools.WriteTimeStamp();
-            Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
+            if (verbose) { Tools.TraceLine("  done matching movies, returning"); }
+            var page_end = Tools.WriteTimeStamp(writeTime:false);
+            if (verbose) { Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString()); }
             return nit_list;
         }
 

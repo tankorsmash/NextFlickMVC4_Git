@@ -67,8 +67,9 @@ namespace NextFlicksMVC4
         /// </summary>
         /// <param name="msg">Message to write</param>
         /// <param name="presetDateTime">A custom time value</param>
+        /// <param name="writeTime">whether or not to actually write to log, default true</param>
         /// <returns>Returns the DateTime that was written</returns>
-        public static DateTime WriteTimeStamp(string msg= "The time is", DateTime? presetDateTime = null)
+        public static DateTime WriteTimeStamp(string msg= "The time is", DateTime? presetDateTime = null, bool writeTime = true)
         {
             DateTime time;
             if (presetDateTime == null) { time = DateTime.Now; }
@@ -76,7 +77,9 @@ namespace NextFlicksMVC4
 
             string to_write = String.Format("{0}: {1}", msg,
                                             time.ToShortTimeString());
-            TraceLine(to_write);
+            if (writeTime) {
+                TraceLine(to_write);
+            }
 
             return time;
         }
