@@ -64,8 +64,9 @@ namespace NextFlicksMVC4.Controllers.Admin
                 ViewBag.Message = "Update Genres List";
 
             }
-            if (button == "Full Update")
+            if (button == "Full DB Build")
             {
+                ViewBag.Message = "Full Db Build / Update Complete";
                 DatabaseTools.FullDbBuild();
             }
             if (button == "Join Lines")
@@ -74,12 +75,25 @@ namespace NextFlicksMVC4.Controllers.Admin
             }
             if (button == "omdb")
             {
-                Tools.RebuildOmdbsFromProtobufDump(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.dump"));
+                MovieDbContext db = new MovieDbContext();
+                var omdbZIP = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.zip");
+                var omdbDUMP = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.DUMP");
+                var omdbTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.txt");
+                var tomatoesTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/tomatoes.txt");
+                //download the omdbapi
+                Omdb.DownloadOmdbZipAndExtract(omdbZIP);
+
+                //parse it for omdbentrys, serialize it to file
+                Tools.SerializeOmdbTsv(omdbDUMP, omdbTXT, tomatoesTXT);
+
+                //deserialize the file, turn it into omdb
+                //  can't remember if it does it here or not, but marry the omdbs and movie
+                Tools.RebuildOmdbsFromProtobufDump(omdbDUMP);
+
+                Tools.MarryMovieToOmdb(db);
+                Tools.RebuildOmdbsFromProtobufDump(omdbDUMP);
             }
-            if (button == "hash")
-            {
-                DatabaseTools.RemoveDuplicateMovies();
-            }
+            
             return View();
         }
     }

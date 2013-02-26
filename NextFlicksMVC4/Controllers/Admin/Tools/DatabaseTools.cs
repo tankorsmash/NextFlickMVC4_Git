@@ -153,8 +153,6 @@ namespace NextFlicksMVC4.Controllers.Admin
             Tools.RebuildOmdbsFromProtobufDump(omdbDUMP);
 
             Tools.MarryMovieToOmdb(db);
-
-            RemoveDuplicateMovies();
         }
 
 
@@ -258,22 +256,6 @@ namespace NextFlicksMVC4.Controllers.Admin
             }
             Tools.WriteTimeStamp("end update genres");
                             
-        }
-
-        public static void RemoveDuplicateMovies()
-        {
-            Tools.WriteTimeStamp("start Duplicate search");
-            MovieDbContext db = new MovieDbContext();
-           /* var movie_id_hash = (from movie in db.Movies
-                                group movie.GetHashCode() by movie.movie_ID into grouping
-                                select grouping).Distinct();
-            foreach(IQueryable<IGrouping<int,int>> result in movie_id_hash)
-            {
-                Tools.TraceLine(result.ToString());
-            
-            }*/
-           //var test = db.Movies.Distinct(movie => movie.gethashcode().ToList);
-            Tools.WriteTimeStamp("start Duplicate search");
         }
     }
 }

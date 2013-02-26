@@ -554,10 +554,17 @@ namespace NextFlicksMVC4
             
 
             int count = complete_list.Count;
-            const int quarter_1 = 50000;
-            const int quarter_2 = 100000;
-            const int quarter_3 = 150000;
-            const int quarter_4 = 200000;
+            const int quarter_1 =  25000;
+            const int quarter_2 =  50000;
+            const int quarter_3 =  75000;
+            const int quarter_4 = 100000;
+            const int quarter_5 = 125000;
+            const int quarter_6 = 150000;
+            const int quarter_7 = 175000;
+            const int quarter_8 = 200000;
+
+
+
             int index = 0;
             foreach (OmdbEntry omdbEntry in complete_list) {
                 if (omdbHashes.Contains(omdbEntry.GetHashCode()))
@@ -589,6 +596,26 @@ namespace NextFlicksMVC4
                         {
                             db.SaveChanges();
                             break;  
+                        }
+                    case quarter_5:
+                        {
+                            db.SaveChanges();
+                            break;
+                        }
+                    case quarter_6:
+                        {
+                            db.SaveChanges();
+                            break;
+                        }
+                    case quarter_7:
+                        {
+                            db.SaveChanges();
+                            break;
+                        }
+                    case quarter_8:
+                        {
+                            db.SaveChanges();
+                            break;
                         }
                 }
                 index++;
