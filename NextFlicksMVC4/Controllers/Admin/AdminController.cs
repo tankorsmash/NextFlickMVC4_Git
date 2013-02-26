@@ -74,7 +74,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             }
             if (button == "omdb")
             {
-                Omdb.DownloadOmdbZipAndExtract(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.zip"));
+                Tools.RebuildOmdbsFromProtobufDump(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.dump"));
             }
             if (button == "hash")
             {
