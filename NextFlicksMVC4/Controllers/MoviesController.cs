@@ -23,10 +23,7 @@ using System.Data.SqlClient;
 using NextFlicksMVC4.Filters;
 using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
-using LumenWorks.Framework.IO.Csv;
-using ProtoBuf;
 using WebMatrix.WebData;
-using Ionic.Zip;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -203,39 +200,16 @@ namespace NextFlicksMVC4.Controllers
                                     string tag_string = "0",
                                     int page = 1)
         {
-
-
-            int movie_count = 28;
-            int movies_to_skip = movie_count * (page - 1);
+            var start = Tools.WriteTimeStamp(writeTime:false);
 
             var db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = true;
 
             //make sure there's movies in the db
-            if (db.Movies.Count() < 1) {
-                Tools.TraceLine("ERROR: No movies in DB, have you ran Full yet?");
-                return View("Error");
-            }
-
-
-            var start = Tools.WriteTimeStamp("start");
-
-            //if the titles are default, print default message, otherwise print variables
-            if (movie_title != "" || genre_select != "0") {
-                Tools.TraceLine("Sorting with title: {0}, genre: {1}",
-                                movie_title, genre_select);
-            }
-            else {
-                Tools.TraceLine("Sorting with blank title and genre");
-            }
-
-
-            //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
-            //Assign it to a ViewBag, so the Filtermenu can use it
-            ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
-            ViewBag.tag_dict = Tools.CreateSortedTagDictionary(db);
+            RaiseIfNoMoviesInDb(db);
 
             //make sure the title isn't the default text set in the _FilterMenu
+            //TODO:make the default text in the search boxes a ViewBag value for easier editing
             if (movie_title == "Enter a title") {
                 movie_title = "";
             }
@@ -243,7 +217,12 @@ namespace NextFlicksMVC4.Controllers
                 tag_string = "0";
             }
 
+            //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
+            //Assign values to a ViewBag, so the Filtermenu can use them
+            ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
+            ViewBag.tag_dict = Tools.CreateSortedTagDictionary(db);
 
+            //choose which set of movies I want to filter down to
             IQueryable<FullViewModel> res;
             //if the movie title isn't null, search movies
             if (movie_title != "") {
@@ -258,59 +237,26 @@ namespace NextFlicksMVC4.Controllers
                 res = Tools.GetFullDbQuery(db);
             }
 
-
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
             {
-                //Tools.TraceLine("  Counting all possible results, before pagination");
-                //var count_start = Tools.WriteTimeStamp("  count start");
-
                 //count all the movies possible
                 int totalMovies = res.Count();
                 //set it to the viewbag so the view can display it
                 ViewBag.TotalMovies = totalMovies;
+                ViewBag.movies_per_page = 28;
+                Tools.TraceLine("  Found a total possible results of {0}", totalMovies);
 
-                Tools.TraceLine("  total possible results {0}", totalMovies);
-                //var count_end = Tools.WriteTimeStamp("  count_start end");
-                //Tools.TraceLine("  counting took {0}", count_end - count_start);
+                int movie_count = 28;
+                var nit_list = FindPageOfMovies(res, page, movie_count, db);
 
+                //prepare certain variables for the pagination 
+                PrepareIndexViewBagForPagination();
 
-                var page_start = Tools.WriteTimeStamp();
+                var end = Tools.WriteTimeStamp(writeTime:false);
+                Tools.TraceLine("  Index took: {0} to complete",((end - start).ToString()));
+                Tools.TraceLine("**********END OF INDEX***********");
 
-                //limit the amount of movies per page, and then multiply it by the current page
-                //page 1 = 0-27, then 28- 55 or something. Math's not my forte
-                Tools.TraceLine("  Retrieving paginated results");
-
-                var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
-
-                Tools.TraceLine("  sorting movie ids");
-                var sorted_movie_ids = ids.OrderBy(movie_id => movie_id).Skip(movies_to_skip).Take(movie_count).ToArray();
-
-                Tools.TraceLine("  grabbing matched movies");
-                //take all the pages up to and including the ones you'll show 
-                // on page, then only take the last set of movies you'll show
-                IEnumerable<FullViewModel> nit_list =
-                    Tools.GetFullDbQuery(db)
-                         .Where(
-                             fullViewModel =>
-                             sorted_movie_ids.Any(
-                                 movie_id =>
-                                 movie_id == fullViewModel.Movie.movie_ID))
-                         .ToList();
-                Tools.TraceLine("  done matching movies, returning");
-
-                //to avoid out of index errors, limit the range chosen. A limitation of doing it with lists, over Linq
-                if (totalMovies < movie_count)
-                {
-                    movie_count = totalMovies;
-                }
-
-                var page_end = Tools.WriteTimeStamp();
-                Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString());
-
-                var end = Tools.WriteTimeStamp("end");
-                Tools.TraceLine((end - start).ToString());
-                Tools.TraceLine("*********************");
 
                 return View("Results", nit_list);
             }
@@ -326,20 +272,127 @@ namespace NextFlicksMVC4.Controllers
 
         }
 
-
-        public ActionResult DetailsNit()
+        /// <summary>
+        /// Use this to set the proper ViewBag values for the Movies/Index.cshtml
+        /// </summary>
+        private void PrepareIndexViewBagForPagination()
         {
-            //create a VM
-            MovieDbContext movieDb = new MovieDbContext();
-            List<Movie> movie_list = movieDb.Movies.Take(1).ToList();
+            ViewBag.pages = ViewBag.TotalMovies/ViewBag.movies_per_page;
+            ViewBag.remaining_movies = ViewBag.TotalMovies%ViewBag.movies_per_page;
+            //increment pages by one, since there'll be movies left over most of the time 
+            if (ViewBag.remaining_movies != 0) {
+                ViewBag.pages++;
+            }
 
-            var MwG_list = Tools.FilterMovies(movieDb, movie_list);
-            //FullViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
+            //needed to create the pagelinks with the proper parameters
+            ViewBag.movie_title = Request.Params["movie_title"];
+            ViewBag.genre_select = Request.Params["genre_select"];
+            ViewBag.current_page = Request.Params["page"] ?? "1";
 
-            var NitVm = MwG_list.First();
+            //first and last page button values
+            ViewBag.first_page = 0;
+            ViewBag.last_page = ViewBag.pages;
 
-            return View(NitVm);
+            ///build the list of page numbers to have shown on screen
+            ViewBag.set_of_pages = new List<int>();
+            //try for the first 5
+            int page_num = Convert.ToInt32(ViewBag.current_page) - 1;
+
+            int max_number_of_pages_before_current = 5;
+            int max_number_of_pages_onscreen = 11;
+            int current_try = 1;
+            //make sure we don't go past page 0
+            //want to have a max of 5 pages before the current page
+            while (current_try <= max_number_of_pages_before_current) {
+                if (page_num > 0) {
+                    ViewBag.set_of_pages.Add(page_num);
+                    page_num--;
+                    current_try++;
+                }
+                //if the page is less or equal to 0, break out of the loop
+                else if (page_num <= 0)
+                    break;
+            }
+
+            //add the current page
+            ViewBag.set_of_pages.Add(Convert.ToInt32(ViewBag.current_page));
+
+            //add the remaining set of pages
+            int page_to_add = Convert.ToInt32(ViewBag.current_page) + 1;
+            while (ViewBag.set_of_pages.Count < max_number_of_pages_onscreen) {
+                //if the next page to add is within the range of pages
+                if (page_to_add < ViewBag.pages) {
+                    ViewBag.set_of_pages.Add(page_to_add);
+                    page_to_add++;
+                }
+                else if (page_to_add >= ViewBag.pages) {
+                    break;
+                }
+
+            }
+            //Tools.TraceLine("done added pages to list");
         }
+
+        public void RaiseIfNoMoviesInDb(MovieDbContext db)
+        {
+            // so if NOT any movies => movies == true, meaning any movie will == true, 
+            // so if it's false, the condition will be met
+            if (!db.Movies.Any()) {
+                Tools.TraceLine("ERROR: No movies in DB, have you ran Full yet? Throwing error now");
+                //TODO: use a different class of Exception, too broad
+                throw new Exception("ERROR: No movies in DB, have you ran Full yet?");
+            }
+        }
+
+        private static IEnumerable<FullViewModel> FindPageOfMovies(IQueryable<FullViewModel> res,
+                                                    int page,
+                                                    int movie_count,
+                                                    MovieDbContext db,
+                                                    bool verbose=false)
+        {
+            var page_start = Tools.WriteTimeStamp(writeTime:false);
+            if (verbose) { Tools.TraceLine("  Retrieving paginated results"); }
+
+            int movies_to_skip = movie_count * (page - 1);
+            var ids = res.Select(nit => nit.Movie.movie_ID).ToArray();
+
+            if (verbose) { Tools.TraceLine("  sorting movie ids"); }
+            //take all the movie_id up to and including the ones you'll show 
+            // on page, then only take the last set of movie_ids you'll show
+            var sortedIds =
+                ids.OrderBy(movie_id => movie_id)
+                   .Skip(movies_to_skip)
+                   .Take(movie_count)
+                   .ToArray();
+
+            if (verbose) { Tools.TraceLine("  grabbing matched movies"); }
+            var nit_qry =
+                Tools.GetFullDbQuery(db)
+                     .Where(
+                         viewModel =>
+                         sortedIds.Any(
+                             movie_id => movie_id == viewModel.Movie.movie_ID));
+            IEnumerable<FullViewModel> nit_list = nit_qry.ToList();
+            if (verbose) { Tools.TraceLine("  done matching movies, returning"); }
+            var page_end = Tools.WriteTimeStamp(writeTime:false);
+            if (verbose) { Tools.TraceLine("  Taking first page of movies {0}", (page_end - page_start).ToString()); }
+            return nit_list;
+        }
+
+
+        //public ActionResult DetailsNit()
+        //{
+        //    //create a VM
+        //    MovieDbContext movieDb = new MovieDbContext();
+        //    List<Movie> movie_list = movieDb.Movies.Take(1).ToList();
+
+        //    var MwG_list = Tools.FilterMovies(movieDb, movie_list);
+        //    //FullViewModel NitVm = Omdb.MatchListOfMwgvmWithOmdbEntrys(MwG_list, movieDb).First();
+
+        //    var NitVm = MwG_list.First();
+
+        //    return View(NitVm);
+        //}
 
         
 

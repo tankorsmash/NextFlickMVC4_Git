@@ -44,14 +44,33 @@ font-weight: bold;
 
 /* Results.cshtml, the main page of the site */
 
+.nit_list {
+    overflow: hidden;
+}
+
 .pagination_container {
-    clear: left;
-    padding-top: 3em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+    margin-top: 3em;
+
+    overflow: hidden;
 }
 
 .pagination_page {
     float: left;
 }
+
+.pagination_current_page {
+    float: left;
+    color: black;
+    background: darkred;   
+}
+
+.pagination_first{ float: left;}
+.pagination_next{float:left;  }
+.pagination_prev{float:left;  }
+.pagination_last{float:left;  }
 
 
 /* _Title.cshtml, which is the guts of the results page in Genres.cshtml*/

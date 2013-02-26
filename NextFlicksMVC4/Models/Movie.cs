@@ -44,12 +44,59 @@ namespace NextFlicksMVC4.Models
         [DisplayName("Maturity Rating")]
         public int maturity_rating { get; set; }
 
-        ///commented this out because I have to make a separate look up for genres now
-        //[DisplayName("Genres")]
-        //public virtual int genre_ID { get; set; }
 
-        //[DisplayName("Boxart")]
-        //public virtual int boxart_ID { get; set; }
+        public override bool Equals(object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+            // If parameter cannot be cast to Point return false.
+            Movie movie = obj as Movie;
+            if ((System.Object)movie == null)
+            {
+                return false;
+            }
+
+
+            //return true is fields match
+            return (//this.movie_ID == movie.movie_ID &&
+                    this.short_title == movie.short_title &&
+                    this.year == movie.year &&
+                    this.runtime == movie.runtime &&
+                    this.avg_rating == movie.avg_rating &&
+                    this.tv_rating == movie.tv_rating &&
+                    this.web_page == movie.web_page &&
+                    this.current_season == movie.current_season &&
+                    this.maturity_rating == movie.maturity_rating
+                   );
+
+
+        }
+
+        public bool Equals(Movie movie)
+        {
+
+            // If parameter is null return false:
+            if ((object)movie == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (//this.movie_ID == movie.movie_ID &&
+                    this.short_title == movie.short_title &&
+                    this.year == movie.year &&
+                    this.runtime == movie.runtime &&
+                    this.avg_rating == movie.avg_rating &&
+                    this.tv_rating == movie.tv_rating &&
+                    this.web_page == movie.web_page &&
+                    this.current_season == movie.current_season &&
+                    this.maturity_rating == movie.maturity_rating
+                   );
+        }
+
         public override int GetHashCode()
         {
             return (//this.movie_ID == movie.movie_ID &&
@@ -60,9 +107,10 @@ namespace NextFlicksMVC4.Models
                     this.tv_rating.GetHashCode() ^
                     this.web_page.GetHashCode() ^
                     this.current_season.GetHashCode() ^
-                    this.maturity_rating.GetHashCode()
+                    this.maturity_rating.GetHashCode() 
                    );
         }
+
     }
 
     public class Genre

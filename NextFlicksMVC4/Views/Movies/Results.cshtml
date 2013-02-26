@@ -1,4 +1,5 @@
 ﻿@using System.Web.Mvc.Html
+@using NextFlicksMVC4
 @model IEnumerable<NextFlicksMVC4.Views.Movies.ViewModels.FullViewModel>
 @*@model IEnumerable<NextFlicksMVC4.Views.Movies.ViewModels.MovieWithGenreViewModel>*@
                                                             
@@ -94,27 +95,50 @@
     *@
 
 @{
-    int pages = total_movies/movie_count;
-    int remaining_movies = total_movies%movie_count;
-    //increment pages by one, since there'll be movies left over most of the time 
-    if (remaining_movies != 0) {
-        pages++;
-    }
 
-    var movie_title = Request.Params["movie_title"];
-    var genre_select = Request.Params["genre_select"]; 
+    
 
 }
 
 <div class="pagination_container">
-
- @for (int i = 1; i < pages; i++) {
- 
-     <div class="pagination_page">
-           @Html.ActionLink(i.ToString(), "Index", new { page = i, movie_title = movie_title, genre_select = genre_select }, null)
     
-</div>
-    
- }
 
+    @{if (Convert.ToInt32(ViewBag.current_page) != 1) {
+    @* the first button *@
+        <div class="pagination_first">
+            @Html.ActionLink("FIRST PAGE", "Index", new { page = 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
+        </div> 
+
+    @* the previous button *@
+        <div class="pagination_prev">
+            @Html.ActionLink("PREV PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) - 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
+        </div> 
+      }
+    }
+    @*have to add one to the pages val here, because the first page is '1', not '0', 
+    can't explain the math properly, so it means I don't understand it yet *@
+    @foreach(int i in ViewBag.set_of_pages)
+    {
+        //if not the current page, print a link to the given page
+        if (i != Convert.ToInt32(ViewBag.current_page)) {
+        <div class="pagination_page">
+            @Html.ActionLink((i).ToString(), "Index", new { page = i, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
+        </div>
+        }
+        //it is the current page, so just write the non-link page
+        else { 
+        <span class="pagination_current_page">@i</span>   
+        }
+    }
+
+    @{if (Convert.ToInt32(ViewBag.current_page) < ViewBag.pages) {
+    @* the next button *@
+        <div class="pagination_next">
+            @Html.ActionLink("NEXT PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) + 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
+        </div> 
+    @* the last button *@
+        <div class="pagination_last">
+            @Html.ActionLink("LAST PAGE", "Index", new { page = ViewBag.pages, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
+        </div> 
+    }}
 </div>
