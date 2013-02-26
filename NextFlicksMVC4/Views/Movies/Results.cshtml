@@ -137,7 +137,7 @@
             @Html.ActionLink("NEXT PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) + 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div> 
     @* the last button *@
-        <div class="pagination_next">
+        <div class="pagination_last">
             @Html.ActionLink("LAST PAGE", "Index", new { page = ViewBag.pages, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
         </div> 
     }}

@@ -250,12 +250,13 @@ namespace NextFlicksMVC4.Controllers
                 int movie_count = 28;
                 var nit_list = FindPageOfMovies(res, page, movie_count, db);
 
-                var end = Tools.WriteTimeStamp(writeTime:false);
-                Tools.TraceLine("Index took: {0} to complete",((end - start).ToString()));
-                Tools.TraceLine("*********************");
-
                 //prepare certain variables for the pagination 
                 PrepareIndexViewBagForPagination();
+
+                var end = Tools.WriteTimeStamp(writeTime:false);
+                Tools.TraceLine("  Index took: {0} to complete",((end - start).ToString()));
+                Tools.TraceLine("**********END OF INDEX***********");
+
 
                 return View("Results", nit_list);
             }
