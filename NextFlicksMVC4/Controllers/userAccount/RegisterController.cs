@@ -29,7 +29,8 @@ namespace NextFlicksMVC4.Controllers.userAccount
             {
                 return View();
             }
-            if (ReCaptcha.Validate(privateKey: "6LdcQtwSAAAAACJPzqNPEoWp37-M-aUZi-6FgZNn"))
+            //TODO: Change recaptcha PRIVATE key if the domain changes register on Recaptcha.com
+            if (ReCaptcha.Validate(privateKey: "6Ld_kt0SAAAAAAWadUrgyxHuqAlp2fjS5RXjdyn9"))
             {
                 if (ModelState.IsValid)
                 {

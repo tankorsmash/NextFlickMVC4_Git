@@ -379,8 +379,6 @@
     <Content Include="Content\admin.css" />
     <Content Include="dbfiles\createTables.sql" />
     <Content Include="dbfiles\DropTables.sql" />
-    <Content Include="dbfiles\omdb.txt" />
-    <Content Include="dbfiles\tomatoes.txt" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
@@ -436,8 +434,6 @@
     <Content Include="Views\Admin\Tags.cshtml" />
     <Content Include="Views\Admin\Movies.cshtml" />
     <Content Include="Views\Home\Feedback.cshtml" />
-    <None Include="dbfiles\fixedAPI.NFPOX" />
-    <None Include="dbfiles\genresOLD.NFPOX" />
     <None Include="SampleKey.snk" />
     <Content Include="Views\Account\ChangePasswordPartial.cshtml" />
     <Content Include="Views\Account\Password.cshtml" />
@@ -448,6 +444,7 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Tag\Details.cshtml" />
     <Content Include="Views\Tag\Index.cshtml" />
+    <Content Include="Views\Admin\LogFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

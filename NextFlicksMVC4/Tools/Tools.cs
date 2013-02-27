@@ -76,8 +76,7 @@ namespace NextFlicksMVC4
             if (presetDateTime == null) { time = DateTime.Now; }
             else { time = (DateTime) presetDateTime; } 
 
-            string to_write = String.Format("{0}: {1}", msg,
-                                            time.ToShortTimeString());
+            string to_write = String.Format("{0} {1}: {2}", time.ToShortDateString(), time.ToShortTimeString(), msg);
             if (writeTime) {
                 TraceLine(to_write);
             }
@@ -551,6 +550,24 @@ namespace NextFlicksMVC4
             {
                 omdbHashes.Add(omdb.GetHashCode());
             }
+            List<int> listHashes = new List<int>();
+            foreach (OmdbEntry listOmdb in complete_list)
+            {
+                listHashes.Add(listOmdb.GetHashCode());
+            }
+            /*var duplicatesDB = omdbHashes.GroupBy(s => s).SelectMany(grp => grp.Skip(1)).ToList();
+            var duplicatesList = listHashes.GroupBy(s => s).SelectMany(grp => grp.Skip(1)).ToList();
+            var dupes = db.Omdb.Select(omdb => omdb.GetHashCode()).GroupBy(s => s).SelectMany(grp => grp.Skip(1));
+
+            var duplicates = (from omdb in db.Omdb
+                group omdb.ombd_ID by (omdb.GetHashCode()) into grouping
+                select grouping).Distinct();
+                
+            foreach (var d in duplicates)
+            {
+                TraceLine("Duplicate: " + d.Key + " : ");
+            }
+                */
             
 
             int count = complete_list.Count;

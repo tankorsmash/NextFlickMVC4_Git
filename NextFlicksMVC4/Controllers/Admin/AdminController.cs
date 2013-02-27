@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 using NextFlicksMVC4.OMBD;
+using System.IO;
 
 namespace NextFlicksMVC4.Controllers.Admin
 {
@@ -20,6 +21,21 @@ namespace NextFlicksMVC4.Controllers.Admin
             return View();
         }
 
+        public ActionResult LogFile()
+        {
+            ViewBag.Log = new List<string>();
+            var logfile = System.Web.HttpContext.Current.Server.MapPath("~/trace.log");
+            using(var fs = new FileStream(logfile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using(var sr = new StreamReader(fs))
+            {
+                while (!sr.EndOfStream)
+                {
+                    ViewBag.Log.Add(sr.ReadLine());
+                }
+            }
+           
+            return View();
+        }
         public ActionResult DbTools()
         {
             return View();
@@ -81,7 +97,7 @@ namespace NextFlicksMVC4.Controllers.Admin
                 var omdbTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.txt");
                 var tomatoesTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/tomatoes.txt");
                 //download the omdbapi
-                Omdb.DownloadOmdbZipAndExtract(omdbZIP);
+                //Omdb.DownloadOmdbZipAndExtract(omdbZIP);
 
                 //parse it for omdbentrys, serialize it to file
                 Tools.SerializeOmdbTsv(omdbDUMP, omdbTXT, tomatoesTXT);

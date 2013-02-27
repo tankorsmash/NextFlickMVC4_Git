@@ -392,6 +392,35 @@ namespace NextFlicksMVC4.OMBD
         [ProtoMember(16)]
         public int t_UserReviews { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+            // If parameter cannot be cast to Point return false.
+            OmdbEntry omdb = obj as OmdbEntry;
+            if ((System.Object)omdb == null)
+            {
+                return false;
+            }
+
+            return (this.title == omdb.title && 
+                this.year == omdb.year);
+        }
+
+        public bool Equals(OmdbEntry omdb)
+        {
+
+            // If parameter is null return false:
+            if ((object)omdb == null)
+            {
+                return false;
+            }
+            return (this.title == omdb.title && 
+                this.year == omdb.year);
+        }
         public override int GetHashCode()
         {
             return(this.title.GetHashCode() ^

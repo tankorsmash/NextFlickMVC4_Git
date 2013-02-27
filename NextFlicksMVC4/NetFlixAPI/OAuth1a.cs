@@ -39,8 +39,12 @@ namespace NextFlicksMVC4.NetFlixAPI
             string base_url = String.Format("http://api-public.netflix.com/{0}", resource);
 
                 //Not going to change
+            //Tankorsmash's API keys
             string consumer_key = "u7r68et24v6rd5r9u828qvte";
             string consumer_secret = "uWdp2AXnnu";
+            //secgoat's API Keys
+            //string consumer_key = "ycfhkvwdqyxtn84e9yhcvhav";
+            //string consumer_secret = "3YqbP6jvyG";
             string oauth_signature_method = "HMAC-SHA1";
             string oauth_version = "1.0";
 

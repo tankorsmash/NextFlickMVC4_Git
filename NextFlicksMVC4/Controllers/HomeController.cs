@@ -73,7 +73,8 @@ namespace NextFlicksMVC4.Controllers
                 validRecaptcha = true;
             }
                 //else check the recap froma non logged in user and make sure it is ok before sending email.
-            else if (ReCaptcha.Validate(privateKey: "6LdcQtwSAAAAACJPzqNPEoWp37-M-aUZi-6FgZNn"))
+                //TODO: reset recaptcha PRIVATE key here if domains change
+            else if (ReCaptcha.Validate(privateKey: "6Ld_kt0SAAAAAAWadUrgyxHuqAlp2fjS5RXjdyn9"))
             {
                 validRecaptcha = true;
             }
