@@ -555,21 +555,12 @@ namespace NextFlicksMVC4
             {
                 listHashes.Add(listOmdb.GetHashCode());
             }
-            /*var duplicatesDB = omdbHashes.GroupBy(s => s).SelectMany(grp => grp.Skip(1)).ToList();
-            var duplicatesList = listHashes.GroupBy(s => s).SelectMany(grp => grp.Skip(1)).ToList();
-            var dupes = db.Omdb.Select(omdb => omdb.GetHashCode()).GroupBy(s => s).SelectMany(grp => grp.Skip(1));
-
-            var duplicates = (from omdb in db.Omdb
-                group omdb.ombd_ID by (omdb.GetHashCode()) into grouping
-                select grouping).Distinct();
-                
-            foreach (var d in duplicates)
+            var dbDupes = omdbHashes.GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key).ToList();
+            var filDupes = listHashes.GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key).ToList();
+            foreach (var r in dbDupes)
             {
-                TraceLine("Duplicate: " + d.Key + " : ");
+                TraceLine(r.ToString());
             }
-                */
-            
-
             int count = complete_list.Count;
             const int quarter_1 =  25000;
             const int quarter_2 =  50000;
@@ -596,41 +587,49 @@ namespace NextFlicksMVC4
                 switch (index) {
                     case quarter_1:
                         {
+                            WriteTimeStamp("saving Omdb Q1");
                             db.SaveChanges();
                             break;  
                         }
                     case quarter_2:
                         {
+                            WriteTimeStamp("saving Omdb Q2");
                             db.SaveChanges();
                             break;  
                         }
                     case quarter_3:
                         {
+                            WriteTimeStamp("saving Omdb Q3");
                             db.SaveChanges();
                             break;  
                         }
                     case quarter_4:
                         {
+                            WriteTimeStamp("saving Omdb Q4");
                             db.SaveChanges();
                             break;  
                         }
                     case quarter_5:
                         {
+                            WriteTimeStamp("saving Omdb Q5");
                             db.SaveChanges();
                             break;
                         }
                     case quarter_6:
                         {
+                            WriteTimeStamp("saving Omdb Q6");
                             db.SaveChanges();
                             break;
                         }
                     case quarter_7:
                         {
+                            WriteTimeStamp("saving Omdb Q7");
                             db.SaveChanges();
                             break;
                         }
                     case quarter_8:
                         {
+                            WriteTimeStamp("saving Omdb Q8");
                             db.SaveChanges();
                             break;
                         }
@@ -851,7 +850,7 @@ namespace NextFlicksMVC4
             foreach (Movie dbMovie in db.Movies)
             {
                 dbHashes.Add(dbMovie.GetHashCode());
-            }
+            } 
 
             // Go line by line, and parse it for Movie files
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
@@ -880,11 +879,11 @@ namespace NextFlicksMVC4
                             {
                                 Movie movie =
                                     Create.CreateMovie(titles[0]);
-                               
+
                                 if (dbHashes.Contains(movie.GetHashCode()))
                                 {
                                     dbHashes.Remove(movie.GetHashCode());
-                                } 
+                                }
                                 else
                                 {
                                     //add to DB and dict
@@ -903,7 +902,9 @@ namespace NextFlicksMVC4
                     }
 
                     //save the movies added to db
+
                     TraceLine("  Saving Movies");
+                    TraceLine(dictOfMoviesTitles.Count().ToString());
                     db.SaveChanges();
                     db.Configuration.AutoDetectChangesEnabled = true;
                 //}

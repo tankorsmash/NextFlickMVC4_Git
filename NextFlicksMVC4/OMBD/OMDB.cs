@@ -407,7 +407,8 @@ namespace NextFlicksMVC4.OMBD
             }
 
             return (this.title == omdb.title && 
-                this.year == omdb.year);
+                this.year == omdb.year &&
+                this.i_ID == omdb.i_ID);
         }
 
         public bool Equals(OmdbEntry omdb)
@@ -419,12 +420,14 @@ namespace NextFlicksMVC4.OMBD
                 return false;
             }
             return (this.title == omdb.title && 
-                this.year == omdb.year);
+                this.year == omdb.year &&
+                this.i_ID == omdb.i_ID);
         }
         public override int GetHashCode()
         {
             return(this.title.GetHashCode() ^
-                this.year.GetHashCode());
+                this.year.GetHashCode() ^ 
+                this.i_ID.GetHashCode());
         }
     }
 }
