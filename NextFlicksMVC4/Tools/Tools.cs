@@ -542,29 +542,49 @@ namespace NextFlicksMVC4
                 complete_list = Serializer.Deserialize<List<OmdbEntry>>(file);
             }
 
+            //takes a list of omdbentrys and then saves them to the db
+            SaveListOfOmdbEntrys(complete_list);
+            TraceLine("Out RebuildOmdbsFromProtobufDump");
+        }
+
+        public static void SaveListOfOmdbEntrys(List<OmdbEntry> complete_list)
+        {
             MovieDbContext db = new MovieDbContext();
             db.Configuration.AutoDetectChangesEnabled = false;
 
+            //create a list of hashes for the omdbentrys in the db
             List<int> omdbHashes = new List<int>();
-            foreach (OmdbEntry omdb in db.Omdb)
-            {
+            foreach (OmdbEntry omdb in db.Omdb) {
                 omdbHashes.Add(omdb.GetHashCode());
             }
+            //create a list of hashes for the omdbentrys in the list 
             List<int> listHashes = new List<int>();
-            foreach (OmdbEntry listOmdb in complete_list)
-            {
+            foreach (OmdbEntry listOmdb in complete_list) {
                 listHashes.Add(listOmdb.GetHashCode());
             }
-            var dbDupes = omdbHashes.GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key).ToList();
-            var filDupes = listHashes.GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key).ToList();
-            foreach (var r in dbDupes)
-            {
+
+            //find duplicates in the list of hashes for the db
+            var dbDupes =
+                omdbHashes.GroupBy(x => x)
+                          .Where(group => @group.Count() > 1)
+                          .Select(group => @group.Key)
+                          .ToList();
+            //find duplicates in the list of hashes for the list
+            var filDupes =
+                listHashes.GroupBy(x => x)
+                          .Where(group => @group.Count() > 1)
+                          .Select(group => @group.Key)
+                          .ToList();
+            //print the hashes that are duplicated (?)
+            foreach (var r in dbDupes) {
                 TraceLine(r.ToString());
             }
+
+            //total movines in the passed in list of omdbentrys
             int count = complete_list.Count;
-            const int quarter_1 =  25000;
-            const int quarter_2 =  50000;
-            const int quarter_3 =  75000;
+            const int quarter_1 = 25000;
+            const int quarter_2 = 50000;
+            const int quarter_3 = 75000;
             const int quarter_4 = 100000;
             const int quarter_5 = 125000;
             const int quarter_6 = 150000;
@@ -572,15 +592,16 @@ namespace NextFlicksMVC4
             const int quarter_8 = 200000;
 
 
-
             int index = 0;
             foreach (OmdbEntry omdbEntry in complete_list) {
-                if (omdbHashes.Contains(omdbEntry.GetHashCode()))
-                {
+                //if the current omdbentry hash is already in the db, remove it from the
+                // list of omdb hashes. (for optimization I guess? I don't know why you're doing that,
+                //  that means that once you find a single dupe, you'll never find a second third or fourth 
+                //  dupe even if it exists, but I'm probably just misunderstanding)
+                if (omdbHashes.Contains(omdbEntry.GetHashCode())) {
                     omdbHashes.Remove(omdbEntry.GetHashCode());
                 }
-                else
-                {
+                else {
                     db.Omdb.Add(omdbEntry);
                 }
 
@@ -589,25 +610,25 @@ namespace NextFlicksMVC4
                         {
                             WriteTimeStamp("saving Omdb Q1");
                             db.SaveChanges();
-                            break;  
+                            break;
                         }
                     case quarter_2:
                         {
                             WriteTimeStamp("saving Omdb Q2");
                             db.SaveChanges();
-                            break;  
+                            break;
                         }
                     case quarter_3:
                         {
                             WriteTimeStamp("saving Omdb Q3");
                             db.SaveChanges();
-                            break;  
+                            break;
                         }
                     case quarter_4:
                         {
                             WriteTimeStamp("saving Omdb Q4");
                             db.SaveChanges();
-                            break;  
+                            break;
                         }
                     case quarter_5:
                         {
@@ -645,7 +666,6 @@ namespace NextFlicksMVC4
 
 
             WriteTimeStamp("  Done saving changes");
-            TraceLine("Out RebuildOmdbsFromProtobufDump");
         }
 
         public static void SerializeOmdbTsv(string entryDumpPath, string imdbPath, string tomPath)
