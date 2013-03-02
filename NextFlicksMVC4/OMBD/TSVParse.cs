@@ -12,7 +12,6 @@ namespace NextFlicksMVC4.OMBD
     public static class TSVParse
     {
 
-
         public static void DownloadOmdbZip(string url = @"http://www.beforethecode.net/projects/OMDb/download.aspx?e=tankorsmash@gmail.com", string outputPath = @"omdb.zip")
         {
             Tools.TraceLine("start download:\n{0}", url);
@@ -73,11 +72,6 @@ namespace NextFlicksMVC4.OMBD
             Tools.WriteTimeStamp();
             Tools.TraceLine("Successfully wrote and closed to {0}", outputPath);
 
-
-
-
-
-
         }
 
 
@@ -100,8 +94,6 @@ namespace NextFlicksMVC4.OMBD
                 full_i_path, full_t_path);
 
             var start_time = Tools.WriteTimeStamp("  Parsing the TSV");
-
-
 
             List<OmdbEntry> complete_list = new List<OmdbEntry>();
 
