@@ -6,6 +6,7 @@ using System.Web;
 using LumenWorks.Framework.IO.Csv;
 using System.Diagnostics;
 using System.Net;
+using NextFlicksMVC4.Models;
 
 namespace NextFlicksMVC4.OMBD
 {
@@ -74,14 +75,58 @@ namespace NextFlicksMVC4.OMBD
 
         }
 
+        public static void OptimizedPopulateOmdbTableFromTsv(
+            string imdb_filepath,
+            string tom_filepath)
+        {
+
+            ///The plan is to parse a the imdb file for a given amount of
+            ///entries, then save them to the db, repeat until 200k movies are
+            ///in there
+            ///
+            ///Then go over the RT data and add that data to the IMDB data found
+            ///in the just created OmdbEntry table.
+
+            //read first 500 movies
+            int num_of_movies_per_loop = 5000;
+            using (
+                CsvReader imdb_csvReader =
+                    new CsvReader(new StreamReader(imdb_filepath), true, '\t',
+                                  '~', '`', '~', ValueTrimmingOptions.None)) {
+
+                while (imdb_csvReader.ReadNextRecord()) {
+
+                    //loop through the imdbtsv, creating a omdbentry for the first 500 items
+                    List<OmdbEntry> small_omdbEntry_list = new List<OmdbEntry>();
+                    for (int i = 0; i < num_of_movies_per_loop; i++) {
+                        var entry =
+                            Omdb.CreateOmdbEntryFromTsvRecord(
+                                imdbReader: imdb_csvReader);
+                        small_omdbEntry_list.Add(entry);
+                    }
+
+                    //save the small_omdbEntry_list to db
+                    MovieDbContext db = new MovieDbContext();
+                    foreach (OmdbEntry omdbEntry in small_omdbEntry_list) {
+                        db.Omdb.Add(omdbEntry);
+                    }
+                    db.SaveChanges();
+
+
+
+                }
+            }
+        }
+
 
         /// <summary>
-        /// Parses omdb.txt and tomatoes.txt and returns a list of completed OmdbEntrys
-        /// </summary>
-        /// <param name="imdb_filepath">full path to omdb.txt from the OMDB API</param>
-        /// <param name="tom_filepath">full path to tomatoes.txt from the OMDB API</param>
-        /// <returns></returns>
-        public static List<OmdbEntry> ParseTSVforOmdbData(string imdb_filepath,
+                /// Parses omdb.txt and tomatoes.txt and returns a list of completed OmdbEntrys
+                /// </summary>
+                /// <param name="imdb_filepath">full path to omdb.txt from the OMDB API</param>
+                /// <param name="tom_filepath">full path to tomatoes.txt from the OMDB API</param>
+                /// <returns></returns>
+            public static
+            List<OmdbEntry> ParseTSVforOmdbData(string imdb_filepath,
                                                           string tom_filepath)
         {
             Tools.TraceLine("In ParseTSVforOmdbData");
@@ -201,7 +246,6 @@ namespace NextFlicksMVC4.OMBD
         public static List<OmdbEntry> ParseTSVforImdbData(string filepath )
         {
             Tools.TraceLine("In ParseTSVforImdbData");
-
             Tools.TraceLine(" Start Parse for Imdb");
 
             using (

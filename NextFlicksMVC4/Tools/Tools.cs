@@ -570,7 +570,7 @@ namespace NextFlicksMVC4
                           .Select(group => @group.Key)
                           .ToList();
             //find duplicates in the list of hashes for the list
-            var filDupes =
+            var fileDupes =
                 listHashes.GroupBy(x => x)
                           .Where(group => @group.Count() > 1)
                           .Select(group => @group.Key)
