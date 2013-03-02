@@ -607,53 +607,16 @@ namespace NextFlicksMVC4
 
                 switch (index) {
                     case quarter_1:
-                        {
-                            WriteTimeStamp("saving Omdb Q1");
-                            db.SaveChanges();
-                            break;
-                        }
                     case quarter_2:
-                        {
-                            WriteTimeStamp("saving Omdb Q2");
-                            db.SaveChanges();
-                            break;
-                        }
                     case quarter_3:
-                        {
-                            WriteTimeStamp("saving Omdb Q3");
-                            db.SaveChanges();
-                            break;
-                        }
                     case quarter_4:
-                        {
-                            WriteTimeStamp("saving Omdb Q4");
-                            db.SaveChanges();
-                            break;
-                        }
                     case quarter_5:
-                        {
-                            WriteTimeStamp("saving Omdb Q5");
-                            db.SaveChanges();
-                            break;
-                        }
                     case quarter_6:
-                        {
-                            WriteTimeStamp("saving Omdb Q6");
-                            db.SaveChanges();
-                            break;
-                        }
                     case quarter_7:
-                        {
-                            WriteTimeStamp("saving Omdb Q7");
-                            db.SaveChanges();
-                            break;
-                        }
                     case quarter_8:
-                        {
-                            WriteTimeStamp("saving Omdb Q8");
-                            db.SaveChanges();
-                            break;
-                        }
+                        TraceLine("Saving changes at quarter {0}", index / 25000);
+                        db.SaveChanges();
+                        break;
                 }
                 index++;
                 //int remaining = count - complete_list.IndexOf(omdbEntry);
