@@ -87,7 +87,7 @@ namespace NextFlicksMVC4.OMBD
             ///Then go over the RT data and add that data to the IMDB data found
             ///in the just created OmdbEntry table.
 
-            
+
 
             //OptimizedImdbTsvParse(imdb_filepath);
 
@@ -96,20 +96,46 @@ namespace NextFlicksMVC4.OMBD
             //5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB "
             int num_of_RT_movies_per_loop = 5000;
             using (
-                CsvReader imdb_csvReader =
+                CsvReader tom_csvReader =
                     new CsvReader(new StreamReader(tom_filepath), true, '\t',
                                   '~', '`', '~', ValueTrimmingOptions.None)) {
 
-                while (imdb_csvReader.ReadNextRecord()) {
+                while (tom_csvReader.ReadNextRecord()) {
+
+                    //loop through the imdbtsv, creating a omdbentry for the first 500 items
+                    List<OmdbEntry> small_omdbEntry_list = new List<OmdbEntry>();
+                    for (int i = 0; i < num_of_RT_movies_per_loop; i++) {
+                        //read the row and create an omdb from it
+                        //parse the current TSV row
+                        var entry =
+                            Omdb.CreateOmdbEntryFromTsvRecord(
+                                tomReader: tom_csvReader);
+                        // add entry to a list
+                        small_omdbEntry_list.Add(entry);
+
+                        //if nothing left to read, break out of the loop
+                        if (tom_csvReader.ReadNextRecord() == false) {
+                            Tools.TraceLine(
+                                "ReadNextRecord was false, breaking out of loop to save it");
+                            break;
+                        }
+                    }
+
+                    //find all existing entries in db
+                    MovieDbContext db = new MovieDbContext();
+
+
+
+                    //modify all those existing entries with listed data
                 }
+
+
             }
-
-
         }
 
         private static void OptimizedImdbTsvParse(string imdb_filepath)
         {
-//read 5000 movies until all the IMDB movies are parsed
+            //read 5000 movies until all the IMDB movies are parsed
             //5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB "
             int num_of_movies_per_loop = 5000;
             using (
