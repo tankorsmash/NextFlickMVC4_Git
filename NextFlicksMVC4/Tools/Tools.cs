@@ -266,6 +266,11 @@ namespace NextFlicksMVC4
         
 
 
+        /// <summary>
+        /// tries to convert a string to a double, returns 0.0 if failure
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static double StringToDouble(string str)
         {
             double toDouble;
@@ -385,21 +390,21 @@ namespace NextFlicksMVC4
             return movie_list;
         }
 
-        /// <summary>
-        /// returns the integer of a year, or 0, if not found
-        /// </summary>
-        /// <param name="movie"></param>
-        /// <returns></returns>
-        [Obsolete("Movie Class doesn't have a string year property", true)]
-        public static int GetYearOr0(Movie movie)
-        {
-            //if (movie.year != "") {
-            //    return Convert.ToInt32(movie.year);
-            //}
-            //else
-            //    return 0;
-            return 0;
-        }
+        ///// <summary>
+        ///// returns the integer of a year, or 0, if not found
+        ///// </summary>
+        ///// <param name="movie"></param>
+        ///// <returns></returns>
+        //[Obsolete("Movie Class doesn't have a string year property", true)]
+        //public static int GetYearOr0(Movie movie)
+        //{
+        //    //if (movie.year != "") {
+        //    //    return Convert.ToInt32(movie.year);
+        //    //}
+        //    //else
+        //    //    return 0;
+        //    return 0;
+        //}
 
         /// <summary>
         /// returns a queryable of movie_ids that match a genre_string

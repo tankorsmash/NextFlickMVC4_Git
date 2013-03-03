@@ -161,6 +161,33 @@ namespace NextFlicksMVC4.Tests
 
             Assert.AreNotEqual(first_movie, bogus_movie);
             Assert.AreNotEqual(second_movie, bogus_movie);
+        }
+
+        /// <summary>
+        /// Tests Tools.StringToDouble
+        /// </summary>
+        [Test]
+        public void TestStringToDouble()
+        {
+
+            //should work
+            string first_string = "1.2";
+            double first_double = Tools.StringToDouble(first_string);
+            double first_result = 1.2;
+
+            //should work
+            string second_string = "0.0";
+            double second_double = Tools.StringToDouble(second_string);
+            double second_result = 0.0;
+
+            //should not work, return 0.0
+            string third_string = "as";
+            double third_double = Tools.StringToDouble(third_string);
+            double third_result = 0.0;
+
+            Assert.AreEqual(first_double, first_result);
+            Assert.AreEqual(second_double, second_result);
+            Assert.AreEqual(third_double, third_result);
 
 
         }

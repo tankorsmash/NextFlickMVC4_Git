@@ -107,6 +107,7 @@ namespace NextFlicksMVC4.OMBD
 
                         //if nothing left to read, break out of the loop
                         if (imdb_csvReader.ReadNextRecord() == false) {
+                            Tools.TraceLine("ReadNextRecord was false, breaking out of loop to save it");
                             break;
                         }
                     }
