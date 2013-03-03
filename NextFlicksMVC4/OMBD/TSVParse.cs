@@ -81,7 +81,7 @@ namespace NextFlicksMVC4.OMBD
         {
 
             ///The plan is to parse a the imdb file for a given amount of
-            ///entries, then save them to the db, repeat until 200k movies are
+            ///entries, then save them to the db, repeat until 300k movies are
             ///in there
             ///
             ///Then go over the RT data and add that data to the IMDB data found
@@ -89,16 +89,34 @@ namespace NextFlicksMVC4.OMBD
 
             
 
-            //read first 5000 movies
+            //OptimizedImdbTsvParse(imdb_filepath);
+
+            //add the RT data
+            //read 5000 movies until all the IMDB movies are parsed
             //5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB "
-            int num_of_movies_per_loop = 5000; 
+            int num_of_RT_movies_per_loop = 5000;
+            using (
+                CsvReader imdb_csvReader =
+                    new CsvReader(new StreamReader(tom_filepath), true, '\t',
+                                  '~', '`', '~', ValueTrimmingOptions.None)) {
+
+                while (imdb_csvReader.ReadNextRecord()) {
+                }
+            }
+
+
+        }
+
+        private static void OptimizedImdbTsvParse(string imdb_filepath)
+        {
+//read 5000 movies until all the IMDB movies are parsed
+            //5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB "
+            int num_of_movies_per_loop = 5000;
             using (
                 CsvReader imdb_csvReader =
                     new CsvReader(new StreamReader(imdb_filepath), true, '\t',
                                   '~', '`', '~', ValueTrimmingOptions.None)) {
-
                 while (imdb_csvReader.ReadNextRecord()) {
-
                     //loop through the imdbtsv, creating a omdbentry for the first 500 items
                     List<OmdbEntry> small_omdbEntry_list = new List<OmdbEntry>();
                     for (int i = 0; i < num_of_movies_per_loop; i++) {
@@ -110,7 +128,8 @@ namespace NextFlicksMVC4.OMBD
 
                         //if nothing left to read, break out of the loop
                         if (imdb_csvReader.ReadNextRecord() == false) {
-                            Tools.TraceLine("ReadNextRecord was false, breaking out of loop to save it");
+                            Tools.TraceLine(
+                                "ReadNextRecord was false, breaking out of loop to save it");
                             break;
                         }
                     }
@@ -122,13 +141,14 @@ namespace NextFlicksMVC4.OMBD
                         db.Omdb.Add(omdbEntry);
                     }
 
-                    Tools.TraceLine("saving omdbs. # of omdbs in table before save: {0}", db.Omdb.Count());
+                    Tools.TraceLine(
+                        "saving omdbs. # of omdbs in table before save: {0}",
+                        db.Omdb.Count());
                     db.SaveChanges();
                     db.Configuration.AutoDetectChangesEnabled = true;
-
-
-
                 }
+
+                Tools.TraceLine("Done saving IMDB OmdbEntrys");
             }
         }
 
