@@ -87,8 +87,11 @@ namespace NextFlicksMVC4.OMBD
             ///Then go over the RT data and add that data to the IMDB data found
             ///in the just created OmdbEntry table.
 
-            //read first 500 movies
-            int num_of_movies_per_loop = 5000;
+            
+
+            //read first 5000 movies
+            //5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB "
+            int num_of_movies_per_loop = 5000; 
             using (
                 CsvReader imdb_csvReader =
                     new CsvReader(new StreamReader(imdb_filepath), true, '\t',
@@ -114,12 +117,14 @@ namespace NextFlicksMVC4.OMBD
 
                     //save the small_omdbEntry_list to db
                     MovieDbContext db = new MovieDbContext();
+                    db.Configuration.AutoDetectChangesEnabled = false;
                     foreach (OmdbEntry omdbEntry in small_omdbEntry_list) {
                         db.Omdb.Add(omdbEntry);
                     }
 
                     Tools.TraceLine("saving omdbs. # of omdbs in table before save: {0}", db.Omdb.Count());
                     db.SaveChanges();
+                    db.Configuration.AutoDetectChangesEnabled = true;
 
 
 
