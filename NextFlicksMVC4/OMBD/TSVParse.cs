@@ -175,13 +175,19 @@ namespace NextFlicksMVC4.OMBD
 
         }
 
-    public static List<OmdbEntry> MergeTwoOmdbEntryLists(List<OmdbEntry> first_list,
-                                    List<OmdbEntry> second_list)
+        /// <summary>
+        /// takes two lists of partial omdbentrys and then combines them
+        /// </summary>
+        /// <param name="imdb_list">a list of partial omdbentrys with their RT data missing</param>
+        /// <param name="tom_list">a list of partial omdbentrys with their imdb data missing</param>
+        /// <returns></returns>
+    public static List<OmdbEntry> MergeTwoOmdbEntryLists(List<OmdbEntry> imdb_list,
+                                    List<OmdbEntry> tom_list)
     {
 
-        //left out join two lists, one imdb data , one RT data
-        var res = from imdb in first_list
-                  join tom in second_list on 
+        //left outer join two lists, one imdb data , one RT data
+        var res = from imdb in imdb_list
+                  join tom in tom_list on 
                   imdb.ombd_ID equals tom.ombd_ID into matched
                   from match in matched.DefaultIfEmpty()
                   select new OmdbEntry
@@ -207,43 +213,14 @@ namespace NextFlicksMVC4.OMBD
                                  t_UserReviews = (match == null ? 0 : match.t_UserReviews)
 
                              };
+
         List<OmdbEntry> complete_list = res.ToList();
 
-        
+        string msg = string.Format("Total entries in complete list: {0}",
+                                   complete_list.Count);
+        Tools.TraceLine(msg);
+        return complete_list;
 
-        //old way below
-
-            //List<OmdbEntry> complete_list = new List<OmdbEntry>();
-
-            //foreach (OmdbEntry imdbEntry in first_list) {
-            //    int current_id = imdbEntry.ombd_ID;
-
-            //    //find matching tomatoes.txt entry
-            //    OmdbEntry selected_tom_entry =
-            //        second_list.SingleOrDefault(item => item.ombd_ID == current_id);
-
-            //    //If there IS a matching tomato data
-            //    if (selected_tom_entry != null)
-            //    {
-            //        var created_entry =
-            //            OMBD.Omdb.MergeImdbWithTomatoesOmdbEntry(imdbEntry,
-            //                                                     selected_tom_entry);
-            //        complete_list.Add(created_entry);
-            //    }
-            //    //if there's no matching query, there's no matching toms data so 
-            //    // just add the imdb  to complete list
-            //    else if (selected_tom_entry == null) {
-            //        complete_list.Add(imdbEntry);
-            //    }
-
-            //    //Tools.TraceLine(current_id.ToString());
-
-            //}
-
-            string msg = string.Format("Total entries in complete list: {0}",
-                                       complete_list.Count);
-            Tools.TraceLine(msg);
-            return complete_list;
         }
 
 

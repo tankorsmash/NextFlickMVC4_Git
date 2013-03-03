@@ -38,6 +38,13 @@ namespace NextFlicksMVC4.Tests
             Assert.AreNotEqual(result2, expected2);
         } 
 
+
+        [Test]
+        public void TestMergeTwoOmdbEntryLists()
+        {
+            
+        }
+
         [Test(Description = "Testing testing testing")]
         public void TestCreateMovie()
         {
