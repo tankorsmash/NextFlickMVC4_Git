@@ -99,10 +99,16 @@ namespace NextFlicksMVC4.OMBD
                     //loop through the imdbtsv, creating a omdbentry for the first 500 items
                     List<OmdbEntry> small_omdbEntry_list = new List<OmdbEntry>();
                     for (int i = 0; i < num_of_movies_per_loop; i++) {
+                        //read the row and create an omdb from it
                         var entry =
                             Omdb.CreateOmdbEntryFromTsvRecord(
                                 imdbReader: imdb_csvReader);
                         small_omdbEntry_list.Add(entry);
+
+                        //if nothing left to read, break out of the loop
+                        if (imdb_csvReader.ReadNextRecord() == false) {
+                            break;
+                        }
                     }
 
                     //save the small_omdbEntry_list to db
