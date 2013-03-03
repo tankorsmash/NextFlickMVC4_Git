@@ -42,7 +42,52 @@ namespace NextFlicksMVC4.Tests
         [Test]
         public void TestMergeTwoOmdbEntryLists()
         {
-            
+            //create a imdb OE
+            OmdbEntry imdb_omdbentry = new OmdbEntry
+            {
+                i_ID = "asd",
+                i_Rating = "asd",
+                i_Votes = "123"
+            };
+            List<OmdbEntry> imdb_list = new List<OmdbEntry>{imdb_omdbentry};
+
+            //create a RT OE
+            OmdbEntry rt_omdbentry = new OmdbEntry
+                                         {
+                                             t_Consensus = "rotten",
+                                             t_Fresh = 123,
+                                             t_Image = "asddd",
+                                             t_Meter = 123,
+                                             t_Reviews = 12355,
+                                             t_Rotten = 333,
+                                             t_UserMeter = 233,
+                                             t_UserReviews = 3
+                                         };
+            List<OmdbEntry> rt_list = new List<OmdbEntry>{rt_omdbentry};
+
+            //expected OE result
+            OmdbEntry expected_omdbentry = new OmdbEntry
+                                             {
+
+                                                 i_ID = "asd",
+                                                 i_Rating = "asd",
+                                                 i_Votes = "123",
+                                                 t_Consensus = "rotten",
+                                                 t_Fresh = 123,
+                                                 t_Image = "asddd",
+                                                 t_Meter = 123,
+                                                 t_Reviews = 12355,
+                                                 t_Rotten = 333,
+                                                 t_UserMeter = 233,
+                                                 t_UserReviews = 3
+                                             };
+
+            List<OmdbEntry> res = TSVParse.MergeTwoOmdbEntryLists(imdb_list,
+                                                                  rt_list);
+            OmdbEntry resulting_omdbentry = res[0];
+            Assert.AreEqual(expected_omdbentry, resulting_omdbentry);
+            Assert.AreNotEqual(new OmdbEntry(), resulting_omdbentry);
+
         }
 
         [Test(Description = "Testing testing testing")]
