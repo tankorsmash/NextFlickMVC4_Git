@@ -4,6 +4,7 @@ using NUnit.Framework;
 using NextFlicksMVC4.Controllers;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
+using NextFlicksMVC4.OMBD;
 
 
 namespace NextFlicksMVC4.Tests
@@ -70,11 +71,55 @@ namespace NextFlicksMVC4.Tests
 
         }
 
+        /// <summary>
+        /// Test for confirm that Movie.Equals(same_Movie) works
+        /// </summary>
         [Test]
-        public void Testasd()
+        public void TestMovieEquals()
         {
-            
+
+            Movie first_movie = new Movie
+                                    {
+                                        year = 1999,
+                                        maturity_rating = 200,
+                                        runtime = 12345
+                                    };
+
+            Movie second_movie = new Movie
+                                    {
+                                        year = 1999,
+                                        maturity_rating = 200,
+                                        runtime = 12345
+                                    };
+
+            Assert.AreEqual(first_movie, second_movie);
         }
+
+        /// <summary>
+        /// Test for confirm that Omdb.Equals(same_Omdb) works
+        /// </summary>
+        [Test]
+        public void TestOmdbEquals()
+        {
+
+            OmdbEntry first_movie = new OmdbEntry
+                                    {
+                                        year = 1999,
+                                        i_ID = "200",
+                                        i_Votes = "12345"
+                                    };
+
+            OmdbEntry second_movie = new OmdbEntry
+                                    {
+                                        year = 1999,
+                                        i_ID = "200",
+                                        i_Votes = "12345"
+                                    };
+
+            Assert.AreEqual(first_movie, second_movie);
+        }
+
+
 
 
     }

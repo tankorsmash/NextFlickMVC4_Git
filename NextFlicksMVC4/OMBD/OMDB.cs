@@ -406,9 +406,30 @@ namespace NextFlicksMVC4.OMBD
                 return false;
             }
 
-            return (this.title == omdb.title && 
+            //return (this.title == omdb.title && 
+            //    this.year == omdb.year &&
+            //    this.i_ID == omdb.i_ID &&);
+
+            return (
+                //ignore because I'm not sure when a movie_id will or wont be set
+                //this.movie_ID == omdb.movie_ID &&
+                this.title == omdb.title &&
                 this.year == omdb.year &&
-                this.i_ID == omdb.i_ID);
+                this.i_Rating == omdb.i_Rating &&
+                this.i_Votes == omdb.i_Votes &&
+                this.i_ID == omdb.i_ID &&
+                this.t_Meter == omdb.t_Meter &&
+                this.t_Image == omdb.t_Image &&
+                //ignore cause of float
+                //this.t_Rating == omdb.t_Rating &&
+                this.t_Reviews == omdb.t_Reviews &&
+                this.t_Fresh == omdb.t_Fresh &&
+                this.t_Rotten == omdb.t_Rotten &&
+                this.t_Consensus == omdb.t_Consensus &&
+                this.t_UserMeter == omdb.t_UserMeter &&
+                //ignore cause of float
+                //this.t_UserRating == omdb.t_UserRating &&
+                this.t_UserReviews == omdb.t_UserReviews);
         }
 
         public bool Equals(OmdbEntry omdb)
@@ -419,10 +440,31 @@ namespace NextFlicksMVC4.OMBD
             {
                 return false;
             }
-            return (this.title == omdb.title && 
+
+            //return (this.title == omdb.title && 
+            //    this.year == omdb.year &&
+            //    this.i_ID == omdb.i_ID);            return (
+                //ignore because I'm not sure when a movie_id will or wont be set
+                //this.movie_ID == omdb.movie_ID &&
+                this.title == omdb.title &&
                 this.year == omdb.year &&
-                this.i_ID == omdb.i_ID);
+                this.i_Rating == omdb.i_Rating &&
+                this.i_Votes == omdb.i_Votes &&
+                this.i_ID == omdb.i_ID &&
+                this.t_Meter == omdb.t_Meter &&
+                this.t_Image == omdb.t_Image &&
+                //ignore cause of float
+                //this.t_Rating == omdb.t_Rating &&
+                this.t_Reviews == omdb.t_Reviews &&
+                this.t_Fresh == omdb.t_Fresh &&
+                this.t_Rotten == omdb.t_Rotten &&
+                this.t_Consensus == omdb.t_Consensus &&
+                this.t_UserMeter == omdb.t_UserMeter &&
+                //ignore cause of float
+                //this.t_UserRating == omdb.t_UserRating &&
+                this.t_UserReviews == omdb.t_UserReviews);
         }
+
         public override int GetHashCode()
         {
             return(this.title.GetHashCode() ^

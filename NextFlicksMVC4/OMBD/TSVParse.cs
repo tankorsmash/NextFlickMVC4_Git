@@ -110,6 +110,8 @@ namespace NextFlicksMVC4.OMBD
                     foreach (OmdbEntry omdbEntry in small_omdbEntry_list) {
                         db.Omdb.Add(omdbEntry);
                     }
+
+                    Tools.TraceLine("saving omdbs. # of omdbs in table before save: {0}", db.Omdb.Count());
                     db.SaveChanges();
 
 
