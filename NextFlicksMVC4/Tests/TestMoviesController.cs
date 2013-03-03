@@ -104,19 +104,65 @@ namespace NextFlicksMVC4.Tests
 
             OmdbEntry first_movie = new OmdbEntry
                                     {
+                                        //ignore because I'm not sure when a movie_id will or wont be set
+                                        //movie_ID = ,
+                                        title = "movie called",
                                         year = 1999,
-                                        i_ID = "200",
-                                        i_Votes = "12345"
+                                        i_Rating = "asd",
+                                        i_Votes = "400",
+                                        i_ID = "asd",
+                                        t_Meter = 2,
+                                        t_Image = "asd",
+                                        //ignore cause of float
+                                        //t_Rating = 22,
+                                        t_Reviews = 123,
+                                        t_Fresh = 23,
+                                        t_Rotten = 23,
+                                        t_Consensus = "rotten",
+                                        t_UserMeter = 233,
+                                        //ignore cause of float
+                                        //t_UserRating = 2.4f,
+                                        t_UserReviews = 232,
                                     };
 
             OmdbEntry second_movie = new OmdbEntry
                                     {
+                                        //ignore because I'm not sure when a movie_id will or wont be set
+                                        //movie_ID = ,
+                                        title = "movie called",
                                         year = 1999,
-                                        i_ID = "200",
-                                        i_Votes = "12345"
+                                        i_Rating = "asd",
+                                        i_Votes = "400",
+                                        i_ID = "asd",
+                                        t_Meter = 2,
+                                        t_Image = "asd",
+                                        //ignore cause of float
+                                        //t_Rating = 22,
+                                        t_Reviews = 123,
+                                        t_Fresh = 23,
+                                        t_Rotten = 23,
+                                        t_Consensus = "rotten",
+                                        t_UserMeter = 233,
+                                        //ignore cause of float
+                                        //t_UserRating = 2.4f,
+                                        t_UserReviews = 232,
                                     };
-
+                                    //{
+                                    //    year = 1999,
+                                    //    i_ID = "200",
+                                    //    i_Votes = "12345"
+                                    //};
             Assert.AreEqual(first_movie, second_movie);
+
+            OmdbEntry bogus_movie = new OmdbEntry
+                                        {
+                                            t_Consensus = "asd",
+                                        };
+
+            Assert.AreNotEqual(first_movie, bogus_movie);
+            Assert.AreNotEqual(second_movie, bogus_movie);
+
+
         }
 
 

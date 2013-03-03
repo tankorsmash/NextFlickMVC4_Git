@@ -443,7 +443,8 @@ namespace NextFlicksMVC4.OMBD
 
             //return (this.title == omdb.title && 
             //    this.year == omdb.year &&
-            //    this.i_ID == omdb.i_ID);            return (
+            //    this.i_ID == omdb.i_ID);
+            return (
                 //ignore because I'm not sure when a movie_id will or wont be set
                 //this.movie_ID == omdb.movie_ID &&
                 this.title == omdb.title &&
