@@ -128,6 +128,23 @@ namespace NextFlicksMVC4.Tests
 
         }
 
+
+        [Test]
+        public void TestMatchMovieIdToOmdbEntry()
+        {
+
+            MovieDbContext db = new MovieDbContext();
+            int first_movie_id = db.Movies.First().movie_ID;
+            OmdbEntry expected_omdbentry = db.Omdb.First(omdb => omdb.movie_ID == first_movie_id);
+
+            OmdbEntry result = Tools.MatchMovieIdToOmdbEntry(first_movie_id);
+            
+            Assert.AreSame(expected_omdbentry, result);
+
+
+
+        }
+
         /// <summary>
         /// Test for confirm that Movie.Equals(same_Movie) works
         /// </summary>

@@ -202,7 +202,7 @@ namespace NextFlicksMVC4.Controllers
         {
             var omdbTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.txt");
             var tomatoesTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/tomatoes.txt");
-            TSVParse.OptimizedPopulateOmdbTableFromTsv(omdbTXT,tomatoesTXT);
+            TSVParse.OptimizedPopulateOmdbTableFromTsv(omdbTXT, tomatoesTXT);
 
             var start = Tools.WriteTimeStamp(writeTime:false);
 

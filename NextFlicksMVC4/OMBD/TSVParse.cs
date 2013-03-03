@@ -162,8 +162,6 @@ namespace NextFlicksMVC4.OMBD
             complete_list = MergeTwoOmdbEntryLists(imdb_entries, tom_entries);
             Tools.WriteTimeStamp("  merge end");
 
-            //save to file so I don't  have to keep recreating objects
-
             var complete_time = Tools.WriteTimeStamp("  done merging at");
             var duration = complete_time - start_time;
             var duration_msg = string.Format("  Took {0} to complete", duration);
