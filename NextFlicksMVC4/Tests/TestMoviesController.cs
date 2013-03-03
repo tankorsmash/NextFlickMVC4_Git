@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NextFlicksMVC4.Controllers;
 using NextFlicksMVC4.Models;
 using NextFlicksMVC4.NetFlixAPI;
 using NextFlicksMVC4.OMBD;
+using NextFlicksMVC4.Views.Movies.ViewModels;
 
 
 namespace NextFlicksMVC4.Tests
@@ -27,10 +29,13 @@ namespace NextFlicksMVC4.Tests
         [Test]
         public void TestGetAllParamNames()
         {
-            List<string> result = Tools.GetAllParamNames("GetAllParamNames");
-            List<string> expected = new List<string> {"methodName"};
-  
+            List<string> result = Tools.GetAllParamNames("FindPageOfMovies");
+            List<string> expected = new List<string> {"res","page", "movie_count","db","verbose"};
             Assert.AreEqual(result, expected);
+
+            List<string> result2 = Tools.GetAllParamNames("FindPageOfMovies");
+            List<string> expected2 = new List<string>();
+            Assert.AreNotEqual(result2, expected2);
         } 
 
         [Test(Description = "Testing testing testing")]
@@ -189,6 +194,16 @@ namespace NextFlicksMVC4.Tests
             Assert.AreEqual(second_double, second_result);
             Assert.AreEqual(third_double, third_result);
 
+        }
+
+
+        [Test]
+        public void TestFullDbQuery()
+        {
+            MovieDbContext db = new MovieDbContext();
+            IQueryable<FullViewModel> qry = Tools.GetFullDbQuery(db);
+
+            Assert.IsNotNull(qry);
 
         }
 

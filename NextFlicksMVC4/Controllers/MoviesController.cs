@@ -348,7 +348,7 @@ namespace NextFlicksMVC4.Controllers
             }
         }
 
-        private static IEnumerable<FullViewModel> FindPageOfMovies(IQueryable<FullViewModel> res,
+        public static IEnumerable<FullViewModel> FindPageOfMovies(IQueryable<FullViewModel> res,
                                                     int page,
                                                     int movie_count,
                                                     MovieDbContext db,
