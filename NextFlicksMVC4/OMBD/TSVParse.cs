@@ -6,6 +6,7 @@ using System.Web;
 using LumenWorks.Framework.IO.Csv;
 using System.Diagnostics;
 using System.Net;
+using NextFlicksMVC4.Controllers;
 using NextFlicksMVC4.Models;
 
 namespace NextFlicksMVC4.OMBD
@@ -103,7 +104,7 @@ namespace NextFlicksMVC4.OMBD
                 while (tom_csvReader.ReadNextRecord()) {
 
                     //loop through the imdbtsv, creating a omdbentry for the first 500 items
-                    List<OmdbEntry> small_omdbEntry_list = new List<OmdbEntry>();
+                    List<OmdbEntry> new_tom_omdb_entries = new List<OmdbEntry>();
                     for (int i = 0; i < num_of_RT_movies_per_loop; i++) {
                         //read the row and create an omdb from it
                         //parse the current TSV row
@@ -111,7 +112,7 @@ namespace NextFlicksMVC4.OMBD
                             Omdb.CreateOmdbEntryFromTsvRecord(
                                 tomReader: tom_csvReader);
                         // add entry to a list
-                        small_omdbEntry_list.Add(entry);
+                        new_tom_omdb_entries.Add(entry);
 
                         //if nothing left to read, break out of the loop
                         if (tom_csvReader.ReadNextRecord() == false) {
@@ -124,20 +125,46 @@ namespace NextFlicksMVC4.OMBD
                     //find all existing entries in db
                     ////oh bam, forgot that ID in the tsv's are the same value. 
                     MovieDbContext db = new MovieDbContext();
-                    db.Configuration.AutoDetectChangesEnabled = true;
+                    db.Configuration.AutoDetectChangesEnabled = false;
                     //find all existing OE that match the omdb_ids of the listed ones
-                    List<OmdbEntry> matched_existing_omdbentrys =
-                        db.Omdb.Where(
-                            omdb =>
-                            small_omdbEntry_list.Select(small => small.ombd_ID)
-                                                .Contains(omdb.ombd_ID))
-                          .ToList();
+                    //List<OmdbEntry> matched_existing_omdbentrys =
+                    //    db.Omdb.Where(
+                    //        omdb =>
+                    //        small_omdbEntry_list.Select(small => small.ombd_ID)
+                    //                            .Contains(omdb.ombd_ID))
+                    //      .ToList();
+
+                    Tools.TraceLine("items in db.Omdb {0}", db.Omdb.Count());
+
+                    //var res = (from rt in small_omdbEntry_list
+                    //          where db.Omdb.Select(omdb => omdb.ombd_ID).Contains(rt.ombd_ID)
+                    //          select rt);
+                    List<int> tom_omdb_ids_to_match =
+                        new_tom_omdb_entries.Select(omdb => omdb.ombd_ID)
+                                            .ToList();
+                    var res = (from imdb in db.Omdb
+                              where tom_omdb_ids_to_match.Contains(imdb.ombd_ID)
+                              select imdb);
+                    Tools.TraceLine("items in res {0}", res.Count());
+
+                    List<OmdbEntry> matched_existing_omdbentrys = res.ToList();
+
+                    foreach (OmdbEntry matchedExistingImdbOmdbentry in matched_existing_omdbentrys) {
+                        var matching_RT_data =
+                            new_tom_omdb_entries.First(
+                                item =>
+                                item.ombd_ID == matchedExistingImdbOmdbentry.ombd_ID);
+                        Tools.TraceLine("{0}\n{1}***********", matchedExistingImdbOmdbentry.ombd_ID, matching_RT_data.ombd_ID);
+                    }
+
+                    int awe = 0;
 
                     //modify all those existing entries with listed data
-                    var merged_omdbs =
-                        MergeTwoOmdbEntryLists(small_omdbEntry_list,
-                                               matched_existing_omdbentrys);
-                    
+                    //var merged_omdbs =
+                    //    MergeTwoOmdbEntryLists(small_omdbEntry_list,
+                    //                           matched_existing_omdbentrys);
+
+
                 }
 
 

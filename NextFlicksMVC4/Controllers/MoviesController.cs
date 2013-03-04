@@ -221,6 +221,7 @@ namespace NextFlicksMVC4.Controllers
                 tag_string = "0";
             }
 
+
             //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
             //Assign values to a ViewBag, so the Filtermenu can use them
             ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
