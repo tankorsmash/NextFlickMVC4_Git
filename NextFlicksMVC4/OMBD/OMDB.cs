@@ -177,11 +177,11 @@ namespace NextFlicksMVC4.OMBD
         }
 
         /// <summary>
-        /// returns a merged entry from imdb and tomatoes entries
+        /// returns a merged entry from imdb and tomatoes entries to create a new OmdbEntry
         /// </summary>
         /// <param name="imdb_entry"></param>
         /// <param name="tomato_entry"></param>
-        /// <returns></returns>
+        /// <returns>a completely new OmdbEntry</returns>
         public static OmdbEntry MergeImdbWithTomatoesOmdbEntry(
             OmdbEntry imdb_entry, OmdbEntry tomato_entry)
         {

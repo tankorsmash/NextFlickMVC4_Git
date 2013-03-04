@@ -122,11 +122,22 @@ namespace NextFlicksMVC4.OMBD
                     }
 
                     //find all existing entries in db
+                    ////oh bam, forgot that ID in the tsv's are the same value. 
                     MovieDbContext db = new MovieDbContext();
-
-
+                    db.Configuration.AutoDetectChangesEnabled = true;
+                    //find all existing OE that match the omdb_ids of the listed ones
+                    List<OmdbEntry> matched_existing_omdbentrys =
+                        db.Omdb.Where(
+                            omdb =>
+                            small_omdbEntry_list.Select(small => small.ombd_ID)
+                                                .Contains(omdb.ombd_ID))
+                          .ToList();
 
                     //modify all those existing entries with listed data
+                    var merged_omdbs =
+                        MergeTwoOmdbEntryLists(small_omdbEntry_list,
+                                               matched_existing_omdbentrys);
+                    
                 }
 
 
