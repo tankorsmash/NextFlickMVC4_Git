@@ -88,11 +88,9 @@ namespace NextFlicksMVC4.OMBD
             ///Then go over the RT data and add that data to the IMDB data found
             ///in the just created OmdbEntry table.
 
-
-
             //get the IMDB data saved to the db
             // missing the RottenTomatoes data, that happens next
-            //OptimizedImdbTsvParse(imdb_filepath);
+            OptimizedImdbTsvParse(imdb_filepath);
 
             //add the RT data
             //read 5000 movies until all the IMDB movies are parsed
@@ -109,9 +107,7 @@ namespace NextFlicksMVC4.OMBD
                     List<OmdbEntry> new_tom_omdb_entries = new List<OmdbEntry>();
                     for (int i = 0; i < num_of_RT_movies_per_loop; i++) {
                         //read the row and create an omdb from it parse the current TSV row
-                        var entry =
-                            Omdb.CreateOmdbEntryFromTsvRecord(
-                                tomReader: tom_csvReader);
+                        var entry = Omdb.CreateOmdbEntryFromTsvRecord( tomReader: tom_csvReader);
                         // add entry to a list
                         new_tom_omdb_entries.Add(entry);
 
@@ -154,6 +150,8 @@ namespace NextFlicksMVC4.OMBD
                         //updates the IMDB OmdbEntry with the RT OmdbEntry's information
                         UpdateImdbEntryWithRtEntry(matchedExistingImdbOmdbentry, matching_RT_data);
                     }
+
+                    //save the updated OmdbEntry information, dispose of the context
                     db.SaveChanges();
                     db.Dispose();
                     Tools.TraceLine("Updated existing IMDB OmdbEntrys, done saving");
