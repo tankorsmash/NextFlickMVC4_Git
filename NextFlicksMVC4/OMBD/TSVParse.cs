@@ -90,6 +90,8 @@ namespace NextFlicksMVC4.OMBD
 
 
 
+            //get the IMDB data saved to the db
+            // missing the RottenTomatoes data, that happens next
             //OptimizedImdbTsvParse(imdb_filepath);
 
             //add the RT data
@@ -103,7 +105,7 @@ namespace NextFlicksMVC4.OMBD
 
                 while (tom_csvReader.ReadNextRecord()) {
 
-                    //loop through the imdbtsv, creating a omdbentry for the first 500 items
+                    //loop through the imdbtsv, creating a omdbentry for the first 5000 items
                     List<OmdbEntry> new_tom_omdb_entries = new List<OmdbEntry>();
                     for (int i = 0; i < num_of_RT_movies_per_loop; i++) {
                         //read the row and create an omdb from it
@@ -123,41 +125,36 @@ namespace NextFlicksMVC4.OMBD
                     }
 
                     //find all existing entries in db
-                    ////oh bam, forgot that ID in the tsv's are the same value. 
                     MovieDbContext db = new MovieDbContext();
                     db.Configuration.AutoDetectChangesEnabled = false;
                     //find all existing OE that match the omdb_ids of the listed ones
-                    //List<OmdbEntry> matched_existing_omdbentrys =
-                    //    db.Omdb.Where(
-                    //        omdb =>
-                    //        small_omdbEntry_list.Select(small => small.ombd_ID)
-                    //                            .Contains(omdb.ombd_ID))
-                    //      .ToList();
-
                     Tools.TraceLine("items in db.Omdb {0}", db.Omdb.Count());
 
-                    //var res = (from rt in small_omdbEntry_list
-                    //          where db.Omdb.Select(omdb => omdb.ombd_ID).Contains(rt.ombd_ID)
-                    //          select rt);
+                    //get the ids of the new RT omdbentrys
                     List<int> tom_omdb_ids_to_match =
                         new_tom_omdb_entries.Select(omdb => omdb.ombd_ID)
                                             .ToList();
+                    //match the ids to the exist IMDB omdbentries
                     var res = (from imdb in db.Omdb
                               where tom_omdb_ids_to_match.Contains(imdb.ombd_ID)
                               select imdb);
                     Tools.TraceLine("items in res {0}", res.Count());
+                    List<OmdbEntry> matched_existing_imdb_omdbentrys= res.ToList();
 
-                    List<OmdbEntry> matched_existing_omdbentrys = res.ToList();
 
-                    foreach (OmdbEntry matchedExistingImdbOmdbentry in matched_existing_omdbentrys) {
+                    foreach (
+                        OmdbEntry matchedExistingImdbOmdbentry in
+                            matched_existing_imdb_omdbentrys ) {
+                        //the RT omdb tha matches the imdb entry for the omdb_id
                         var matching_RT_data =
                             new_tom_omdb_entries.First(
                                 item =>
-                                item.ombd_ID == matchedExistingImdbOmdbentry.ombd_ID);
-                        Tools.TraceLine("{0}\n{1}***********", matchedExistingImdbOmdbentry.ombd_ID, matching_RT_data.ombd_ID);
+                                item.ombd_ID ==
+                                matchedExistingImdbOmdbentry.ombd_ID);
+                        Tools.TraceLine("{0}\n{1}\n***********",
+                                        matchedExistingImdbOmdbentry.ombd_ID,
+                                        matching_RT_data.ombd_ID);
                     }
-
-                    int awe = 0;
 
                     //modify all those existing entries with listed data
                     //var merged_omdbs =
