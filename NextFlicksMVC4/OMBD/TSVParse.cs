@@ -80,7 +80,6 @@ namespace NextFlicksMVC4.OMBD
             string imdb_filepath,
             string tom_filepath)
         {
-
             ///The plan is to parse a the imdb file for a given amount of
             ///entries, then save them to the db, repeat until 300k movies are
             ///in there
@@ -90,24 +89,32 @@ namespace NextFlicksMVC4.OMBD
 
             //get the IMDB data saved to the db
             // missing the RottenTomatoes data, that happens next
-            OptimizedImdbTsvParse(imdb_filepath);
+            OptimizedImdbTsvParse(imdb_filepath, 5000);
 
             //add the RT data
             //read 5000 movies until all the IMDB movies are parsed
             //5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB "
+            OptimizedRtTsvParse(tom_filepath);
+        }
+
+        /// <summary>
+        /// Parsed a TSV for RT data then adds the new data to existing IMDB OmdbEntrys in the db
+        /// </summary>
+        /// <param name="tom_filepath"></param>
+        public static void OptimizedRtTsvParse(string tom_filepath)
+        {
             int num_of_RT_movies_per_loop = 5000;
             using (
                 CsvReader tom_csvReader =
                     new CsvReader(new StreamReader(tom_filepath), true, '\t',
                                   '~', '`', '~', ValueTrimmingOptions.None)) {
-
                 while (tom_csvReader.ReadNextRecord()) {
-
                     //loop through the imdbtsv, creating a omdbentry for the first 5000 items
                     List<OmdbEntry> new_tom_omdb_entries = new List<OmdbEntry>();
                     for (int i = 0; i < num_of_RT_movies_per_loop; i++) {
                         //read the row and create an omdb from it parse the current TSV row
-                        var entry = Omdb.CreateOmdbEntryFromTsvRecord( tomReader: tom_csvReader);
+                        var entry =
+                            Omdb.CreateOmdbEntryFromTsvRecord(tomReader: tom_csvReader);
                         // add entry to a list
                         new_tom_omdb_entries.Add(entry);
 
@@ -131,15 +138,16 @@ namespace NextFlicksMVC4.OMBD
                                             .ToList();
                     //match the ids to the exist IMDB omdbentries
                     var res = (from imdb in db.Omdb
-                              where tom_omdb_ids_to_match.Contains(imdb.ombd_ID)
-                              select imdb);
+                               where tom_omdb_ids_to_match.Contains(imdb.ombd_ID)
+                               select imdb);
                     //Tools.TraceLine("items in res {0}", res.Count());
-                    List<OmdbEntry> matched_existing_imdb_omdbentrys= res.ToList();
+                    List<OmdbEntry> matched_existing_imdb_omdbentrys = res.ToList();
 
 
                     //alter the existing IMDB entries and save the changes...
                     foreach (
-                        OmdbEntry matchedExistingImdbOmdbentry in matched_existing_imdb_omdbentrys ) {
+                        OmdbEntry matchedExistingImdbOmdbentry in
+                            matched_existing_imdb_omdbentrys) {
                         //the RT omdb tha matches the imdb entry for the omdb_id
                         var matching_RT_data =
                             new_tom_omdb_entries.First(
@@ -148,53 +156,49 @@ namespace NextFlicksMVC4.OMBD
                                 matchedExistingImdbOmdbentry.ombd_ID);
 
                         //updates the IMDB OmdbEntry with the RT OmdbEntry's information
-                        UpdateImdbEntryWithRtEntry(matchedExistingImdbOmdbentry, matching_RT_data);
+                        UpdateImdbEntryWithRtEntry(matchedExistingImdbOmdbentry,
+                                                   matching_RT_data);
                     }
 
                     //save the updated OmdbEntry information, dispose of the context
                     db.SaveChanges();
                     db.Dispose();
                     Tools.TraceLine("Updated existing IMDB OmdbEntrys, done saving");
-
                 }
-
-
             }
         }
 
-        private static void UpdateImdbEntryWithRtEntry(
+        /// <summary>
+        /// Takes two partial OmdbEntrys and updates the Imdb one
+        /// </summary>
+        /// <param name="matchedExistingImdbOmdbentry">The OmdbEntry to merge on</param>
+        /// <param name="matching_RT_data">The OmdbEntry that'll be fed to the imdb one</param>
+        public static void UpdateImdbEntryWithRtEntry(
             OmdbEntry matchedExistingImdbOmdbentry, OmdbEntry matching_RT_data)
         {
-//update the imdb entry
-            matchedExistingImdbOmdbentry.t_Image =
-                matching_RT_data.t_Image;
-            matchedExistingImdbOmdbentry.t_Meter =
-                matching_RT_data.t_Meter;
-            matchedExistingImdbOmdbentry.t_Image =
-                matching_RT_data.t_Image;
-            matchedExistingImdbOmdbentry.t_Rating =
-                matching_RT_data.t_Rating;
-            matchedExistingImdbOmdbentry.t_Reviews =
-                matching_RT_data.t_Reviews;
-            matchedExistingImdbOmdbentry.t_Fresh =
-                matching_RT_data.t_Fresh;
-            matchedExistingImdbOmdbentry.t_Rotten =
-                matching_RT_data.t_Rotten;
-            matchedExistingImdbOmdbentry.t_Consensus =
-                matching_RT_data.t_Consensus;
-            matchedExistingImdbOmdbentry.t_UserMeter =
-                matching_RT_data.t_UserMeter;
-            matchedExistingImdbOmdbentry.t_UserRating =
-                matching_RT_data.t_UserRating;
-            matchedExistingImdbOmdbentry.t_UserReviews =
-                matching_RT_data.t_UserReviews;
+            //update the imdb entry
+            matchedExistingImdbOmdbentry.t_Image = matching_RT_data.t_Image;
+            matchedExistingImdbOmdbentry.t_Meter = matching_RT_data.t_Meter;
+            matchedExistingImdbOmdbentry.t_Image = matching_RT_data.t_Image;
+            matchedExistingImdbOmdbentry.t_Rating = matching_RT_data.t_Rating;
+            matchedExistingImdbOmdbentry.t_Reviews = matching_RT_data.t_Reviews;
+            matchedExistingImdbOmdbentry.t_Fresh = matching_RT_data.t_Fresh;
+            matchedExistingImdbOmdbentry.t_Rotten = matching_RT_data.t_Rotten;
+            matchedExistingImdbOmdbentry.t_Consensus = matching_RT_data.t_Consensus;
+            matchedExistingImdbOmdbentry.t_UserMeter = matching_RT_data.t_UserMeter;
+            matchedExistingImdbOmdbentry.t_UserRating = matching_RT_data.t_UserRating;
+            matchedExistingImdbOmdbentry.t_UserReviews = matching_RT_data.t_UserReviews;
         }
 
-        private static void OptimizedImdbTsvParse(string imdb_filepath)
+        /// <summary>
+        /// Parses the TSV with the IMDB movie data and gets saved to the db
+        /// </summary>
+        /// <param name="imdb_filepath">the path to the omdb.txt with the IMDB movie data</param>
+        /// <param name="numOfMoviesPerLoop">5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB</param>
+        private static void OptimizedImdbTsvParse(string imdb_filepath, int numOfMoviesPerLoop = 5000)
         {
-            //read 5000 movies until all the IMDB movies are parsed
+            //read numOfMoviesPerLoop movies until all the IMDB movies are parsed
             //5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB "
-            int num_of_movies_per_loop = 5000;
             using (
                 CsvReader imdb_csvReader =
                     new CsvReader(new StreamReader(imdb_filepath), true, '\t',
@@ -202,7 +206,7 @@ namespace NextFlicksMVC4.OMBD
                 while (imdb_csvReader.ReadNextRecord()) {
                     //loop through the imdbtsv, creating a omdbentry for the first 500 items
                     List<OmdbEntry> small_omdbEntry_list = new List<OmdbEntry>();
-                    for (int i = 0; i < num_of_movies_per_loop; i++) {
+                    for (int i = 0; i < numOfMoviesPerLoop; i++) {
                         //read the row and create an omdb from it
                         var entry =
                             Omdb.CreateOmdbEntryFromTsvRecord(
@@ -237,13 +241,12 @@ namespace NextFlicksMVC4.OMBD
 
 
         /// <summary>
-                /// Parses omdb.txt and tomatoes.txt and returns a list of completed OmdbEntrys
-                /// </summary>
-                /// <param name="imdb_filepath">full path to omdb.txt from the OMDB API</param>
-                /// <param name="tom_filepath">full path to tomatoes.txt from the OMDB API</param>
-                /// <returns></returns>
-            public static
-            List<OmdbEntry> ParseTSVforOmdbData(string imdb_filepath,
+        /// Parses omdb.txt and tomatoes.txt and returns a list of completed OmdbEntrys
+        /// </summary>
+        /// <param name="imdb_filepath">full path to omdb.txt from the OMDB API</param>
+        /// <param name="tom_filepath">full path to tomatoes.txt from the OMDB API</param>
+        /// <returns></returns>
+        public static List<OmdbEntry> ParseTSVforOmdbData(string imdb_filepath,
                                                           string tom_filepath)
         {
             Tools.TraceLine("In ParseTSVforOmdbData");
@@ -277,7 +280,7 @@ namespace NextFlicksMVC4.OMBD
 
 
             Tools.TraceLine("Out ParseTSVforOmdbData");
-             return complete_list;
+            return complete_list;
 
         }
 
@@ -287,45 +290,44 @@ namespace NextFlicksMVC4.OMBD
         /// <param name="imdb_list">a list of partial omdbentrys with their RT data missing</param>
         /// <param name="tom_list">a list of partial omdbentrys with their imdb data missing</param>
         /// <returns></returns>
-    public static List<OmdbEntry> MergeTwoOmdbEntryLists(List<OmdbEntry> imdb_list,
-                                    List<OmdbEntry> tom_list)
-    {
+        public static List<OmdbEntry> MergeTwoOmdbEntryLists(
+            List<OmdbEntry> imdb_list, List<OmdbEntry> tom_list)
+        {
 
-        //left outer join two lists, one imdb data , one RT data
-        var res = from imdb in imdb_list
-                  join tom in tom_list on 
-                  imdb.ombd_ID equals tom.ombd_ID into matched
-                  from match in matched.DefaultIfEmpty()
-                  select new OmdbEntry
-                             {
-                                 ombd_ID = imdb.ombd_ID,
-                                 title = imdb.title,
-                                 year = imdb.year,
+            //left outer join two lists, one imdb data , one RT data
+            var res = from imdb in imdb_list
+                      join tom in tom_list on
+                          imdb.ombd_ID equals tom.ombd_ID into matched
+                      from match in matched.DefaultIfEmpty()
+                      select new OmdbEntry
+                                 {
+                                     ombd_ID = imdb.ombd_ID,
+                                     title = imdb.title,
+                                     year = imdb.year,
 
-                                 i_ID = imdb.i_ID,
-                                 i_Rating = imdb.i_Rating,
-                                 i_Votes = imdb.i_Votes,
+                                     i_ID = imdb.i_ID,
+                                     i_Rating = imdb.i_Rating,
+                                     i_Votes = imdb.i_Votes,
 
-                                 //if the joined omdb doesn't exist, fill in null
-                                 t_Image = (match == null? "N/A" :match.t_Image),
-                                 t_Consensus = (match == null ? "N/A": match.t_Consensus),
-                                 t_Fresh = (match == null ? 0 : match.t_Fresh),
-                                 t_Meter = (match == null ? 0: match.t_Meter),
-                                 t_Rating = (match == null ? 0f : match.t_Rating),
-                                 t_Reviews = (match == null ? 0 : match.t_Reviews),
-                                 t_Rotten = (match == null ? 0 : match.t_Rotten),
-                                 t_UserMeter = (match == null ? 0: match.t_UserMeter),
-                                 t_UserRating = (match == null ? 0f: match.t_UserRating),
-                                 t_UserReviews = (match == null ? 0 : match.t_UserReviews)
+                                     //if the joined omdb doesn't exist, fill in null
+                                     t_Image = (match == null ? "N/A" : match.t_Image),
+                                     t_Consensus = (match == null ? "N/A" : match.t_Consensus),
+                                     t_Fresh = (match == null ? 0 : match.t_Fresh),
+                                     t_Meter = (match == null ? 0 : match.t_Meter),
+                                     t_Rating = (match == null ? 0f : match.t_Rating),
+                                     t_Reviews = (match == null ? 0 : match.t_Reviews),
+                                     t_Rotten = (match == null ? 0 : match.t_Rotten),
+                                     t_UserMeter = (match == null ? 0 : match.t_UserMeter),
+                                     t_UserRating = (match == null ? 0f : match.t_UserRating),
+                                     t_UserReviews = (match == null ? 0 : match.t_UserReviews)
+                                 };
 
-                             };
+            List<OmdbEntry> complete_list = res.ToList();
 
-        List<OmdbEntry> complete_list = res.ToList();
-
-        string msg = string.Format("Total entries in complete list: {0}",
-                                   complete_list.Count);
-        Tools.TraceLine(msg);
-        return complete_list;
+            string msg = string.Format("Total entries in complete list: {0}",
+                                       complete_list.Count);
+            Tools.TraceLine(msg);
+            return complete_list;
 
         }
 
@@ -354,8 +356,6 @@ namespace NextFlicksMVC4.OMBD
                 {
                     var entry = Omdb.CreateOmdbEntryFromTsvRecord(imdbReader: csvReader);
                     omdbEntry_list.Add(entry);
-                    //Tools.TraceLine(entry.title);
-                    //Tools.TraceLine(count.ToString());
                     count++;
                 }
 
