@@ -108,8 +108,7 @@ namespace NextFlicksMVC4.OMBD
                     //loop through the imdbtsv, creating a omdbentry for the first 5000 items
                     List<OmdbEntry> new_tom_omdb_entries = new List<OmdbEntry>();
                     for (int i = 0; i < num_of_RT_movies_per_loop; i++) {
-                        //read the row and create an omdb from it
-                        //parse the current TSV row
+                        //read the row and create an omdb from it parse the current TSV row
                         var entry =
                             Omdb.CreateOmdbEntryFromTsvRecord(
                                 tomReader: tom_csvReader);
@@ -152,48 +151,45 @@ namespace NextFlicksMVC4.OMBD
                                 item.ombd_ID ==
                                 matchedExistingImdbOmdbentry.ombd_ID);
 
-                        //update the imdb entry
-                        matchedExistingImdbOmdbentry.t_Image =
-                            matching_RT_data.t_Image;
-                        matchedExistingImdbOmdbentry.t_Meter =
-                            matching_RT_data.t_Meter;
-                        matchedExistingImdbOmdbentry.t_Image =
-                            matching_RT_data.t_Image;
-                        matchedExistingImdbOmdbentry.t_Rating =
-                            matching_RT_data.t_Rating;
-                        matchedExistingImdbOmdbentry.t_Reviews =
-                            matching_RT_data.t_Reviews;
-                        matchedExistingImdbOmdbentry.t_Fresh =
-                            matching_RT_data.t_Fresh;
-                        matchedExistingImdbOmdbentry.t_Rotten =
-                            matching_RT_data.t_Rotten;
-                        matchedExistingImdbOmdbentry.t_Consensus =
-                            matching_RT_data.t_Consensus;
-                        matchedExistingImdbOmdbentry.t_UserMeter =
-                            matching_RT_data.t_UserMeter;
-                        matchedExistingImdbOmdbentry.t_UserRating =
-                            matching_RT_data.t_UserRating;
-                        matchedExistingImdbOmdbentry.t_UserReviews =
-                            matching_RT_data.t_UserReviews;
-
-                        //Tools.TraceLine("{0}\n{1}\n***********",
-                        //                matchedExistingImdbOmdbentry.ombd_ID,
-                        //                matching_RT_data.ombd_ID);
+                        //updates the IMDB OmdbEntry with the RT OmdbEntry's information
+                        UpdateImdbEntryWithRtEntry(matchedExistingImdbOmdbentry, matching_RT_data);
                     }
                     db.SaveChanges();
                     db.Dispose();
                     Tools.TraceLine("Updated existing IMDB OmdbEntrys, done saving");
 
-                    //modify all those existing entries with listed data
-                    //var merged_omdbs =
-                    //    MergeTwoOmdbEntryLists(small_omdbEntry_list,
-                    //                           matched_existing_omdbentrys);
-
-
                 }
 
 
             }
+        }
+
+        private static void UpdateImdbEntryWithRtEntry(
+            OmdbEntry matchedExistingImdbOmdbentry, OmdbEntry matching_RT_data)
+        {
+//update the imdb entry
+            matchedExistingImdbOmdbentry.t_Image =
+                matching_RT_data.t_Image;
+            matchedExistingImdbOmdbentry.t_Meter =
+                matching_RT_data.t_Meter;
+            matchedExistingImdbOmdbentry.t_Image =
+                matching_RT_data.t_Image;
+            matchedExistingImdbOmdbentry.t_Rating =
+                matching_RT_data.t_Rating;
+            matchedExistingImdbOmdbentry.t_Reviews =
+                matching_RT_data.t_Reviews;
+            matchedExistingImdbOmdbentry.t_Fresh =
+                matching_RT_data.t_Fresh;
+            matchedExistingImdbOmdbentry.t_Rotten =
+                matching_RT_data.t_Rotten;
+            matchedExistingImdbOmdbentry.t_Consensus =
+                matching_RT_data.t_Consensus;
+            matchedExistingImdbOmdbentry.t_UserMeter =
+                matching_RT_data.t_UserMeter;
+            matchedExistingImdbOmdbentry.t_UserRating =
+                matching_RT_data.t_UserRating;
+            matchedExistingImdbOmdbentry.t_UserReviews =
+                matching_RT_data.t_UserReviews;
         }
 
         private static void OptimizedImdbTsvParse(string imdb_filepath)
