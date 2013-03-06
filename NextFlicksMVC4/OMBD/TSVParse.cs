@@ -124,13 +124,13 @@ namespace NextFlicksMVC4.OMBD
                         }
                     }
 
-                    //find all existing entries in db
+                    //find all existing IMDB entries in db
                     MovieDbContext db = new MovieDbContext();
-                    db.Configuration.AutoDetectChangesEnabled = false;
+                    db.Configuration.AutoDetectChangesEnabled = true;
                     //find all existing OE that match the omdb_ids of the listed ones
                     Tools.TraceLine("items in db.Omdb {0}", db.Omdb.Count());
 
-                    //get the ids of the new RT omdbentrys
+                    //get the omdb_ids of the new RT omdbentrys
                     List<int> tom_omdb_ids_to_match =
                         new_tom_omdb_entries.Select(omdb => omdb.ombd_ID)
                                             .ToList();
@@ -138,23 +138,51 @@ namespace NextFlicksMVC4.OMBD
                     var res = (from imdb in db.Omdb
                               where tom_omdb_ids_to_match.Contains(imdb.ombd_ID)
                               select imdb);
-                    Tools.TraceLine("items in res {0}", res.Count());
+                    //Tools.TraceLine("items in res {0}", res.Count());
                     List<OmdbEntry> matched_existing_imdb_omdbentrys= res.ToList();
 
 
+                    //alter the existing IMDB entries and save the changes...
                     foreach (
-                        OmdbEntry matchedExistingImdbOmdbentry in
-                            matched_existing_imdb_omdbentrys ) {
+                        OmdbEntry matchedExistingImdbOmdbentry in matched_existing_imdb_omdbentrys ) {
                         //the RT omdb tha matches the imdb entry for the omdb_id
                         var matching_RT_data =
                             new_tom_omdb_entries.First(
                                 item =>
                                 item.ombd_ID ==
                                 matchedExistingImdbOmdbentry.ombd_ID);
-                        Tools.TraceLine("{0}\n{1}\n***********",
-                                        matchedExistingImdbOmdbentry.ombd_ID,
-                                        matching_RT_data.ombd_ID);
+
+                        //update the imdb entry
+                        matchedExistingImdbOmdbentry.t_Image =
+                            matching_RT_data.t_Image;
+                        matchedExistingImdbOmdbentry.t_Meter =
+                            matching_RT_data.t_Meter;
+                        matchedExistingImdbOmdbentry.t_Image =
+                            matching_RT_data.t_Image;
+                        matchedExistingImdbOmdbentry.t_Rating =
+                            matching_RT_data.t_Rating;
+                        matchedExistingImdbOmdbentry.t_Reviews =
+                            matching_RT_data.t_Reviews;
+                        matchedExistingImdbOmdbentry.t_Fresh =
+                            matching_RT_data.t_Fresh;
+                        matchedExistingImdbOmdbentry.t_Rotten =
+                            matching_RT_data.t_Rotten;
+                        matchedExistingImdbOmdbentry.t_Consensus =
+                            matching_RT_data.t_Consensus;
+                        matchedExistingImdbOmdbentry.t_UserMeter =
+                            matching_RT_data.t_UserMeter;
+                        matchedExistingImdbOmdbentry.t_UserRating =
+                            matching_RT_data.t_UserRating;
+                        matchedExistingImdbOmdbentry.t_UserReviews =
+                            matching_RT_data.t_UserReviews;
+
+                        //Tools.TraceLine("{0}\n{1}\n***********",
+                        //                matchedExistingImdbOmdbentry.ombd_ID,
+                        //                matching_RT_data.ombd_ID);
                     }
+                    db.SaveChanges();
+                    db.Dispose();
+                    Tools.TraceLine("Updated existing IMDB OmdbEntrys, done saving");
 
                     //modify all those existing entries with listed data
                     //var merged_omdbs =
