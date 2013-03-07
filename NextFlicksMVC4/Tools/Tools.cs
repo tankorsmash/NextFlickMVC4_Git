@@ -997,24 +997,13 @@ namespace NextFlicksMVC4
 
         public static void MarryMovieToOmdb(MovieDbContext db)
         {
-//get list of movies
+            //get list of movies
             //var movie_queryable = db.Movies.AsQueryable();
             TraceLine("In MarryMovieToOmdb");
-
-            //TODO: match better, curr. only finds 6k movies but there should be closer to 56k
-
-            ////take only movies, since OMDB doesn't hold tv shows
-            //var movie_list = db.Movies.ToList().Where(movie => movie.is_movie);
-            //var omdb_list = db.Omdb.ToList();
-            //Dictionary<Movie, OmdbEntry> matches_MtO =
-            //    new Dictionary<Movie, OmdbEntry>();
-
-
-            //pseudo code for what I want
-            //where omdb.title == movie.short_title && omdb.year == movie.year select new {omdb_id, movie_id}
-
             TraceLine("  Starting LINQ query to marry movies to omdb");
 
+            //find the matches from the Movies and Omdb dbs and create a new 
+            // anonymous object to hold each entry
             var query = from movie in db.Movies
                         join omdbEntry in db.Omdb on
                             new {name = movie.short_title, year = movie.year}
