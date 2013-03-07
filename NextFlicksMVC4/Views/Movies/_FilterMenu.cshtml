@@ -34,6 +34,11 @@
     <input type="submit" value="Search Tags" />
     </form>
     </span>
+    <span>
+        <form name="movie_year_form">
+            @Html.DropDownList("movie_year", (List<SelectListItem>)ViewBag.DropDownYears)
+        </form>
+    </span>
 </div>
 
 

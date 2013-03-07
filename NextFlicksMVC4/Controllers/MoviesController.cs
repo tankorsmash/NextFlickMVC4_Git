@@ -212,6 +212,26 @@ namespace NextFlicksMVC4.Controllers
             //make sure there's movies in the db
             RaiseIfNoMoviesInDb(db);
 
+            //fill the years for the dropdox list
+            //get all the years in the db
+            IQueryable<FullViewModel> year_res = Tools.GetFullDbQuery(db);
+            int[] all_years = (from nvm in year_res
+                               where nvm.Movie.year >= 0
+                               where nvm.Movie.year < 3000
+                               select nvm.Movie.year).Distinct()
+                                                     .OrderBy(item => item)
+                                                     .ToArray();
+            //convert the ints to SelectListItems
+            ViewBag.DropDownYears = new List<SelectListItem>();
+            foreach (int year in all_years) {
+                SelectListItem sli = new SelectListItem();
+                sli.Text = year.ToString();
+                sli.Value = year.ToString();
+
+                ViewBag.DropDownYears.Add(sli);
+
+            }
+
             //make sure the title isn't the default text set in the _FilterMenu
             //TODO:make the default text in the search boxes a ViewBag value for easier editing
             if (movie_title == "Enter a title") {
@@ -241,6 +261,7 @@ namespace NextFlicksMVC4.Controllers
             else {
                 res = Tools.GetFullDbQuery(db);
             }
+
 
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
