@@ -27,6 +27,7 @@ namespace NextFlicksMVC4.Tests
 
             //This is bad, but unless I implement custom logic just for testing, this'll have to do
             //    Could make it a forloop I guess...
+            // http://stackoverflow.com/questions/9122241/does-mvc-selectlistitem-not-implement-equals
             Assert.AreEqual(expected[0].Text,actual[0].Text);
             Assert.AreEqual(expected[0].Value,actual[0].Value);
 

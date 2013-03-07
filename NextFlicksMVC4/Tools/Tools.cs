@@ -1172,6 +1172,23 @@ namespace NextFlicksMVC4
 
             return res_years;
         }
+
+        public static IQueryable<FullViewModel> FilterByMaturityRating(MovieDbContext db, string matRating)
+        {
+            //find the movies that match the maturity rating
+            int maturity_rating = Convert.ToInt32(matRating);
+            IQueryable<FullViewModel> res;
+            if (maturity_rating != null) {
+                res = GetFullDbQuery(db)
+                        .Where(
+                            fmw => fmw.Movie.maturity_rating == maturity_rating);
+                return res;
+            }
+
+        
+            return null;
+
+        }
     }
 
 
