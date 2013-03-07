@@ -36,7 +36,8 @@
     </span>
     <span>
         <form name="movie_year_form">
-            @Html.DropDownList("movie_year", (List<SelectListItem>)ViewBag.DropDownYears)
+            @Html.DropDownList("year", (List<SelectListItem>)ViewBag.DropDownYears)
+        <input type="submit" value="Search Years" />
         </form>
     </span>
 </div>
