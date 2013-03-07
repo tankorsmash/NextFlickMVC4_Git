@@ -96,19 +96,27 @@ namespace NextFlicksMVC4.Tests
 
         }
 
+        [Test]
+        public void TestMoviesInMoviesTable()
+        {
+            //want to make sure the db connection string works and points to the proper table, but I don't know how
+            
+        }
 
         [Test]
         public void TestMatchMovieIdToOmdbEntry()
         {
 
             MovieDbContext db = new MovieDbContext();
-            Tools.TraceLine(db.Database.Connection.ConnectionString);
+
+            //Tools.TraceLine(db.Database.Connection.ConnectionString);
+
             int first_movie_id = db.Movies.First().movie_ID;
             OmdbEntry expected_omdbentry = db.Omdb.First(omdb => omdb.movie_ID == first_movie_id);
 
             OmdbEntry result = Tools.MatchMovieIdToOmdbEntry(first_movie_id);
             
-            Assert.AreSame(expected_omdbentry, result);
+            Assert.AreEqual(expected_omdbentry, result);
 
 
 

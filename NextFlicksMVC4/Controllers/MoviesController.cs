@@ -208,7 +208,7 @@ namespace NextFlicksMVC4.Controllers
 
 
             var db = new MovieDbContext();
-            Tools.TraceLine(db.Database.Connection.ConnectionString);
+            //Tools.TraceLine(db.Database.Connection.ConnectionString);
             db.Configuration.AutoDetectChangesEnabled = true;
 
             //make sure there's movies in the db
