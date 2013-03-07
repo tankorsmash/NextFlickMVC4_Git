@@ -217,8 +217,8 @@ namespace NextFlicksMVC4.Models
 
     public class MovieDbContext : DbContext
     {
-        public MovieDbContext() 
-            : base("MovieDbContext")
+        public MovieDbContext()
+            : base("Movies")
         {
         }
         

@@ -1,13 +1,30 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using NUnit.Framework;
-using NextFlicksMVC4.Controllers;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Security;
+using System.Xml;
+using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
+using NextFlicksMVC4;
+using NextFlicksMVC4.DatabaseClasses;
 using NextFlicksMVC4.Models;
+using NextFlicksMVC4.Models.userAccount;
 using NextFlicksMVC4.NetFlixAPI;
+using System.Timers;
+using NextFlicksMVC4.Helpers;
+using System.Data.SqlClient;
+using NextFlicksMVC4.Filters;
 using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
-
+using WebMatrix.WebData;
+using NUnit.Framework;
 
 namespace NextFlicksMVC4.Tests
 {
@@ -85,6 +102,7 @@ namespace NextFlicksMVC4.Tests
         {
 
             MovieDbContext db = new MovieDbContext();
+            Tools.TraceLine(db.Database.Connection.ConnectionString);
             int first_movie_id = db.Movies.First().movie_ID;
             OmdbEntry expected_omdbentry = db.Omdb.First(omdb => omdb.movie_ID == first_movie_id);
 
