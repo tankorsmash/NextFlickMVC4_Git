@@ -118,6 +118,8 @@ namespace NextFlicksMVC4.Tests
                                     };
 
             Assert.AreEqual(first_movie, second_movie);
+            Assert.AreNotEqual(first_movie, new Movie());
+            Assert.AreNotEqual(second_movie, new Movie());
         }
 
         /// <summary>
