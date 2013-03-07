@@ -196,7 +196,7 @@ namespace NextFlicksMVC4.Controllers
         /// <param name="tag_string">selected tag to search for</param>
         /// <param name="page"></param>
         /// <returns></returns>
-        public ActionResult Index(string movie_title = "", string genre_select = "0",
+        public ActionResult Index(string year="", string movie_title = "", string genre_select = "0",
                                     string tag_string = "0",
                                     int page = 1)
         {
@@ -251,10 +251,14 @@ namespace NextFlicksMVC4.Controllers
             else if (tag_string != "0") {
                 res = Tools.FilterTags(tag_string, db);
             }
+            else if (year != "") {
+                res = Tools.FilterByYear(db, year);
+            }
             //otherwise return the entire db and return that
             else {
                 res = Tools.GetFullDbQuery(db);
             }
+
 
 
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.

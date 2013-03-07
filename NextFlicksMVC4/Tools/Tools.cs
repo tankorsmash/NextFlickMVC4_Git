@@ -1155,6 +1155,23 @@ namespace NextFlicksMVC4
             }
             return a_list;
         }
+
+        public static IQueryable<FullViewModel> FilterByYear(MovieDbContext db, string year)
+        {
+            //try to turn year into a string
+            int year_int = Convert.ToInt32(year);
+
+
+            //get full query
+            var res = GetFullDbQuery(db);
+            
+            //remove all movies that don't match the year
+            var res_years = from fmv in res
+                            where fmv.Movie.year == year_int
+                            select fmv;
+
+            return res_years;
+        }
     }
 
 
