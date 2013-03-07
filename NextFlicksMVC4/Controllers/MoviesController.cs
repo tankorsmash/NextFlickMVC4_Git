@@ -222,15 +222,7 @@ namespace NextFlicksMVC4.Controllers
                                                      .OrderBy(item => item)
                                                      .ToArray();
             //convert the ints to SelectListItems
-            ViewBag.DropDownYears = new List<SelectListItem>();
-            foreach (int year in all_years) {
-                SelectListItem sli = new SelectListItem();
-                sli.Text = year.ToString();
-                sli.Value = year.ToString();
-
-                ViewBag.DropDownYears.Add(sli);
-
-            }
+            ViewBag.DropDownYears = Tools.ListToSelectListItem(all_years);
 
             //make sure the title isn't the default text set in the _FilterMenu
             //TODO:make the default text in the search boxes a ViewBag value for easier editing

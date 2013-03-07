@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web;
+using System.Web.Mvc;
 using System.Xml;
 using NextFlicksMVC4.Controllers;
 using System.Diagnostics;
@@ -681,12 +683,12 @@ namespace NextFlicksMVC4
             string combinedLines = "";
             
             string lastline = ""; //for keepign track of the last line in case we need to merge the two
-            List<String> malformedLines = new List<string>(); //keep track of all malformed lines in a row and then add them together then write the line
+            List<string> malformedLines = new List<string>(); //keep track of all malformed lines in a row and then add them together then write the line
             string fixedLine = "";
             string line = "";
             using (StreamReader reader = new StreamReader(filepath))
             {
-                using (StreamWriter writer = new StreamWriter(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/temp.NFPOX")))
+                using (StreamWriter writer = new StreamWriter(HttpContext.Current.Server.MapPath("~/dbfiles/temp.NFPOX")))
                 {
                     while ((line = reader.ReadLine()) != null)
                     {
@@ -727,9 +729,9 @@ namespace NextFlicksMVC4
 
             //change the files around, overwrite fixedAPI.nfpox so that we can go through the same process again if neccesary
             //if not it will jsut write temp to fixedapi so we are good to go next step.
-            var fixedAPI = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX");
-            var temp = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/temp.NFPOX");
-            var backup = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/backup.NFPOX");
+            var fixedAPI = HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX");
+            var temp = HttpContext.Current.Server.MapPath("~/dbfiles/temp.NFPOX");
+            var backup = HttpContext.Current.Server.MapPath("~/dbfiles/backup.NFPOX");
             if (File.Exists(fixedAPI) && File.Exists(temp))
             {
                 File.Replace(temp, fixedAPI, backup);
@@ -1134,6 +1136,24 @@ namespace NextFlicksMVC4
                 res = res.Where(nit => nit.Genres.Any(item => item == genre_select));
             }
             return res;
+        }
+
+        /// <summary>
+        /// Take  a IEnum and turns the items into SelectListItems
+        /// </summary>
+        /// <param name="all_years"></param>
+        /// <returns></returns>
+        public static List<SelectListItem> ListToSelectListItem(IEnumerable<int> all_years)
+        {
+            var a_list = new List<SelectListItem>();
+            foreach (int year in all_years) {
+                SelectListItem sli = new SelectListItem();
+                sli.Text = year.ToString();
+                sli.Value = year.ToString();
+
+                a_list.Add(sli);
+            }
+            return a_list;
         }
     }
 
