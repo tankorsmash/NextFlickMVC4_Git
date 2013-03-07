@@ -995,6 +995,10 @@ namespace NextFlicksMVC4
             return nitvmQuery;
         }
 
+        /// <summary>
+        /// Looks through db.Movies and db.Omdb and finds the matching Movies and OmdbEntrys and assigns the movie_ids to the OmdbEntry
+        /// </summary>
+        /// <param name="db"></param>
         public static void MarryMovieToOmdb(MovieDbContext db)
         {
             //get list of movies
@@ -1036,9 +1040,7 @@ namespace NextFlicksMVC4
             TraceLine("  starting to save changes");
             db.SaveChanges();
             TraceLine("  done saving changes");
-
             TraceLine("Out MarryMovieToOmdb");
-
 
         }
 
