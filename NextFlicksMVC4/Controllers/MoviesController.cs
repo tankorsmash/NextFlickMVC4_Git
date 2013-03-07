@@ -217,12 +217,12 @@ namespace NextFlicksMVC4.Controllers
             IQueryable<FullViewModel> year_res = Tools.GetFullDbQuery(db);
             int[] all_years = (from nvm in year_res
                                where nvm.Movie.year >= 0
-                               where nvm.Movie.year < 3000
+                               where nvm.Movie.year < 3000 //No upper limit needed right?
                                select nvm.Movie.year).Distinct()
                                                      .OrderBy(item => item)
                                                      .ToArray();
-            //convert the ints to SelectListItems
-            ViewBag.DropDownYears = Tools.ListToSelectListItem(all_years);
+            //convert the years to SelectListItems
+            ViewBag.DropDownYears = Tools.IEnumToSelectListItem(all_years);
 
             //make sure the title isn't the default text set in the _FilterMenu
             //TODO:make the default text in the search boxes a ViewBag value for easier editing

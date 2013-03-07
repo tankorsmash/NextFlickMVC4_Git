@@ -1143,7 +1143,7 @@ namespace NextFlicksMVC4
         /// </summary>
         /// <param name="all_years"></param>
         /// <returns></returns>
-        public static List<SelectListItem> ListToSelectListItem(IEnumerable<int> all_years)
+        public static List<SelectListItem> IEnumToSelectListItem(IEnumerable<int> all_years)
         {
             var a_list = new List<SelectListItem>();
             foreach (int year in all_years) {
