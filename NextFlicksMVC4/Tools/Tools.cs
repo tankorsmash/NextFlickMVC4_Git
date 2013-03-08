@@ -1142,15 +1142,15 @@ namespace NextFlicksMVC4
         /// <summary>
         /// Take  a IEnum and turns the items into SelectListItems
         /// </summary>
-        /// <param name="all_years"></param>
+        /// <param name="all_items"></param>
         /// <returns></returns>
-        public static List<SelectListItem> IEnumToSelectListItem(IEnumerable all_years)
+        public static List<SelectListItem> IEnumToSelectListItem(IEnumerable all_items)
         {
             var a_list = new List<SelectListItem>();
-            foreach (object year in all_years) {
+            foreach (object item in all_items) {
                 SelectListItem sli = new SelectListItem();
-                sli.Text = year.ToString();
-                sli.Value = year.ToString();
+                sli.Text = item.ToString();
+                sli.Value = item.ToString();
 
                 a_list.Add(sli);
             }
