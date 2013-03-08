@@ -17,7 +17,9 @@ namespace NextFlicksMVC4.Controllers.userAccount
         private FormsAuthenticationTicket ticket; //use this ot pull acopy of the ticket 
         
         
-        public ViewResult Seed()
+        /*
+         * Moved to InitilizeSimpleMembershipAttribute.Cs
+         * public ViewResult Seed()
         {
             Users user = new Users();
 
@@ -40,7 +42,8 @@ namespace NextFlicksMVC4.Controllers.userAccount
                 Roles.AddUserToRole("Admin", "Admin");
             ViewBag.Message = " Admin Accout Seeded";
             return View();
-        }
+        } */
+
         // GET: /User/
         [Authorize(Roles="Admin")]
         public ViewResult Index(string returnUrl)
