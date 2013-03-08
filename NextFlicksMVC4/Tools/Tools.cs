@@ -1212,7 +1212,7 @@ namespace NextFlicksMVC4
 
         }
 
-        private static bool ValidateTvRatingString(string tvRating)
+        public static bool ValidateTvRatingString(string tvRating)
         {
             string[] possible_tvratings = new string[]
                                               {
@@ -1234,7 +1234,7 @@ namespace NextFlicksMVC4
             bool containedInList =
                 possible_tvratings.Contains(tvRating.ToUpper());
 
-            return containedInList || true;
+            return containedInList;
         }
     }
 

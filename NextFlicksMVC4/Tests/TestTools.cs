@@ -55,5 +55,52 @@ namespace NextFlicksMVC4.Tests
 
 
         }
+
+        [Test]
+        public void TestFilterByRating()
+        {
+            string desired_tvrating = "PG-13";
+
+            //want to make sure that the return IQueryable has only movies that match the given tvrating
+            MovieDbContext db = new MovieDbContext();
+            IQueryable<FullViewModel> actual_res = Tools.FilterByTvRating(db,
+                                                                          desired_tvrating).Take(100);
+
+            foreach (FullViewModel fullViewModel in actual_res) {
+                Assert.AreEqual(desired_tvrating, fullViewModel.Movie.tv_rating);
+                Assert.AreNotEqual("ASD", fullViewModel.Movie.tv_rating);
+            }
+        }
+
+        [Test]
+        public void TestValidateTvRatingString()
+        {
+
+            //these should fail
+            string[] falseStrings = new string[]
+                                        {
+                                            "",
+                                            "asd",
+                                            "PG13",
+                                            "RR",
+                                            "123"
+                                        };
+            foreach (string falseString in falseStrings) {
+                Assert.IsFalse(Tools.ValidateTvRatingString(falseString));
+            }
+
+            //these should pass
+            string[] trueStrings = new string[]
+                                       {
+                                           "PG-13",
+                                           "R",
+                                           "NR",
+                                           "UR"
+                                       };
+            foreach (string TrueString in trueStrings) {
+                Assert.IsTrue(Tools.ValidateTvRatingString(TrueString));
+            }
+
+        }
     }
 }
