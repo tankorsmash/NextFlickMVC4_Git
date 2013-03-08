@@ -1189,6 +1189,52 @@ namespace NextFlicksMVC4
             return null;
 
         }
+
+        public static IQueryable<FullViewModel> FilterByTvRating(MovieDbContext db, string tvRating)
+        {
+            //validate tvRating string
+            var valid_string = ValidateTvRatingString(tvRating);
+
+            //sort the db
+            if (valid_string) {
+                var res = GetFullDbQuery(db);
+                var rating_res = from fullViewModel in res
+                                 where fullViewModel.Movie.tv_rating == tvRating
+                                 select fullViewModel;
+                return rating_res;
+            }
+
+            else {
+                Tools.TraceLine("TvRating string passed to FilterByTvRating is not valid, returning default qry");
+                return GetFullDbQuery(db);
+            }
+
+        }
+
+        private static bool ValidateTvRatingString(string tvRating)
+        {
+            string[] possible_tvratings = new string[]
+                                              {
+                                                  "TV-Y",
+                                                  "TV-G",
+                                                  "NC-17",
+                                                  "TV-MA",
+                                                  "NR",
+                                                  "PG",
+                                                  "TV-Y7-FV",
+                                                  "TV-Y7",
+                                                  "TV-14",
+                                                  "PG-13",
+                                                  "G",
+                                                  "UR",
+                                                  "R",
+                                                  "TV-PG"
+                                              };
+            bool containedInList =
+                possible_tvratings.Contains(tvRating.ToUpper());
+
+            return containedInList || true;
+        }
     }
 
 

@@ -197,7 +197,7 @@ namespace NextFlicksMVC4.Controllers
         /// <param name="page"></param>
         /// <returns></returns>
         public ActionResult Index(string year="", string movie_title = "", string genre_select = "0",
-                                    string tag_string = "0", string mat_rating="",
+                                    string tag_string = "0", string mat_rating="", string tv_rating = "",
                                     int page = 1)
         {
             //var omdbTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.txt");
@@ -255,12 +255,17 @@ namespace NextFlicksMVC4.Controllers
             else if (mat_rating != "") {
                 res = Tools.FilterByMaturityRating(db, mat_rating);
             }
+            else if (tv_rating != "") {
+                res = Tools.FilterByTvRating(db, tv_rating);
+            }
             //sort by year
-            else if (year != "") {
+            else if (year != "")
+            {
                 res = Tools.FilterByYear(db, year);
             }
             //otherwise return the entire db and return that
-            else {
+            else
+            {
                 res = Tools.GetFullDbQuery(db);
             }
 
