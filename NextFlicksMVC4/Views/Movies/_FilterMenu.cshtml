@@ -35,9 +35,13 @@
     </form>
     </span>
     <span>
-        <form name="movie_year_form">
+        <form name="movie_year_form" class="movie_year_form">
             @Html.DropDownList("year", (List<SelectListItem>)ViewBag.DropDownYears)
         <input type="submit" value="Search Years" />
+        </form>
+        <form name="movie_tvrating_form" class="movie_tvrating_form">
+            @Html.DropDownList("tv_rating", (List<SelectListItem>)ViewBag.DropDownTvRating)
+        <input type="submit" value="Search MPAA Ratings" />
         </form>
     </span>
 </div>

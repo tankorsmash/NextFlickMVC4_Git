@@ -217,14 +217,25 @@ namespace NextFlicksMVC4.Controllers
             //fill the years for the dropdox list
             //get all the years in the db
             IQueryable<FullViewModel> year_res = Tools.GetFullDbQuery(db);
-            int[] all_years = (from nvm in year_res
-                               where nvm.Movie.year >= 0
-                               where nvm.Movie.year < 3000 //No upper limit needed right?
-                               select nvm.Movie.year).Distinct()
+            int[] all_years = (from fmv in year_res
+                               where fmv.Movie.year >= 0
+                               where fmv.Movie.year < 3000 //No upper limit needed right?
+                               select fmv.Movie.year).Distinct()
                                                      .OrderBy(item => item)
                                                      .ToArray();
             //convert the years to SelectListItems
             ViewBag.DropDownYears = Tools.IEnumToSelectListItem(all_years);
+
+            //fill the TV Ratings for the dropdown list
+            //get all the tv ratings from the db
+            IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(db);
+            string[] all_tvratings = (from fmv in tvrating_res
+                                      select fmv.Movie.tv_rating).Distinct()
+                                                                 .OrderBy(
+                                                                     item =>
+                                                                     item)
+                                                                 .ToArray();
+            ViewBag.DropDownTvRating = Tools.IEnumToSelectListItem(all_tvratings);
 
             //make sure the title isn't the default text set in the _FilterMenu
             //TODO:make the default text in the search boxes a ViewBag value for easier editing

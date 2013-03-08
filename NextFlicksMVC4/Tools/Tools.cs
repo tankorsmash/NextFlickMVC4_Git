@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -1143,10 +1144,10 @@ namespace NextFlicksMVC4
         /// </summary>
         /// <param name="all_years"></param>
         /// <returns></returns>
-        public static List<SelectListItem> IEnumToSelectListItem(IEnumerable<int> all_years)
+        public static List<SelectListItem> IEnumToSelectListItem(IEnumerable all_years)
         {
             var a_list = new List<SelectListItem>();
-            foreach (int year in all_years) {
+            foreach (object year in all_years) {
                 SelectListItem sli = new SelectListItem();
                 sli.Text = year.ToString();
                 sli.Value = year.ToString();
