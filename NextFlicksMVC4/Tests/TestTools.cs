@@ -41,7 +41,7 @@ namespace NextFlicksMVC4.Tests
         [Test]
         public void TestFilterByMinTmeter()
         {
-            const float min_tmeter = 9.0f;
+            const int min_tmeter = 90;
             var res =
                 Tools.FilterByMinTmeter(new MovieDbContext(),
                                         min_tmeter.ToString()).Take(100);

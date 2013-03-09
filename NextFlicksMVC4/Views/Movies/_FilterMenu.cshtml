@@ -19,6 +19,7 @@
     </form>
     @*<strong>or</strong>*@
     <form name="tag_search_form">
+    
 
 @*    @Html.TextBox("tag_string", "Enter a tag")
 *@
@@ -35,6 +36,10 @@
     </form>
     </span>
     <span>
+        <form name="movie_tmeter_form" class="movie_tmeter_form">
+            @Html.DropDownList("min_tmeter", (List<SelectListItem>) ViewBag.DropDownTmeter) 
+        <input type="submit" value="Search by Minimum RT Meter" />
+        </form>
         <form name="movie_year_form" class="movie_year_form">
             @Html.DropDownList("year", (List<SelectListItem>)ViewBag.DropDownYears)
         <input type="submit" value="Search Years" />

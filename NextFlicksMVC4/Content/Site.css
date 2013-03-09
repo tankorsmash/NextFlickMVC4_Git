@@ -213,6 +213,10 @@ form.movie_year_form {
     float: left;
 }
 
+form.movie_tmeter_form {
+    float: right;
+}
+
 
 /* non-customized stuff layout, I think
  * ----------------------------------------------------------*/

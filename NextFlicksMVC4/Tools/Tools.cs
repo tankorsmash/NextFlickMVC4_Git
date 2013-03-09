@@ -1243,12 +1243,12 @@ namespace NextFlicksMVC4
         public static IQueryable<FullViewModel> FilterByMinTmeter(MovieDbContext db, string minRtRating)
         {
             //TODO fix assumption that minRtRating is valid
-            float rating_float;
-            float.TryParse(minRtRating,out rating_float);
+            int ratingInt;
+            int.TryParse(minRtRating,out ratingInt);
 
             var res = GetFullDbQuery(db);
             var rt_res = (from fmv in res
-                          where fmv.OmdbEntry.t_Meter >= rating_float
+                          where fmv.OmdbEntry.t_Meter >= ratingInt
                           select fmv);
 
             return rt_res;

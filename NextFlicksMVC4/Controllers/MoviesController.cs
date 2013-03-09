@@ -238,6 +238,19 @@ namespace NextFlicksMVC4.Controllers
                                                                  .ToArray();
             ViewBag.DropDownTvRating = Tools.IEnumToSelectListItem(all_tvratings);
 
+            //fill the TV Ratings for the dropdown list
+            //get all the tv ratings from the db
+            IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(db);
+            int[] all_tmeters = (from fmv in min_tmeter_res    
+                                 where fmv.OmdbEntry.t_Meter != null
+                                      select fmv.OmdbEntry.t_Meter).Distinct()
+                                                                 .OrderBy(
+                                                                     item =>
+                                                                     item)
+                                                                 .ToArray();
+            ViewBag.DropDownTmeter = Tools.IEnumToSelectListItem(all_tmeters);
+
+
             //make sure the title isn't the default text set in the _FilterMenu
             //TODO:make the default text in the search boxes a ViewBag value for easier editing
             if (movie_title == "Enter a title") {
