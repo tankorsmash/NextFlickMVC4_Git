@@ -33,9 +33,11 @@
             <span class="details_links_netflix">
                 <a href="@Html.DisplayFor(model => model.Movie.web_page)">Netflix page</a>
             </span>
-            <span class="details_links_imdb">
-                <a href="@Html.DisplayFor(model => model.OmdbEntry.i_ID)">IMDB page</a>
-            </span>
+            @if (Model.OmdbEntry != null) {
+                <span class="details_links_imdb">
+                    <a href="@Html.DisplayFor(model => model.OmdbEntry.i_ID)">IMDB page</a>
+                </span>
+            }
         </div>
         
         <div class="details_summary">

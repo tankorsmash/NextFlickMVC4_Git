@@ -62,7 +62,7 @@ namespace NextFlicksMVC4.Controllers
 
         }
 
-        private Dictionary<Users, int> TaggedByUsers(int tagID)
+        private Dictionary<Users, int>  TaggedByUsers(int tagID)
         {
             MovieDbContext db = new MovieDbContext();
             Dictionary<Users, int> returnDict = new Dictionary<Users,int>();

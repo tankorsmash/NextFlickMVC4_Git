@@ -41,6 +41,7 @@ namespace NextFlicksMVC4.Tests
         [Test]
         public void TestFilterByYear()
         {
+
             int correctYear = 1999;
             Constraint is_correct_year = Is.EqualTo(correctYear);
 
@@ -77,8 +78,7 @@ namespace NextFlicksMVC4.Tests
         {
 
             //these should fail
-            string[] falseStrings = new string[]
-                                        {
+            string[] falseStrings = new string[] {
                                             "",
                                             "asd",
                                             "PG13",
@@ -90,8 +90,7 @@ namespace NextFlicksMVC4.Tests
             }
 
             //these should pass
-            string[] trueStrings = new string[]
-                                       {
+            string[] trueStrings = new string[] {
                                            "PG-13",
                                            "R",
                                            "NR",

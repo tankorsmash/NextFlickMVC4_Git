@@ -1146,12 +1146,16 @@ namespace NextFlicksMVC4
         /// <returns></returns>
         public static List<SelectListItem> IEnumToSelectListItem(IEnumerable all_items)
         {
+            //foreach object in list, create a new selectlistitem with the 
+            // text and value the object's ToString()
             var a_list = new List<SelectListItem>();
             foreach (object item in all_items) {
-                SelectListItem sli = new SelectListItem();
-                sli.Text = item.ToString();
-                sli.Value = item.ToString();
-
+                string item_string = item.ToString();
+                SelectListItem sli = new SelectListItem
+                                         {
+                                             Text = item_string,
+                                             Value = item_string
+                                         };
                 a_list.Add(sli);
             }
             return a_list;
@@ -1161,7 +1165,6 @@ namespace NextFlicksMVC4
         {
             //try to turn year into a string
             int year_int = Convert.ToInt32(year);
-
 
             //get full query
             var res = GetFullDbQuery(db);
