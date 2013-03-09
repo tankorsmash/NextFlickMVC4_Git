@@ -37,11 +37,24 @@ namespace NextFlicksMVC4.Tests
             Assert.AreEqual(expected[2].Text,actual[2].Text);
             Assert.AreEqual(expected[2].Value,actual[2].Value);
         }
-        
+
+        [Test]
+        public void TestFilterByMinTmeter()
+        {
+            const float min_tmeter = 9.0f;
+            var res =
+                Tools.FilterByMinTmeter(new MovieDbContext(),
+                                        min_tmeter.ToString()).Take(100);
+            //TODO: confirm that mass Asserting like that is supposed to happen. Seems overkill
+            foreach (FullViewModel fullViewModel in res) {
+                Assert.GreaterOrEqual(fullViewModel.OmdbEntry.t_Meter, min_tmeter);
+                
+            }
+        }
+
         [Test]
         public void TestFilterByYear()
         {
-
             int correctYear = 1999;
             Constraint is_correct_year = Is.EqualTo(correctYear);
 

@@ -1240,7 +1240,7 @@ namespace NextFlicksMVC4
             return containedInList;
         }
 
-        public static IQueryable<FullViewModel> FilterByMinTmeter(string minRtRating, MovieDbContext db)
+        public static IQueryable<FullViewModel> FilterByMinTmeter(MovieDbContext db, string minRtRating)
         {
             //TODO fix assumption that minRtRating is valid
             float rating_float;

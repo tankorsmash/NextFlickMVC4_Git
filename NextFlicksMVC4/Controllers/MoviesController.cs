@@ -265,7 +265,7 @@ namespace NextFlicksMVC4.Controllers
             }
             //sort by RT rating
             else if (min_tmeter != "") {
-                res = Tools.FilterByMinTmeter(min_tmeter, db);
+                res = Tools.FilterByMinTmeter(db, min_tmeter);
             }
             //sort by maturity rating
             else if (mat_rating != "") {
