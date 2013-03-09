@@ -1239,6 +1239,21 @@ namespace NextFlicksMVC4
 
             return containedInList;
         }
+
+        public static IQueryable<FullViewModel> FilterByMinTmeter(string minRtRating, MovieDbContext db)
+        {
+            //TODO fix assumption that minRtRating is valid
+            float rating_float;
+            float.TryParse(minRtRating,out rating_float);
+
+            var res = GetFullDbQuery(db);
+            var rt_res = (from fmv in res
+                          where fmv.OmdbEntry.t_Meter >= rating_float
+                          select fmv);
+
+            return rt_res;
+
+        }
     }
 
 
