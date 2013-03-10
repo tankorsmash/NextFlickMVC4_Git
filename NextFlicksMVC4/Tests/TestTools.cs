@@ -36,6 +36,8 @@ namespace NextFlicksMVC4.Tests
 
             Assert.AreEqual(expected[2].Text,actual[2].Text);
             Assert.AreEqual(expected[2].Value,actual[2].Value);
+
+
         }
 
         [Test]

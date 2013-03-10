@@ -119,11 +119,12 @@ namespace NextFlicksMVC4.Controllers.Admin
 
         public static void FullDbBuild()
         {
-            string netflixPosFilepath = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX");
             MovieDbContext db = new MovieDbContext();
+            string netflixPosFilepath = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX");
 
             //retrieve API .POX
-            var netflixCatalog = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", "", outputPath: netflixPosFilepath);
+            var netflixCatalogOutputPath = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", "", outputPath: netflixPosFilepath);
+
             var genresNFPOX = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/genres.NFPOX");
             var omdbZIP = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.zip");
             var omdbDUMP = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.DUMP");
@@ -145,12 +146,15 @@ namespace NextFlicksMVC4.Controllers.Admin
             //download the omdbapi
             Omdb.DownloadOmdbZipAndExtract(omdbZIP);
 
-            //parse it for omdbentrys, serialize it to file
-            Tools.SerializeOmdbTsv(omdbDUMP, omdbTXT, tomatoesTXT);
+            ////parse it for omdbentrys, serialize it to file
+            //Tools.SerializeOmdbTsv(omdbDUMP, omdbTXT, tomatoesTXT);
+            ////deserialize the file, turn it into omdb
+            ////  can't remember if it does it here or not, but marry the omdbs and movie
+            //Tools.RebuildOmdbsFromProtobufDump(omdbDUMP);
 
-            //deserialize the file, turn it into omdb
-            //  can't remember if it does it here or not, but marry the omdbs and movie
-            Tools.RebuildOmdbsFromProtobufDump(omdbDUMP);
+            //new way to turn the TSV into Omdb db
+            TSVParse.OptimizedPopulateOmdbTableFromTsv(omdbTXT, tomatoesTXT);
+
 
             Tools.MarryMovieToOmdb(db);
         }
