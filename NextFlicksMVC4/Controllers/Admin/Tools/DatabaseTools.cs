@@ -119,11 +119,12 @@ namespace NextFlicksMVC4.Controllers.Admin
 
         public static void FullDbBuild()
         {
+
             MovieDbContext db = new MovieDbContext();
             string netflixPosFilepath = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX");
 
             //retrieve API .POX
-            var netflixCatalogOutputPath = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", "", outputPath: netflixPosFilepath);
+            //var netflixCatalogOutputPath = OAuth1a.GetNextflixCatalogDataString("catalog/titles/streaming", "", outputPath: netflixPosFilepath);
 
             var genresNFPOX = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/genres.NFPOX");
             var omdbZIP = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.zip");
@@ -144,7 +145,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
 
             //download the omdbapi
-            Omdb.DownloadOmdbZipAndExtract(omdbZIP);
+            //Omdb.DownloadOmdbZipAndExtract(omdbZIP);
 
             ////parse it for omdbentrys, serialize it to file
             //Tools.SerializeOmdbTsv(omdbDUMP, omdbTXT, tomatoesTXT);
