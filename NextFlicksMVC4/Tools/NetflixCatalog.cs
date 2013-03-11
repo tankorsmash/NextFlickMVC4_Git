@@ -201,6 +201,7 @@ namespace NextFlicksMVC4
                                 //add to DB and dict
                                 count++;
                                 db.Movies.Add(movie);
+                                
                                 db.SaveChanges(); //save changes so we can get the movie ID, I hope this doesnt slow me down too bad!
                                 //create and add boxarts to db
                                 var boxArt = CreateMovieBoxart(movie.movie_ID, titles[0]);
