@@ -516,7 +516,7 @@ namespace NextFlicksMVC4
             TraceLine("  saving final boxarts and genres");
             db.SaveChanges();
             TraceLine("\t\tdone saving boxarts and genres");
-            db.Configuration.AutoDetectChangesEnabled = true;
+            //db.Configuration.AutoDetectChangesEnabled = true;
 
             TraceLine("Out AddBoxartsAndMovieToGenreData");
         }
@@ -880,12 +880,9 @@ namespace NextFlicksMVC4
                                 Movie movie =
                                     Create.CreateMovie(titles[0]);
 
-                                if (dbHashes.Contains(movie.GetHashCode()))
+                                if (!dbHashes.Contains(movie.GetHashCode()))
                                 {
-                                    dbHashes.Remove(movie.GetHashCode());
-                                }
-                                else
-                                {
+                                    count++;
                                     //add to DB and dict
                                     dictOfMoviesTitles[movie] = titles[0];
                                     db.Movies.Add(movie);
@@ -896,17 +893,22 @@ namespace NextFlicksMVC4
                                 TraceLine("  Failed on line {0}\n{1}", count, line);
                             }
 
-                            count += 1;
                         }
                         line = reader.ReadLine();
+                        if(count % 500 == 0)
+                        {
+                            db.SaveChanges();
+                            AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
+                            dictOfMoviesTitles.Clear();
+                        }
                     }
 
                     //save the movies added to db
 
                     TraceLine("  Saving Movies");
-                    TraceLine(dictOfMoviesTitles.Count().ToString());
-                    db.SaveChanges();
-                    db.Configuration.AutoDetectChangesEnabled = true;
+                    //TraceLine(dictOfMoviesTitles.Count().ToString());
+                    //db.SaveChanges();
+                   // db.Configuration.AutoDetectChangesEnabled = true;
                 //}
 
                 //catch (XmlException ex) {

@@ -56,7 +56,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             PopulateGenres.PopulateGenresTable();
 
             //parse the lines into a Title then Movie object, along with boxart data and genre
-            NetflixCatalog.BuildMoviesBoxartGenresTables(nfpox);
+            Tools.BuildMoviesBoxartGenresTables(nfpox);
 
             Tools.TraceLine("Out Full");
         }
