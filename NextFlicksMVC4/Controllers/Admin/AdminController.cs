@@ -76,7 +76,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             }
             if (button == "Update Genres In DB")
             {
-                DatabaseTools.UpdateGenreList(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
+                NetflixCatalog.UpdateGenreList(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
                 ViewBag.Message = "Update Genres List";
 
             }
@@ -97,7 +97,7 @@ namespace NextFlicksMVC4.Controllers.Admin
                 var omdbTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.txt");
                 var tomatoesTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/tomatoes.txt");
                 //download the omdbapi
-                //Omdb.DownloadOmdbZipAndExtract(omdbZIP);
+                Omdb.DownloadOmdbZipAndExtract(omdbZIP);
 
                 //parse it for omdbentrys, serialize it to file
                 Tools.SerializeOmdbTsv(omdbDUMP, omdbTXT, tomatoesTXT);

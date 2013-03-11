@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System;
 using System.Xml;
 
+
 namespace NextFlicksMVC4.Controllers.Admin
 {
     public static class DatabaseTools
@@ -45,14 +46,17 @@ namespace NextFlicksMVC4.Controllers.Admin
 
         public static void Full()
         {
+            var nfpox = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX");
             // Database.SetInitializer(new DropCreateDatabaseIfModelChanges<MovieDbContext>());
             Tools.TraceLine("In Full");
 
-            //create a genres table in the DB
+            NetflixCatalog.UpdateGenreList(nfpox);
+            //build a genres txt file for all the genres in the NFPOX
+            //ASSUMES GENRES.NFPOX IS THERE
             PopulateGenres.PopulateGenresTable();
 
-
-            Tools.BuildMoviesBoxartGenresTables(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
+            //parse the lines into a Title then Movie object, along with boxart data and genre
+            NetflixCatalog.BuildMoviesBoxartGenresTables(nfpox);
 
             Tools.TraceLine("Out Full");
         }
@@ -131,16 +135,16 @@ namespace NextFlicksMVC4.Controllers.Admin
             var tomatoesTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/tomatoes.txt");
 
             //join the lines that don't match <catalog to the ones above it
-            Tools.JoinLines(netflixPosFilepath);
+            NetflixCatalog.JoinLines(netflixPosFilepath);
 
-            //Parse the netflix NFPOX and make sure the genres.nfpox exists and is up to dat
-            UpdateGenreList(netflixPosFilepath);
+            //Parse the netflix NFPOX and make sure the genres.nfpox exists and is up to date
+            NetflixCatalog.UpdateGenreList(netflixPosFilepath);
             //build a genres txt file for all the genres in the NFPOX
             //ASSUMES GENRES.NFPOX IS THERE
             PopulateGenres.PopulateGenresTable();
 
             //parse the lines into a Title then Movie object, along with boxart data and genre
-            Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
+            NetflixCatalog.BuildMoviesBoxartGenresTables(netflixPosFilepath);
 
             //download the omdbapi
             Omdb.DownloadOmdbZipAndExtract(omdbZIP);
@@ -212,50 +216,6 @@ namespace NextFlicksMVC4.Controllers.Admin
                     outputPath: System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/genres.NFPOX"));
         }
 
-        /// <summary>
-        /// Parse the Netflix Catalog (fixedAPI.nfpox) to get a list of all current genres
-        /// </summary>
-        /// <param name="filepath"></param>
-        public static void UpdateGenreList(string filepath)
-        {
-            Tools.WriteTimeStamp("start update genres");
-            Dictionary<int, string> genres = new Dictionary<int, string>();
-            using (XmlReader xmlReader = XmlReader.Create(filepath))
-            {
-                while (xmlReader.Read())
-                {
-                    if ((xmlReader.NodeType == XmlNodeType.Element) && (xmlReader.Name == "category"))
-                    {
-
-                        string possible_genre_url =
-                            xmlReader.GetAttribute("scheme");
-
-                        if (possible_genre_url.Contains("genres"))
-                        {
-                            //gotta split url for the id
-                            int genre_id =
-                                Convert.ToInt32(possible_genre_url.Split('/').Last());
-                            string genre_string = xmlReader.GetAttribute("label");
-                            //so long as the group isn't in the list, add it it
-                            if (!genres.ContainsKey(genre_id))
-                            {
-                                genres.Add(genre_id, genre_string);
-                            }
-                           
-                        }
-                    }
-                }
-            }
-            var genresPath = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/genres.NFPOX");
-            using (StreamWriter writer = new StreamWriter(genresPath, append: false))
-            {
-                foreach (KeyValuePair<int, string> kvp in genres)
-                {
-                    writer.WriteLine(kvp.Key + " " + kvp.Value);
-                }
-            }
-            Tools.WriteTimeStamp("end update genres");
-                            
-        }
+       
     }
 }
