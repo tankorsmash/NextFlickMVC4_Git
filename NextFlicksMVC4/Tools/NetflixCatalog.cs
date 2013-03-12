@@ -97,47 +97,7 @@ namespace NextFlicksMVC4
         /// Parse the Netflix Catalog (fixedAPI.nfpox) to get a list of all current genres
         /// </summary>
         /// <param name="filepath"></param>
-        public static void UpdateGenreList(string filepath)
-        {
-            Tools.WriteTimeStamp("start update genres");
-            Dictionary<int, string> genres = new Dictionary<int, string>();
-            using (XmlReader xmlReader = XmlReader.Create(filepath))
-            {
-                while (xmlReader.Read())
-                {
-                    if ((xmlReader.NodeType == XmlNodeType.Element) && (xmlReader.Name == "category"))
-                    {
-
-                        string possible_genre_url =
-                            xmlReader.GetAttribute("scheme");
-
-                        if (possible_genre_url.Contains("genres"))
-                        {
-                            //gotta split url for the id
-                            int genre_id =
-                                Convert.ToInt32(possible_genre_url.Split('/').Last());
-                            string genre_string = xmlReader.GetAttribute("label");
-                            //so long as the group isn't in the list, add it it
-                            if (!genres.ContainsKey(genre_id))
-                            {
-                                genres.Add(genre_id, genre_string);
-                            }
-
-                        }
-                    }
-                }
-            }
-            var genresPath = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/genres.NFPOX");
-            using (StreamWriter writer = new StreamWriter(genresPath, append: false))
-            {
-                foreach (KeyValuePair<int, string> kvp in genres)
-                {
-                    writer.WriteLine(kvp.Key + " " + kvp.Value);
-                }
-            }
-            Tools.WriteTimeStamp("end update genres");
-
-        }
+       
 
         public static void BuildMoviesBoxartGenresTables(string filepath)
         {

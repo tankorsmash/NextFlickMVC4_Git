@@ -835,6 +835,47 @@ namespace NextFlicksMVC4
             TraceLine("Out JoinLines");
         }
 
+        public static void UpdateGenreList(string filepath)
+        {
+            Tools.WriteTimeStamp("start update genres");
+            Dictionary<int, string> genres = new Dictionary<int, string>();
+            using (XmlReader xmlReader = XmlReader.Create(filepath))
+            {
+                while (xmlReader.Read())
+                {
+                    if ((xmlReader.NodeType == XmlNodeType.Element) && (xmlReader.Name == "category"))
+                    {
+
+                        string possible_genre_url =
+                            xmlReader.GetAttribute("scheme");
+
+                        if (possible_genre_url.Contains("genres"))
+                        {
+                            //gotta split url for the id
+                            int genre_id =
+                                Convert.ToInt32(possible_genre_url.Split('/').Last());
+                            string genre_string = xmlReader.GetAttribute("label");
+                            //so long as the group isn't in the list, add it it
+                            if (!genres.ContainsKey(genre_id))
+                            {
+                                genres.Add(genre_id, genre_string);
+                            }
+
+                        }
+                    }
+                }
+            }
+            var genresPath = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/genres.NFPOX");
+            using (StreamWriter writer = new StreamWriter(genresPath, append: false))
+            {
+                foreach (KeyValuePair<int, string> kvp in genres)
+                {
+                    writer.WriteLine(kvp.Key + " " + kvp.Value);
+                }
+            }
+            Tools.WriteTimeStamp("end update genres");
+
+        }
         public static void BuildMoviesBoxartGenresTables(string filepath)
         {
             TraceLine("In BuildMoviesBoxartGenresTables");
@@ -895,17 +936,20 @@ namespace NextFlicksMVC4
 
                         }
                         line = reader.ReadLine();
-                        if(count % 500 == 0)
+                        //5000 seems to be the magic number, completes in 14ishm inutes and keeps memory under 125MB
+                        if(count % 5000 == 0)
                         {
+                            TraceLine("  Saving Movies");
                             db.SaveChanges();
+
+                            TraceLine("  Adding Boxart and Genre");
                             AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
                             dictOfMoviesTitles.Clear();
+                            db = new MovieDbContext();
                         }
                     }
 
                     //save the movies added to db
-
-                    TraceLine("  Saving Movies");
                     //TraceLine(dictOfMoviesTitles.Count().ToString());
                     //db.SaveChanges();
                    // db.Configuration.AutoDetectChangesEnabled = true;
@@ -919,20 +963,18 @@ namespace NextFlicksMVC4
                 //              count.ToString());
                 //}
 
-                db.SaveChanges();
-                TraceLine("  Adding Boxart and Genre");
-                //add boxart and genre data to db before saving the movie 
-                AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
-
-
+                
+                
+                //save any untracked movies and add boxart and genre data to db before saving the movie
                 TraceLine("  Saving Changes any untracked ones");
                 db.SaveChanges();
-                TraceLine(
-                    "  Done Saving! Check out Movies/index for a table of the stuff");
+                AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
+
+                TraceLine("  Done Saving! Check out Movies/index for a table of the stuff");
             }
 
 
-            var end_time = WriteTimeStamp(    "  Done everything");
+            var end_time = WriteTimeStamp("  Done everything");
 
             TimeSpan span = end_time - start_time;
             TraceLine("  It took this long:");

@@ -76,7 +76,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             }
             if (button == "Update Genres In DB")
             {
-                NetflixCatalog.UpdateGenreList(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
+                Tools.UpdateGenreList(System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/fixedAPI.NFPOX"));
                 ViewBag.Message = "Update Genres List";
 
             }

@@ -50,7 +50,7 @@ namespace NextFlicksMVC4.Controllers.Admin
             // Database.SetInitializer(new DropCreateDatabaseIfModelChanges<MovieDbContext>());
             Tools.TraceLine("In Full");
 
-            NetflixCatalog.UpdateGenreList(nfpox);
+            Tools.UpdateGenreList(nfpox);
             //build a genres txt file for all the genres in the NFPOX
             //ASSUMES GENRES.NFPOX IS THERE
             PopulateGenres.PopulateGenresTable();
@@ -135,16 +135,16 @@ namespace NextFlicksMVC4.Controllers.Admin
             var tomatoesTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/tomatoes.txt");
 
             //join the lines that don't match <catalog to the ones above it
-            NetflixCatalog.JoinLines(netflixPosFilepath);
+            Tools.JoinLines(netflixPosFilepath);
 
             //Parse the netflix NFPOX and make sure the genres.nfpox exists and is up to date
-            NetflixCatalog.UpdateGenreList(netflixPosFilepath);
+            Tools.UpdateGenreList(netflixPosFilepath);
             //build a genres txt file for all the genres in the NFPOX
             //ASSUMES GENRES.NFPOX IS THERE
             PopulateGenres.PopulateGenresTable();
 
             //parse the lines into a Title then Movie object, along with boxart data and genre
-            NetflixCatalog.BuildMoviesBoxartGenresTables(netflixPosFilepath);
+            Tools.BuildMoviesBoxartGenresTables(netflixPosFilepath);
 
             //download the omdbapi
             Omdb.DownloadOmdbZipAndExtract(omdbZIP);
