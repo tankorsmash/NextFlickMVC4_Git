@@ -291,7 +291,6 @@
     <Compile Include="Models\userAccount\Users.cs" />
     <Compile Include="OMBD\OMDB.cs" />
     <Compile Include="OMBD\TSVParse.cs" />
-    <Compile Include="Tools\NetflixCatalog.cs" />
     <Compile Include="Tools\PopulateFullView.cs" />
     <Compile Include="Tools\Tools.cs" />
     <Compile Include="Tools\UserInput.cs" />

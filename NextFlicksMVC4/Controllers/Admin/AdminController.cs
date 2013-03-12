@@ -10,17 +10,19 @@ using System.IO;
 
 namespace NextFlicksMVC4.Controllers.Admin
 {
-    [Authorize(Roles="Admin")]
+   // [Authorize(Roles="Admin")]
     public class AdminController : Controller
     {
+        MovieDbContext db = new MovieDbContext();
         //
         // GET: /Admin/
-
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult LogFile()
         {
             ViewBag.Log = new List<string>();
@@ -36,11 +38,14 @@ namespace NextFlicksMVC4.Controllers.Admin
            
             return View();
         }
+
+        [Authorize(Roles = "Admin")]
         public ActionResult DbTools()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult DbTools(string button)
         {
