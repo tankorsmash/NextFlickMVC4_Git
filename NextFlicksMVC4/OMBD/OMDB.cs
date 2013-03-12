@@ -469,7 +469,7 @@ namespace NextFlicksMVC4.OMBD
         public override int GetHashCode()
         {
             return(this.title.GetHashCode() ^
-                this.t_Image.GetHashCode() ^
+                //this.t_Image.GetHashCode() ^
                 this.year.GetHashCode() ^ 
                 this.i_ID.GetHashCode());
         }

@@ -22,13 +22,17 @@ namespace NextFlicksMVC4.Controllers.userAccount
             Users user = new Users();
 
             if (!Roles.RoleExists("Admin"))
+                Tools.TraceLine("creating Admin Roles");
                 Roles.CreateRole("Admin");
             if (!Roles.RoleExists("Mod"))
+                Tools.TraceLine("creating Mod Roles");
                 Roles.CreateRole(("Mod"));
             if (!Roles.RoleExists("User"))
+                Tools.TraceLine("creating User Roles");
                 Roles.CreateRole(("User"));
 
             if (!WebSecurity.UserExists("Admin"))
+                Tools.TraceLine("creating Admin account");
                 WebSecurity.CreateUserAndAccount("Admin", "Admin",
                                                  propertyValues:
                                                      new
@@ -37,6 +41,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
                                                          email = "Admin@phall.us"
                                                      });
             if (!Roles.GetRolesForUser("Admin").Contains("Admin"))
+                Tools.TraceLine("adding Admin priveledges");
                 Roles.AddUserToRole("Admin", "Admin");
             ViewBag.Message = " Admin Accout Seeded";
             return View();

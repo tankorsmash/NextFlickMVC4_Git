@@ -206,8 +206,14 @@ namespace NextFlicksMVC4.OMBD
         {
             //build a list of hashes
             MovieDbContext tempDb = new MovieDbContext();
-            List<int> omdbHashes =
-                tempDb.Omdb.Select(item => item.GetHashCode())
+            //List<int> omdbHashes =
+            //    tempDb.Omdb.Select(item => item.GetHashCode()).ToList(); 
+            //create a list of hashes for the omdbentrys in the db
+            List<int> omdbHashes = new List<int>();
+            foreach (OmdbEntry omdb in tempDb.Omdb) {
+                omdbHashes.Add(omdb.GetHashCode());
+            }
+            var omdbDistinctHashes = omdbHashes
                   .Distinct()
                   .ToList();
             //read numOfMoviesPerLoop movies until all the IMDB movies are parsed
