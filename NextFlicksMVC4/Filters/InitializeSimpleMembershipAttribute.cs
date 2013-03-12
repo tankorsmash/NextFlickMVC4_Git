@@ -30,24 +30,25 @@ namespace NextFlicksMVC4.Filters
             public SimpleMembershipInitializer()
             {
                
-                //TODO: Hod to change this to my DB context to get the db to autocreate!
+                //TODO: Had to change this to my DB context to get the db to autocreate!
                 Database.SetInitializer<MovieDbContext>(null);
 
-                try
-                {
-                    using (var context = new MovieDbContext())
-                    {
-                        if (!context.Database.Exists())
-                        {
+                try {
+                    using (var context = new MovieDbContext()) {
+                        if (!context.Database.Exists()) {
                             // Create the SimpleMembership database without Entity Framework migration schema
                             ((IObjectContextAdapter)context).ObjectContext.CreateDatabase();
                         }
                     }
-                    //TODO: had to change this to match my database conneciton name, DB name and identify user id and username for simple role membership providers.
-                    WebSecurity.InitializeDatabaseConnection("MovieDbContext", "UserProfile", "UserID", "Username", autoCreateTables: true);
+                    //TODO: had to change this to match my database connection name, DB name and identify user id and username for simple role membership providers.
+                    WebSecurity.InitializeDatabaseConnection("MovieDbContext",
+                                                             "UserProfile",
+                                                             "UserID",
+                                                             "Username",
+                                                             autoCreateTables:
+                                                                 true);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     throw new InvalidOperationException("The ASP.NET Simple Membership database could not be initialized. For more information, please see http://go.microsoft.com/fwlink/?LinkId=256588", ex);
                 }
             }
