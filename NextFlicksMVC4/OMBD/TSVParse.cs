@@ -102,7 +102,8 @@ namespace NextFlicksMVC4.OMBD
         /// </summary>
         /// <param name="tom_filepath"></param>
         public static void OptimizedRtTsvParse(string tom_filepath)
-        {            //i don't think this is necessary, because you always want to update the RT data
+        {
+            //i don't think this is necessary, because you always want to update the RT data
             ////build a list of hashes
             //MovieDbContext tempDb = new MovieDbContext();
             //List<int> omdbHashes =

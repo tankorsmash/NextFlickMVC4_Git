@@ -38,7 +38,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
                                                      new
                                                      {
                                                          Username = "Admin",
-                                                         email = "Admin@phall.us"
+                                                         email = "Admin@thenextflick.com"
                                                      });
             if (!Roles.GetRolesForUser("Admin").Contains("Admin"))
                 Tools.TraceLine("adding Admin priveledges");
