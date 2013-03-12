@@ -102,7 +102,14 @@ namespace NextFlicksMVC4.OMBD
         /// </summary>
         /// <param name="tom_filepath"></param>
         public static void OptimizedRtTsvParse(string tom_filepath)
-        {
+        {            //i don't think this is necessary, because you always want to update the RT data
+            ////build a list of hashes
+            //MovieDbContext tempDb = new MovieDbContext();
+            //List<int> omdbHashes =
+            //    tempDb.Omdb.Select(item => item.GetHashCode())
+            //      .Distinct()
+            //      .ToList();
+
             int num_of_RT_movies_per_loop = 5000;
             using (
                 CsvReader tom_csvReader =
@@ -197,6 +204,12 @@ namespace NextFlicksMVC4.OMBD
         /// <param name="numOfMoviesPerLoop">5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB</param>
         private static void OptimizedImdbTsvParse(string imdb_filepath, int numOfMoviesPerLoop = 5000)
         {
+            //build a list of hashes
+            MovieDbContext tempDb = new MovieDbContext();
+            List<int> omdbHashes =
+                tempDb.Omdb.Select(item => item.GetHashCode())
+                  .Distinct()
+                  .ToList();
             //read numOfMoviesPerLoop movies until all the IMDB movies are parsed
             //5000 is about 180MB, 10000 was around 240MB 15000 can be as high as 300MB "
             using (
@@ -221,10 +234,19 @@ namespace NextFlicksMVC4.OMBD
                         }
                     }
 
-                    //save the small_omdbEntry_list to db
+                    //save the small_omdbEntry_list to db, but check for dupes first
                     MovieDbContext db = new MovieDbContext();
                     db.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (OmdbEntry omdbEntry in small_omdbEntry_list) {
+
+
+
+
+                    //for each omdbentry hash not in the list of hashes, add to db
+                    foreach (
+                        OmdbEntry omdbEntry in
+                            small_omdbEntry_list.Where(
+                                omdbEntry =>
+                                !omdbHashes.Contains(omdbEntry.GetHashCode()))) {
                         db.Omdb.Add(omdbEntry);
                     }
 
