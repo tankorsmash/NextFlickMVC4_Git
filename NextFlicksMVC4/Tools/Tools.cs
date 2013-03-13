@@ -886,7 +886,9 @@ namespace NextFlicksMVC4
 
             var start_time = WriteTimeStamp("starting data read");
             List<int> dbHashes = new List<int>();//get alist of hashes for all movies in the db so we can make sure not to add a duplicate;
-            //int[] dbHashes = new int[db.Movies.Count()];
+
+            //this seems to be the best number of movies  + genres + box arts to do at one time for memory and speed
+            int moviesPerCommit = 5000;
 
             foreach (Movie dbMovie in db.Movies)
             {
@@ -896,6 +898,7 @@ namespace NextFlicksMVC4
             // Go line by line, and parse it for Movie files
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
             int count = 0;
+            
             using (StreamReader reader = new StreamReader(filepath)) 
             {
                 TraceLine("  Starting to read");
@@ -937,7 +940,7 @@ namespace NextFlicksMVC4
                         }
                         line = reader.ReadLine();
                         //5000 seems to be the magic number, completes in 14ishm inutes and keeps memory under 125MB
-                        if(count % 5000 == 0)
+                        if(count % moviesPerCommit == 0)
                         {
                             TraceLine("  Saving Movies");
                             db.SaveChanges();

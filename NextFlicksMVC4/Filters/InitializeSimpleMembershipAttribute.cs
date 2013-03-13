@@ -80,7 +80,7 @@ namespace NextFlicksMVC4.Filters
                     new
                     {
                         Username = "Admin",
-                        email = "Admin@phall.us"
+                        email = "Admin@thenextflick.com"
                     });
                 if (!Roles.GetRolesForUser("Admin").Contains("Admin"))
                     Roles.AddUserToRole("Admin", "Admin");
