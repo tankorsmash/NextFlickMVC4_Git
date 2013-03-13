@@ -34,7 +34,6 @@ namespace NextFlicksMVC4.Models
         public string web_page { get; set; }
 
         [DisplayName("Ssn")]
-        
         public string current_season { get; set; }
 
         [DisplayName("Is a Movie")]

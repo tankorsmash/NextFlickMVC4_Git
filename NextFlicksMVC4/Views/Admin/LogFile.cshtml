@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "LogFile";
+}
+
+<h2>LogFile</h2>
+
+@{
+    foreach (var line in ViewBag.Log)
+    { 
+        <p>@line</p>
+    }
+}
+<p>@ViewBag.Log</p>

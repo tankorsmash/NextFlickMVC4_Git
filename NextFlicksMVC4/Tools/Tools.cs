@@ -524,7 +524,7 @@ namespace NextFlicksMVC4
             TraceLine("  saving final boxarts and genres");
             db.SaveChanges();
             TraceLine("\t\tdone saving boxarts and genres");
-            db.Configuration.AutoDetectChangesEnabled = true;
+            //db.Configuration.AutoDetectChangesEnabled = true;
 
             TraceLine("Out AddBoxartsAndMovieToGenreData");
         }
@@ -826,6 +826,47 @@ namespace NextFlicksMVC4
             TraceLine("Out JoinLines");
         }
 
+        public static void UpdateGenreList(string filepath)
+        {
+            Tools.WriteTimeStamp("start update genres");
+            Dictionary<int, string> genres = new Dictionary<int, string>();
+            using (XmlReader xmlReader = XmlReader.Create(filepath))
+            {
+                while (xmlReader.Read())
+                {
+                    if ((xmlReader.NodeType == XmlNodeType.Element) && (xmlReader.Name == "category"))
+                    {
+
+                        string possible_genre_url =
+                            xmlReader.GetAttribute("scheme");
+
+                        if (possible_genre_url.Contains("genres"))
+                        {
+                            //gotta split url for the id
+                            int genre_id =
+                                Convert.ToInt32(possible_genre_url.Split('/').Last());
+                            string genre_string = xmlReader.GetAttribute("label");
+                            //so long as the group isn't in the list, add it it
+                            if (!genres.ContainsKey(genre_id))
+                            {
+                                genres.Add(genre_id, genre_string);
+                            }
+
+                        }
+                    }
+                }
+            }
+            var genresPath = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/genres.NFPOX");
+            using (StreamWriter writer = new StreamWriter(genresPath, append: false))
+            {
+                foreach (KeyValuePair<int, string> kvp in genres)
+                {
+                    writer.WriteLine(kvp.Key + " " + kvp.Value);
+                }
+            }
+            Tools.WriteTimeStamp("end update genres");
+
+        }
         public static void BuildMoviesBoxartGenresTables(string filepath)
         {
             TraceLine("In BuildMoviesBoxartGenresTables");
@@ -836,7 +877,9 @@ namespace NextFlicksMVC4
 
             var start_time = WriteTimeStamp("starting data read");
             List<int> dbHashes = new List<int>();//get alist of hashes for all movies in the db so we can make sure not to add a duplicate;
-            //int[] dbHashes = new int[db.Movies.Count()];
+
+            //this seems to be the best number of movies  + genres + box arts to do at one time for memory and speed
+            int moviesPerCommit = 5000;
 
             foreach (Movie dbMovie in db.Movies)
             {
@@ -846,6 +889,7 @@ namespace NextFlicksMVC4
             // Go line by line, and parse it for Movie files
             Dictionary<Movie, Title> dictOfMoviesTitles = new Dictionary<Movie, Title>();
             int count = 0;
+            
             using (StreamReader reader = new StreamReader(filepath)) 
             {
                 TraceLine("  Starting to read");
@@ -871,12 +915,9 @@ namespace NextFlicksMVC4
                                 Movie movie =
                                     Create.CreateMovie(titles[0]);
 
-                                if (dbHashes.Contains(movie.GetHashCode()))
+                                if (!dbHashes.Contains(movie.GetHashCode()))
                                 {
-                                    dbHashes.Remove(movie.GetHashCode());
-                                }
-                                else
-                                {
+                                    count++;
                                     //add to DB and dict
                                     dictOfMoviesTitles[movie] = titles[0];
                                     db.Movies.Add(movie);
@@ -887,17 +928,25 @@ namespace NextFlicksMVC4
                                 TraceLine("  Failed on line {0}\n{1}", count, line);
                             }
 
-                            count += 1;
                         }
                         line = reader.ReadLine();
+                        //5000 seems to be the magic number, completes in 14ishm inutes and keeps memory under 125MB
+                        if(count % moviesPerCommit == 0)
+                        {
+                            TraceLine("  Saving Movies");
+                            db.SaveChanges();
+
+                            TraceLine("  Adding Boxart and Genre");
+                            AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
+                            dictOfMoviesTitles.Clear();
+                            db = new MovieDbContext();
+                        }
                     }
 
                     //save the movies added to db
-
-                    TraceLine("  Saving Movies");
-                    TraceLine(dictOfMoviesTitles.Count().ToString());
-                    db.SaveChanges();
-                    db.Configuration.AutoDetectChangesEnabled = true;
+                    //TraceLine(dictOfMoviesTitles.Count().ToString());
+                    //db.SaveChanges();
+                   // db.Configuration.AutoDetectChangesEnabled = true;
                 //}
 
                 //catch (XmlException ex) {
@@ -908,20 +957,18 @@ namespace NextFlicksMVC4
                 //              count.ToString());
                 //}
 
-                db.SaveChanges();
-                TraceLine("  Adding Boxart and Genre");
-                //add boxart and genre data to db before saving the movie 
-                AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
-
-
+                
+                
+                //save any untracked movies and add boxart and genre data to db before saving the movie
                 TraceLine("  Saving Changes any untracked ones");
                 db.SaveChanges();
-                TraceLine(
-                    "  Done Saving! Check out Movies/index for a table of the stuff");
+                AddBoxartsAndMovieToGenreData(dictOfMoviesTitles, db);
+
+                TraceLine("  Done Saving! Check out Movies/index for a table of the stuff");
             }
 
 
-            var end_time = WriteTimeStamp(    "  Done everything");
+            var end_time = WriteTimeStamp("  Done everything");
 
             TimeSpan span = end_time - start_time;
             TraceLine("  It took this long:");

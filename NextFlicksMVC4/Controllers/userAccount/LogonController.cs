@@ -33,6 +33,10 @@ namespace NextFlicksMVC4.Controllers.userAccount
         {
              if (ModelState.IsValid && WebSecurity.Login(model.Username, model.Password, persistCookie: model.RememberMe))
             {
+                if (Roles.IsUserInRole("Admin"))
+                {
+                    RedirectToAction("Index", "Admin");
+                }
                 return RedirectToLocal(returnUrl);
             }
 

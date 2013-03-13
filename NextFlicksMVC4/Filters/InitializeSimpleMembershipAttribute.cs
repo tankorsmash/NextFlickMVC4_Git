@@ -1,10 +1,22 @@
 ﻿using System;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Linq;
 using System.Threading;
 using System.Web.Mvc;
 using WebMatrix.WebData;
+using System.Web.Security;
+using NextFlicksMVC4.Filters;
 using NextFlicksMVC4.Models;
+using NextFlicksMVC4.Models.userAccount;
+using WebMatrix.WebData;
+
+
+
+
+
+
 
 namespace NextFlicksMVC4.Filters
 {
@@ -47,10 +59,33 @@ namespace NextFlicksMVC4.Filters
                                                              "Username",
                                                              autoCreateTables:
                                                                  true);
+		    SeedUserDatabaseTables();
                 }
                 catch (Exception ex) {
                     throw new InvalidOperationException("The ASP.NET Simple Membership database could not be initialized. For more information, please see http://go.microsoft.com/fwlink/?LinkId=256588", ex);
                 }
+            }
+
+            public void SeedUserDatabaseTables()
+            {
+                if (!Roles.RoleExists("Admin"))
+                    Roles.CreateRole("Admin");
+                if (!Roles.RoleExists("Mod"))
+                    Roles.CreateRole(("Mod"));
+                if (!Roles.RoleExists("User"))
+                    Roles.CreateRole(("User"));
+
+               if (!WebSecurity.UserExists("Admin"))
+                    WebSecurity.CreateUserAndAccount("Admin", "Admin",
+                    propertyValues:
+                    new
+                    {
+                        Username = "Admin",
+                        email = "Admin@thenextflick.com"
+                    });
+                if (!Roles.GetRolesForUser("Admin").Contains("Admin"))
+                    Roles.AddUserToRole("Admin", "Admin");
+            
             }
         }
     }
