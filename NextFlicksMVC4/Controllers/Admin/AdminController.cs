@@ -22,18 +22,36 @@ namespace NextFlicksMVC4.Controllers.Admin
             return View();
         }
 
+        /// <summary>
+        /// Displays a readout of the trace.log file
+        /// </summary>
+        /// <param name="linesToShow">the amount of lines to show on the page at once</param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
-        public ActionResult LogFile()
+        public ActionResult LogFile(int linesToShow = 1000)
         {
             ViewBag.Log = new List<string>();
+            var tempList = new List<string>();
             var logfile = System.Web.HttpContext.Current.Server.MapPath("~/trace.log");
             using(var fs = new FileStream(logfile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using(var sr = new StreamReader(fs))
             {
                 while (!sr.EndOfStream)
                 {
-                    ViewBag.Log.Add(sr.ReadLine());
+                    tempList.Add(sr.ReadLine());
                 }
+
+                //count the lines read, then make sure the param isn't too high
+                int logCount = tempList.Count;
+                if (logCount < linesToShow) {
+                    linesToShow = logCount;
+                }
+                //reverse ViewBag.Log so that the newest is at top
+                tempList.Reverse();
+
+                //after taking only the desired amount of items, set it to the viewbag so the view knows whats up
+                ViewBag.Log = tempList.Take(linesToShow).ToList();
+
             }
            
             return View();
