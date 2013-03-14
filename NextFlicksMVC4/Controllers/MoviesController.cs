@@ -207,29 +207,36 @@ namespace NextFlicksMVC4.Controllers
 
             var start = Tools.WriteTimeStamp(writeTime:false);
 
+            Tools.TraceLine("Creating db context");
 
             var db = new MovieDbContext();
             //Tools.TraceLine(db.Database.Connection.ConnectionString);
             db.Configuration.AutoDetectChangesEnabled = true;
 
+            Tools.TraceLine("Done creating db context");
+            
+
+            Tools.TraceLine("About to raise if no movies");
             //make sure there's movies in the db
             RaiseIfNoMoviesInDb(db);
+            Tools.TraceLine("Done about to raise if no movies");
 
             //fill the years for the dropdox list
             //get all the years in the db
-            IQueryable<FullViewModel> year_res = Tools.GetFullDbQuery(db);
+            IQueryable<FullViewModel> year_res = Tools.GetFullDbQuery(db, true);
             int[] all_years = (from fmv in year_res
                                where fmv.Movie.year >= 0
                                where fmv.Movie.year < 3000 //No upper limit needed right?
                                select fmv.Movie.year).Distinct()
                                                      .OrderBy(item => item)
                                                      .ToArray();
+            Tools.TraceLine("Done all years int");
             //convert the years to SelectListItems
             ViewBag.DropDownYears = Tools.IEnumToSelectListItem(all_years);
 
             //fill the TV Ratings for the dropdown list
             //get all the tv ratings from the db
-            IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(db);
+            IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(new MovieDbContext());
             string[] all_tvratings = (from fmv in tvrating_res
                                       select fmv.Movie.tv_rating).Distinct()
                                                                  .OrderBy(
@@ -240,13 +247,14 @@ namespace NextFlicksMVC4.Controllers
 
             //fill the TV Ratings for the dropdown list
             //get all the tv ratings from the db
-            IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(db);
-            int[] all_tmeters = (from fmv in min_tmeter_res    
+            IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(new MovieDbContext());
+            var all_tmeters = (from fmv in min_tmeter_res    
                                  where fmv.OmdbEntry.t_Meter != null
                                       select fmv.OmdbEntry.t_Meter).Distinct()
                                                                  .OrderBy(
                                                                      item =>
-                                                                     item)
+                                                                     item);
+            var tits = all_tmeters
                                                                  .ToArray();
             ViewBag.DropDownTmeter = Tools.IEnumToSelectListItem(all_tmeters);
 
