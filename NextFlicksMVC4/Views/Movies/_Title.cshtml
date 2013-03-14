@@ -36,17 +36,16 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
                 @Html.DisplayFor(model => model.Movie.tv_rating)
             </div>
             <div class="title_tmeter">
-                @Html.DisplayFor(model => model.OmdbEntry.t_Meter)
-                @if (Model.OmdbEntry != null)
-                {
-                    if (Model.OmdbEntry.t_Meter > 50)
+                @if (Model.OmdbEntry != null && Model.OmdbEntry.t_Meter != 0) {
+                    @Html.DisplayFor(model => model.OmdbEntry.t_Meter)
                     {
-                    <img class="rt_rotten" src="../../Content/Images/fresh.png" />
-                }
-                if (Model.OmdbEntry.t_Meter < 50)
-                {
-                    <img class="rt_rotten" src="../../Content/Images/rotten.png" />
-                }
+                        if (Model.OmdbEntry.t_Meter > 50) {
+                            <img class="rt_rotten" src="../../Content/Images/fresh.png" />
+                        }
+                        if (Model.OmdbEntry.t_Meter < 50) {
+                            <img class="rt_rotten" src="../../Content/Images/rotten.png" />
+                        }
+                    }
                 }
             </div>
         </div>
