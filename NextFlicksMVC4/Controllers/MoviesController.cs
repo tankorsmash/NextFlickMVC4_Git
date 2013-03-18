@@ -250,13 +250,10 @@ namespace NextFlicksMVC4.Controllers
             IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(new MovieDbContext());
             var all_tmeters = (from fmv in min_tmeter_res
                                where fmv.OmdbEntry.t_Meter != null
-                               select fmv.OmdbEntry.t_Meter)
-                                                                 .OrderBy(
-                                                                     item =>
-                                                                     item).ToArray();
-            var tits = all_tmeters.Distinct()
-                                                                 .ToArray();
-            ViewBag.DropDownTmeter = Tools.IEnumToSelectListItem(tits);
+                               select fmv.OmdbEntry.t_Meter).OrderBy(
+                                   item => item).ToArray();
+            var tmeterArray = all_tmeters.Distinct().ToArray();
+            ViewBag.DropDownTmeter = Tools.IEnumToSelectListItem(tmeterArray);
 
 
             //make sure the title isn't the default text set in the _FilterMenu
