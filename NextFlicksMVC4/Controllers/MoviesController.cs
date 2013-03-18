@@ -248,15 +248,15 @@ namespace NextFlicksMVC4.Controllers
             //fill the TV Ratings for the dropdown list
             //get all the tv ratings from the db
             IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(new MovieDbContext());
-            var all_tmeters = (from fmv in min_tmeter_res    
-                                 where fmv.OmdbEntry.t_Meter != null
-                                      select fmv.OmdbEntry.t_Meter).Distinct()
+            var all_tmeters = (from fmv in min_tmeter_res
+                               where fmv.OmdbEntry.t_Meter != null
+                               select fmv.OmdbEntry.t_Meter)
                                                                  .OrderBy(
                                                                      item =>
-                                                                     item);
-            var tits = all_tmeters
+                                                                     item).ToArray();
+            var tits = all_tmeters.Distinct()
                                                                  .ToArray();
-            ViewBag.DropDownTmeter = Tools.IEnumToSelectListItem(all_tmeters);
+            ViewBag.DropDownTmeter = Tools.IEnumToSelectListItem(tits);
 
 
             //make sure the title isn't the default text set in the _FilterMenu
