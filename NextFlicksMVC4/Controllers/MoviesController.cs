@@ -248,11 +248,11 @@ namespace NextFlicksMVC4.Controllers
             //fill the TV Ratings for the dropdown list
             //get all the tv ratings from the db
             IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(new MovieDbContext());
-            var all_tmeters = (from fmv in min_tmeter_res
+            int[] all_tmeters = (from fmv in min_tmeter_res
                                where fmv.OmdbEntry.t_Meter != null
                                select fmv.OmdbEntry.t_Meter).OrderBy(
                                    item => item).ToArray();
-            var tmeterArray = all_tmeters.Distinct().ToArray();
+            int[] tmeterArray = all_tmeters.Distinct().ToArray();
             ViewBag.DropDownTmeter = Tools.IEnumToSelectListItem(tmeterArray);
 
 
@@ -301,20 +301,19 @@ namespace NextFlicksMVC4.Controllers
                 res = Tools.GetFullDbQuery(db);
             }
 
-
-
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
             {
                 //count all the movies possible
                 int totalMovies = res.Count();
+                Tools.TraceLine("  found {0} movies", totalMovies);
                 //set it to the viewbag so the view can display it
                 ViewBag.TotalMovies = totalMovies;
                 ViewBag.movies_per_page = 28;
                 Tools.TraceLine("  Found a total possible results of {0}", totalMovies);
 
                 int movie_count = 28;
-                var nit_list = FindPageOfMovies(res, page, movie_count, db);
+                var nit_list = FindPageOfMovies(res, page, movie_count, new MovieDbContext(), true);
 
                 //prepare certain variables for the pagination 
                 PrepareIndexViewBagForPagination();
@@ -327,7 +326,8 @@ namespace NextFlicksMVC4.Controllers
                 return View("Results", nit_list);
             }
 
-            catch (System.Data.EntityCommandExecutionException ex)
+            catch (StackOverflowException ex) //bogus error
+            //catch (System.Data.EntityCommandExecutionException ex)
             {
                 Tools.TraceLine(
                     "The ToList() call probably timed out, it happens on first call to db a lot, I don't know why:\n  ***{0}",
