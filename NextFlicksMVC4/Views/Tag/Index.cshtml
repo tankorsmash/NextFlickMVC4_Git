@@ -1,4 +1,6 @@
-﻿@model Dictionary<String, int>
+﻿@using NextFlicksMVC4.Models.TagModels;
+@model TagCountViewModel
+
 
 @{
     ViewBag.Title = "All tags added by Users";
@@ -11,15 +13,18 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-           <a href="~/Tag/Details?tagName=@item.Key">@item.Key</a>
-        </td>
-        <td>
-            @item.Value
-        </td>
-    </tr>
-}
-
+    <div class="display-field">
+            @foreach (KeyValuePair<string, int> kvp in Model.TagAndCount)
+            {
+                <tr>
+                    <td>
+                        <a href="~/Tag/Details?tagName=@kvp.Key" class="tag" 
+                         title="Tagged @kvp.Value.ToString() times. Click for more info.">@kvp.Key </a>
+                    </td>
+                    <td>
+                        @kvp.Value
+                    </td>
+                </tr>
+                
+            }
 </table>
