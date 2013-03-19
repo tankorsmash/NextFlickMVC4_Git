@@ -650,10 +650,8 @@ namespace NextFlicksMVC4.Controllers
             //added the plot to the fullView too, needs the whole movie, for the title and year
             fullView.Plot = PopulateFullView.Plot(movie);
 
-
-
-
-            return View("Details2", fullView);
+            return View(fullView);
+           // return View("Details2", fullView);
         }
 
         [HttpPost]
@@ -711,8 +709,9 @@ namespace NextFlicksMVC4.Controllers
                     db.SaveChanges();
                     
                     Tools.TraceLine("added tag {0} to movie_id {1}", UtMtT.TagId, movie_ID);
-                  }
-                return View(movie_ID); 
+                }
+            int id = movie_ID;    
+            return RedirectToAction("Details", new { movie_ID = id });
         }
 
 
