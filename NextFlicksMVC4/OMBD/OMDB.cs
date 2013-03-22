@@ -335,7 +335,7 @@ namespace NextFlicksMVC4.OMBD
     public class OmdbEntry
     {
         [Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [ProtoMember(1)]
         public int ombd_ID { get; set; }
 
