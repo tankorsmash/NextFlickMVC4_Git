@@ -16,8 +16,8 @@ namespace NextFlicksMVC4.Controllers
 
         public ActionResult Index()
         {
-            var tags = TagsAndCounts();
-            return View(tags);
+            var tagsAndCounts = TagsAndCounts();
+            return View(tagsAndCounts);
         }
 
         public ActionResult Details(string tagName)
@@ -85,17 +85,45 @@ namespace NextFlicksMVC4.Controllers
             return returnDict;
         }
 
-        private Dictionary<String, int> TagsAndCounts()
+        private TagCountViewModel TagsAndCounts()
         {
             MovieDbContext db = new MovieDbContext();
+            TagCountViewModel tagView = new TagCountViewModel() { TagAndCount = new Dictionary<string, int>() };
 
+            //find the ids of the tags related to the movie
+            //var tagsForMovie = from MtT in db.UserToMovieToTags
+            //                   where MtT.movie_ID == movieID
+            //                   select MtT.TagId;
+
+            //find the tag string based on the id of the strings
+            var tagStrings = from tag in db.MovieTags
+                             //from tag_id in tagsForMovie
+                             //where tag.TagId == tag_id
+                             select tag.Name;
+
+            var tagCounts = from tagString in db.MovieTags
+                            where tagStrings.Contains(tagString.Name)
+                            from MtT in db.UserToMovieToTags
+                            where MtT.TagId == tagString.TagId
+                            group MtT.TagId by tagString.Name
+                                into grouping
+                                select grouping;
+
+            foreach (IGrouping<string, int> result in tagCounts)
+            {
+                tagView.TagAndCount.Add(result.Key, result.Count());
+            }
+
+
+            return tagView; 
+            /*
             var allTags = (from tagName in db.MovieTags
                           from tagID in db.UserToMovieToTags
                           where tagName.TagId == tagID.TagId
                           group tagID.TagId by tagName.Name into grouping
                           select grouping).ToDictionary(grp => grp.Key, grp => grp.Key.Count());
 
-            return allTags;
+            return allTags; */
 
         }
     }
