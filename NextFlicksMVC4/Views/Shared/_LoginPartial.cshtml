@@ -1,14 +1,27 @@
-﻿@if (Request.IsAuthenticated) {
+﻿@if (WebSecurity.IsAuthenticated)
+{
+    @:Welcome, @WebSecurity.CurrentUserName |
+    @:<a href="@Href("~/Logoff")">Log out</a></>
+}
+else
+{
+    @:<a href="@Href("~/Logon")">Log in</a> |
+    @:<a href="@Href("~/Register")">Register</a>
+}
+
+@*
+@if (Request.IsAuthenticated) {
     <text>
         Hello, @Html.ActionLink(User.Identity.Name, "Manage", "Account", routeValues: null, htmlAttributes: new { @class = "username", title = "Manage" })!
-        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+        @using (Html.BeginForm("LogOff", "LogOff", FormMethod.Post, new { id = "logoutForm" })) {
             @Html.AntiForgeryToken()
             <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
         }
     </text>
 } else {
     <ul>
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li>@Html.ActionLink("Register", "Register", "Register", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Logon", "Logon", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
     </ul>
 }
+*@

@@ -197,16 +197,21 @@ img.rt_rotten {
 
 
 /* search bar, called _FilterMenu */
-.filter_area {
-border-width: 10px;
-border-style: outset;
-background-color: lightgray;
-border-radius: 5px;
-
-text-align: right;
-margin-right: 15%;
-margin-left: 5%;
-padding-left: 5px;
+.filter_area 
+{   
+    width:90%;          /* set the element to less than the container width so we can center it */
+    margin: 0px auto;   /* this centers the element */
+   
+    border-width: 10px;
+    border-style: outset;
+    background-color: lightgray;
+    border-radius: 5px;
+    
+    padding: 10px 10px; 
+    text-align: right;
+   /* margin-right: 15%;
+    margin-left: 5%; */
+    
 }
 
 form.movie_year_form {
@@ -262,7 +267,16 @@ div.display-label {
 }
 
 
-header, footer, hgroup,
+header 
+{
+    position:fixed;
+    top: 0;
+    background-color: White;
+    width: 100%;
+     
+}
+
+footer, hgroup,
 nav, section {
     display: block;
 }
@@ -347,7 +361,7 @@ h5, h6 {
     }
 
 header .content-wrapper {
-    padding-top: 20px; 
+    padding-top: 5px; 
 }
 
 footer {
@@ -363,13 +377,13 @@ footer {
 .site-title {
     color: #c8c8c8;
     font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
-    font-size: 2.3em;
+    font-size: 1.5em;
     margin: 0;
 }
 
 .site-title a, .site-title a:hover, .site-title a:active {
     background: none;
-    color: #c8c8c8;
+    color: #B9090B;
     outline: none;
     text-decoration: none;
 }

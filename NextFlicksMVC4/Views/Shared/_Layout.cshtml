@@ -38,19 +38,12 @@
         <header>
             <div class="content-wrapper">
                 <div class="float-left">
-                    <p class="site-title">@Html.ActionLink("The Next Flick", "Index", "Movies")</p>
+                    @Html.ActionLink("The Next Flick", "Index", "Movies", null, new {@class = "site-title" })
+                     @* fix search size then put this in the header
+                     @Html.Partial("_FilterMenu") *@
                 </div>
                 <div class="float-right">
-                      <p style: align="left">
-                          @if(WebSecurity.IsAuthenticated){
-                            @:Welcome, @WebSecurity.CurrentUserName |
-                            @:<a href="@Href("~/Logoff")">Log out</a></>
-                          }
-                          else{
-                            @:<a href="@Href("~/Logon")">Log in</a> |
-                            @:<a href="@Href("~/Register")">Register</a>
-                          }
-                      </p>
+                    @Html.Partial("_LoginPartial")
                     <nav>
                         <ul id="tabmenu">
                             <li>@Html.ActionLink("Movies", "Index", "Movies", null, new{ @class = movieMenuClass})</li>
