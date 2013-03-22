@@ -37,13 +37,16 @@
     <body>
         <header>
             <div class="content-wrapper">
+            <div class="site-title float-left">@Html.ActionLink("The Next Flick", "Index", "Movies")</div>
                 <div class="float-left">
-                    @Html.ActionLink("The Next Flick", "Index", "Movies", null, new {@class = "site-title" })
                      @* fix search size then put this in the header
                      @Html.Partial("_FilterMenu") *@
+                     @Html.Partial("_Navigation")
                 </div>
+               
                 <div class="float-right">
                     @Html.Partial("_LoginPartial")
+                    @*
                     <nav>
                         <ul id="tabmenu">
                             <li>@Html.ActionLink("Movies", "Index", "Movies", null, new{ @class = movieMenuClass})</li>
@@ -54,6 +57,7 @@
                             }
                         </ul>
                     </nav>
+                    *@
                 </div>
             </div>
         </header>

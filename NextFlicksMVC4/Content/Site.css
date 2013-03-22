@@ -249,7 +249,7 @@ a {
     outline: none;
     padding-left: 3px;
     padding-right: 3px;
-    text-decoration: underline;
+    text-decoration: underline; 
 }
 
     a:link, a:visited,
@@ -361,7 +361,8 @@ h5, h6 {
     }
 
 header .content-wrapper {
-    padding-top: 5px; 
+    padding-top: 5px;
+    max-width: 95%; 
 }
 
 footer {
@@ -375,7 +376,7 @@ footer {
 /* site title
 ----------------------------------------------------------*/
 .site-title {
-    color: #c8c8c8;
+    color:  #B9090B;
     font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
     font-size: 1.5em;
     margin: 0;
@@ -385,6 +386,7 @@ footer {
     background: none;
     color: #B9090B;
     outline: none;
+    font-weight:bold;
     text-decoration: none;
 }
 
@@ -1006,61 +1008,45 @@ tr.pager td {
 }
 
 
-/* top tab menu CSS */
+/* JTs custom CSS*/
 
+/*minimalist menu */
+#navlist
+{
+margin: 0;
+padding: 0 0 20px 10px;
+/*border-bottom: 1px solid #000;*/
+}
 
-#tabmenu {
-    font-size: 1.3em;
-    font-weight: 600;
-    text-align: right;
-	color: #333;
-	/*border-bottom: 1px solid black;*/
-	margin: 12px 0px 0px 0px;
-	padding: 0px;
-	z-index: 0;
-	padding-left: 10px }
+#navlist ul, #navlist li
+{
+margin: 0;
+padding: 0;
+display: inline;
+list-style-type: none;
+}
 
-	#tabmenu li {
-		display: inline;
-		overflow: hidden;
-		list-style-type: none; }
+#navlist a:link, #navlist a:visited
+{
+float: left;
+line-height: 14px;
+font-weight: bold;
+margin: 0 10px 4px 10px;
+text-decoration: none;
+color: #999;
+/* override other css that is affecting the menu */
+}
 
-	#tabmenu a, a.active {
-		color: #333;
-	    background: #fff;
-	    /* font: bold 1em "Trebuchet MS", Arial, sans-serif; */
-		border: 2px solid black;
-		padding: 2px 5px 0px 5px;
-		margin: 0;
-		text-decoration: none; }
+#navlist a:link#current, #navlist a:visited#current, #navlist a:hover
+{
+border-bottom: 4px solid #000;
+padding-bottom: 2px;
+background: transparent;
+color: #000;
+margin:
+}
 
-	#tabmenu a.active 
-	{
-	    color: #333;
-		background: rgb(199, 179, 179);
-	    border-bottom: 3px solid rgb(199, 179, 179); }
+#current
 
-	#tabmenu a:hover {
-		color: #333;
-		background: rgb(199, 179, 179) }
+#navlist a:hover { color: #000; }
 
-	#tabmenu a:visited {
-		color: #333; }
-
-	#tabmenu a.active:hover {
-		background: rgb(199, 179, 179);
-		color: #fff; }
-
-	#content {/*font: 0.9em/1.3em "bitstream vera sans", verdana, sans-serif;*/
-		text-align: justify;
-		background: #ABAD85;
-		padding: 20px;
-		border: 1px solid black;
-		border-top: none;
-		z-index: 2;	}
-
-	#content a {
-		text-decoration: none;
-		color: #E8E9BE; }
-
-	#content a:hover { background: #898B5E; }
