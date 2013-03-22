@@ -222,41 +222,6 @@ namespace NextFlicksMVC4.Controllers
             RaiseIfNoMoviesInDb(db);
             Tools.TraceLine("Done about to raise if no movies");
 
-            //fill the years for the dropdox list
-            //get all the years in the db
-            IQueryable<FullViewModel> year_res = Tools.GetFullDbQuery(db, true);
-            int[] all_years = (from fmv in year_res
-                               where fmv.Movie.year >= 0
-                               where fmv.Movie.year < 3000 //No upper limit needed right?
-                               select fmv.Movie.year).Distinct()
-                                                     .OrderBy(item => item)
-                                                     .ToArray();
-            Tools.TraceLine("Done all years int");
-            //convert the years to SelectListItems
-            ViewBag.DropDownYears = Tools.IEnumToSelectListItem(all_years);
-
-            //fill the TV Ratings for the dropdown list
-            //get all the tv ratings from the db
-            IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(db);
-            //IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(new MovieDbContext());
-            string[] all_tvratings = (from fmv in tvrating_res
-                                      select fmv.Movie.tv_rating).Distinct()
-                                                                 .OrderBy(
-                                                                     item =>
-                                                                     item)
-                                                                 .ToArray();
-            ViewBag.DropDownTvRating = Tools.IEnumToSelectListItem(all_tvratings);
-
-            //fill the TV Ratings for the dropdown list
-            //get all the tv ratings from the db
-            //IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(new MovieDbContext());
-            IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(db);
-            int[] all_tmeters = (from fmv in min_tmeter_res
-                               where fmv.OmdbEntry.t_Meter != null
-                               select fmv.OmdbEntry.t_Meter).OrderBy(
-                                   item => item).ToArray();
-            int[] tmeterArray = all_tmeters.Distinct().ToArray();
-            ViewBag.DropDownTmeter = Tools.IEnumToSelectListItem(tmeterArray);
 
 
             //make sure the title isn't the default text set in the _FilterMenu
@@ -271,8 +236,8 @@ namespace NextFlicksMVC4.Controllers
 
             //TODO:create a FilterMenuInit() so I can just call this everytime. It'll be easier on us all
             //Assign values to a ViewBag, so the Filtermenu can use them
-            ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
-            ViewBag.tag_dict = Tools.CreateSortedTagDictionary(db);
+            FilterMenuInit(db);
+
 
             //choose which set of movies I want to filter down to
             IQueryable<FullViewModel> res;
@@ -342,6 +307,66 @@ namespace NextFlicksMVC4.Controllers
                 return View("Error");
             }
 
+        }
+
+        public void FilterMenuInit(MovieDbContext db)
+        {
+            ViewBag.genre_dict = Tools.CreateSortedGenreDictionary(db);
+            ViewBag.tag_dict = Tools.CreateSortedTagDictionary(db);
+
+            var all_years = GetAllReleaseYears(db);
+            //convert the years to SelectListItems
+            ViewBag.DropDownYears = Tools.IEnumToSelectListItem(all_years);
+
+            var all_tvratings = GetAllTvRatings(db);
+            ViewBag.DropDownTvRating = Tools.IEnumToSelectListItem(all_tvratings);
+
+            var tmeterArray = GetAllTmeters(db);
+            ViewBag.DropDownTmeter = Tools.IEnumToSelectListItem(tmeterArray);
+        }
+
+        public static int[] GetAllTmeters(MovieDbContext db)
+        {
+//fill the TV Ratings for the dropdown list
+            //get all the tv ratings from the db
+            IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(db);
+            int[] all_tmeters = (from fmv in min_tmeter_res
+                                 where fmv.OmdbEntry.t_Meter != null
+                                 select fmv.OmdbEntry.t_Meter).OrderBy(
+                                     item => item).ToArray();
+            int[] tmeterArray = all_tmeters.Distinct().ToArray();
+            return tmeterArray;
+        }
+
+        public static string[] GetAllTvRatings(MovieDbContext db)
+        {
+//fill the TV Ratings for the dropdown list
+            //get all the tv ratings from the db
+            IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(db);
+            //IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(new MovieDbContext());
+            string[] all_tvratings = (from fmv in tvrating_res
+                                      select fmv.Movie.tv_rating).Distinct()
+                                                                 .OrderBy(
+                                                                     item =>
+                                                                     item)
+                                                                 .ToArray();
+            return all_tvratings;
+        }
+
+        public static int[] GetAllReleaseYears(MovieDbContext db)
+        {
+//fill the years for the dropdox list
+            //get all the years in the db
+            IQueryable<FullViewModel> year_res = Tools.GetFullDbQuery(db, true);
+            int[] all_years = (from fmv in year_res
+                               where fmv.Movie.year >= 0
+                               where fmv.Movie.year < 3000
+                               //No upper limit needed right?
+                               select fmv.Movie.year).Distinct()
+                                                     .OrderBy(item => item)
+                                                     .ToArray();
+            Tools.TraceLine("Done all years int");
+            return all_years;
         }
 
         /// <summary>
