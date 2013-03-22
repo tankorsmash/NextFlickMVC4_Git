@@ -210,8 +210,9 @@ namespace NextFlicksMVC4.Controllers
             Tools.TraceLine("Creating db context");
 
             var db = new MovieDbContext();
+            db.Configuration.AutoDetectChangesEnabled = false;
             //Tools.TraceLine(db.Database.Connection.ConnectionString);
-            db.Configuration.AutoDetectChangesEnabled = true;
+            //db.Configuration.AutoDetectChangesEnabled = true;
 
             Tools.TraceLine("Done creating db context");
             
@@ -236,7 +237,8 @@ namespace NextFlicksMVC4.Controllers
 
             //fill the TV Ratings for the dropdown list
             //get all the tv ratings from the db
-            IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(new MovieDbContext());
+            IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(db);
+            //IQueryable<FullViewModel> tvrating_res = Tools.GetFullDbQuery(new MovieDbContext());
             string[] all_tvratings = (from fmv in tvrating_res
                                       select fmv.Movie.tv_rating).Distinct()
                                                                  .OrderBy(
@@ -247,7 +249,8 @@ namespace NextFlicksMVC4.Controllers
 
             //fill the TV Ratings for the dropdown list
             //get all the tv ratings from the db
-            IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(new MovieDbContext());
+            //IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(new MovieDbContext());
+            IQueryable<FullViewModel> min_tmeter_res = Tools.GetFullDbQuery(db);
             int[] all_tmeters = (from fmv in min_tmeter_res
                                where fmv.OmdbEntry.t_Meter != null
                                select fmv.OmdbEntry.t_Meter).OrderBy(
@@ -313,7 +316,8 @@ namespace NextFlicksMVC4.Controllers
                 Tools.TraceLine("  Found a total possible results of {0}", totalMovies);
 
                 int movie_count = 28;
-                var nit_list = FindPageOfMovies(res, page, movie_count, new MovieDbContext(), true);
+                var nit_list = FindPageOfMovies(res, page, movie_count, db, true);
+                //var nit_list = FindPageOfMovies(res, page, movie_count, new MovieDbContext(), true);
 
                 //prepare certain variables for the pagination 
                 PrepareIndexViewBagForPagination();
@@ -323,6 +327,7 @@ namespace NextFlicksMVC4.Controllers
                 Tools.TraceLine("**********END OF INDEX***********");
 
 
+            db.Configuration.AutoDetectChangesEnabled = true;
                 return View("Results", nit_list);
             }
 
@@ -333,6 +338,7 @@ namespace NextFlicksMVC4.Controllers
                     "The ToList() call probably timed out, it happens on first call to db a lot, I don't know why:\n  ***{0}",
                     ex.GetBaseException().Message);
 
+                db.Configuration.AutoDetectChangesEnabled = true;
                 return View("Error");
             }
 
