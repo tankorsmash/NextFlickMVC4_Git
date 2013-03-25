@@ -1141,7 +1141,7 @@ namespace NextFlicksMVC4
         {
 
             //find the tag id for the string
-            MovieTag searched_tag = db.MovieTags.First(tag => tag.Name == tag_string);
+            MovieTag searched_tag = db.MovieTags.FirstOrDefault(tag => tag.Name == tag_string);
 
             //find all movies tagged by this tag
             var res = from umt in db.UserToMovieToTags
@@ -1210,12 +1210,13 @@ namespace NextFlicksMVC4
 
         public static IQueryable<FullViewModel> FilterByYear(MovieDbContext db, string year)
         {
-            //try to turn year into a string
-            int year_int = Convert.ToInt32(year);
-
+            int year_int = 0;
             //get full query
             var res = GetFullDbQuery(db);
+
             
+            year_int = Convert.ToInt32(year);
+           
             //remove all movies that don't match the year
             var res_years = from fmv in res
                             where fmv.Movie.year == year_int

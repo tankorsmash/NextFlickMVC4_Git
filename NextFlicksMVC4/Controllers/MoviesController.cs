@@ -241,6 +241,7 @@ namespace NextFlicksMVC4.Controllers
 
             //choose which set of movies I want to filter down to
             IQueryable<FullViewModel> res;
+
             //if the movie title isn't null, search movies
             if (movie_title != "") {
                 res = Tools.FilterMoviesAndGenres(movie_title, db, genre_select);

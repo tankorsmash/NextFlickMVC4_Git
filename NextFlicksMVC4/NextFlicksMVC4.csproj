@@ -294,6 +294,7 @@
     <Compile Include="Tests\TestTools.cs" />
     <Compile Include="Tests\TestTsvParse.cs" />
     <Compile Include="Tools\PopulateFullView.cs" />
+    <Compile Include="Tools\SearchAll.cs" />
     <Compile Include="Tools\Tools.cs" />
     <Compile Include="Tools\UserInput.cs" />
     <Compile Include="Tracking\TrackingCreate.cs" />
