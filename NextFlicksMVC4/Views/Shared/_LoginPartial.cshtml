@@ -1,13 +1,18 @@
-﻿@if (WebSecurity.IsAuthenticated)
-{
-    @:Welcome, @WebSecurity.CurrentUserName |
-    @:<a href="@Href("~/Logoff")">Log out</a></>
-}
-else
-{
-    @:<a href="@Href("~/Logon")">Log in</a> |
-    @:<a href="@Href("~/Register")">Register</a>
-}
+﻿<div id="navcontainer">
+    <ul id="navlist">
+        @if (WebSecurity.IsAuthenticated)
+        {
+           @* @:<li>Welcome, @WebSecurity.CurrentUserName</li>*@
+            @:<li><a href="@Href("~/Logoff")">Log out</a></li>
+        }
+        else
+        {
+            @:<li><a href="@Href("~/Logon")">Log in</a></li>
+            @:<li><a href="@Href("~/Register")">Register</a></li>
+        }
+    </ul>
+</div>
+
 
 @*
 @if (Request.IsAuthenticated) {

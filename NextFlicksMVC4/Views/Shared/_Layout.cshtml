@@ -14,51 +14,26 @@
         @Scripts.Render("~/bundles/jqueryui")
         @Styles.Render("~/Content/themes/base/jquery-ui.css")
         @*<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />*@
-        
-        
-        @{
-            //some how find out what page we are on so we can set the active attribute
-            var movieMenuClass = "non-active";
-            var adminMenuClass = "non-active";
-
-            string path = HttpContext.Current.Request.FilePath;
-            if (path.Contains("Movie"))
-            {
-                movieMenuClass = "active";
-            }
-            if (path.Contains("Admin"))
-            {
-                adminMenuClass = "active";
-            }
-             
-        }
-        
     </head>
     <body>
         <header>
             <div class="content-wrapper">
-            <div class="site-title float-left">@Html.ActionLink("The Next Flick", "Index", "Movies")</div>
-                <div class="float-left">
-                     @* fix search size then put this in the header
-                     @Html.Partial("_FilterMenu") *@
-                     @Html.Partial("_Navigation")
+            <div class="float-left">
+                <div class="site-title float-left">
+                    @Html.ActionLink("The Next Flick", "Index", "Movies")
                 </div>
                
-                <div class="float-right">
+                    @Html.Partial("_Navigation")
+                    @Html.Partial("_HeaderSearch")
+             </div>
+                
+                @* fix search size then put this in the header
+                @Html.Partial("_FilterMenu") *@
+                  @*  @Html.Partial("_HeaderSearch") *@
+                <div class="float-right" >
                     @Html.Partial("_LoginPartial")
-                    @*
-                    <nav>
-                        <ul id="tabmenu">
-                            <li>@Html.ActionLink("Movies", "Index", "Movies", null, new{ @class = movieMenuClass})</li>
-                            <li>@Html.ActionLink("Tags", "Index", "Tag")</li>
-                            @if (WebSecurity.IsAuthenticated && Roles.IsUserInRole("Admin"))
-                            {
-                                <li> @Html.ActionLink("Admin", "Index", "Admin", null, new {@class = adminMenuClass} )</li>
-                            }
-                        </ul>
-                    </nav>
-                    *@
                 </div>
+
             </div>
         </header>
 

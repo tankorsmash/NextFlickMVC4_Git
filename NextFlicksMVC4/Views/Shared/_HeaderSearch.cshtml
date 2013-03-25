@@ -1,0 +1,7 @@
+﻿<div class="float-left header-search">
+@using (Html.BeginForm("Index", "Movies"))
+{ 
+    @Html.TextBox("movie_title", "Enter a title", new {@class="search-box"})
+    <input type="submit" value="search" class="search-button" />
+}
+</div>

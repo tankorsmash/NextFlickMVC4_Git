@@ -275,6 +275,12 @@ header
     width: 100%;
      
 }
+header a 
+{
+    font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
+    font-weight:bold;
+    color: #999;
+}
 
 footer, hgroup,
 nav, section {
@@ -362,7 +368,8 @@ h5, h6 {
 
 header .content-wrapper {
     padding-top: 5px;
-    max-width: 95%; 
+    max-width: 95%;
+    position:relative;
 }
 
 footer {
@@ -1014,8 +1021,11 @@ tr.pager td {
 #navlist
 {
 margin: 0;
-padding: 0 0 20px 10px;
+padding: 10px 0 20px 10px;
 /*border-bottom: 1px solid #000;*/
+font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
+font-size:initial;
+
 }
 
 #navlist ul, #navlist li
@@ -1031,7 +1041,7 @@ list-style-type: none;
 float: left;
 line-height: 14px;
 font-weight: bold;
-margin: 0 10px 4px 10px;
+margin: 0 5px 0 5px;
 text-decoration: none;
 color: #999;
 /* override other css that is affecting the menu */
@@ -1043,10 +1053,33 @@ border-bottom: 4px solid #000;
 padding-bottom: 2px;
 background: transparent;
 color: #000;
-margin:
 }
 
 #current
 
 #navlist a:hover { color: #000; }
 
+/*****************************************************************************/
+/* CSS for header search */
+.header-search
+{
+   width:auto;
+} 
+
+input[type=text].search-box
+{
+    height:12px;
+    line-height:14px;
+    text-size:6px;
+    margin-top:0px;
+}
+
+input[type="submit"].search-button
+{
+    font-size:12px !important;
+    line-height:14px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    padding:1px;
+    margin:0;
+}
