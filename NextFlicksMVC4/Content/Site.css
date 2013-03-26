@@ -1083,3 +1083,35 @@ input[type="submit"].search-button
     padding:1px;
     margin:0;
 }
+
+/*****************************************************************************
+    Css for drop down selection of search type
+******************************************************************************/
+/* General dropdown styles */       
+.dropdown dd, .dropdown dt, .dropdown ul { margin:0px; padding:0px; width:30px; }
+.dropdown dd { position:relative; }
+/* DT styles for sliding doors */
+.dropdown dt a {background:#fff url('../../Content/Images/MenuItems/arrow.png') no-repeat scroll right center;
+    display:block; padding-right:0px; border:1px solid #e2e2e2; width:30px;}
+.dropdown dt a span {cursor:pointer; display:block; padding:10px;}
+/* UL styles */
+.dropdown dd ul { background:#fff none repeat scroll 0 0; display:none;
+    list-style:none; padding:5px 5px; position:absolute; 
+    left:0px; top:2px; width:auto; min-width:20px;}
+.dropdown span.value { display:none;}
+.dropdown dd ul li a { padding:2px; display:block;}
+
+/******************************************************************************
+    Css Jquery select menu
+*******************************************************************************
+/* select with custom icons */
+#search_type {width:30px; float:left; padding-right:10px; margin:0;}
+select option {height:18px; width:18px; padding:0px; margin:0px;}
+select .default { background: #fff 0 0 no-repeat; }
+select .tag { background: url('../../Content/Images/MenuItems/TagMenuIcon.png') 0 0 no-repeat; }
+select .rt { background: url('../../Content/Images/MenuItems/RTMenuIcon.png') 0 0 no-repeat; }
+select .rating{ background: url('../../Content/Images/MenuItems/RatingsMenuIcon.PNG') 0 0 no-repeat; }
+select .year{ background: url('../../Content/Images/MenuItems/YearMenuIcon.png') 0 0 no-repeat; }
+select .stars{ background: url('../../Content/Images/MenuItems/NetflixStarMenuIcon.png') 0 0 no-repeat; }
+		
+		

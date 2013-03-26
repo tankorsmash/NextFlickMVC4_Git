@@ -322,6 +322,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Images\fresh.png" />
+    <Content Include="Content\Images\MenuItems\arrow.png" />
+    <Content Include="Content\Images\MenuItems\DefaultMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\NetflixStarMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\RatingsMenuIcon.PNG" />
+    <Content Include="Content\Images\MenuItems\RTMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\TagMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\YearMenuIcon.png" />
     <Content Include="Content\Images\rotten.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -399,6 +406,10 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Scripts\ui\jquery.ui.core.js" />
+    <Content Include="Scripts\ui\jquery.ui.position.js" />
+    <Content Include="Scripts\ui\jquery.ui.selectmenu.js" />
+    <Content Include="Scripts\ui\jquery.ui.widget.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

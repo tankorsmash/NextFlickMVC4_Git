@@ -1,7 +1,69 @@
-﻿<div class="float-left header-search">
+﻿    <script type="text/javascript">
+    $(document).ready(function() {
+            createDropDown();
+            
+            $(".dropdown dt a").click(function() {
+                $(".dropdown dd ul").toggle();
+            });
+
+            $(document).bind('click', function(e) {
+                var $clicked = $(e.target);
+                if (! $clicked.parents().hasClass("dropdown"))
+                    $(".dropdown dd ul").hide();
+            });
+                        
+            $(".dropdown dd ul li a").click(function() {
+                var text = $(this).html();
+                $(".dropdown dt a").html(text);
+                $(".dropdown dd ul").hide();
+                
+                var source = $("#source");
+                source.val($(this).find("span.value").html())
+            });
+        });
+        
+        function createDropDown(){
+            var source = $("#source");
+            var selected = source.find("option[selected]");
+            var options = $("option", source);
+            
+            $("body").append('<dl id="target" class="dropdown"></dl>')
+            $("#target").append('<dt><a href="#">' + selected.text() + 
+                '<span class="value">' + selected.val() + 
+                '</span></a></dt>')
+            $("#target").append('<dd><ul></ul></dd>')
+
+            options.each(function(){
+                $("#target dd ul").append('<li><a href="#">' + 
+                    $(this).text() + '<span class="value">' + 
+                    $(this).val() + '</span></a></li>');
+            });
+        }
+    </script>
+
+<div class="float-left header-search">
 @using (Html.BeginForm("Index", "Movies"))
 { 
-    @Html.TextBox("movie_title", "Enter a title", new {@class="search-box"})
+    
+    @*http://www.jankoatwarpspeed.com/wp-content/uploads/examples/reinventing-drop-down/#*@ 
+    <dl id="search_type" class="dropdown" title="Select a search type">
+        <dt><a href="#"><span> </span></a></dt>
+        <dd>
+            <ul>
+                <li id="default"> <a href="#" title="Title / Genre Search"><img src="../../Content/Images/MenuItems/DefaultMenuIcon.png" /></a> </li>
+                <li> <a href="#" id="tag" title="tag"><img src="../../Content/Images/MenuItems/TagMenuIcon.png" /></a> </li>
+                <li> <a href="#" id="rt" title="rt"><img src="../../Content/Images/MenuItems/RTMenuIcon.png" /></a> </li>
+                <li> <a href="#" id="rating" title="rating"><img src="../../Content/Images/MenuItems/RatingsMenuIcon.PNG" /></a> </li>
+                <li> <a href="#" id="year" title="year"><img src="../../Content/Images/MenuItems/YearMenuIcon.png" /></a> </li>
+                <li> <a href="#" id="stars" title="stars"><img src="../../Content/Images/MenuItems/NetflixStarMenuIcon.png" /></a> </li>
+            </ul>
+        </dd>
+    </dl>
+    
+    @Html.TextBox("movie_title", "Enter a title", new { @class = "search-box" })
+     
+    
+    
     <input type="submit" value="search" class="search-button" />
 }
 </div>

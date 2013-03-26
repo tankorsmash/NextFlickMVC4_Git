@@ -196,7 +196,8 @@ namespace NextFlicksMVC4.Controllers
         /// <param name="tag_string">selected tag to search for</param>
         /// <param name="page"></param>
         /// <returns></returns>
-        public ActionResult Index(string year="", string movie_title = "", string genre_select = "0",
+        public ActionResult Index(
+             string value="", string year="", string movie_title = "", string genre_select = "0",
                                     string tag_string = "0", string mat_rating="", string tv_rating = "",
                                     string min_tmeter = "",
                                     int page = 1)
@@ -204,7 +205,7 @@ namespace NextFlicksMVC4.Controllers
             //var omdbTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.txt");
             //var tomatoesTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/tomatoes.txt");
             //TSVParse.OptimizedPopulateOmdbTableFromTsv(omdbTXT, tomatoesTXT);
-
+            var test = value;
             var start = Tools.WriteTimeStamp(writeTime:false);
 
             Tools.TraceLine("Creating db context");
