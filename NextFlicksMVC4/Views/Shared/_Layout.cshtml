@@ -18,22 +18,18 @@
     <body>
         <header>
             <div class="content-wrapper">
-            <div class="float-left">
-                <div class="site-title float-left">
-                    @Html.ActionLink("The Next Flick", "Index", "Movies")
-                </div>
+                <div class="float-left">
+                    <div class="site-title float-left">
+                        @Html.ActionLink("The Next Flick", "Index", "Movies")
+                    </div>
                
-                    @Html.Partial("_Navigation")
-                    @Html.Partial("_HeaderSearch")
-             </div>
-                
-                @* fix search size then put this in the header
-                @Html.Partial("_FilterMenu") *@
-                  @*  @Html.Partial("_HeaderSearch") *@
+                        @Html.Partial("_Navigation")
+                        @Html.Partial("_HeaderSearch")
+                </div>
+
                 <div class="float-right" >
                     @Html.Partial("_LoginPartial")
                 </div>
-
             </div>
         </header>
 
@@ -51,11 +47,9 @@
                 <div class="float-right">
                     <p>@Html.ActionLink("About", "About", "Home")
                     | @Html.ActionLink("Feedback", "Feedback", "Home")
-                     @*Html.ActionLink("Contact", "Contact", "Home")*/</p>
+                     @*Html.ActionLink("Contact", "Contact", "Home")*/</p>*@
                 </div>
-                
             </div>
-            
         </footer>
 
 @*        @Scripts.Render("~/bundles/jquery")

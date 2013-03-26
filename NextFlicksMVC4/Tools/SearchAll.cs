@@ -4,10 +4,10 @@ using System.Linq;
 using System.Web;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 
-namespace NextFlicksMVC4.Tools
+namespace NextFlicksMVC4
 {
     public static class SearchAll
-    {
+    {/*
         public static IQueryable<FullViewModel> DetermineInputType(string searchTerm)
         {
             int intSearch;
@@ -30,6 +30,6 @@ namespace NextFlicksMVC4.Tools
             }
             //Union results and return the FullViewModel
           
-        }
+        }*/
     }
 }
