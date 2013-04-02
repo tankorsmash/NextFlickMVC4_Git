@@ -26,27 +26,29 @@
             var source = $("#source");
             var selected = source.find("option[selected]");
             var options = $("option", source);
+            var headerSearch = document.getElementById("pseudo-select");
             
-            $("body").append('<dl id="target" class="dropdown"></dl>')
+            
+            $(headerSearch).append('<dl id="target" class="dropdown"></dl>')
             $("#target").append('<dt><a href="#">' + selected.text() + 
-                '<span class="value">' + selected.val() + 
+                '<span class="value '+ selected.val() +'">' + selected.val() + 
                 '</span></a></dt>')
             $("#target").append('<dd><ul></ul></dd>')
 
             options.each(function(){
-                $("#target dd ul").append('<li><a href="#">' + 
-                    $(this).text() + '<span class="value">' + 
+                $("#target dd ul").append('<li><a href="#" class="' + $(this).val() +'">' + 
+                    $(this).text() + '<span class="value"'+ $(this).val() +'>' +
                     $(this).val() + '</span></a></li>');
             });
         }
     </script>
 
-<div class="float-left header-search">
+<div id="header-search" class="float-left">
 @using (Html.BeginForm("Index", "Movies"))
 { 
-    
+    <div id="pseudo-select">@* javascript will append the pseudo-select element here so we can have a drop down tied to the select element that uses images ety*@</div>
     @*http://www.jankoatwarpspeed.com/wp-content/uploads/examples/reinventing-drop-down/#*@ 
-    <dl id="search_type" class="dropdown" title="Select a search type">
+   @* <dl id="search_type" class="dropdown" title="Select a search type">
         <dt><a href="#"><span> </span></a></dt>
         <dd>
             <ul>
@@ -58,7 +60,17 @@
                 <li> <a href="#" id="stars" title="stars"><img src="../../Content/Images/MenuItems/NetflixStarMenuIcon.png" /></a> </li>
             </ul>
         </dd>
-    </dl>
+    </dl>*@
+    
+     <select id="source" name="source">
+        <option name ="title" id="title" value="title">Title</option>
+        <option name="genre" id ="genre" vaue="genre">Genre</option>
+        <option name="tag" id="tag" value="tag"></option>
+        <option name="rt" id="rt" value="rt"></option>
+        <option name="rating" id="rating" value="rating"></option>
+        <option name="year" id="year" value="year"></option>
+        <option name="stars" id="stars" value="stars"></option>
+    </select>
     
     @Html.TextBox("movie_title", "Enter a title", new { @class = "search-box" })
      
