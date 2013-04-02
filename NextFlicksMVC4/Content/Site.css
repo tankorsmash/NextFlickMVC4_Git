@@ -1064,7 +1064,9 @@ color: #000;
 ******************************************************************************/
 #header-search
 {
-   width:auto;
+    width:440px;
+    height:2em;
+    margin-left:25px;
 } 
 
 input[type=text].search-box
@@ -1082,8 +1084,8 @@ input[type="submit"].search-button
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     padding:1px;
-    margin:0;
-    float:right;
+   /* margin:0;
+    float:right;*/
 }
 
 /*****************************************************************************
@@ -1092,17 +1094,16 @@ input[type="submit"].search-button
 /*body { font-family:Arial, Helvetica, Sans-Serif; font-size:0.75em; color:#000;}*/
 .desc { color:#6b6b6b;}
 .desc a {color:#0092dd;}
-.dropdown dd, .dropdown dt, .dropdown ul { margin:0px; padding:0px; }
+.dropdown dd, .dropdown dt, .dropdown ul { margin:0px; padding:0px;  }
 .dropdown dd { position:relative; }
 .dropdown a, .dropdown a:visited { color:#816c5b; text-decoration:none; outline:none;}
 .dropdown a:hover { color:#5d4617;}
 .dropdown dt a:hover { color:#5d4617; border: 1px solid #d0c9af;}
-.dropdown dt a {background:#e4dfcb url('../../Content/Images/MenuItems/arrow.png') no-repeat scroll right center; display:block;                        padding-right:20px; border:1px solid #d4ca9a; width:30px; padding:5px;}
+.dropdown dt a {background:#e4dfcb url('../../Content/Images/MenuItems/arrow.png') no-repeat scroll right center; display:block; padding-right:20px; border:1px solid #d4ca9a; width:30px; height:16px; padding:5px;}
 .dropdown dt a span {cursor:pointer; display:block;}
-.dropdown dd ul { background:#e4dfcb none repeat scroll 0 0; border:1px solid #d4ca9a; color:#C5C0B0; display:none;
-                  left:10px; padding:5px 0px; position:absolute; top:2px; width:auto; min-width:30px; list-style:none;}
+.dropdown dd ul { background:#e4dfcb none repeat scroll 0 0; border:1px solid #d4ca9a; color:#C5C0B0; display:none; left:10px; padding:5px 0px; position:absolute; top:2px; width:auto; min-width:30px; list-style:none;}
 .dropdown span.value { display:none;}
-.dropdown dd ul li a { padding:5px; display:block;}
+.dropdown dd ul li a { padding:5px; display:block; height:18px;}
 .dropdown dd ul li a:hover { background-color:#d0c9af;}
 
 .dropdown .default { background: #fff 0 0 no-repeat; }
@@ -1114,7 +1115,7 @@ input[type="submit"].search-button
 
 /* hide the source <select> menu and only show the fancy Js / css one */
 #source {display:none; }
-#target { float:left; padding-right:5px; height:30px;}
+#target { float:left; padding-right:5px; height:60px; margin-bottom:40px;}
 
 #psuedo-select{}
 		
