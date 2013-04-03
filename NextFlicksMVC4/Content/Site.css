@@ -1107,15 +1107,16 @@ input[type="submit"].search-button
 .dropdown dd ul li a:hover { background-color:#d0c9af;}
 
 .dropdown .default { background: #fff 0 0 no-repeat; }
-.dropdown .tag { background: url('../../Content/Images/MenuItems/TagMenuIcon.png') 0 0 no-repeat; }
-.dropdown .rt { background: url('../../Content/Images/MenuItems/RTMenuIcon.png') 0 0 no-repeat; }
-.dropdown .rating{ background: url('../../Content/Images/MenuItems/RatingsMenuIcon.PNG') 0 0 no-repeat; }
-.dropdown .year{ background: url('../../Content/Images/MenuItems/YearMenuIcon.png') 0 0 no-repeat; }
-.dropdown .stars{ background: url('../../Content/Images/MenuItems/NetflixStarMenuIcon.png') 0 0 no-repeat; }
+.dropdown .dt .a {background: none;}
+.dropdown .tag { background: url('../../Content/Images/MenuItems/TagMenuIcon.png') no-repeat scroll center #E4DFCB; }
+.dropdown .rt { background: url('../../Content/Images/MenuItems/RTMenuIcon.png')no-repeat scroll center #E4DFCB; }
+.dropdown .rating{ background: url('../../Content/Images/MenuItems/RatingsMenuIcon.PNG') no-repeat scroll center #E4DFCB; }
+.dropdown .year{ background: url('../../Content/Images/MenuItems/YearMenuIcon.png')no-repeat scroll center #E4DFCB }
+.dropdown .stars{ background: url('../../Content/Images/MenuItems/NetflixStarMenuIcon.png') no-repeat scroll center #E4DFCB }
 
 /* hide the source <select> menu and only show the fancy Js / css one */
 #source {display:none; }
-#target { float:left; padding-right:5px; height:60px; margin-bottom:40px;}
+#target { float:left; padding-right:5px; }
 
 #psuedo-select{}
 		

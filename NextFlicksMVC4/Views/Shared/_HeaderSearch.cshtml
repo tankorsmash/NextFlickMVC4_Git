@@ -1,25 +1,41 @@
 ﻿    <script type="text/javascript">
-    $(document).ready(function() {
+        $(document).ready(function () {
+            /* dict to store img locations for selection img*/
+            var dict = {
+                "title": '<img class="menuImg" src="../../Content/Images/MenuItems/DefaultMenuIcon.png" />',
+                "genre": '<img class="menuImg" src="../../Content/Images/MenuItems/DefaultMenuIcon.png" />',
+                "tag": '<img class="menuImg" src="../../Content/Images/MenuItems/TagMenuIcon.png" />',
+                "rt": '<img class="menuImg" src="../../Content/Images/MenuItems/RTMenuIcon.png" />',
+                "rating": '<img class="menuImg" src="../../Content/Images/MenuItems/RatingsMenuIcon.PNG" />',
+                "year": '<img class="menuImg" src="../../Content/Images/MenuItems/YearMenuIcon.png" />',
+                "stars": '<img class="menuImg" src="../../Content/Images/MenuItems/NetflixStarMenuIcon.png" />'
+            };
+
             createDropDown();
-            
-            $(".dropdown dt a").click(function() {
+
+            $(".dropdown dt a").click(function () {
                 $(".dropdown dd ul").toggle();
             });
 
-            $(document).bind('click', function(e) {
+            $(document).bind('click', function (e) {
                 var $clicked = $(e.target);
-                if (! $clicked.parents().hasClass("dropdown"))
+                if (!$clicked.parents().hasClass("dropdown"))
                     $(".dropdown dd ul").hide();
             });
-                        
-            $(".dropdown dd ul li a").click(function() {
+
+            $(".dropdown dd ul li a").click(function () {
                 var text = $(this).html();
-                $(".dropdown dt a").html(text);
+                var classString = $(this).attr("class").toString(); //get the class of the menu itme clicked
+                var imgString = dict[classString]; // feed that class as a string into the dictionary to egt the correct <img>
+                $(".dropdown dt a").html(imgString + text); //append the imag text before the rest
                 $(".dropdown dd ul").hide();
-                
+
                 var source = $("#source");
                 source.val($(this).find("span.value").html())
+               /* var dirp = $(this).attr("class");
+                $(" .dropdown dt a").attr("class", dirp); */
             });
+
         });
         
         function createDropDown(){
@@ -30,13 +46,16 @@
 
 
             $(headerSearch).append('<dl id="target" class="dropdown"></dl>')
-            $("#target").append('<dt><a href="#" class="' + $("#target").val() +'">' + selected.text() + 
-                '<span class="value '+ selected.val() +'">' + selected.val() + 
+            $("#target").append('<dt id="choice"><a href="#">' + selected.text() + 
+                '<span class="value">' + selected.val() + 
                 '</span></a></dt>')
             $("#target").append('<dd><ul></ul></dd>')
 
-            options.each(function(){
-                $("#target dd ul").append('<li><a href="#" class="' + $(this).val() +'">' + 
+            options.each(function () {
+             /*   var classString = $(this).attr("class").toString(); //get the class of the menu itme clicked
+                var imgString = dict[classString]; // feed that class as a string into the dictionary to egt the correct <img> */
+
+                $("#target dd ul").append('<li><a href="#" class="' + $(this).val() + '">' +  
                     $(this).text() + '<span class="value">' +
                     $(this).val() + '</span></a></li>');
             });
@@ -48,23 +67,10 @@
 { 
     <div id="pseudo-select">@* javascript will append the pseudo-select element here so we can have a drop down tied to the select element that uses images ety*@</div>
     @*http://www.jankoatwarpspeed.com/wp-content/uploads/examples/reinventing-drop-down/#*@ 
-   @* <dl id="search_type" class="dropdown" title="Select a search type">
-        <dt><a href="#"><span> </span></a></dt>
-        <dd>
-            <ul>
-                <li id="default"> <a href="#" title="Title / Genre Search"><img src="../../Content/Images/MenuItems/DefaultMenuIcon.png" /></a> </li>
-                <li> <a href="#" id="tag" title="tag"><img src="../../Content/Images/MenuItems/TagMenuIcon.png" /></a> </li>
-                <li> <a href="#" id="rt" title="rt"><img src="../../Content/Images/MenuItems/RTMenuIcon.png" /></a> </li>
-                <li> <a href="#" id="rating" title="rating"><img src="../../Content/Images/MenuItems/RatingsMenuIcon.PNG" /></a> </li>
-                <li> <a href="#" id="year" title="year"><img src="../../Content/Images/MenuItems/YearMenuIcon.png" /></a> </li>
-                <li> <a href="#" id="stars" title="stars"><img src="../../Content/Images/MenuItems/NetflixStarMenuIcon.png" /></a> </li>
-            </ul>
-        </dd>
-    </dl>*@
-    
+  
      <select id="source" name="source">
-        <option name ="title" id="title" value="title">T</option>
-        <option name="genre" id ="genre" vaue="genre">G</option>
+        <option name ="title" id="title" value="title"></option>
+        <option name="genre" id ="genre" value="genre"></option>
         <option name="tag" id="tag" value="tag"></option>
         <option name="rt" id="rt" value="rt"></option>
         <option name="rating" id="rating" value="rating"></option>
