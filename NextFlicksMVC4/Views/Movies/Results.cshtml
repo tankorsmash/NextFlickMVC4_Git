@@ -1,145 +1,46 @@
-﻿@using System.Web.Mvc.Html
+﻿@using PagedList
 @using NextFlicksMVC4
-@model IEnumerable<NextFlicksMVC4.Views.Movies.ViewModels.FullViewModel>
-@*@model IEnumerable<NextFlicksMVC4.Views.Movies.ViewModels.MovieWithGenreViewModel>*@
-                                                            
+
+@model PagedList.IPagedList<NextFlicksMVC4.Views.Movies.ViewModels.FullViewModel>                                                            
 @{
     ViewBag.Title = "Results";
 }
 
-@*@if (ViewBag.filtered == true) {
-    <h5>The View bag was filtered in the Tracking attribute</h5>
-} *@
-
-<script>
-    $(document).ready(function () {
-        $("div#action_params").ready(function () {
-            $("div#action_params").dialog({
-                position: {
-                    my: "center",
-                    at: "top"
-                }
-            });
-        });
-        $("#slider").ready(function () {
-            $("#slider").slider();
-        });
-    });
-</script>    
-
-@*<div class="page_title">
-<h1>@ViewBag.Title</h1>
-</div>*@
-
-
-@{
-    //a little tricky to read, if the condition is true, then after ? is the value. Else its the one after ":"
-    // if movie_title = "enter a title", tits is "all movies", else it's the param value
-    string tits = @Request.Params["movie_title"] == "Enter a title" ? "all movies" : @Request.Params["movie_title"];
-    string ass = @Request.Params["genre_select"] == "0" ? "all genres" : @Request.Params["genre_select"];
-    int movie_count = Model.ToList().Count;
-    int total_movies = ViewBag.TotalMovies;
-}
-
-<div class="movie_fraction">
-    <p>
-        Showing @movie_count / @total_movies movies and episodes
-    </p>
-</div>
-
-@if (ViewBag.Start != null && ViewBag.Count != null) {
-    <h3>
-        Items @ViewBag.Start through
-        @{ ViewBag.section = ViewBag.Start + ViewBag.Count - 1; }
-        @ViewBag.section
-    </h3>
-}
-
-@if (ViewBag.SearchTerm != null )
-{
-    <h4>
-        You searched for "@ViewBag.SearchTerm"</h4>
-}
-
-@*<div id="action_params" style="background-color: lightblue" title="This Action's Params">
-@if (ViewBag.Params != null) {
-    <p>Here are the possible params to the controller:</p>
-    foreach (string param in ViewBag.Params) {
-        <p>@param</p>
-    }
-}
-
-</div>*@
-
-
-@Html.Partial("_FilterMenu")
-
-
 
 <div class="nit_list">
-@foreach (var item in Model) {
+@foreach (var item in Model)
+{
         @Html.Partial("_Title", item)
 }
 </div>
 
-    @* has to be based on the current page to show the selected page, then the number of pages
-    based on the total results value. The tricky part will be when we resend the current page 
-    with the current params... 
-    
-    //divide totalmovies by movies shown and that's the amount of pages needed
-    
-    //for each page, make a clickable link
-    
-    
-    
-    *@
-
-@{
-
-    
-
-}
-
 <div class="pagination_container">
-    
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+    of @Model.PageCount
 
-    @{if (Convert.ToInt32(ViewBag.current_page) != 1) {
-    @* the first button *@
-        <div class="pagination_first">
-            @Html.ActionLink("FIRST PAGE", "Index", new { page = 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
-        </div> 
-
-    @* the previous button *@
-        <div class="pagination_prev">
-            @Html.ActionLink("PREV PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) - 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
-        </div> 
-      }
+    @if (Model.HasPreviousPage)
+    { 
+        @Html.ActionLink("<<", "Index", new { page = 1, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
+        @Html.Raw(" ");
+        @Html.ActionLink("< Prev", "Index", new { page = Model.PageNumber - 1, sortOrder = ViewBag.CurrentSort, currenFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
     }
-    @*have to add one to the pages val here, because the first page is '1', not '0', 
-    can't explain the math properly, so it means I don't understand it yet *@
-    @if (ViewBag.pages > 1) {
-    foreach (int i in ViewBag.set_of_pages) {
-        //if not the current page, print a link to the given page
-        if (i != Convert.ToInt32(ViewBag.current_page)) {
-            <div class="pagination_page">
-                @Html.ActionLink((i).ToString(), "Index", new {page = i, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select}, null)
-            </div>
-        }
-            //it is the current page, so just write the non-link page
-        else {
-            <span class="pagination_current_page">@i</span>
-        }
+    else
+    {
+        @:<<
+        @Html.Raw(" ");
+        @:< Prev 
     }
-}
 
-    @{if (Convert.ToInt32(ViewBag.current_page) < ViewBag.pages) {
-    @* the next button *@
-        <div class="pagination_next">
-            @Html.ActionLink("NEXT PAGE", "Index", new { page = Convert.ToInt32(ViewBag.current_page) + 1, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
-        </div> 
-    @* the last button *@
-        <div class="pagination_last">
-            @Html.ActionLink("LAST PAGE", "Index", new { page = ViewBag.pages, movie_title = ViewBag.movie_title, genre_select = ViewBag.genre_select }, null)
-        </div> 
-    }}
+    @if (Model.HasNextPage)
+    {
+        @Html.ActionLink("Next >", "Index", new { page = Model.PageNumber + 1, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
+        @Html.Raw(" ");
+        @Html.ActionLink(">>", "Index", new { page = Model.PageCount, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
+    }
+    else
+    {
+        @:Next >
+        @Html.Raw(" ")
+        @:>>
+    }
 </div>

@@ -99,7 +99,7 @@ namespace NextFlicksMVC4
 
         public static string Plot(Movie movie)
         {
-//make a call to omdb and get the plot
+            //make a call to omdb and get the plot
             string plot;
             string response_format = "xml";
             var url = String.Format(

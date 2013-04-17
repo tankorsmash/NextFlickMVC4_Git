@@ -25,6 +25,8 @@ using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 using WebMatrix.WebData;
 
+using PagedList;
+
 namespace NextFlicksMVC4.Controllers
 {
     public class MoviesController : Controller
@@ -186,7 +188,63 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"> this is the "searchType" named sourc eis css, when i try to change it, breaks</param>
+        /// <param name="sortOrder">this is a string that will sort the list by different params, need to add a Case for it</param>
+        /// <param name="currentFilter"> current filter and search string seem to interchange with one another</param>
+        /// <param name="searchString">see above</param>
+        /// <param name="page">what page to display of list</param>
+        /// <returns></returns>
+        public ActionResult Index(string source, string sortOrder, 
+            string currentFilter, string searchString, int? page)
+        {
+            var db = new MovieDbContext();
+            IQueryable<FullViewModel> res;
+            
+            ViewBag.SearchType = String.IsNullOrEmpty(source) ? "default" : source;
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "Date desc" : "Date";
 
+            if (Request.HttpMethod == "GET")
+                searchString = currentFilter;
+            else
+                page = 1;
+
+            ViewBag.CurrentFilter = searchString;
+
+            if (source == "title")
+                res = MovieSearch.ByTitle(searchString, db);
+            else if (source == "genre")
+                res = MovieSearch.ByGenre(searchString, db);
+            else if (source == "tag")
+                res = MovieSearch.ByTag(searchString, db);
+            else
+                res = Tools.GetFullDbQuery(db);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                res = res.Where(m => m.Movie.short_title.ToUpper().Contains(searchString.ToUpper()));
+            }
+            switch(sortOrder)
+            {
+                //add cases her ewhen we add sort by methods to sort by title id etc
+                    // right now defualt is just to sort by name
+                default:
+                    res = res.OrderBy(m => m.Movie.short_title);
+                    break;
+            }
+            //how many results to display per page
+            int pageSize = 30;
+            int pageNumber = (page ?? 1);
+            var pagedList = res.ToPagedList(pageNumber, pageSize);
+            return View("Results", pagedList);
+
+        }
+
+        /*
 
         /// <summary>
         /// Main action for this controller. Offers searching by title, genre and tag
@@ -197,7 +255,7 @@ namespace NextFlicksMVC4.Controllers
         /// <param name="page"></param>
         /// <returns></returns>
         public ActionResult Index(
-             string source, string year="", string movie_title = "", string genre_select = "0",
+             string source, string search_term="", string year="", string movie_title = "", string genre_select = "0",
                                     string tag_string = "0", string mat_rating="", string tv_rating = "",
                                     string min_tmeter = "",
                                     int page = 1)
@@ -243,7 +301,26 @@ namespace NextFlicksMVC4.Controllers
             //choose which set of movies I want to filter down to
             IQueryable<FullViewModel> res;
 
-            //if the movie title isn't null, search movies
+            if (source == "title")
+                res = MovieSearch.ByTitle(search_term, db);
+            else if (source == "genre")
+            { }
+            else if (source == "tag")
+            { }
+            else if (source == "rt")
+            { }
+            else if (source == "rating")
+            { }
+            else if (source == "year")
+            { }
+            else if (source == "stars")
+            { }
+            else
+                res = Tools.GetFullDbQuery(db);
+            /*
+             * these are the old calls for Tankorsmashes search. trying ot revamp this shiznit!
+             * 
+             //if the movie title isn't null, search movies
             if (movie_title != "") {
                 res = Tools.FilterMoviesAndGenres(movie_title, db, genre_select);
             }
@@ -266,10 +343,14 @@ namespace NextFlicksMVC4.Controllers
             else if (year != "") {
                 res = Tools.FilterByYear(db, year);
             }
+             
             //otherwise return the entire db and return that
             else {
                 res = Tools.GetFullDbQuery(db);
             }
+             * 
+             * End tankorsmashes search calls
+             *
 
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try
@@ -310,6 +391,7 @@ namespace NextFlicksMVC4.Controllers
             }
 
         }
+       */
 
         public void FilterMenuInit(MovieDbContext db)
         {

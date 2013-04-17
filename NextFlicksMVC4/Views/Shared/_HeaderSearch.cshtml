@@ -2,8 +2,8 @@
         $(document).ready(function () {
             /* dict to store img locations for selection img*/
             var dict = {
-                "title": '<img class="menuImg" src="../../Content/Images/MenuItems/DefaultMenuIcon.png" alt="Title" title="Search movies by title" />',
-                "genre": '<img class="menuImg" src="../../Content/Images/MenuItems/DefaultMenuIcon.png" alt="Genre" title="Search movies by genres" />',
+                "title": '<img class="menuImg" src="../../Content/Images/MenuItems/TitleMenuIcon.png" alt="Title" title="Search movies by title" />',
+                "genre": '<img class="menuImg" src="../../Content/Images/MenuItems/GenreMenuIcon.png" alt="Genre" title="Search movies by genres" />',
                 "tag": '<img class="menuImg" src="../../Content/Images/MenuItems/TagMenuIcon.png" alt="Tag" title="Search movies by user tags" />',
                 "rt": '<img class="menuImg" src="../../Content/Images/MenuItems/RTMenuIcon.png" alt="Rotten Tomatoes" Title="Search movies by Rotten Tomatoes ratings"/>',
                 "rating": '<img class="menuImg" src="../../Content/Images/MenuItems/RatingsMenuIcon.PNG" alt="Rating" title="Search movies by maturity rating" />',
@@ -68,6 +68,8 @@
                     $(this).val() + '</span></a></li>');
             });
         }
+
+        
     </script>
 
 <div id="header-search" class="float-left">
@@ -86,7 +88,7 @@
         <option name="stars" id="stars" value="stars"></option>
     </select>
     
-    @Html.TextBox("movie_title", "Enter a title", new { @class = "search-box" })
+    @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { @class = "search-box" })
      
     
     
