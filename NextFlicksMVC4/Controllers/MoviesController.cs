@@ -200,6 +200,10 @@ namespace NextFlicksMVC4.Controllers
         public ActionResult Index(string source, string sortOrder, 
             string currentFilter, string searchString, int? page)
         {
+
+            //using this: http://www.asp.net/mvc/tutorials/getting-started-with-ef-using-mvc/sorting-filtering-and-paging-with-the-entity-framework-in-an-asp-net-mvc-application
+
+            var start = Tools.WriteTimeStamp(writeTime: false);
             var db = new MovieDbContext();
             IQueryable<FullViewModel> res;
             
@@ -221,13 +225,25 @@ namespace NextFlicksMVC4.Controllers
                 res = MovieSearch.ByGenre(searchString, db);
             else if (source == "tag")
                 res = MovieSearch.ByTag(searchString, db);
+            else if (source == "rt")
+                res = MovieSearch.ByRottenTomatoMeter(searchString, db);
+            else if (source == "rating")
+                res = MovieSearch.ByRating(searchString, db);
+            else if (source == "year")
+                res = MovieSearch.ByYear(searchString, db);
+            else if (source == "stars")
+                res = MovieSearch.ByStars(searchString, db);
+
             else
                 res = Tools.GetFullDbQuery(db);
 
-            if (!String.IsNullOrEmpty(searchString))
+           /* 
+            * They were using this to pull out what tey wanted form a full db query. I think this is too damn slow.
+            * if (!String.IsNullOrEmpty(searchString))
             {
+                //have to do a where for soem reason
                 res = res.Where(m => m.Movie.short_title.ToUpper().Contains(searchString.ToUpper()));
-            }
+            }*/
             switch(sortOrder)
             {
                 //add cases her ewhen we add sort by methods to sort by title id etc
@@ -240,6 +256,11 @@ namespace NextFlicksMVC4.Controllers
             int pageSize = 30;
             int pageNumber = (page ?? 1);
             var pagedList = res.ToPagedList(pageNumber, pageSize);
+
+            var end = Tools.WriteTimeStamp(writeTime: false);
+            Tools.TraceLine("  Index took: {0} to complete", ((end - start).ToString()));
+            Tools.TraceLine("**********END OF INDEX***********");
+
             return View("Results", pagedList);
 
         }
@@ -301,25 +322,7 @@ namespace NextFlicksMVC4.Controllers
             //choose which set of movies I want to filter down to
             IQueryable<FullViewModel> res;
 
-            if (source == "title")
-                res = MovieSearch.ByTitle(search_term, db);
-            else if (source == "genre")
-            { }
-            else if (source == "tag")
-            { }
-            else if (source == "rt")
-            { }
-            else if (source == "rating")
-            { }
-            else if (source == "year")
-            { }
-            else if (source == "stars")
-            { }
-            else
-                res = Tools.GetFullDbQuery(db);
-            /*
-             * these are the old calls for Tankorsmashes search. trying ot revamp this shiznit!
-             * 
+           
              //if the movie title isn't null, search movies
             if (movie_title != "") {
                 res = Tools.FilterMoviesAndGenres(movie_title, db, genre_select);
@@ -348,9 +351,6 @@ namespace NextFlicksMVC4.Controllers
             else {
                 res = Tools.GetFullDbQuery(db);
             }
-             * 
-             * End tankorsmashes search calls
-             *
 
             //sometimes the first call to the db times out. I can't reliably repro it, so I've just created a try catch for it.
             try

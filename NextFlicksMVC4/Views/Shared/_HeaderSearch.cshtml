@@ -73,13 +73,13 @@
     </script>
 
 <div id="header-search" class="float-left">
-@using (Html.BeginForm("Index", "Movies"))
-{ 
+
     <div id="pseudo-select">@* javascript will append the pseudo-select element here so we can have a drop down tied to the select element that uses images ety*@</div>
     @*http://www.jankoatwarpspeed.com/wp-content/uploads/examples/reinventing-drop-down/#*@ 
-  
+  @using (Html.BeginForm("Index", "Movies"))
+{ 
      <select id="source" name="source">
-        <option name ="title" id="title" value="title"></option>
+        <option name ="title" id="title" value="title" selected="selected"></option>
         <option name="genre" id ="genre" value="genre"></option>
         <option name="tag" id="tag" value="tag"></option>
         <option name="rt" id="rt" value="rt"></option>

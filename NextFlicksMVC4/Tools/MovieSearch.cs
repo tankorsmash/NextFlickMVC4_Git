@@ -15,9 +15,8 @@ namespace NextFlicksMVC4
             //var db = new MovieDbContext();
 
             IQueryable<FullViewModel> res;
-
             var movies = from movie in db.Movies
-                         where movie.short_title.Contains(searchTerm)
+                         where movie.short_title.ToUpper().Contains(searchTerm.ToUpper())
                          select movie;
             res = CreateFullView(movies, db);
             return res;
@@ -29,7 +28,7 @@ namespace NextFlicksMVC4
 
             //get genres that match search term
             var genres = from genre in db.Genres
-                         where genre.genre_string.Contains(searchTerm.ToLower())
+                         where genre.genre_string.ToUpper().Contains(searchTerm.ToUpper())
                          select genre;
             //get genre to movie ids
             var genToMov = from gtm in db.MovieToGenres
@@ -51,7 +50,7 @@ namespace NextFlicksMVC4
             IQueryable<FullViewModel> res;
 
             var tags = from tag in db.MovieTags
-                         where tag.Name.Contains(searchTerm)
+                         where tag.Name.ToUpper().Contains(searchTerm.ToUpper())
                          select tag;
             var tagsToMovs = from ttm in db.UserToMovieToTags
                              from tag in tags
@@ -64,54 +63,79 @@ namespace NextFlicksMVC4
             res = CreateFullView(movies, db);
             return res;
         }
-        /*
-        public static IQueryable<FullViewModel> ByRottenTomatoMeter(string searchTerm)
+        
+        public static IQueryable<FullViewModel> ByRottenTomatoMeter(string searchTerm, MovieDbContext db)
         {
-            var db = new MovieDbContext();
-            IQueryable<FullViewModel> res;
+            int rating;
+            Int32.TryParse(searchTerm, out rating);
 
-            var rtMeter = from rt in db.OmdbEntries
-                         where rt.t_meter >= searchTerm
-                         select rt;
-            return res;
+            if (rating != null)
+            {
+                IQueryable<FullViewModel> res = Tools.GetFullDbQuery(db);
+
+                var rt_res = (from fmv in res
+                              where fmv.OmdbEntry.t_Meter >= rating
+                              select fmv);
+
+                return rt_res;
+            }
+
+            else
+                return null;
+            
         }
-
-        public static IQueryable<FullViewModel> ByRating(string searchTerm)
+        
+        public static IQueryable<FullViewModel> ByRating(string searchTerm, MovieDbContext db)
         {
-            var db = new MovieDbContext();
-
             IQueryable<FullViewModel> res;
-
+            // check both TV rating and MAturity rating
+            //TODO: get dropdown of available ratings to let users search by that in the search box, then match exactly
             var movies = from movie in db.Movies
-                         where movie.short_title.Contains(searchTerm)
+                         where movie.tv_rating.ToUpper().Contains(searchTerm.ToUpper())
                          select movie;
+            res = CreateFullView(movies, db);
             return res;
         }
-
-        public static IQueryable<FullViewModel> ByYear(string searchTerm)
+        
+        public static IQueryable<FullViewModel> ByYear(string searchTerm, MovieDbContext db)
         {
-            var db = new MovieDbContext();
+            int year;
+            Int32.TryParse(searchTerm, out year);
+            if (year != null)
+            {
+                IQueryable<FullViewModel> res;
 
-            IQueryable<FullViewModel> res;
+                var movies = from movie in db.Movies
+                             where movie.year == year
+                             select movie;
 
-            var movies = from movie in db.Movies
-                         where movie.short_title.Contains(searchTerm)
-                         select movie;
-            return res;
+                res = CreateFullView(movies, db);
+                return res;
+            }
+            
+            return null;
         }
-
-        public static IQueryable<FullViewModel> ByStars(string searchTerm)
+        
+        public static IQueryable<FullViewModel> ByStars(string searchTerm, MovieDbContext db)
         {
-            var db = new MovieDbContext();
+            //decimal stars;
+           // Decimal.TryParse(searchTerm, out stars);
 
-            IQueryable<FullViewModel> res;
+           // if(stars!=null)
+            //{
+                IQueryable<FullViewModel> res;
 
-            var movies = from movie in db.Movies
-                         where movie.short_title.Contains(searchTerm)
-                         select movie;
-            return res;
+                var movies = from movie in db.Movies
+                             where movie.avg_rating == searchTerm
+                             select movie;
+
+                res = CreateFullView(movies, db);
+                return res;
+           // }
+            
+            return null;
         }
-        */
+        
 
         public static IQueryable<FullViewModel> CreateFullView(IQueryable<Movie> movies, MovieDbContext db)
         {
