@@ -20,7 +20,7 @@ namespace NextFlicksMVC4.NetFlixAPI
         public string Director = "not set";
         //Rating Data
         public string TvRating = "not set";
-        public string AvgRating = "not set";
+        public double AvgRating = 0.0;
         public string Awards = "not set";
         public int MaturityLevel = 200 ;
 

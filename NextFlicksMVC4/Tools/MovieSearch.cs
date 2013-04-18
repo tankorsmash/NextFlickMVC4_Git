@@ -10,6 +10,14 @@ namespace NextFlicksMVC4
 {
     public static class MovieSearch
     {
+
+        public static Func<string, double?> TryToGetDouble = value =>
+        {
+            double stars;
+            return double.TryParse(value, out stars) ? (double?)stars : null;
+        };
+
+
         public static IQueryable<FullViewModel> ByTitle(string searchTerm, MovieDbContext db)
         {
             //var db = new MovieDbContext();
@@ -118,23 +126,26 @@ namespace NextFlicksMVC4
         
         public static IQueryable<FullViewModel> ByStars(string searchTerm, MovieDbContext db)
         {
-            //decimal stars;
-           // Decimal.TryParse(searchTerm, out stars);
+            double searchStars;
+            double movieStars;
+            Double.TryParse(searchTerm, out searchStars);
 
-           // if(stars!=null)
-            //{
+            if(searchStars!=null)
+            {
                 IQueryable<FullViewModel> res;
 
                 var movies = from movie in db.Movies
-                             where movie.avg_rating == searchTerm
+                             where movie.avg_rating >= searchStars
                              select movie;
-
+                
                 res = CreateFullView(movies, db);
                 return res;
-           // }
+            }
             
             return null;
         }
+
+     
         
 
         public static IQueryable<FullViewModel> CreateFullView(IQueryable<Movie> movies, MovieDbContext db)

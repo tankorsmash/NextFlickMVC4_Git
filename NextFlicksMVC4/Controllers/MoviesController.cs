@@ -207,7 +207,7 @@ namespace NextFlicksMVC4.Controllers
             var db = new MovieDbContext();
             IQueryable<FullViewModel> res;
             
-            ViewBag.SearchType = String.IsNullOrEmpty(source) ? "default" : source;
+            ViewBag.SearchType = String.IsNullOrEmpty(source) ? "title" : source;
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "Date desc" : "Date";
