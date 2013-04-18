@@ -27,14 +27,17 @@
                 var text = $(this).html();
                 var classString = $(this).attr("class").toString(); //get the class of the menu itme clicked
                 var imgString = dict[classString]; // feed that class as a string into the dictionary to egt the correct <img>
-               
+
                 $(".dropdown dt a").html(imgString + text); //append the img text before the rest
                 $(".dropdown dd ul").hide();
 
                 var source = $("#source");
                 source.val($(this).find("span.value").html())
-                /* var dirp = $(this).attr("class");
-                $(" .dropdown dt a").attr("class", dirp); */
+
+            });
+
+            $("#search").validate({
+
             });
 
         });
@@ -70,14 +73,16 @@
         }
 
         
+
+        
     </script>
 
 <div id="header-search" class="float-left">
 
     <div id="pseudo-select">@* javascript will append the pseudo-select element here so we can have a drop down tied to the select element that uses images ety*@</div>
     @*http://www.jankoatwarpspeed.com/wp-content/uploads/examples/reinventing-drop-down/#*@ 
-  @using (Html.BeginForm("Index", "Movies"))
-{ 
+  @using (Html.BeginForm("Index", "Movies", FormMethod.Post, new { @id = "search" }))
+  { 
      <select id="source" name="source">
         <option name ="title" id="title" value="title" selected="selected"></option>
         <option name="genre" id ="genre" value="genre"></option>
@@ -93,5 +98,5 @@
     
     
     <input type="submit" value="search" class="search-button" />
-}
+  }
 </div>

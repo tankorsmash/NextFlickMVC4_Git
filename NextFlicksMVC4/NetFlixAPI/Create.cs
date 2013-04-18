@@ -364,7 +364,12 @@ namespace NextFlicksMVC4.NetFlixAPI
                     //TODO: Use regex instead of StartsWith
                     const string url_template0 = @"http://cdn0.nflximg.net/images/";
                     const string url_template1 = @"http://cdn1.nflximg.net/images/";
-                  /*  if (href.StartsWith(url_template0))
+                  /* 
+                   * sec_goat: I edited out the part where we strip the URL out, as mnaually and statically
+                   * assigning it later is too error prone. Lets just roll with the URL god gave us.
+                   * 
+                   * 
+                   * if (href.StartsWith(url_template0))
                     {
                         //remove the beginning
                         href = href.Remove(0, url_template0.Length);
@@ -372,6 +377,7 @@ namespace NextFlicksMVC4.NetFlixAPI
                         href = href.Replace(".jpg", "");
 
                     }
+                   
                     else if (href.StartsWith(url_template1))
                     {
                         //remove the beginning

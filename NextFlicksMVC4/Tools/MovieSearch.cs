@@ -11,22 +11,22 @@ namespace NextFlicksMVC4
     public static class MovieSearch
     {
 
-        public static Func<string, double?> TryToGetDouble = value =>
-        {
-            double stars;
-            return double.TryParse(value, out stars) ? (double?)stars : null;
-        };
-
-
         public static IQueryable<FullViewModel> ByTitle(string searchTerm, MovieDbContext db)
         {
             //var db = new MovieDbContext();
 
             IQueryable<FullViewModel> res;
-            var movies = from movie in db.Movies
-                         where movie.short_title.ToUpper().Contains(searchTerm.ToUpper())
-                         select movie;
-            res = CreateFullView(movies, db);
+            if (searchTerm != null)
+            {
+                var movies = from movie in db.Movies
+                             where movie.short_title.ToUpper().Contains(searchTerm.ToUpper())
+                             select movie;
+                res = CreateFullView(movies, db);
+            }
+            else
+            {
+                res = Tools.GetFullDbQuery(db);
+            }
             return res;
         }
         
