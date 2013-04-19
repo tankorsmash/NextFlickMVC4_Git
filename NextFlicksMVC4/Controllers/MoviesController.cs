@@ -26,6 +26,7 @@ using NextFlicksMVC4.Views.Movies.ViewModels;
 using WebMatrix.WebData;
 
 using PagedList;
+using System.Web.UI;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -197,6 +198,7 @@ namespace NextFlicksMVC4.Controllers
         /// <param name="searchString">see above</param>
         /// <param name="page">what page to display of list</param>
         /// <returns></returns>
+        
         public ActionResult Index(string source, string sortOrder, 
             string currentFilter, string searchString, int? page)
         {
@@ -212,50 +214,73 @@ namespace NextFlicksMVC4.Controllers
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "Date desc" : "Date";
 
+            /*loading the page is GET
+             * clicking on a page line forward back etc is GET
+             * clcikign the search button is POST
+             */
+
+            //if(source == null || Request.HttpMethod != "GET") //this should zero out the cache if the user clicks movies(source == null) or clicks search again
+                //HttpContext.Cache.Remove("Results");
+
             if (Request.HttpMethod == "GET")
                 searchString = currentFilter;
-            else
+            else //POST or other method clear the HttpContext.Cache
                 page = 1;
+              
+            
 
             ViewBag.CurrentFilter = searchString;
 
-            if (source == "title")
-                res = MovieSearch.ByTitle(searchString, db);
-            else if (source == "genre")
-                res = MovieSearch.ByGenre(searchString, db);
-            else if (source == "tag")
-                res = MovieSearch.ByTag(searchString, db);
-            else if (source == "rt")
-                res = MovieSearch.ByRottenTomatoMeter(searchString, db);
-            else if (source == "rating")
-                res = MovieSearch.ByRating(searchString, db);
-            else if (source == "year")
-                res = MovieSearch.ByYear(searchString, db);
-            else if (source == "stars")
-                res = MovieSearch.ByStars(searchString, db);
+           // if (HttpContext.Cache["Results"] == null)
+           // {
+            var startQuery = Tools.WriteTimeStamp(writeTime: false);
+                if (source == "title")
+                    res = MovieSearch.ByTitle(searchString, db);
+                else if (source == "genre")
+                    res = MovieSearch.ByGenre(searchString, db);
+                else if (source == "tag")
+                    res = MovieSearch.ByTag(searchString, db);
+                else if (source == "rt")
+                    res = MovieSearch.ByRottenTomatoMeter(searchString, db);
+                else if (source == "rating")
+                    res = MovieSearch.ByRating(searchString, db);
+                else if (source == "year")
+                    res = MovieSearch.ByYear(searchString, db);
+                else if (source == "stars")
+                    res = MovieSearch.ByStars(searchString, db);
+                else
+                    res = Tools.GetFullDbQuery(db);
 
-            else
-                res = Tools.GetFullDbQuery(db);
+                //HttpContext.Cache.Insert("Results", res);
+           // }
+            //else 
+            //{
+                //res = (IQueryable<FullViewModel>)HttpContext.Cache["Results"];
+            //}
+            var endQuery = Tools.WriteTimeStamp(writeTime: false);
+            Tools.TraceLine("DB Query took: {0} to complete", ((endQuery - startQuery).ToString()));
 
-           /* 
-            * They were using this to pull out what tey wanted form a full db query. I think this is too damn slow.
-            * if (!String.IsNullOrEmpty(searchString))
-            {
-                //have to do a where for soem reason
-                res = res.Where(m => m.Movie.short_title.ToUpper().Contains(searchString.ToUpper()));
-            }*/
+            var startSort = Tools.WriteTimeStamp(writeTime: false);
             switch(sortOrder)
             {
                 //add cases her ewhen we add sort by methods to sort by title id etc
-                    // right now defualt is just to sort by name
+                // right now defualt is just to sort by name
                 default:
                     res = res.OrderBy(m => m.Movie.short_title);
                     break;
             }
+            var endSort = Tools.WriteTimeStamp(writeTime: false);
+            Tools.TraceLine("Query Sort took: {0} to complete", ((endSort - startSort).ToString()));
             //how many results to display per page
             int pageSize = 30;
             int pageNumber = (page ?? 1);
+
+            var startList = Tools.WriteTimeStamp(writeTime: false);
+
             var pagedList = res.ToPagedList(pageNumber, pageSize);
+
+            var endList = Tools.WriteTimeStamp(writeTime: false);
+            Tools.TraceLine("Query to PagedList took: {0} to complete", ((endList - startList).ToString()));
 
             var end = Tools.WriteTimeStamp(writeTime: false);
             Tools.TraceLine("  Index took: {0} to complete", ((end - start).ToString()));

@@ -40,10 +40,10 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
                     @Html.DisplayFor(model => model.OmdbEntry.t_Meter)
                     {
                         if (Model.OmdbEntry.t_Meter > 50) {
-                            <img class="rt_rotten" src="../../Content/Images/fresh.png" />
+                            <img alt="fresh" class="rt_rotten" src="../../Content/Images/fresh.png" />
                         }
                         if (Model.OmdbEntry.t_Meter < 50) {
-                            <img class="rt_rotten" src="../../Content/Images/rotten.png" />
+                            <img alt="rotten" class="rt_rotten" src="../../Content/Images/rotten.png" />
                         }
                     }
                 }
