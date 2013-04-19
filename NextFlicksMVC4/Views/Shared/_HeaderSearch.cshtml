@@ -1,4 +1,5 @@
-﻿    <script type="text/javascript">
+﻿    <script src="/Scripts/jquery.validate.js"></script>
+    <script type="text/javascript">
         $(document).ready(function () {
             /* dict to store img locations for selection img*/
             var dict = {
@@ -37,6 +38,16 @@
             });
 
             $("#search").validate({
+                rules: {
+                    searchString: {
+                        required: true,
+                        length: 10
+                    }
+                },
+
+                messages:{
+                    searchString:"please enter a seach term"
+                }
 
             });
 
@@ -60,10 +71,10 @@
                     "title": "Search movies by title",
                     "genre": "Search movies by genres",
                     "tag": "Search movies by user tags",
-                    "rt": "Search movies by Rotten Tomatoes ratings",
-                    "rating": "Search movies by maturity rating",
+                    "rt": "Search movies by Rotten Tomatoes meter",
+                    "rating": "Search movies by MPAA rating",
                     "year": "Search movies by year released",
-                    "stars": "Search movies by Netflix star rating"
+                    "stars": "Search movies by Netflix stars"
                 };
 
                 $("#target dd ul").append('<li><a href="#" class="' + $(this).val() + '" title="'+ titleDict[$(this).val()] +'">' +  
@@ -94,9 +105,6 @@
     </select>
     
     @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { @class = "search-box" })
-     
-    
-    
     <input type="submit" value="search" class="search-button" />
   }
 </div>

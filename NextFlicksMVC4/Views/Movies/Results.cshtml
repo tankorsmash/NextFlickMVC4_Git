@@ -1,11 +1,29 @@
-﻿@using PagedList
+﻿
 @using NextFlicksMVC4
-
-@model PagedList.IPagedList<NextFlicksMVC4.Views.Movies.ViewModels.FullViewModel>                                                            
+@model IEnumerable<NextFlicksMVC4.Views.Movies.ViewModels.FullViewModel>
+@*model PagedList.IPagedList<NextFlicksMVC4.Views.Movies.ViewModels.FullViewModel>      *@                                                      
 @{
     ViewBag.Title = "Results";
 }
 
+
+@{
+    int movie_count = Model.ToList().Count;
+    int total_movies = ViewBag.TotalMovies;
+}
+<div class="movie_fraction">
+    <p>
+        Showing @movie_count / @total_movies movies and episodes
+    </p>
+</div>
+
+@if (ViewBag.Start != null && ViewBag.Count != null) {
+    <h3>
+        Items @ViewBag.Start through
+        @{ ViewBag.section = ViewBag.Start + ViewBag.Count - 1; }
+        @ViewBag.section
+    </h3>
+}
 
 <div class="nit_list">
 @foreach (var item in Model)
@@ -15,32 +33,59 @@
 </div>
 
 <div class="pagination_container">
-    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
-    of @Model.PageCount
+    @{
+       int pageNumber = Convert.ToInt32(ViewBag.current_page);
+       if (Convert.ToInt32(ViewBag.current_page) != 1) 
+       {
+            @* the first button *@
+            <div class="pagination_first">
+                @Html.ActionLink("<<", "Index", new { page = 1, sortOrder = ViewBag.CurrentSort, 
+               currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
+            </div> 
+        
+            @* the previous button *@
+            <div class="pagination_prev">
+                @Html.ActionLink("<", "Index", new { page = Convert.ToInt32(ViewBag.current_page) - 1, 
+               sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
+            </div> 
+      }
+    }
+    @*have to add one to the pages val here, because the first page is '1', not '0', 
+    can't explain the math properly, so it means I don't understand it yet *@
+    @if (ViewBag.pages > 1) 
+    {
+        foreach (int i in ViewBag.set_of_pages) 
+        {
+            //if not the current page, print a link to the given page
+            if (i != pageNumber) 
+            {
+                <div class="pagination_page">
+                    @Html.ActionLink((i).ToString(), "Index", new { page = i, sortOrder = ViewBag.CurrentSort, 
+                   currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
+                </div>
+            }
+                //it is the current page, so just write the non-link page
+            else 
+            {
+                <span class="pagination_current_page">@i</span>
+            }
+        }
+    }
 
-    @if (Model.HasPreviousPage)
-    { 
-        @Html.ActionLink("<<", "Index", new { page = 1, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
-        @Html.Raw(" ");
-        @Html.ActionLink("< Prev", "Index", new { page = Model.PageNumber - 1, sortOrder = ViewBag.CurrentSort, currenFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
-    }
-    else
-    {
-        @:<<
-        @Html.Raw(" ");
-        @:< Prev 
+    @{
+        if (Convert.ToInt32(ViewBag.current_page) < ViewBag.pages) 
+        {
+            @* the next button *@
+            <div class="pagination_next">
+                @Html.ActionLink(">", "Index", new { page = Convert.ToInt32(ViewBag.current_page) + 1, 
+               sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
+            </div> 
+            @* the last button *@
+            <div class="pagination_last">
+                @Html.ActionLink(">>", "Index", new { page = ViewBag.pages, 
+               sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
+            </div> 
+        }
     }
 
-    @if (Model.HasNextPage)
-    {
-        @Html.ActionLink("Next >", "Index", new { page = Model.PageNumber + 1, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
-        @Html.Raw(" ");
-        @Html.ActionLink(">>", "Index", new { page = Model.PageCount, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, source = ViewBag.SearchType })
-    }
-    else
-    {
-        @:Next >
-        @Html.Raw(" ")
-        @:>>
-    }
 </div>
