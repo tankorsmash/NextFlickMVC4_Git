@@ -279,11 +279,11 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MoviesController.cs" />
     <Compile Include="Controllers\TagController.cs" />
-    <Compile Include="Controllers\userAccount\AccountController.cs" />
     <Compile Include="Controllers\userAccount\LogOffController.cs" />
     <Compile Include="Controllers\userAccount\LogonController.cs" />
     <Compile Include="Controllers\userAccount\RegisterController.cs" />
     <Compile Include="Controllers\userAccount\UserController.cs" />
+    <Compile Include="Controllers\userAccount\UserProfileViewController.cs" />
     <Compile Include="Filters\TrackingFilter.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\FeedbackModel.cs" />
@@ -453,9 +453,8 @@
     <Content Include="Views\Admin\Movies.cshtml" />
     <Content Include="Views\Home\Feedback.cshtml" />
     <None Include="SampleKey.snk" />
-    <Content Include="Views\Account\ChangePasswordPartial.cshtml" />
-    <Content Include="Views\Account\Password.cshtml" />
-    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\User\ChangePasswordPartial.cshtml" />
+    <Content Include="Views\User\Password.cshtml" />
     <Content Include="Views\Admin\DbTools.cshtml" />
     <Content Include="Views\Movies\Details2.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\ImdbID.cshtml" />
@@ -548,9 +547,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Movies\DetailsTag.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\User\Seed.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

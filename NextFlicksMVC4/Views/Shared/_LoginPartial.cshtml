@@ -3,6 +3,7 @@
         @if (WebSecurity.IsAuthenticated)
         {
            @* @:<li>Welcome, @WebSecurity.CurrentUserName</li>*@
+            @:<li><a href="User/@WebSecurity.CurrentUserName">@WebSecurity.CurrentUserName</a>
             @:<li><a href="@Href("~/Logoff")">Log out</a></li>
         }
         else

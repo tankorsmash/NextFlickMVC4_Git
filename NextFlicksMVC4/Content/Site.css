@@ -273,6 +273,7 @@ header
     top: 0;
     background-color: White;
     width: 100%;
+    border-bottom: 1px solid #000;
      
 }
 header a 
@@ -350,10 +351,11 @@ h5, h6 {
 }
 
 #body {
-    background-color: rgb(199, 179, 179);
+    /*background-color: rgb(199, 179, 179);*/
+    background-color:#FFF;
     clear: both;
     padding-bottom: 35px;
-    border: solid 2px black;
+    border-bottom: solid 2px black;
 }
 
     .main-content {
@@ -1126,4 +1128,15 @@ input[type="submit"].search-button
 .content-wrapper .float-left{height:2em;}
 
 		
-		
+/******************************************************************************
+CSS for user profiel pages
+******************************************************************************/
+.subheader {border-bottom:1px solid #CCC;}
+.subheader-links {float:right;}
+#user_displayname { font-size:18px; line-height:34px; margin-bottom:0; float:left;}
+#user_info { width:100%; border: 1px solid #000;}
+#user_queue {width:100%; border: 1px solid #000;}
+#user_tags{ float:left; width:49%; border: 1px solid #000;}
+#user_reviews{ float:right; width:49%; border: 1px solid #000;}
+	
+	

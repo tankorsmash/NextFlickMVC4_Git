@@ -13,44 +13,82 @@ namespace NextFlicksMVC4.Controllers.userAccount
     {
       // private Users.UserDbContext _userDb = new Users.UserDbContext();
         MovieDbContext _userDb = new MovieDbContext();
-        private FormsIdentity TicketId;// use this to get the user identity.
-        private FormsAuthenticationTicket ticket; //use this ot pull acopy of the ticket 
-        
-        
-        /*
-         * Moved to InitilizeSimpleMembershipAttribute.Cs
-         * public ViewResult Seed()
+
+       
+
+        public ActionResult Index(string username)
         {
-            Users user = new Users();
+            var model = _userDb.Users.Where(user => user.Username == username).ToList();
+            return View(model);
+        }
 
-            if (!Roles.RoleExists("Admin"))
-                Tools.TraceLine("creating Admin Roles");
-                Roles.CreateRole("Admin");
-            if (!Roles.RoleExists("Mod"))
-                Tools.TraceLine("creating Mod Roles");
-                Roles.CreateRole(("Mod"));
-            if (!Roles.RoleExists("User"))
-                Tools.TraceLine("creating User Roles");
-                Roles.CreateRole(("User"));
+        // GET: /Account/Password
+        //for changing passwords
+        public ActionResult Password(ManageMessageId? message)
+        {
+            ViewBag.StatusMessage =
+                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
+                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
+                : message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
+                : "";
 
-            if (!WebSecurity.UserExists("Admin"))
-                Tools.TraceLine("creating Admin account");
-                WebSecurity.CreateUserAndAccount("Admin", "Admin",
-                                                 propertyValues:
-                                                     new
-                                                     {
-                                                         Username = "Admin",
-                                                         email = "Admin@thenextflick.com"
-                                                     });
-            if (!Roles.GetRolesForUser("Admin").Contains("Admin"))
-                Tools.TraceLine("adding Admin priveledges");
-                Roles.AddUserToRole("Admin", "Admin");
-            ViewBag.Message = " Admin Accout Seeded";
+            ViewBag.HasLocalPassword = false;
+            var userId = WebSecurity.GetUserId(User.Identity.Name);
+            if (userId != -1)
+                ViewBag.HasLocalPassword = true;
+
+            ViewBag.ReturnUrl = Url.Action("Password");
             return View();
-        } */
 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Password(Users.PasswordChangeModel model)
+        {
+            var localAccount = WebSecurity.GetUserId(User.Identity.Name);
+            ViewBag.ReturnUrl = Url.Action("Password");
+
+            if (ModelState.IsValid)
+            {
+                // ChangePassword will throw an exception rather than return false in certain failure scenarios.
+                bool changePasswordSucceeded;
+                try
+                {
+                    changePasswordSucceeded = WebSecurity.ChangePassword(User.Identity.Name, model.OldPassword, model.NewPassword);
+                }
+                catch
+                {
+                    changePasswordSucceeded = false;
+                }
+
+                if (changePasswordSucceeded)
+                {
+                    return RedirectToAction("Password", new { Message = ManageMessageId.ChangePasswordSuccess });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "The current password is incorrect or the new password is invalid.");
+                }
+            }
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        public enum ManageMessageId
+        {
+            ChangePasswordSuccess,
+            SetPasswordSuccess,
+            RemoveLoginSuccess,
+        }
+
+        /*
+         * 
+         * Old user controller stuff below here
+         * auto geenrated by mvc
+         */
         // GET: /User/
-        [Authorize(Roles="Admin")]
+       /* [Authorize(Roles="Admin")]
         public ViewResult Index(string returnUrl)
         {
             //var usernames = Roles.GetUsersInRole(UserRole.Admin.ToString());
@@ -59,7 +97,7 @@ namespace NextFlicksMVC4.Controllers.userAccount
             //else not an admin
             //ViewBag.Error = "Unathorized Access! I'm afraid I Can't Do that Dave!";
             //return View("Error");
-        }
+        }*/
 
         //
         // GET: /User/Details/5
@@ -147,13 +185,5 @@ namespace NextFlicksMVC4.Controllers.userAccount
             base.Dispose(disposing);
         }
 
-        private bool IsAdmin()
-        {
-            TicketId = (FormsIdentity)User.Identity;
-            ticket = TicketId.Ticket;
-            if (ticket.UserData == "1")
-                return true;
-            return false;
-        }
     }
 }

@@ -13,16 +13,32 @@ namespace NextFlicksMVC4
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+           /* 
+            * had to comment these out because things like /user/changePassword were trying to return a user
+            * 
+            * routes.MapRoute(
+               "ShortUserProfile",
+               "U/{username}",
+               new { controller = "User", action = "Index", username = String.Empty }
+           );
+            routes.MapRoute(
+                "UserProfile",
+                "User/{username}",
+                new { controller = "User", action = "Index", username = String.Empty }
+            ); */
             routes.MapRoute(
                 name: "Admin",
                 url: "{controller}/{action}/{id}",
                 defaults: new {controller = "Home", action = "Index", id = ""}
                 );
+
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+            
         }
     }
 }
