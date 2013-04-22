@@ -301,7 +301,9 @@ namespace NextFlicksMVC4.NetFlixAPI
                 catalog_title.SelectSingleNode("average_rating");
             if (average_rating_node != null)
             {
-                var avg_rating = average_rating_node.InnerText;
+
+                double avg_rating;
+                double.TryParse(average_rating_node.InnerText, out avg_rating);
                 createdTitle.AvgRating = avg_rating;
             }
 
@@ -360,9 +362,14 @@ namespace NextFlicksMVC4.NetFlixAPI
                     //in the interest of saving time and space, I'm going to strip off most of the url data of the jpg locations, as I think it'll save us 20 out of the 90 megs of data
                     // after this, I might go after the genres, or move the synopses to another table.
                     //TODO: Use regex instead of StartsWith
-                    const string url_template0 = @"http://cdn-0.nflximg.com/images/";
-                    const string url_template1 = @"http://cdn-1.nflximg.com/images/";
-                    if (href.StartsWith(url_template0))
+                    const string url_template0 = @"http://cdn0.nflximg.net/images/";
+                    const string url_template1 = @"http://cdn1.nflximg.net/images/";
+                  /* 
+                   * sec_goat: I edited out the part where we strip the URL out, as mnaually and statically
+                   * assigning it later is too error prone. Lets just roll with the URL god gave us.
+                   * 
+                   * 
+                   * if (href.StartsWith(url_template0))
                     {
                         //remove the beginning
                         href = href.Remove(0, url_template0.Length);
@@ -370,6 +377,7 @@ namespace NextFlicksMVC4.NetFlixAPI
                         href = href.Replace(".jpg", "");
 
                     }
+                   
                     else if (href.StartsWith(url_template1))
                     {
                         //remove the beginning
@@ -377,7 +385,7 @@ namespace NextFlicksMVC4.NetFlixAPI
                         //remove the .jpg because they're all jpgs
                         href = href.Replace(".jpg", "");
 
-                    }
+                    }*/
 
                     //add the string to the list<string>
                     createdTitle.BoxArtList.Add(href);

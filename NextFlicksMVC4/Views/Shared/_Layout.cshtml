@@ -14,53 +14,21 @@
         @Scripts.Render("~/bundles/jqueryui")
         @Styles.Render("~/Content/themes/base/jquery-ui.css")
         @*<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />*@
-        
-        
-        @{
-            //some how find out what page we are on so we can set the active attribute
-            var movieMenuClass = "non-active";
-            var adminMenuClass = "non-active";
-
-            string path = HttpContext.Current.Request.FilePath;
-            if (path.Contains("Movie"))
-            {
-                movieMenuClass = "active";
-            }
-            if (path.Contains("Admin"))
-            {
-                adminMenuClass = "active";
-            }
-             
-        }
-        
     </head>
     <body>
         <header>
             <div class="content-wrapper">
                 <div class="float-left">
-                    <p class="site-title">@Html.ActionLink("The Next Flick", "Index", "Movies")</p>
+                    <div class="site-title float-left">
+                        @Html.ActionLink("The Next Flick", "Index", "Movies")
+                    </div>
+               
+                        @Html.Partial("_Navigation")
+                        @Html.Partial("_HeaderSearch")
                 </div>
-                <div class="float-right">
-                      <p style: align="left">
-                          @if(WebSecurity.IsAuthenticated){
-                            @:Welcome, @WebSecurity.CurrentUserName |
-                            @:<a href="@Href("~/Logoff")">Log out</a></>
-                          }
-                          else{
-                            @:<a href="@Href("~/Logon")">Log in</a> |
-                            @:<a href="@Href("~/Register")">Register</a>
-                          }
-                      </p>
-                    <nav>
-                        <ul id="tabmenu">
-                            <li>@Html.ActionLink("Movies", "Index", "Movies", null, new{ @class = movieMenuClass})</li>
-                            <li>@Html.ActionLink("Tags", "Index", "Tag")</li>
-                            @if (WebSecurity.IsAuthenticated && Roles.IsUserInRole("Admin"))
-                            {
-                                <li> @Html.ActionLink("Admin", "Index", "Admin", null, new {@class = adminMenuClass} )</li>
-                            }
-                        </ul>
-                    </nav>
+
+                <div class="float-right" >
+                    @Html.Partial("_LoginPartial")
                 </div>
             </div>
         </header>
@@ -79,11 +47,9 @@
                 <div class="float-right">
                     <p>@Html.ActionLink("About", "About", "Home")
                     | @Html.ActionLink("Feedback", "Feedback", "Home")
-                     @*Html.ActionLink("Contact", "Contact", "Home")*/</p>
+                     @*Html.ActionLink("Contact", "Contact", "Home")*/</p>*@
                 </div>
-                
             </div>
-            
         </footer>
 
 @*        @Scripts.Render("~/bundles/jquery")

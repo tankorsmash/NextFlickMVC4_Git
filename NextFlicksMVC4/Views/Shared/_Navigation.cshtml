@@ -1,0 +1,39 @@
+﻿@*
+Need to fidn the page so we can set the appropriate nav link to the active one
+*@
+@{
+    //this doesnt seem ideal but I am having issues finding any other way to tell which is the active page and set it.
+    
+      //some how find out what page we are on so we can set the active attribute
+            var movieMenuClass = "non-active";
+            var adminMenuClass = "non-active";
+            var tagMenuClass = "non-active";
+
+      
+            
+            string path = HttpContext.Current.Request.FilePath;
+            if (path.Contains("/Movies"))
+            {
+                movieMenuClass = "current";
+            }
+            if (path.Contains("/Admin"))
+            {
+                adminMenuClass = "current";
+            }
+            if (path.Contains("/Tag"))
+            {
+                tagMenuClass = "current"; 
+            }
+             
+}
+
+<div id="navcontainer" class="float-left">
+    <ul id ="navlist">
+        <li>@Html.ActionLink("Movies", "Index", "Movies" , null, new{ @id = movieMenuClass})</li>
+        <li>@Html.ActionLink("Tags", "Index", "Tag", null, new { @id = tagMenuClass})</li>
+        @if (WebSecurity.IsAuthenticated && Roles.IsUserInRole("Admin"))
+        {
+            <li>@Html.ActionLink("Admin", "Index", "Admin", null, new { @id = adminMenuClass } )</li>
+        }
+    </ul>
+</div>

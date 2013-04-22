@@ -197,16 +197,21 @@ img.rt_rotten {
 
 
 /* search bar, called _FilterMenu */
-.filter_area {
-border-width: 10px;
-border-style: outset;
-background-color: lightgray;
-border-radius: 5px;
-
-text-align: right;
-margin-right: 15%;
-margin-left: 5%;
-padding-left: 5px;
+.filter_area 
+{   
+    width:90%;          /* set the element to less than the container width so we can center it */
+    margin: 0px auto;   /* this centers the element */
+   
+    border-width: 10px;
+    border-style: outset;
+    background-color: lightgray;
+    border-radius: 5px;
+    
+    padding: 10px 10px; 
+    text-align: right;
+   /* margin-right: 15%;
+    margin-left: 5%; */
+    
 }
 
 form.movie_year_form {
@@ -244,7 +249,7 @@ a {
     outline: none;
     padding-left: 3px;
     padding-right: 3px;
-    text-decoration: underline;
+    text-decoration: underline; 
 }
 
     a:link, a:visited,
@@ -262,7 +267,22 @@ div.display-label {
 }
 
 
-header, footer, hgroup,
+header 
+{
+    position:fixed;
+    top: 0;
+    background-color: White;
+    width: 100%;
+     
+}
+header a 
+{
+    font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
+    font-weight:bold;
+    color: #999;
+}
+
+footer, hgroup,
 nav, section {
     display: block;
 }
@@ -347,7 +367,9 @@ h5, h6 {
     }
 
 header .content-wrapper {
-    padding-top: 20px; 
+    padding-top: 5px;
+    max-width: 95%;
+    position:relative;
 }
 
 footer {
@@ -361,16 +383,17 @@ footer {
 /* site title
 ----------------------------------------------------------*/
 .site-title {
-    color: #c8c8c8;
+    color:  #B9090B;
     font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
-    font-size: 2.3em;
+    font-size: 1.5em;
     margin: 0;
 }
 
 .site-title a, .site-title a:hover, .site-title a:active {
     background: none;
-    color: #c8c8c8;
+    color: #B9090B;
     outline: none;
+    font-weight:bold;
     text-decoration: none;
 }
 
@@ -833,6 +856,7 @@ tr.pager td {
     header .float-left,
     header .float-right {
         float: none;
+
     }
 
     /* logo */
@@ -992,61 +1016,114 @@ tr.pager td {
 }
 
 
-/* top tab menu CSS */
+/* JTs custom CSS*/
 
+/*minimalist menu */
+#navlist
+{
+margin: 0;
+padding: 10px 0 20px 10px;
+/*border-bottom: 1px solid #000;*/
+font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
+font-size:initial;
 
-#tabmenu {
-    font-size: 1.3em;
-    font-weight: 600;
-    text-align: right;
-	color: #333;
-	/*border-bottom: 1px solid black;*/
-	margin: 12px 0px 0px 0px;
-	padding: 0px;
-	z-index: 0;
-	padding-left: 10px }
+}
 
-	#tabmenu li {
-		display: inline;
-		overflow: hidden;
-		list-style-type: none; }
+#navlist ul, #navlist li
+{
+margin: 0;
+padding: 0;
+display: inline;
+list-style-type: none;
+}
 
-	#tabmenu a, a.active {
-		color: #333;
-	    background: #fff;
-	    /* font: bold 1em "Trebuchet MS", Arial, sans-serif; */
-		border: 2px solid black;
-		padding: 2px 5px 0px 5px;
-		margin: 0;
-		text-decoration: none; }
+#navlist a:link, #navlist a:visited
+{
+float: left;
+line-height: 14px;
+font-weight: bold;
+margin: 0 5px 0 5px;
+text-decoration: none;
+color: #999;
+/* override other css that is affecting the menu */
+}
 
-	#tabmenu a.active 
-	{
-	    color: #333;
-		background: rgb(199, 179, 179);
-	    border-bottom: 3px solid rgb(199, 179, 179); }
+#navlist a:link#current, #navlist a:visited#current, #navlist a:hover
+{
+border-bottom: 4px solid #000;
+padding-bottom: 2px;
+background: transparent;
+color: #000;
+}
 
-	#tabmenu a:hover {
-		color: #333;
-		background: rgb(199, 179, 179) }
+#current
 
-	#tabmenu a:visited {
-		color: #333; }
+#navlist a:hover { color: #000; }
 
-	#tabmenu a.active:hover {
-		background: rgb(199, 179, 179);
-		color: #fff; }
+/*****************************************************************************/
+/* CSS for header search 
+******************************************************************************/
+#header-search
+{
+    width:440px;
+    height:2em;
+    margin-left:25px;
+    margin-bottom:25px;
+} 
 
-	#content {/*font: 0.9em/1.3em "bitstream vera sans", verdana, sans-serif;*/
-		text-align: justify;
-		background: #ABAD85;
-		padding: 20px;
-		border: 1px solid black;
-		border-top: none;
-		z-index: 2;	}
+input[type=text].search-box
+{
+    height:12px;
+    line-height:14px;
+    text-size:6px;
+    margin-top:0px;
+}
 
-	#content a {
-		text-decoration: none;
-		color: #E8E9BE; }
+input[type="submit"].search-button
+{
+    font-size:12px !important;
+    line-height:14px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    padding:1px;
+   /* margin:0;
+    float:right;*/
+}
 
-	#content a:hover { background: #898B5E; }
+/*****************************************************************************
+    Css for drop down selection of search type
+******************************************************************************/
+/*body { font-family:Arial, Helvetica, Sans-Serif; font-size:0.75em; color:#000;}*/
+.desc { color:#6b6b6b;}
+.desc a {color:#0092dd;}
+.dropdown dd, .dropdown dt, .dropdown ul { margin:0px; padding:0px;  }
+.dropdown dd { position:relative; }
+.dropdown a, .dropdown a:visited { color:#816c5b; text-decoration:none; outline:none;}
+.dropdown a:hover { color:#5d4617;}
+.dropdown dt a:hover { color:#5d4617; border: 1px solid #d0c9af;}
+.dropdown dt a {background:#e4dfcb url('../../Content/Images/MenuItems/arrow.png') no-repeat scroll right center; display:block; border:1px solid #d4ca9a; width:30px; height:16px; padding:2px;}
+.dropdown dt a span {cursor:pointer; display:block;}
+.dropdown dd ul { background:#e4dfcb none repeat scroll 0 0; border:1px solid #d4ca9a; color:#C5C0B0; display:none; right:10px; padding:5px 0px; position:absolute; top:2px; width:auto; min-width:30px; list-style:none;}
+.dropdown span.value { display:none;}
+.dropdown dd ul li a { padding:5px; display:block; height:16px;}
+.dropdown dd ul li a:hover { background-color:#d0c9af;}
+
+.dropdown .default { background: #fff 0 0 no-repeat; }
+.dropdown .dt .a {background: none;}
+.dropdown .title { background: url('../../Content/Images/MenuItems/TitleMenuIcon.png') no-repeat scroll center #E4DFCB; }
+.dropdown .genre { background: url('../../Content/Images/MenuItems/GenreMenuIcon.png') no-repeat scroll center #E4DFCB; }
+.dropdown .tag { background: url('../../Content/Images/MenuItems/TagMenuIcon.png') no-repeat scroll center #E4DFCB; }
+.dropdown .rt { background: url('../../Content/Images/MenuItems/RTMenuIcon.png')no-repeat scroll center #E4DFCB; }
+.dropdown .rating{ background: url('../../Content/Images/MenuItems/RatingsMenuIcon.PNG') no-repeat scroll center #E4DFCB; }
+.dropdown .year{ background: url('../../Content/Images/MenuItems/YearMenuIcon.png')no-repeat scroll center #E4DFCB }
+.dropdown .stars{ background: url('../../Content/Images/MenuItems/NetflixStarMenuIcon.png') no-repeat scroll center #E4DFCB }
+
+/* hide the source <select> menu and only show the fancy Js / css one */
+#source {display:none; }
+#target { float:left; padding-right:5px;}
+#psuedo-select{ }
+
+.content-wrapper .float-left{height:2em;}
+
+		
+		

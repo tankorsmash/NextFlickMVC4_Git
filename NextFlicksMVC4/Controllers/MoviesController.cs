@@ -24,6 +24,7 @@ using NextFlicksMVC4.Filters;
 using NextFlicksMVC4.OMBD;
 using NextFlicksMVC4.Views.Movies.ViewModels;
 using WebMatrix.WebData;
+using System.Web.UI;
 
 namespace NextFlicksMVC4.Controllers
 {
@@ -186,7 +187,89 @@ namespace NextFlicksMVC4.Controllers
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"> this is the "searchType" named sourc eis css, when i try to change it, breaks</param>
+        /// <param name="sortOrder">this is a string that will sort the list by different params, need to add a Case for it</param>
+        /// <param name="currentFilter"> current filter and search string seem to interchange with one another</param>
+        /// <param name="searchString">see above</param>
+        /// <param name="page">what page to display of list</param>
+        /// <returns></returns>
+        
+        public ActionResult Index(string source, string sortOrder, 
+            string currentFilter, string searchString, int page = 1)
+        {
 
+            //using this: http://www.asp.net/mvc/tutorials/getting-started-with-ef-using-mvc/sorting-filtering-and-paging-with-the-entity-framework-in-an-asp-net-mvc-application
+
+            var start = Tools.WriteTimeStamp(writeTime: false);
+            var db = new MovieDbContext();
+            IQueryable<FullViewModel> res;
+            
+            ViewBag.SearchType = String.IsNullOrEmpty(source) ? "title" : source;
+            ViewBag.CurrentSort = sortOrder;
+
+            /*loading the page is GET
+             * clicking on a page line forward back etc is GET
+             * clcikign the search button is POST
+             */
+
+            if (Request.HttpMethod == "GET")
+                searchString = currentFilter;
+            else //POST or other method clear the HttpContext.Cache
+                page = 1;
+
+            ViewBag.CurrentFilter = searchString;
+
+            var startQuery = Tools.WriteTimeStamp(writeTime: false);
+            if (source == "title")
+                res = MovieSearch.ByTitle(searchString, db);
+            else if (source == "genre")
+                res = MovieSearch.ByGenre(searchString, db);
+            else if (source == "tag")
+                res = MovieSearch.ByTag(searchString, db);
+            else if (source == "rt")
+                res = MovieSearch.ByRottenTomatoMeter(searchString, db);
+            else if (source == "rating")
+                res = MovieSearch.ByRating(searchString, db);
+            else if (source == "year")
+                res = MovieSearch.ByYear(searchString, db);
+            else if (source == "stars")
+                res = MovieSearch.ByStars(searchString, db);
+            else
+                res = Tools.GetFullDbQuery(db);
+
+            //count all the movies possible
+            int totalMovies = res.Count();
+            Tools.TraceLine("  found {0} movies", totalMovies);
+            //set it to the viewbag so the view can display it
+            ViewBag.TotalMovies = totalMovies;
+            ViewBag.movies_per_page = 28;
+            Tools.TraceLine("  Found a total possible results of {0}", totalMovies);
+
+            //how many results to display per page
+            int movie_count = 28;
+                
+            var pagedList = FindPageOfMovies(res, page, movie_count, db, true);
+
+
+            switch (sortOrder)
+            {
+                //add cases her ewhen we add sort by methods to sort by title id etc
+                // right now defualt is just to sort by name
+                default:
+                    pagedList = pagedList.OrderBy(m => m.Movie.short_title);
+                    break;
+            }
+
+            //prepare certain variables for the pagination 
+            PrepareIndexViewBagForPagination();
+            ViewBag.Page = page;
+            return View("Results", pagedList);
+        }
+
+        /*
 
         /// <summary>
         /// Main action for this controller. Offers searching by title, genre and tag
@@ -196,7 +279,8 @@ namespace NextFlicksMVC4.Controllers
         /// <param name="tag_string">selected tag to search for</param>
         /// <param name="page"></param>
         /// <returns></returns>
-        public ActionResult Index(string year="", string movie_title = "", string genre_select = "0",
+        public ActionResult Index(
+             string source, string search_term="", string year="", string movie_title = "", string genre_select = "0",
                                     string tag_string = "0", string mat_rating="", string tv_rating = "",
                                     string min_tmeter = "",
                                     int page = 1)
@@ -204,7 +288,7 @@ namespace NextFlicksMVC4.Controllers
             //var omdbTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/omdb.txt");
             //var tomatoesTXT = System.Web.HttpContext.Current.Server.MapPath("~/dbfiles/tomatoes.txt");
             //TSVParse.OptimizedPopulateOmdbTableFromTsv(omdbTXT, tomatoesTXT);
-
+            var test = source;
             var start = Tools.WriteTimeStamp(writeTime:false);
 
             Tools.TraceLine("Creating db context");
@@ -241,7 +325,9 @@ namespace NextFlicksMVC4.Controllers
 
             //choose which set of movies I want to filter down to
             IQueryable<FullViewModel> res;
-            //if the movie title isn't null, search movies
+
+           
+             //if the movie title isn't null, search movies
             if (movie_title != "") {
                 res = Tools.FilterMoviesAndGenres(movie_title, db, genre_select);
             }
@@ -264,6 +350,7 @@ namespace NextFlicksMVC4.Controllers
             else if (year != "") {
                 res = Tools.FilterByYear(db, year);
             }
+             
             //otherwise return the entire db and return that
             else {
                 res = Tools.GetFullDbQuery(db);
@@ -308,6 +395,7 @@ namespace NextFlicksMVC4.Controllers
             }
 
         }
+       */
 
         public void FilterMenuInit(MovieDbContext db)
         {

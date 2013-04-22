@@ -8,7 +8,7 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
     <div class="title_images">
         <div class="title_boxart">
             <a class="title_webpage" href=@Html.DisplayFor(model => model.Movie.web_page) >
-                <img src=@Html.DisplayFor(model => model.Boxarts.boxart_150) />
+                <img  alt="boxart" src=@Html.DisplayFor(model => model.Boxarts.boxart_150) />
             </a>
         </div>
     </div>
@@ -40,10 +40,10 @@ Will need to show all the relevant data here. Title, Year, Length, MPAA Rating  
                     @Html.DisplayFor(model => model.OmdbEntry.t_Meter)
                     {
                         if (Model.OmdbEntry.t_Meter > 50) {
-                            <img class="rt_rotten" src="../../Content/Images/fresh.png" />
+                            <img alt="fresh" class="rt_rotten" src="../../Content/Images/fresh.png" />
                         }
                         if (Model.OmdbEntry.t_Meter < 50) {
-                            <img class="rt_rotten" src="../../Content/Images/rotten.png" />
+                            <img alt="rotten" class="rt_rotten" src="../../Content/Images/rotten.png" />
                         }
                     }
                 }

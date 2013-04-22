@@ -68,7 +68,7 @@ CREATE TABLE [dbo].[Movies](
 	[short_title] [nvarchar](max) NULL,
 	[year] [int] NOT NULL,
 	[runtime] [int] NOT NULL,
-	[avg_rating] [nvarchar](max) NULL,
+	[avg_rating] [float](max) NULL,
 	[tv_rating] [nvarchar](max) NULL,
 	[web_page] [nvarchar](max) NULL,
 	[current_season] [nvarchar](max) NULL,

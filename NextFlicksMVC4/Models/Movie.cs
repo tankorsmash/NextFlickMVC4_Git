@@ -25,7 +25,7 @@ namespace NextFlicksMVC4.Models
         public int runtime { get; set; }
 
         [DisplayName("Netflix Rating")]
-        public string avg_rating { get; set; }
+        public double avg_rating { get; set; }
 
         [DisplayName("MPAA Rating")]
         public string tv_rating { get; set; }
@@ -143,47 +143,47 @@ namespace NextFlicksMVC4.Models
         public virtual int movie_ID { get; set; }
 
         [DisplayName("Box Art Size 38")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_38 { get; set; }
 
         [DisplayName("Box Art Size 64")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_64 { get; set; }
 
         [DisplayName("Box Art Size 110")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_110 { get; set; }
 
         [DisplayName("Box Art Size 124")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_124 { get; set; }
 
         [DisplayName("Box Art Size 150")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_150 { get; set; }
 
         [DisplayName("Box Art Size 166")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_166 { get; set; }
 
         [DisplayName("Box Art Size 88")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_88 { get; set; }
 
         [DisplayName("Box Art Size 197")]
-        [DataType("BoxArtUrl")]
+       // [DataType("BoxArtUrl")]
         public string boxart_197 { get; set; }
 
         [DisplayName("Box Art Size 176")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_176 { get; set; }
 
         [DisplayName("Box Art Size 284")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_284 { get; set; }
 
         [DisplayName("Box Art Size 210")]
-        [DataType("BoxArtUrl")]
+        //[DataType("BoxArtUrl")]
         public string boxart_210 { get; set; }
 
     }

@@ -294,6 +294,7 @@
     <Compile Include="Tests\TestTools.cs" />
     <Compile Include="Tests\TestTsvParse.cs" />
     <Compile Include="Tools\PopulateFullView.cs" />
+    <Compile Include="Tools\MovieSearch.cs" />
     <Compile Include="Tools\Tools.cs" />
     <Compile Include="Tools\UserInput.cs" />
     <Compile Include="Tracking\TrackingCreate.cs" />
@@ -321,6 +322,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Images\fresh.png" />
+    <Content Include="Content\Images\MenuItems\arrow.png" />
+    <Content Include="Content\Images\MenuItems\DefaultMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\GenreMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\NetflixStarMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\RatingsMenuIcon.PNG" />
+    <Content Include="Content\Images\MenuItems\RTMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\TagMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\TitleMenuIcon.png" />
+    <Content Include="Content\Images\MenuItems\YearMenuIcon.png" />
     <Content Include="Content\Images\rotten.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -398,6 +408,11 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Scripts\tnf\HeaderSearch.js" />
+    <Content Include="Scripts\ui\jquery.ui.core.js" />
+    <Content Include="Scripts\ui\jquery.ui.position.js" />
+    <Content Include="Scripts\ui\jquery.ui.selectmenu.js" />
+    <Content Include="Scripts\ui\jquery.ui.widget.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -447,6 +462,10 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Tag\Details.cshtml" />
     <Content Include="Views\Tag\Index.cshtml" />
+    <Content Include="Views\Shared\_Navigation.cshtml" />
+    <Content Include="Views\Shared\_HeaderSearch.cshtml" />
+    <Content Include="Views\Movies\resultsOLD.cshtml" />
+    <Content Include="Views\Admin\LogFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
