@@ -1120,7 +1120,7 @@ input[type="submit"].search-button
 
 /* hide the source <select> menu and only show the fancy Js / css one */
 #source {display:none; }
-#target { float:left; padding-right:5px;}
+#target { float:left; padding-right:5px;margin-top: 4px;}
 #psuedo-select{ }
 
 .content-wrapper .float-left{height:2em;}
